@@ -6,6 +6,7 @@ import tornado.httpserver
 
 from .parser import parse_user_msg
 from .reply import create_reply
+from .util import enable_pretty_logging
 
 
 class WeRoBot(object):
@@ -25,7 +26,7 @@ class WeRoBot(object):
         Add a new handler to the robot.
         """
         if not inspect.isfunction(func):
-            raise TypeError('func should be a function')
+            raise TypeError
         self._handlers.append(func)
 
     def _create_handler(robot):
@@ -61,6 +62,7 @@ class WeRoBot(object):
 
     def run(self, port=8888):
         WechatHandler = self._create_handler()
+        enable_pretty_logging()
         app = tornado.web.Application([
             ('/', WechatHandler),
             ])
