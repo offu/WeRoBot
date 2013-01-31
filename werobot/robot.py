@@ -43,7 +43,7 @@ class WeRoBot(object):
                 sign = ''.join(sign)
                 sign = hashlib.sha1(sign).hexdigest()
 
-                if sign is not signature:
+                if sign != signature:
                     logging.warn("Signature check failed.")
                     self.finish()
 
