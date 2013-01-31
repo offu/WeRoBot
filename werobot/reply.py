@@ -34,7 +34,7 @@ class WeChatReply(object):
 
 
 class TextReply(WeChatReply):
-    TEMPLATE = """
+    TEMPLATE = u"""
     <xml>
     <ToUserName><![CDATA[{target}]]></ToUserName>
     <FromUserName><![CDATA[{source}]]></FromUserName>
@@ -50,7 +50,7 @@ class TextReply(WeChatReply):
 
 
 class ArticlesReply(WeChatReply):
-    TEMPLATE = """
+    TEMPLATE = u"""
     <xml>
     <ToUserName><![CDATA[{target}]]></ToUserName>
     <FromUserName><![CDATA[{source}]]></FromUserName>
@@ -63,7 +63,7 @@ class ArticlesReply(WeChatReply):
     </xml>
     """.format
 
-    ITEM_TEMPLATE = """
+    ITEM_TEMPLATE = u"""
     <item>
     <Title><![CDATA[{title}]]></Title>
     <Description><![CDATA[{description}]]></Description>
