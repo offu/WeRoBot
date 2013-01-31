@@ -1,5 +1,6 @@
 from xml.etree import ElementTree
 from tornado.util import ObjectDict
+from .messages import TextMessage, ImageMessage, LocationMessage
 
 MSG_TYPE_TEXT = u'text'
 MSG_TYPE_LOCATION = u'location'
@@ -28,12 +29,13 @@ def parse_user_msg(xml):
     )
     if msg_type == MSG_TYPE_TEXT:
         msg.content = decode(parser.find('Content').text)
+        return TextMessage(**msg)
     elif msg_type == MSG_TYPE_LOCATION:
         msg.location_x = decode(parser.find('Location_X').text)
         msg.location_y = decode(parser.find('Location_Y').text)
         msg.scale = int(parser.find('Scale').text)
         msg.label = decode(parser.find('Label').text)
+        return LocationMessage(**msg)
     elif msg_type == MSG_TYPE_IMAGE:
-        msg.picurl = decode(parser.find('PicUrl').text)
-
-    return msg
+        msg.img = decode(parser.find('PicUrl').text)
+        return ImageMessage(**msg)
