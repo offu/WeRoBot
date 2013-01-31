@@ -1,5 +1,6 @@
 import inspect
 import hashlib
+import logging
 import tornado.web
 import tornado.ioloop
 import tornado.httpserver
@@ -33,6 +34,7 @@ class WeRoBot(object):
         class WeChatHandler(tornado.web.RequestHandler):
             def prepare(self):
                 signature = self.get_argument('signature', '')
+
                 timestamp = self.get_argument('timestamp', '')
                 nonce = self.get_argument('nonce', '')
 
@@ -42,6 +44,7 @@ class WeRoBot(object):
                 sign = hashlib.sha1(sign).hexdigest()
 
                 if sign is not signature:
+                    logging.warn("Signature check failed.")
                     self.finish()
 
             def get(self):
@@ -58,6 +61,7 @@ class WeRoBot(object):
                     if reply:
                         self.write(create_reply(reply))
                         return
+                logging.info("No handler replied.Ignore..")
         return WeChatHandler
 
     def run(self, port=8888):
