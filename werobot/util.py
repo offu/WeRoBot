@@ -27,8 +27,6 @@ def enable_pretty_logging(level='info'):
 
     This is called automatically by `WeRoBot.run()`.
     """
-    if level == 'debug':
-        g.interrupt = True
     root_logger = logging.getLogger()
     root_logger.setLevel(getattr(logging, level.upper()))
 

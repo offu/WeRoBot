@@ -59,7 +59,7 @@ class WeRoBot(object):
                 for handler in robot._handlers:
                     reply = handler(data)
                     if reply:
-                        self.write(create_reply(reply))
+                        self.write(create_reply(reply, data=data))
                         return
                 logging.info("No handler replied.Ignore..")
         return WeChatHandler
