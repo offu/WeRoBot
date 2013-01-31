@@ -100,6 +100,6 @@ class ArticlesReply(WeChatReply):
 def create_reply(reply, data=None):
     if isinstance(reply, WeChatReply):
         return reply.render()
-    if isinstance(reply, str):
+    if isinstance(reply, unicode):
         reply = TextReply(data=data, content=reply)
         return reply.render()
