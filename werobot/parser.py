@@ -22,7 +22,6 @@ def parse_user_msg(xml):
     fromuser = decode(parser.find('FromUserName').text)
     create_at = int(parser.find('CreateTime').text)
     msg = ObjectDict(
-        type=msg_type,
         touser=touser,
         fromuser=fromuser,
         time=create_at

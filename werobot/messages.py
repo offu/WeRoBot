@@ -3,27 +3,27 @@ class WeChatMessage(object):
 
 
 class TextMessage(WeChatMessage):
-    def __init__(self, touser, fromuser, create_at, content):
+    def __init__(self, touser, fromuser, time, content):
         self.target = touser
         self.source = fromuser
-        self.time = int(create_at)
+        self.time = int(time)
         self.content = content
 
 
 class ImageMessage(WeChatMessage):
-    def __init__(self, touser, fromuser, create_at, img):
+    def __init__(self, touser, fromuser, time, img):
         self.target = touser
         self.source = fromuser
-        self.time = int(create_at)
+        self.time = int(time)
         self.img = img
 
 
 class LocationMessage(WeChatMessage):
-    def __init__(self, touser, fromuser, create_at,
+    def __init__(self, touser, fromuser, time,
                  location_x, location_y, scale, label):
         self.target = touser
         self.source = fromuser
-        self.time = create_at
+        self.time = time
         self.location = (location_x, location_y)
         self.scale = scale
         self.label = label
