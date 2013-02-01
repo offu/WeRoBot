@@ -6,6 +6,6 @@ python:
   - 3.2
   - pypy
 
-install: python setup.py install
+install: pip install tornado
 
 script: nosetests

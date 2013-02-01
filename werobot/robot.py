@@ -53,13 +53,13 @@ class WeRoBot(object):
 
             def post(self):
                 body = self.request.body
-                data = parse_user_msg(body)
+                message = parse_user_msg(body)
                 self.set_header("Content-Type",
                     "application/xml;charset=utf-8")
                 for handler in robot._handlers:
-                    reply = handler(data)
+                    reply = handler(message)
                     if reply:
-                        self.write(create_reply(reply, data=data))
+                        self.write(create_reply(reply, message=message))
                         return
                 logging.info("No handler replied.Ignore..")
         return WeChatHandler

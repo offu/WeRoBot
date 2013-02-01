@@ -13,10 +13,10 @@ class Article(object):
 
 class WeChatReply(object):
 
-    def __init__(self, data=None, star=False, **kwargs):
-        if isinstance(data, WeChatMessage):
-            kwargs["source"] = data.target
-            kwargs["target"] = data.source
+    def __init__(self, message=None, star=False, **kwargs):
+        if isinstance(message, WeChatMessage):
+            kwargs["source"] = message.target
+            kwargs["target"] = message.source
 
         assert 'source' in kwargs
         assert 'target' in kwargs
@@ -36,11 +36,11 @@ class WeChatReply(object):
 class TextReply(WeChatReply):
     TEMPLATE = u"""
     <xml>
-    <ToUserName><![CDATA[{target}]]></ToUserName>
-    <FromUserName><![CDATA[{source}]]></FromUserName>
+    <ToUserName><![Cmessage[{target}]]></ToUserName>
+    <FromUserName><![Cmessage[{source}]]></FromUserName>
     <CreateTime>{time}</CreateTime>
-    <MsgType><![CDATA[text]]></MsgType>
-    <Content><![CDATA[{content}]]></Content>
+    <MsgType><![Cmessage[text]]></MsgType>
+    <Content><![Cmessage[{content}]]></Content>
     <FuncFlag>{flag}</FuncFlag>
     </xml>
     """.format
@@ -52,11 +52,11 @@ class TextReply(WeChatReply):
 class ArticlesReply(WeChatReply):
     TEMPLATE = u"""
     <xml>
-    <ToUserName><![CDATA[{target}]]></ToUserName>
-    <FromUserName><![CDATA[{source}]]></FromUserName>
+    <ToUserName><![Cmessage[{target}]]></ToUserName>
+    <FromUserName><![Cmessage[{source}]]></FromUserName>
     <CreateTime>{time}</CreateTime>
-    <MsgType><![CDATA[news]]></MsgType>
-    <Content><![CDATA[{content}]]></Content>
+    <MsgType><![Cmessage[news]]></MsgType>
+    <Content><![Cmessage[{content}]]></Content>
     <ArticleCount>{count}</ArticleCount>
     <Articles>{items}</Articles>
     <FuncFlag>{flag}</FuncFlag>
@@ -65,10 +65,10 @@ class ArticlesReply(WeChatReply):
 
     ITEM_TEMPLATE = u"""
     <item>
-    <Title><![CDATA[{title}]]></Title>
-    <Description><![CDATA[{description}]]></Description>
-    <PicUrl><![CDATA[{img}]]></PicUrl>
-    <Url><![CDATA[{url}]]></Url>
+    <Title><![Cmessage[{title}]]></Title>
+    <Description><![Cmessage[{description}]]></Description>
+    <PicUrl><![Cmessage[{img}]]></PicUrl>
+    <Url><![Cmessage[{url}]]></Url>
     </item>
     """.format
 
@@ -97,9 +97,9 @@ class ArticlesReply(WeChatReply):
         return ArticlesReply.TEMPLATE(**self._args)
 
 
-def create_reply(reply, data=None):
+def create_reply(reply, message=None):
     if isinstance(reply, WeChatReply):
         return reply.render()
     if isinstance(reply, unicode):
-        reply = TextReply(data=data, content=reply)
+        reply = TextReply(message=message, content=reply)
         return reply.render()
