@@ -2,7 +2,6 @@ import sys
 import time
 import logging
 import random
-import string
 
 try:
     import curses
@@ -35,7 +34,9 @@ def generate_token(length=''):
     length = int(length)
     assert 3 <= length <= 32
     token = []
-    letters = string.letters + string.digits
+    letters = 'abcdefghijklmnopqrstuvwxyz' \
+              'ABCDEFGHIJKLMNOPQRSTUVWXYZ' \
+              '0123456789'
     for _ in range(length):
         token.append(random.choice(letters))
     return ''.join(token)

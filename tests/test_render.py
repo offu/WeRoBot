@@ -18,5 +18,4 @@ def test_text_render():
     </xml>
     """.strip().replace(" ", "").replace("\n", "")
     result = reply.render().strip().replace(" ", "").replace("\n", "")
-    assert isinstance(result, unicode)
     assert result == to_unicode(reply_message)
