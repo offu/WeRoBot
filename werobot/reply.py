@@ -1,4 +1,5 @@
 import time
+import logging
 from .messages import WeChatMessage
 
 
@@ -79,7 +80,11 @@ class ArticlesReply(WeChatReply):
     def add_article(self, article):
         if not isinstance(article, Article):
             raise TypeError
-        self._articles.append(article)
+        if len(self._articles) >= 10:
+            logging.warn("Can't add more than 10 articles"
+                         " in an ArticlesReply")
+        else:
+            self._articles.append(article)
 
     def render(self):
         items = []

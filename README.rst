@@ -1,7 +1,7 @@
 WeRoBot
 =======
 
-.. image:: https://secure.travis-ci.org/whtsky/WeRoBot.png?branch=master
+.. image:: https://travis-ci.org/whtsky/WeRoBot.png?branch=master
     :target: https://travis-ci.org/whtsky/WeRoBot
 
 
@@ -11,7 +11,7 @@ WeRoBot是一个微信机器人框架，采用MIT协议发布。
 Hello World
 ------------
 
-最简单的Hello World， 会给收到的每一条信息回复`Hello World` ::
+最简单的Hello World， 会给收到的每一条信息回复 `Hello World` ::
 
     import werobot
 
@@ -50,7 +50,7 @@ WeRoBot会将合法的请求发送给handlers依次执行。
 
 Messages
 ---------
-目前WeRoBot共有三种Message：`TextMessage`， `ImageMessage`和`LocationMessage`。他们都继承自WeChatMessage。
+目前WeRoBot共有三种Message：`TextMessage` ， `ImageMessage` 和 `LocationMessage` 。他们都继承自WeChatMessage。
 
 TextMessage的属性：
 
@@ -96,11 +96,69 @@ label      地理位置信息
 Replies
 --------------
 
-目前WeRoBot共有三种Reply：`TextReply`， `ArticlesReply`。WeChatReply。
+目前WeRoBot共有三种Reply： `TextReply` ， `ArticlesReply` 。他们都继承自 `WeChatReply` 。
 
-你可以在构建Reply时传入一个合法的`Message`类来自动生成`source`和`target`。
+`TextReply` 是简单的文本消息，构造函数的参数如下：
 
-若handler返回的是一个字符串，WeRoBot会自动将其转化成一个TextReply.
+========= ===================================
+name       value
+========= ===================================
+content    信息正文。
+target     信息的目标用户。通常是机器人用户。
+source     信息的来源用户。通常是发送信息的用户。
+time       信息发送的时间，一个UNIX时间戳。默认情况下会使用当前时间。
+flag       如果是True， WeRoBot会对这条消息进行星标。你可以在公众平台后台看到所有的星标消息。
+========= ===================================
+
+你可以在构建Reply时传入一个合法的 `Message` 类来自动生成 `source` 和 `target` ::
+
+    reply = TextReply(message=message, content='Hello!')
+
+如果你的handler返回了一个字符串， WeRoBot会自动将其转化为一个文本消息。
+
+`ArticlesReply` 是图文消息，构造函数的参数如下：
+
+========= ===================================
+name       value
+========= ===================================
+content    信息正文。**可为空**。
+target     信息的目标用户。通常是机器人用户。
+source     信息的来源用户。通常是发送信息的用户。
+time       信息发送的时间，一个UNIX时间戳。默认情况下会使用当前时间。
+flag       如果是True， WeRoBot会对这条消息进行星标。你可以在公众平台后台看到所有的星标消息。
+========= ===================================
+
+你需要给 `ArticlesReply` 添加 `Article` 来增加图文。
+`Article` 类位于 `werobot.reply.Article` 。
+
+`Article` 的构造函数的参数如下：
+
+
+============ ===================================
+name          value
+============ ===================================
+title         标题
+description   描述
+img           图片链接
+url           点击图片后跳转链接
+============ ===================================
+
+注意，微信公众平台对图片链接有特殊的要求，详情可以在
+`消息接口使用指南 <http://mp.weixin.qq.com/cgi-bin/readtemplate?t=wxm-callbackapi-doc&lang=zh_CN>`_ 里看到。
+
+在构造完一个 `Article` 后， 你需要通过 `ArticlesReply` 的 `add_article` 参数把它添加进去。就像这样： ::
+
+    from werobot.reply import ArticlesReply, Article
+    reply = ArticlesReply(message=message)
+    article = Article(
+        title="WeRoBot",
+        desription="WeRoBot是一个微信机器人框架",
+        img="https://github.com/apple-touch-icon-144.png",
+        url="https://github.com/whtsky/WeRoBot"
+    )
+    reply.add_article(article)
+
+注意，每个ArticlesReply中 **最多添加10个Article** 。
 
 不知道该用什么Token?
 ----------------------
@@ -125,4 +183,5 @@ WeRoBot欢迎每个人贡献代码。
 Buy me a cup of coffee :)
 
 Via Alipay（支付宝） ::
+
     "whtsky#gmail.com".replace("#", "@")

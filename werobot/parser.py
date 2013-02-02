@@ -2,9 +2,9 @@ from xml.etree import ElementTree
 from tornado.util import ObjectDict
 from .messages import TextMessage, ImageMessage, LocationMessage
 
-MSG_TYPE_TEXT = u'text'
-MSG_TYPE_LOCATION = u'location'
-MSG_TYPE_IMAGE = u'image'
+MSG_TYPE_TEXT = 'text'
+MSG_TYPE_LOCATION = 'location'
+MSG_TYPE_IMAGE = 'image'
 
 
 def decode(s):
