@@ -6,7 +6,7 @@ python:
   - pypy
 
 install:
-  pip install tornado
-  python setup.py install
+  - "pip install tornado"
+  - "python setup.py install"
 
 script: nosetests
