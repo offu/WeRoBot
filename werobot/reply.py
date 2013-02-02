@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*-
 import time
 import logging
 from .messages import WeChatMessage
+from .utils import to_unicode
 
 
 class Article(object):
@@ -35,7 +37,7 @@ class WeChatReply(object):
 
 
 class TextReply(WeChatReply):
-    TEMPLATE = u"""
+    TEMPLATE = to_unicode("""
     <xml>
     <ToUserName><![Cmessage[{target}]]></ToUserName>
     <FromUserName><![Cmessage[{source}]]></FromUserName>
@@ -44,14 +46,14 @@ class TextReply(WeChatReply):
     <Content><![Cmessage[{content}]]></Content>
     <FuncFlag>{flag}</FuncFlag>
     </xml>
-    """.format
+    """)
 
     def render(self):
-        return TextReply.TEMPLATE(**self._args)
+        return TextReply.TEMPLATE.format(**self._args)
 
 
 class ArticlesReply(WeChatReply):
-    TEMPLATE = u"""
+    TEMPLATE = to_unicode("""
     <xml>
     <ToUserName><![Cmessage[{target}]]></ToUserName>
     <FromUserName><![Cmessage[{source}]]></FromUserName>
@@ -62,16 +64,16 @@ class ArticlesReply(WeChatReply):
     <Articles>{items}</Articles>
     <FuncFlag>{flag}</FuncFlag>
     </xml>
-    """.format
+    """)
 
-    ITEM_TEMPLATE = u"""
+    ITEM_TEMPLATE = to_unicode("""
     <item>
     <Title><![Cmessage[{title}]]></Title>
     <Description><![Cmessage[{description}]]></Description>
     <PicUrl><![Cmessage[{img}]]></PicUrl>
     <Url><![Cmessage[{url}]]></Url>
     </item>
-    """.format
+    """)
 
     def __init__(self, **kwargs):
         super(ArticlesReply, self).__init__(**kwargs)
@@ -89,7 +91,7 @@ class ArticlesReply(WeChatReply):
     def render(self):
         items = []
         for article in self._articles:
-            items.append(ArticlesReply.ITEM_TEMPLATE(
+            items.append(ArticlesReply.ITEM_TEMPLATE.format(
                 title=article.title,
                 description=article.description,
                 img=article.img,
@@ -99,12 +101,13 @@ class ArticlesReply(WeChatReply):
         self._args["count"] = len(items)
         if "content" not in self._args:
             self._args["content"] = ''
-        return ArticlesReply.TEMPLATE(**self._args)
+        return ArticlesReply.TEMPLATE.format(**self._args)
 
 
 def create_reply(reply, message=None):
     if isinstance(reply, WeChatReply):
         return reply.render()
-    if isinstance(reply, unicode):
+    if isinstance(reply, basestring):
+        message = to_unicode(message)
         reply = TextReply(message=message, content=reply)
         return reply.render()

@@ -164,9 +164,9 @@ url           点击图片后跳转链接
 ----------------------
 WeRoBot帮你准备了一个Token生成器： ::
 
-    import werobot.util
+    import werobot.utils
 
-    print(werobot.util.generate_token())
+    print(werobot.utils.generate_token())
 
 
 贡献代码

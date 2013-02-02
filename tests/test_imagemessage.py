@@ -1,10 +1,10 @@
 import werobot
-import werobot.util
+import werobot.utils
 import werobot.test
 
 
 def test_echo():
-    robot = werobot.WeRoBot(token=werobot.util.generate_token())
+    robot = werobot.WeRoBot(token=werobot.utils.generate_token())
 
     @robot.handler
     def echo(message):

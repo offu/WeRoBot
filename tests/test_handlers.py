@@ -1,10 +1,10 @@
 import werobot
-import werobot.util
+import werobot.utils
 import werobot.test
 
 
 def test_one():
-    robot = werobot.WeRoBot(token=werobot.util.generate_token())
+    robot = werobot.WeRoBot(token=werobot.utils.generate_token())
 
     @robot.handler
     def first(message):
@@ -20,7 +20,7 @@ def test_one():
 
 
 def test_two():
-    robot = werobot.WeRoBot(token=werobot.util.generate_token())
+    robot = werobot.WeRoBot(token=werobot.utils.generate_token())
 
     @robot.handler
     def first(message):
@@ -39,7 +39,7 @@ def test_two():
 
 
 def test_three():
-    robot = werobot.WeRoBot(token=werobot.util.generate_token())
+    robot = werobot.WeRoBot(token=werobot.utils.generate_token())
 
     @robot.handler
     def first(message):

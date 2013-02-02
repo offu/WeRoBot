@@ -7,7 +7,7 @@ import tornado.httpserver
 
 from .parser import parse_user_msg
 from .reply import create_reply
-from .util import enable_pretty_logging
+from .utils import enable_pretty_logging
 
 
 class WeRoBot(object):
