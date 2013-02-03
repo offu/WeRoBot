@@ -1,7 +1,7 @@
 from xml.etree import ElementTree
 from tornado.util import ObjectDict
 
-from .messages import TextMessage, ImageMessage, LocationMessage
+from .messages import TextMessage, ImageMessage, LocationMessage, UnknownMessage
 from .utils import to_unicode
 
 MSG_TYPE_TEXT = 'text'
@@ -34,3 +34,5 @@ def parse_user_msg(xml):
     elif msg_type == MSG_TYPE_IMAGE:
         msg.img = to_unicode(parser.find('PicUrl').text)
         return ImageMessage(**msg)
+    else:
+        return UnknownMessage(xml)
