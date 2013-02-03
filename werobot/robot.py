@@ -56,7 +56,7 @@ class WeRoBot(object):
                 return abort('403')
 
             body = request.body
-            message = parse_user_msg(body)
+            message = parse_user_msg(body).read()
             for handler in self._handlers:
                 reply = handler(message)
                 if reply:
