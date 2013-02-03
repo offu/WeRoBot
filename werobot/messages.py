@@ -30,3 +30,9 @@ class LocationMessage(WeChatMessage):
         self.location = (location_x, location_y)
         self.scale = scale
         self.label = label
+
+
+class UnknownMessage(WeChatMessage):
+    def __init__(self, content):
+        self.type = 'unknown'
+        self.content = content

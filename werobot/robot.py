@@ -1,18 +1,20 @@
 import inspect
-import hashlib
 import logging
-import tornado.web
-import tornado.ioloop
-import tornado.httpserver
+
+from bottle import Bottle, request, response, abort
 
 from .parser import parse_user_msg
 from .reply import create_reply
-from .utils import enable_pretty_logging
+from .utils import enable_pretty_logging, check_token, check_signature
+
+__all__ = ['WeRoBot']
 
 
 class WeRoBot(object):
-    def __init__(self, token=''):
+    def __init__(self, token):
         self._handlers = []
+        if not check_token(token):
+            raise AttributeError('%s is not a vaild token.' % token)
         self.token = token
 
     def handler(self, func):
@@ -30,46 +32,40 @@ class WeRoBot(object):
             raise TypeError
         self._handlers.append(func)
 
-    def _create_handler(robot):
-        class WeChatHandler(tornado.web.RequestHandler):
-            def prepare(self):
-                signature = self.get_argument('signature', '')
+    @property
+    def app(self):
+        if not self._handlers:
+            raise
+        app = Bottle()
 
-                timestamp = self.get_argument('timestamp', '')
-                nonce = self.get_argument('nonce', '')
+        @app.get('/')
+        def echo():
+            if not check_signature(self.token,
+                request.query.timestamp,
+                request.query.nonce,
+                request.query.signature):
+                return abort('403')
+            return request.query.echostr
 
-                sign = [robot.token, timestamp, nonce]
-                sign.sort()
-                sign = ''.join(sign)
-                sign = hashlib.sha1(sign).hexdigest()
+        @app.post('/')
+        def handle():
+            if not check_signature(self.token,
+                request.query.timestamp,
+                request.query.nonce,
+                request.query.signature):
+                return abort('403')
 
-                if sign != signature:
-                    logging.warn("Signature check failed.")
-                    self.finish()
+            body = request.body.read()
+            message = parse_user_msg(body)
+            for handler in self._handlers:
+                reply = handler(message)
+                if reply:
+                    response.content_type = 'application/xml;charset=utf-8'
+                    return create_reply(reply, message=message)
+            return '.'
 
-            def get(self):
-                echostr = self.get_argument('echostr', '')
-                self.write(echostr)
-
-            def post(self):
-                body = self.request.body
-                message = parse_user_msg(body)
-                self.set_header("Content-Type",
-                    "application/xml;charset=utf-8")
-                for handler in robot._handlers:
-                    reply = handler(message)
-                    if reply:
-                        self.write(create_reply(reply, message=message))
-                        return
-                logging.info("No handler replied.Ignore..")
-        return WeChatHandler
+        return app
 
     def run(self, port=8888):
-        WechatHandler = self._create_handler()
         enable_pretty_logging()
-        app = tornado.web.Application([
-            ('/', WechatHandler),
-            ])
-        server = tornado.httpserver.HTTPServer(app, xheaders=True)
-        server.listen(int(port))
-        tornado.ioloop.IOLoop.instance().start()
+        self.app.run(server='auto', host='0.0.0.0', port=port)

@@ -1,8 +1,16 @@
 # -*- coding: utf-8 -*-
+import sys
 import time
 import logging
 from .messages import WeChatMessage
 from .utils import to_unicode
+
+
+py   = sys.version_info
+py3k = py >= (3,0,0)
+
+if py3k:
+    basestring = str
 
 
 class Article(object):
@@ -39,11 +47,11 @@ class WeChatReply(object):
 class TextReply(WeChatReply):
     TEMPLATE = to_unicode("""
     <xml>
-    <ToUserName><![Cmessage[{target}]]></ToUserName>
-    <FromUserName><![Cmessage[{source}]]></FromUserName>
+    <ToUserName><![CDATA[{target}]]></ToUserName>
+    <FromUserName><![CDATA[{source}]]></FromUserName>
     <CreateTime>{time}</CreateTime>
-    <MsgType><![Cmessage[text]]></MsgType>
-    <Content><![Cmessage[{content}]]></Content>
+    <MsgType><![CDATA[text]]></MsgType>
+    <Content><![CDATA[{content}]]></Content>
     <FuncFlag>{flag}</FuncFlag>
     </xml>
     """)
@@ -55,11 +63,11 @@ class TextReply(WeChatReply):
 class ArticlesReply(WeChatReply):
     TEMPLATE = to_unicode("""
     <xml>
-    <ToUserName><![Cmessage[{target}]]></ToUserName>
-    <FromUserName><![Cmessage[{source}]]></FromUserName>
+    <ToUserName><![CDATA[{target}]]></ToUserName>
+    <FromUserName><![CDATA[{source}]]></FromUserName>
     <CreateTime>{time}</CreateTime>
-    <MsgType><![Cmessage[news]]></MsgType>
-    <Content><![Cmessage[{content}]]></Content>
+    <MsgType><![CDATA[news]]></MsgType>
+    <Content><![CDATA[{content}]]></Content>
     <ArticleCount>{count}</ArticleCount>
     <Articles>{items}</Articles>
     <FuncFlag>{flag}</FuncFlag>
@@ -68,10 +76,10 @@ class ArticlesReply(WeChatReply):
 
     ITEM_TEMPLATE = to_unicode("""
     <item>
-    <Title><![Cmessage[{title}]]></Title>
-    <Description><![Cmessage[{description}]]></Description>
-    <PicUrl><![Cmessage[{img}]]></PicUrl>
-    <Url><![Cmessage[{url}]]></Url>
+    <Title><![CDATA[{title}]]></Title>
+    <Description><![CDATA[{description}]]></Description>
+    <PicUrl><![CDATA[{img}]]></PicUrl>
+    <Url><![CDATA[{url}]]></Url>
     </item>
     """)
 
