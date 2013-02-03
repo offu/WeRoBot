@@ -55,8 +55,8 @@ class WeRoBot(object):
                 request.query.signature):
                 return abort('403')
 
-            body = request.body
-            message = parse_user_msg(body).read()
+            body = request.body.read()
+            message = parse_user_msg(body)
             for handler in self._handlers:
                 reply = handler(message)
                 if reply:
