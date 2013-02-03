@@ -21,7 +21,7 @@ setup(
     description='WeRoBot: a robot framework for wechat',
     long_description=open('README.rst').read(),
     install_requires=[
-        'tornado'
+        'bottle'
     ],
     include_package_data=True,
     license='MIT License',
