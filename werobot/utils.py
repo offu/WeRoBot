@@ -1,4 +1,5 @@
 import sys
+import re
 import time
 import logging
 import random
@@ -14,6 +15,10 @@ py3k = py >= (3,0,0)
 if py3k:
     basestring = str
     unicode = str
+
+
+def check_token(token):
+    return re.match('^[A-Za-z0-9]{3,32}$', token)
 
 
 def to_unicode(value):

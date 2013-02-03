@@ -7,12 +7,14 @@ import tornado.httpserver
 
 from .parser import parse_user_msg
 from .reply import create_reply
-from .utils import enable_pretty_logging
+from .utils import enable_pretty_logging, check_token
 
 
 class WeRoBot(object):
-    def __init__(self, token=''):
+    def __init__(self, token):
         self._handlers = []
+        if not check_token(token):
+            raise AttributeError('%s is not a vaild token.' % token)
         self.token = token
 
     def handler(self, func):
@@ -30,7 +32,8 @@ class WeRoBot(object):
             raise TypeError
         self._handlers.append(func)
 
-    def _create_handler(robot):
+    def _create_handler(self):
+        robot = self
         class WeChatHandler(tornado.web.RequestHandler):
             def prepare(self):
                 signature = self.get_argument('signature', '')
@@ -48,8 +51,8 @@ class WeRoBot(object):
                     self.finish()
 
             def get(self):
-                echostr = self.get_argument('echostr', '')
-                self.write(echostr)
+                s = self.get_argument('echostr', '')
+                self.write(s)
 
             def post(self):
                 body = self.request.body
