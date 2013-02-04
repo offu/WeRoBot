@@ -19,7 +19,7 @@ setup(
     url='https://github.com/whtsky/WeRoBot',
     packages=find_packages(),
     description='WeRoBot: a robot framework for wechat',
-    long_description=open('README.rst').read(),
+    long_description=open('docs/index.rst').read(),
     install_requires=[
         'bottle'
     ],

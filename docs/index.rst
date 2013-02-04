@@ -1,9 +1,6 @@
 WeRoBot
 =======
 
-.. image:: https://travis-ci.org/whtsky/WeRoBot.png?branch=master
-    :target: https://travis-ci.org/whtsky/WeRoBot
-
 
 WeRoBot是一个微信机器人框架，采用MIT协议发布。
 
@@ -50,7 +47,7 @@ WeRoBot会将合法的请求发送给handlers依次执行。
 
 Messages
 ---------
-目前WeRoBot共有三种Message：`TextMessage` ， `ImageMessage` 和 `LocationMessage` 。他们都继承自WeChatMessage。
+目前WeRoBot共有四种Message：`TextMessage` ， `ImageMessage` ， `LocationMessage` 和 `UnknownMessage` 。他们都继承自 WeChatMessage 。
 
 TextMessage的属性：
 
@@ -58,12 +55,14 @@ TextMessage的属性：
 ======== ===================================
 name      value
 ======== ===================================
-type      'text'
+type      'text' 或 'hello' [1]_
 target    信息的目标用户。通常是机器人用户。
 source    信息的来源用户。通常是发送信息的用户。
 time      信息发送的时间，一个UNIX时间戳。
-content   信息的主题内容
+content   信息的内容
 ======== ===================================
+
+.. [1] 当有用户关注你的时候，你会收到一条来自该用户的、内容为 `Hello2BizUser` 的 TextMessage 。WeRoBot 会将其的type设为 `hello` 。
 
 ImageMessage的属性：
 
@@ -91,7 +90,16 @@ scale      地图缩放大小
 label      地理位置信息
 ========= ===================================
 
+UnknownMessage：
 
+========= ===================================
+name       value
+========= ===================================
+type       'unknown'
+content    请求的正文部分。标准的XML格式。
+========= ===================================
+
+.. note:: 如果你不为 WeRoBot 贡献代码，你完全可以无视掉 UnknownMessage 。
 
 Replies
 --------------
@@ -158,7 +166,7 @@ url           点击图片后跳转链接
     )
     reply.add_article(article)
 
-注意，每个ArticlesReply中 **最多添加10个Article** 。
+.. note:: 每个ArticlesReply中 **最多添加10个Article** 。
 
 不知道该用什么Token?
 ----------------------
