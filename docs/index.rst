@@ -105,7 +105,9 @@ content    请求的正文部分。标准的XML格式。
 --------------
 WeRoBot 一共有4类 Message ， 5种 type 。显然，一个 handler 不可能把这五种 type 都支持全。
 
-幸运的是， WeRoBot 可以帮你过滤收到的消息。只想处理关注的消息？没问题。 ::
+幸运的是， WeRoBot 可以帮你过滤收到的消息。
+
+只想处理被新用户关注的消息？::
 
     import werobot
 
@@ -117,7 +119,7 @@ WeRoBot 一共有4类 Message ， 5种 type 。显然，一个 handler 不可能
 
     robot.run()
 
-或者，你的 handler 只能处理文本？也可以。 ::
+或者，你的 handler 只能处理文本？ ::
 
     import werobot
 
@@ -132,7 +134,21 @@ WeRoBot 一共有4类 Message ， 5种 type 。显然，一个 handler 不可能
 你也可以使用 `robot.image` 修饰符来只接受图像信息； `robot.location` 修饰符来只接受位置信息。
 当然，还有 `robot.unknown` —— 如果你想收到未知属性的信息的话。
 
-额，这个 handler 想处理文本信息和地理位置信息？没问题： ::
+额，这个 handler 想处理文本信息和地理位置信息？ ::
+
+    import werobot
+
+    robot = werobot.WeRoBot(token='tokenhere')
+
+    @robot.text
+    @robot.location
+    def handler(message):
+        # Do what you love to do
+        pass
+
+    robot.run()
+
+当然，你也可以用 `add_handler` 函数添加handler，就像这样::
 
     import werobot
 
