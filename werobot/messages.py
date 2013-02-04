@@ -9,6 +9,8 @@ class TextMessage(WeChatMessage):
         self.source = fromuser
         self.time = int(time)
         self.content = content
+        if content == 'Hello2BizUser':
+            self.type = 'hello'
 
 
 class ImageMessage(WeChatMessage):

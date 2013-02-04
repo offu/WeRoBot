@@ -36,3 +36,6 @@ nosetests.xml
 
 .DS_Store
 .idea
+
+#Sphinx
+docs/_
