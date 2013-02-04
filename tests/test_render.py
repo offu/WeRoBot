@@ -24,4 +24,19 @@ def test_text_render():
 def test_create_reply():
     message = werobot.test.make_text_message('test')
     reply = werobot.reply.create_reply('hi', message)
+    assert reply
+    reply = werobot.reply.create_reply([
+        [
+            "title",
+            "description",
+            "img",
+            "url"
+        ],
+        [
+            "whtsky",
+            "I wrote WeRoBot",
+            "https://secure.gravatar.com/avatar/0024710771815ef9b74881ab21ba4173?s=420",
+            "http://whouz.com/"
+        ]
+    ], message)
     assert reply  # Just make sure that func works.

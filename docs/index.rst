@@ -101,6 +101,69 @@ content    请求的正文部分。标准的XML格式。
 
 .. note:: 如果你不为 WeRoBot 贡献代码，你完全可以无视掉 UnknownMessage 。
 
+类型过滤
+--------------
+WeRoBot 一共有4类 Message ， 5种 type 。显然，一个 handler 不可能把这五种 type 都支持全。
+
+幸运的是， WeRoBot 可以帮你过滤收到的消息。
+
+只想处理被新用户关注的消息？::
+
+    import werobot
+
+    robot = werobot.WeRoBot(token='tokenhere')
+
+    @robot.hello
+    def hello(message):
+        return 'Hello My Friend!'
+
+    robot.run()
+
+或者，你的 handler 只能处理文本？ ::
+
+    import werobot
+
+    robot = werobot.WeRoBot(token='tokenhere')
+
+    @robot.text
+    def echo(message):
+        return message.content
+
+    robot.run()
+
+你也可以使用 `robot.image` 修饰符来只接受图像信息； `robot.location` 修饰符来只接受位置信息。
+当然，还有 `robot.unknown` —— 如果你想收到未知属性的信息的话。
+
+额，这个 handler 想处理文本信息和地理位置信息？ ::
+
+    import werobot
+
+    robot = werobot.WeRoBot(token='tokenhere')
+
+    @robot.text
+    @robot.location
+    def handler(message):
+        # Do what you love to do
+        pass
+
+    robot.run()
+
+当然，你也可以用 `add_handler` 函数添加handler，就像这样::
+
+    import werobot
+
+    robot = werobot.WeRoBot(token='tokenhere')
+
+    def handler(message):
+        # Do what you love to do
+        pass
+
+    robot.add_handler(handler, types=['text', 'location'])
+
+    robot.run()
+
+.. note:: 通过 `robot.handler` 添加的 handler 将收到所有信息。
+
 Replies
 --------------
 
@@ -122,7 +185,7 @@ flag       如果是True， WeRoBot会对这条消息进行星标。你可以在
 
     reply = TextReply(message=message, content='Hello!')
 
-如果你的handler返回了一个字符串， WeRoBot会自动将其转化为一个文本消息。
+.. note:: 如果你的handler返回了一个字符串， WeRoBot会自动将其转化为一个文本消息。
 
 `ArticlesReply` 是图文消息，构造函数的参数如下：
 
@@ -140,7 +203,6 @@ flag       如果是True， WeRoBot会对这条消息进行星标。你可以在
 `Article` 类位于 `werobot.reply.Article` 。
 
 `Article` 的构造函数的参数如下：
-
 
 ============ ===================================
 name          value
@@ -167,6 +229,33 @@ url           点击图片后跳转链接
     reply.add_article(article)
 
 .. note:: 每个ArticlesReply中 **最多添加10个Article** 。
+
+你也可以让你的 handler 返回一个列表， 里面每一个元素都是一个长度为四的列表或数组，
+ WeRoBot 会将其自动转为 ArticlesReply 。就像这样： ::
+
+    import werobot
+
+    robot = werobot.WeRoBot(token='tokenhere')
+
+    @robot.text
+    def articles(message):
+        return [
+            [
+                "title",
+                "description",
+                "img",
+                "url"
+            ],
+            [
+                "whtsky",
+                "I wrote WeRoBot",
+                "https://secure.gravatar.com/avatar/0024710771815ef9b74881ab21ba4173?s=420",
+                "http://whouz.com/"
+            ]
+        ]
+
+    robot.run()
+
 
 不知道该用什么Token?
 ----------------------

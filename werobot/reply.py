@@ -86,7 +86,7 @@ class ArticlesReply(WeChatReply):
         if not isinstance(article, Article):
             raise TypeError
         if len(self._articles) >= 10:
-            logging.warn("Can't add more than 10 articles"
+            raise AttributeError("Can't add more than 10 articles"
                          " in an ArticlesReply")
         else:
             self._articles.append(article)
@@ -114,3 +114,12 @@ def create_reply(reply, message=None):
         message = to_unicode(message)
         reply = TextReply(message=message, content=reply)
         return reply.render()
+    if isinstance(reply, list) and all([len(x) == 4 for x in reply]):
+        if len(reply) > 10:
+            raise AttributeError("Can't add more than 10 articles"
+                                 " in an ArticlesReply")
+        r = ArticlesReply(message=message)
+        for article in reply:
+            article = Article(*article)
+            r.add_article(article)
+        return r.render()
