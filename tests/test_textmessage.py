@@ -12,5 +12,4 @@ def test_echo():
 
     tester = werobot.test.WeTest(robot)
     message = werobot.test.make_text_message('test')
-    print tester.send(message)
     assert tester.send(message) == 'test'
