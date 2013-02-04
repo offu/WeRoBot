@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
-import sys
 import time
 import logging
 from .messages import WeChatMessage
-from .utils import to_unicode
-
-
-py   = sys.version_info
-py3k = py >= (3,0,0)
+from .utils import py3k, to_unicode
 
 if py3k:
     basestring = str

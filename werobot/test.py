@@ -13,10 +13,7 @@ class WeTest(object):
     def send(self, message):
         if not isinstance(message, WeChatMessage):
             raise TypeError
-        for handler in self._app._handlers:
-            reply = handler(message)
-            if reply:
-                return reply
+        return self._app._get_reply(message)
 
 
 def make_text_message(content):

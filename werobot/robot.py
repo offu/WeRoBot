@@ -1,5 +1,4 @@
 import inspect
-import logging
 
 from bottle import Bottle, request, response, abort
 
@@ -12,25 +11,69 @@ __all__ = ['WeRoBot']
 
 class WeRoBot(object):
     def __init__(self, token):
-        self._handlers = []
+        self._handlers = {
+            "hello": [],
+            "text": [],
+            "image": [],
+            "location": [],
+            "unknown": []
+        }
         if not check_token(token):
             raise AttributeError('%s is not a vaild token.' % token)
         self.token = token
 
-    def handler(self, func):
+    def handler(self, f):
         """
         Decorator to add a new handler to the robot.
         """
-        self._handlers.append(func)
-        return func
+        self.add_handler(f, types=[])
+        return f
 
-    def add_handler(self, func):
+    def hello(self, f):
+        """
+        Decorator to add a new handler to the robot.
+        """
+        self.add_handler(f, types=['hello'])
+        return f
+
+    def text(self, f):
+        """
+        Decorator to add a new handler to the robot.
+        """
+        self.add_handler(f, types=['text'])
+        return f
+
+    def image(self, f):
+        """
+        Decorator to add a new handler to the robot.
+        """
+        self.add_handler(f, types=['image'])
+        return f
+
+    def location(self, f):
+        """
+        Decorator to add a new handler to the robot.
+        """
+        self.add_handler(f, types=['location'])
+        return f
+
+    def unknown(self, f):
+        """
+        Decorator to add a new handler to the robot.
+        """
+        self.add_handler(f, types=['unknown'])
+        return f
+
+    def add_handler(self, func, types=None):
         """
         Add a new handler to the robot.
         """
+        if not types:
+            types = self._handlers.keys()
         if not inspect.isfunction(func):
             raise TypeError
-        self._handlers.append(func)
+        for type in types:
+            self._handlers[type].append(func)
 
     @property
     def app(self):
@@ -57,14 +100,19 @@ class WeRoBot(object):
 
             body = request.body.read()
             message = parse_user_msg(body)
-            for handler in self._handlers:
-                reply = handler(message)
-                if reply:
-                    response.content_type = 'application/xml;charset=utf-8'
-                    return create_reply(reply, message=message)
-            return '.'
+            reply = self._get_reply(message)
+            if not reply:
+                return '.'
+            response.content_type = 'application/xml'
+            return create_reply(reply, message=message)
 
         return app
+
+    def _get_reply(self, message):
+        for handler in self._handlers[message.type]:
+            reply = handler(message)
+            if reply:
+                return reply
 
     def run(self, port=8888):
         enable_pretty_logging()

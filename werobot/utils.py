@@ -10,8 +10,8 @@ try:
 except ImportError:
     curses = None
 
-py   = sys.version_info
-py3k = py >= (3,0,0)
+py = sys.version_info
+py3k = py >= (3, 0, 0)
 
 if py3k:
     basestring = str

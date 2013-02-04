@@ -4,7 +4,8 @@
 
 
 WeRoBot 是一个微信机器人框架，采用MIT协议发布。
-文档在这里：
+
+文档在这里：https://werobot.readthedocs.org/en/latest/
 
 ##安装
 ```bash

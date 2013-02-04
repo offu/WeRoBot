@@ -1,6 +1,7 @@
 from xml.etree import ElementTree
 
-from .messages import TextMessage, ImageMessage, LocationMessage, UnknownMessage
+from .messages import TextMessage, ImageMessage, LocationMessage,\
+    UnknownMessage
 from .utils import to_unicode
 
 MSG_TYPE_TEXT = 'text'
