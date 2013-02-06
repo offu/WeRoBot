@@ -107,14 +107,35 @@ class ArticlesReply(WeChatReply):
         return ArticlesReply.TEMPLATE.format(**self._args)
 
 
+class MusicReply(WeChatReply):
+    TEMPLATE = to_unicode("""
+    <xml>
+    <ToUserName><![CDATA[{target}]]></ToUserName>
+    <FromUserName><![CDATA[{source}]]></FromUserName>
+    <CreateTime>{time}</CreateTime>
+    <MsgType><![CDATA[music]]></MsgType>
+    <Music>
+    <Title><![CDATA[{title}]]></Title>
+    <Description><![CDATA[{description}]]></Description>
+    <MusicUrl><![CDATA[{url}]]></MusicUrl>
+    <HQMusicUrl><![CDATA[{hq_url}]]></HQMusicUrl>
+    </Music>
+    <FuncFlag>{flag}</FuncFlag>
+    </xml>
+    """)
+
+    def render(self):
+        return MusicReply.TEMPLATE.format(**self._args)
+
+
 def create_reply(reply, message=None):
     if isinstance(reply, WeChatReply):
         return reply.render()
-    if isinstance(reply, basestring):
+    elif isinstance(reply, basestring):
         message = to_unicode(message)
         reply = TextReply(message=message, content=reply)
         return reply.render()
-    if isinstance(reply, list) and all([len(x) == 4 for x in reply]):
+    elif isinstance(reply, list) and all([len(x) == 4 for x in reply]):
         if len(reply) > 10:
             raise AttributeError("Can't add more than 10 articles"
                                  " in an ArticlesReply")
@@ -123,3 +144,16 @@ def create_reply(reply, message=None):
             article = Article(*article)
             r.add_article(article)
         return r.render()
+    elif isinstance(reply, list) and 3 <= len(reply) <= 4:
+        if len(reply) == 3:
+            # 如果数组长度为3， 那么高质量音乐链接的网址和普通质量的网址相同。
+            reply.append(reply[-1])
+        title, description, url, hq_url = reply
+        reply = MusicReply(
+            message=message,
+            title=to_unicode(title),
+            description=to_unicode(description),
+            url=to_unicode(url),
+            hq_url=to_unicode(hq_url)
+        )
+        return reply.render()

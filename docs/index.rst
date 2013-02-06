@@ -167,7 +167,7 @@ WeRoBot 一共有4类 Message ， 5种 type 。显然，一个 handler 不可能
 Replies
 --------------
 
-目前WeRoBot共有三种Reply： `TextReply` ， `ArticlesReply` 。他们都继承自 `WeChatReply` 。
+目前WeRoBot共有三种Reply： `TextReply` ， `ArticlesReply` 和 `MusicReply` 。他们都继承自 `WeChatReply` 。
 
 `TextReply` 是简单的文本消息，构造函数的参数如下：
 
@@ -181,7 +181,7 @@ time       信息发送的时间，一个UNIX时间戳。默认情况下会使�
 flag       如果是True， WeRoBot会对这条消息进行星标。你可以在公众平台后台看到所有的星标消息。
 ========= ===================================
 
-你可以在构建Reply时传入一个合法的 `Message` 类来自动生成 `source` 和 `target` ::
+你可以在构建Reply时传入一个合法的 `Message` 对象来自动生成 `source` 和 `target` ::
 
     reply = TextReply(message=message, content='Hello!')
 
@@ -230,7 +230,7 @@ url           点击图片后跳转链接
 
 .. note:: 每个ArticlesReply中 **最多添加10个Article** 。
 
-你也可以让你的 handler 返回一个列表， 里面每一个元素都是一个长度为四的列表或数组，
+你也可以让你的 handler 返回一个列表， 里面每一个元素都是一个长度为四的列表，
  WeRoBot 会将其自动转为 ArticlesReply 。就像这样： ::
 
     import werobot
@@ -256,6 +256,50 @@ url           点击图片后跳转链接
 
     robot.run()
 
+
+`MusicReply` 是音乐消息，构造函数的参数如下：
+
+=========    ===================================
+name          value
+=========    ===================================
+target        信息的目标用户。通常是机器人用户。
+source        信息的来源用户。通常是发送信息的用户。
+time          信息发送的时间，一个UNIX时间戳。默认情况下会使用当前时间。
+title         标题
+description   描述
+url           音乐链接
+hq_url        高质量音乐链接，WIFI环境优先使用该链接播放音乐。可为空 [2]_
+flag          如果是True， WeRoBot会对这条消息进行星标。你可以在公众平台后台看到所有的星标消息。
+=========    ===================================
+
+你也可以让你的 handler 返回一个长度为三或四的列表， [2]_
+ WeRoBot 会将其自动转为 MusicReply 。就像这样： ::
+
+    import werobot
+
+    robot = werobot.WeRoBot(token='tokenhere')
+
+    @robot.text
+    def music(message):
+        return [
+            "title",
+            "description",
+            "music_url",
+            "hq_music_url"
+            ]
+
+    @robot.text
+    def music2(message):
+        return [
+            "微信你不懂爱",
+            "龚琳娜最新力作",
+            "http://weixin.com/budongai.mp3",
+            ]
+
+    robot.run()
+
+
+.. [2] 如果你省略了高质量音乐链接的地址， WeRoBot 会自动将音乐链接的地址用于高质量音乐链接。
 
 不知道该用什么Token?
 ----------------------
