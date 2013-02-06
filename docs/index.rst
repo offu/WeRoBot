@@ -47,7 +47,7 @@ WeRoBot会将合法的请求发送给handlers依次执行。
 
 Messages
 ---------
-目前WeRoBot共有四种Message：`TextMessage` ， `ImageMessage` ， `LocationMessage` 和 `UnknownMessage` 。他们都继承自 WeChatMessage 。
+目前WeRoBot共有五种Message：`TextMessage` ， `ImageMessage` ， `LocationMessage` ， `EventMessage` 和 `UnknownMessage` 。他们都继承自 WeChatMessage 。
 
 TextMessage的属性：
 
@@ -61,8 +61,6 @@ source    信息的来源用户。通常是发送信息的用户。
 time      信息发送的时间，一个UNIX时间戳。
 content   信息的内容
 ======== ===================================
-
-.. [1] 当有用户关注你的时候，你会收到一条来自该用户的、内容为 `Hello2BizUser` 的 TextMessage 。WeRoBot 会将其的type设为 `hello` 。
 
 ImageMessage的属性：
 
@@ -85,9 +83,22 @@ type       'location'
 target     信息的目标用户。通常是机器人用户。
 source     信息的来源用户。通常是发送信息的用户。
 time       信息发送的时间，一个UNIX时间戳。
-location   一个元组。(纬度,    经度)
+location   一个元组。(纬度, 经度)
 scale      地图缩放大小
 label      地理位置信息
+========= ===================================
+
+EventMessage：
+
+========= ===================================
+name       value
+========= ===================================
+type       'enter' 或 'location' [2]_
+target     信息的目标用户。通常是机器人用户。
+source     信息的来源用户。通常是发送信息的用户。
+time       信息发送的时间，一个UNIX时间戳。
+location   一个元组。(纬度, 经度)。 type 为 'location' 时存在。
+precision  地理位置精度。 type 为 'location' 时存在。
 ========= ===================================
 
 UnknownMessage：
@@ -100,6 +111,9 @@ content    请求的正文部分。标准的XML格式。
 ========= ===================================
 
 .. note:: 如果你不为 WeRoBot 贡献代码，你完全可以无视掉 UnknownMessage 。
+
+.. [1] 当有用户关注你的时候，你会收到一条来自该用户的、内容为 `Hello2BizUser` 的 TextMessage 。WeRoBot 会将其的type设为 `hello` 。
+.. [2] 有两种时间推送： 如果是用户进入会话， type 为 `enter` ； 如果是地理位置， type 为 `location` 。
 
 类型过滤
 --------------
@@ -131,7 +145,10 @@ WeRoBot 一共有4类 Message ， 5种 type 。显然，一个 handler 不可能
 
     robot.run()
 
-你也可以使用 `robot.image` 修饰符来只接受图像信息； `robot.location` 修饰符来只接受位置信息。
+你也可以使用 `robot.image` 修饰符来只接受图像信息； `robot.location` 修饰符来只接受位置信息；`robot.enter`修饰符来只接受进入会话信息。。
+
+.. note:: `robot.location` 修饰符会让你的 handler 接受到两类消息——位置信息和事件推送中的地理位置。
+
 当然，还有 `robot.unknown` —— 如果你想收到未知属性的信息的话。
 
 额，这个 handler 想处理文本信息和地理位置信息？ ::
@@ -268,11 +285,11 @@ time          信息发送的时间，一个UNIX时间戳。默认情况下会�
 title         标题
 description   描述
 url           音乐链接
-hq_url        高质量音乐链接，WIFI环境优先使用该链接播放音乐。可为空 [2]_
+hq_url        高质量音乐链接，WIFI环境优先使用该链接播放音乐。可为空 [3]_
 flag          如果是True， WeRoBot会对这条消息进行星标。你可以在公众平台后台看到所有的星标消息。
 =========    ===================================
 
-你也可以让你的 handler 返回一个长度为三或四的列表， [2]_
+你也可以让你的 handler 返回一个长度为三或四的列表， [3]_
  WeRoBot 会将其自动转为 MusicReply 。就像这样： ::
 
     import werobot
@@ -299,7 +316,7 @@ flag          如果是True， WeRoBot会对这条消息进行星标。你可以
     robot.run()
 
 
-.. [2] 如果你省略了高质量音乐链接的地址， WeRoBot 会自动将音乐链接的地址用于高质量音乐链接。
+.. [3] 如果你省略了高质量音乐链接的地址， WeRoBot 会自动将音乐链接的地址用于高质量音乐链接。
 
 不知道该用什么Token?
 ----------------------
@@ -326,3 +343,11 @@ Buy me a cup of coffee :)
 Via Alipay（支付宝） ::
 
     "whtsky#gmail.com".replace("#", "@")
+
+Changelog
+-----------
+
+Version 0.3.0
+~~~~~~~~~~~~~~~~
+
+Add new messages and replies support for WeChat 4.5
