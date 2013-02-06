@@ -34,6 +34,22 @@ class LocationMessage(WeChatMessage):
         self.label = label
 
 
+class EventMessage(WeChatMessage):
+    def __init__(self, touser, fromuser, time,
+                type, **kwargs):
+        assert type in ['enter', 'location']
+        self.type = type
+        self.target = touser
+        self.source = fromuser
+        self.time = time
+        if type == 'location':
+            self.location = (
+                kwargs.get('latitude'),
+                kwargs.get('longitude')
+            )
+            self.precision = kwargs.get('precision')
+
+
 class UnknownMessage(WeChatMessage):
     def __init__(self, content):
         self.type = 'unknown'
