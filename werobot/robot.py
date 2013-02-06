@@ -57,6 +57,10 @@ class WeRoBot(object):
         self.add_handler(f, types=['location'])
         return f
 
+    def enter(self, f):
+        self.add_handler(f, types=['enter'])
+        return f
+
     def unknown(self, f):
         """
         Decorator to add a new handler to the robot.

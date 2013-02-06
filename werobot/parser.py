@@ -1,12 +1,13 @@
 from xml.etree import ElementTree
 
-from .messages import TextMessage, ImageMessage, LocationMessage,\
-    UnknownMessage
+from .messages import TextMessage, ImageMessage, LocationMessage, EventMessage
+from .messages import UnknownMessage
 from .utils import to_unicode
 
 MSG_TYPE_TEXT = 'text'
 MSG_TYPE_LOCATION = 'location'
 MSG_TYPE_IMAGE = 'image'
+MSG_TYPE_EVENT = 'event'
 
 
 def parse_user_msg(xml):
@@ -34,5 +35,12 @@ def parse_user_msg(xml):
     elif msg_type == MSG_TYPE_IMAGE:
         msg["img"] = to_unicode(parser.find('PicUrl').text)
         return ImageMessage(**msg)
+    elif msg_type == MSG_TYPE_EVENT:
+        msg["type"] = to_unicode(parser.find('Event').text).lower()
+        if msg["type"] == "location":
+            msg["latitude"] = to_unicode(parser.find('Latitude').text)
+            msg["longitude"] = to_unicode(parser.find('Longitude').text)
+            msg["precision"] = to_unicode(parser.find('Precision').text)
+        return EventMessage(**msg)
     else:
         return UnknownMessage(xml)

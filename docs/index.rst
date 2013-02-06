@@ -47,7 +47,10 @@ WeRoBot会将合法的请求发送给handlers依次执行。
 
 Messages
 ---------
-目前WeRoBot共有四种Message：`TextMessage` ， `ImageMessage` ， `LocationMessage` 和 `UnknownMessage` 。他们都继承自 WeChatMessage 。
+目前WeRoBot共有五种Message： `TextMessage` ， `ImageMessage` ， `LocationMessage` ， `EventMessage` 和 `UnknownMessage` 。他们都继承自 WeChatMessage 。
+
+TextMessage
+~~~~~~~~~~~~
 
 TextMessage的属性：
 
@@ -62,7 +65,8 @@ time      信息发送的时间，一个UNIX时间戳。
 content   信息的内容
 ======== ===================================
 
-.. [1] 当有用户关注你的时候，你会收到一条来自该用户的、内容为 `Hello2BizUser` 的 TextMessage 。WeRoBot 会将其的type设为 `hello` 。
+ImageMessage
+~~~~~~~~~~~~~
 
 ImageMessage的属性：
 
@@ -76,6 +80,9 @@ time     信息发送的时间，一个UNIX时间戳。
 img      图片网址。你可以从这个网址下到图片
 ======= ==================================
 
+LocationMessage
+~~~~~~~~~~~~~~~~
+
 LocationMessage的属性：
 
 ========= ===================================
@@ -85,25 +92,47 @@ type       'location'
 target     信息的目标用户。通常是机器人用户。
 source     信息的来源用户。通常是发送信息的用户。
 time       信息发送的时间，一个UNIX时间戳。
-location   一个元组。(纬度,    经度)
+location   一个元组。(纬度, 经度)
 scale      地图缩放大小
 label      地理位置信息
 ========= ===================================
 
-UnknownMessage：
+EventMessage
+~~~~~~~~~~~~~~
+
+EventMessage的属性：
 
 ========= ===================================
 name       value
 ========= ===================================
-type       'unknown'
-content    请求的正文部分。标准的XML格式。
+type       'enter' 或 'location' [2]_
+target     信息的目标用户。通常是机器人用户。
+source     信息的来源用户。通常是发送信息的用户。
+time       信息发送的时间，一个UNIX时间戳。
+location   一个元组。(纬度, 经度)。 type 为 'location' 时存在。
+precision  地理位置精度。 type 为 'location' 时存在。
 ========= ===================================
 
-.. note:: 如果你不为 WeRoBot 贡献代码，你完全可以无视掉 UnknownMessage 。
+UnknownMessage
+~~~~~~~~~~~~~~~
+
+UnknownMessage的属性：
+
+========= =====================================
+name       value
+========= =====================================
+type       'unknown'
+content    请求的正文部分。标准的XML格式。
+========= =====================================
+
+.. note:: 如果你不为 WeRoBot 贡献代码，你完全可以无视掉 UnknownMessage 。在正常的使用中，WeRoBot应该不会收到 `UnknownMessage` ——除非 WeRoBot 停止开发。
+
+.. [1] 当有用户关注你的时候，你会收到一条来自该用户的、内容为 `Hello2BizUser` 的 TextMessage 。WeRoBot 会将其的type设为 `hello` 。
+.. [2] 有两种时间推送： 如果是用户进入会话， type 为 `enter` ； 如果是地理位置， type 为 `location` 。
 
 类型过滤
 --------------
-WeRoBot 一共有4类 Message ， 5种 type 。显然，一个 handler 不可能把这五种 type 都支持全。
+WeRoBot 一共有5类 Message ， 6种 type 。显然，一个 handler 不可能把这6种 type 都支持全。
 
 幸运的是， WeRoBot 可以帮你过滤收到的消息。
 
@@ -131,7 +160,10 @@ WeRoBot 一共有4类 Message ， 5种 type 。显然，一个 handler 不可能
 
     robot.run()
 
-你也可以使用 `robot.image` 修饰符来只接受图像信息； `robot.location` 修饰符来只接受位置信息。
+你也可以使用 `robot.image` 修饰符来只接受图像信息； `robot.location` 修饰符来只接受位置信息；`robot.enter`修饰符来只接受进入会话信息。。
+
+.. note:: `robot.location` 修饰符会让你的 handler 接受到两类消息——位置信息和事件推送中的地理位置。
+
 当然，还有 `robot.unknown` —— 如果你想收到未知属性的信息的话。
 
 额，这个 handler 想处理文本信息和地理位置信息？ ::
@@ -167,7 +199,10 @@ WeRoBot 一共有4类 Message ， 5种 type 。显然，一个 handler 不可能
 Replies
 --------------
 
-目前WeRoBot共有三种Reply： `TextReply` ， `ArticlesReply` 。他们都继承自 `WeChatReply` 。
+目前WeRoBot共有三种Reply： `TextReply` ， `ArticlesReply` 和 `MusicReply` 。他们都继承自 `WeChatReply` 。
+
+TextReply
+~~~~~~~~~~~
 
 `TextReply` 是简单的文本消息，构造函数的参数如下：
 
@@ -181,11 +216,14 @@ time       信息发送的时间，一个UNIX时间戳。默认情况下会使�
 flag       如果是True， WeRoBot会对这条消息进行星标。你可以在公众平台后台看到所有的星标消息。
 ========= ===================================
 
-你可以在构建Reply时传入一个合法的 `Message` 类来自动生成 `source` 和 `target` ::
+你可以在构建Reply时传入一个合法的 `Message` 对象来自动生成 `source` 和 `target` ::
 
     reply = TextReply(message=message, content='Hello!')
 
 .. note:: 如果你的handler返回了一个字符串， WeRoBot会自动将其转化为一个文本消息。
+
+ArticlesReply
+~~~~~~~~~~~~~~~
 
 `ArticlesReply` 是图文消息，构造函数的参数如下：
 
@@ -230,7 +268,7 @@ url           点击图片后跳转链接
 
 .. note:: 每个ArticlesReply中 **最多添加10个Article** 。
 
-你也可以让你的 handler 返回一个列表， 里面每一个元素都是一个长度为四的列表或数组，
+你也可以让你的 handler 返回一个列表， 里面每一个元素都是一个长度为四的列表，
  WeRoBot 会将其自动转为 ArticlesReply 。就像这样： ::
 
     import werobot
@@ -257,6 +295,53 @@ url           点击图片后跳转链接
     robot.run()
 
 
+MusicReply
+~~~~~~~~~~~
+
+`MusicReply` 是音乐消息，构造函数的参数如下：
+
+=========    ===================================
+name          value
+=========    ===================================
+target        信息的目标用户。通常是机器人用户。
+source        信息的来源用户。通常是发送信息的用户。
+time          信息发送的时间，一个UNIX时间戳。默认情况下会使用当前时间。
+title         标题
+description   描述
+url           音乐链接
+hq_url        高质量音乐链接，WIFI环境优先使用该链接播放音乐。可为空 [3]_
+flag          如果是True， WeRoBot会对这条消息进行星标。你可以在公众平台后台看到所有的星标消息。
+=========    ===================================
+
+你也可以让你的 handler 返回一个长度为三或四的列表， [3]_
+ WeRoBot 会将其自动转为 MusicReply 。就像这样： ::
+
+    import werobot
+
+    robot = werobot.WeRoBot(token='tokenhere')
+
+    @robot.text
+    def music(message):
+        return [
+            "title",
+            "description",
+            "music_url",
+            "hq_music_url"
+            ]
+
+    @robot.text
+    def music2(message):
+        return [
+            "微信你不懂爱",
+            "龚琳娜最新力作",
+            "http://weixin.com/budongai.mp3",
+            ]
+
+    robot.run()
+
+
+.. [3] 如果你省略了高质量音乐链接的地址， WeRoBot 会自动将音乐链接的地址用于高质量音乐链接。
+
 不知道该用什么Token?
 ----------------------
 WeRoBot帮你准备了一个Token生成器： ::
@@ -282,3 +367,11 @@ Buy me a cup of coffee :)
 Via Alipay（支付宝） ::
 
     "whtsky#gmail.com".replace("#", "@")
+
+Changelog
+-----------
+
+Version 0.3.0
+~~~~~~~~~~~~~~~~
+
+Add new messages and replies support for WeChat 4.5

@@ -39,4 +39,17 @@ def test_create_reply():
             "http://whouz.com/"
         ]
     ], message)
+    assert reply
+    reply = werobot.reply.create_reply([
+        'title',
+        'description',
+        'music_url'
+    ], message)
+    assert reply
+    reply = werobot.reply.create_reply([
+        'title',
+        'description',
+        'music_url',
+        'hq_music_url'
+    ], message)
     assert reply  # Just make sure that func works.
