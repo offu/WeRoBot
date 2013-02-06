@@ -49,6 +49,9 @@ Messages
 ---------
 目前WeRoBot共有五种Message：`TextMessage` ， `ImageMessage` ， `LocationMessage` ， `EventMessage` 和 `UnknownMessage` 。他们都继承自 WeChatMessage 。
 
+TextMessage
+~~~~~~~~~~~~
+
 TextMessage的属性：
 
 
@@ -62,6 +65,9 @@ time      信息发送的时间，一个UNIX时间戳。
 content   信息的内容
 ======== ===================================
 
+ImageMessage
+~~~~~~~~~~~~~
+
 ImageMessage的属性：
 
 ======= ==================================
@@ -73,6 +79,9 @@ source   信息的来源用户。通常是发送信息的用户。
 time     信息发送的时间，一个UNIX时间戳。
 img      图片网址。你可以从这个网址下到图片
 ======= ==================================
+
+LocationMessage
+~~~~~~~~~~~~~~~~
 
 LocationMessage的属性：
 
@@ -88,7 +97,10 @@ scale      地图缩放大小
 label      地理位置信息
 ========= ===================================
 
-EventMessage：
+EventMessage
+~~~~~~~~~~~~~~
+
+EventMessage的属性：
 
 ========= ===================================
 name       value
@@ -101,7 +113,10 @@ location   一个元组。(纬度, 经度)。 type 为 'location' 时存在。
 precision  地理位置精度。 type 为 'location' 时存在。
 ========= ===================================
 
-UnknownMessage：
+UnknownMessage
+~~~~~~~~~~~~~~~
+
+UnknownMessage的属性：
 
 ========= ===================================
 name       value
@@ -110,14 +125,14 @@ type       'unknown'
 content    请求的正文部分。标准的XML格式。
 ========= ===================================
 
-.. note:: 如果你不为 WeRoBot 贡献代码，你完全可以无视掉 UnknownMessage 。
+.. note:: 如果你不为 WeRoBot 贡献代码，你完全可以无视掉 UnknownMessage 。在正常的使用中，WeRoBot应该不会收到 `UnknownMessage` ——除非 WeRoBot 停止开发。
 
 .. [1] 当有用户关注你的时候，你会收到一条来自该用户的、内容为 `Hello2BizUser` 的 TextMessage 。WeRoBot 会将其的type设为 `hello` 。
 .. [2] 有两种时间推送： 如果是用户进入会话， type 为 `enter` ； 如果是地理位置， type 为 `location` 。
 
 类型过滤
 --------------
-WeRoBot 一共有4类 Message ， 5种 type 。显然，一个 handler 不可能把这五种 type 都支持全。
+WeRoBot 一共有5类 Message ， 6种 type 。显然，一个 handler 不可能把这6种 type 都支持全。
 
 幸运的是， WeRoBot 可以帮你过滤收到的消息。
 
@@ -186,6 +201,9 @@ Replies
 
 目前WeRoBot共有三种Reply： `TextReply` ， `ArticlesReply` 和 `MusicReply` 。他们都继承自 `WeChatReply` 。
 
+TextReply
+~~~~~~~~~~~
+
 `TextReply` 是简单的文本消息，构造函数的参数如下：
 
 ========= ===================================
@@ -203,6 +221,9 @@ flag       如果是True， WeRoBot会对这条消息进行星标。你可以在
     reply = TextReply(message=message, content='Hello!')
 
 .. note:: 如果你的handler返回了一个字符串， WeRoBot会自动将其转化为一个文本消息。
+
+ArticlesReply
+~~~~~~~~~~~~~~~
 
 `ArticlesReply` 是图文消息，构造函数的参数如下：
 
@@ -273,6 +294,9 @@ url           点击图片后跳转链接
 
     robot.run()
 
+
+MusicReply
+~~~~~~~~~~~
 
 `MusicReply` 是音乐消息，构造函数的参数如下：
 
