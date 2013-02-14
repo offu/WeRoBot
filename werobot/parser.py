@@ -11,10 +11,16 @@ MSG_TYPE_EVENT = 'event'
 
 
 def parse_user_msg(xml):
+    """
+    Parse xml from wechat server and return an Message
+    :param xml: raw xml from wechat server.
+    :return: an Message object
+    """
     if not xml:
-        return None
-    _msg = {child.tag: to_unicode(child.text)
-            for child in ElementTree.fromstring(xml)}
+        return
+
+    _msg = dict((child.tag, to_unicode(child.text))
+                for child in ElementTree.fromstring(xml))
 
     msg_type = _msg.get('MsgType')
     touser = _msg.get('ToUserName')
