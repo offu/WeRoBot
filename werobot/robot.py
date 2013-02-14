@@ -118,6 +118,6 @@ class WeRoBot(object):
             if reply:
                 return reply
 
-    def run(self, port=8888):
+    def run(self, server='auto', port=8888):
         enable_pretty_logging()
-        self.app.run(server='auto', host='0.0.0.0', port=port)
+        self.app.run(server=server, host='0.0.0.0', port=port)
