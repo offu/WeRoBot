@@ -11,36 +11,44 @@ MSG_TYPE_EVENT = 'event'
 
 
 def parse_user_msg(xml):
+    """
+    Parse xml from wechat server and return an Message
+    :param xml: raw xml from wechat server.
+    :return: an Message object
+    """
     if not xml:
-        return None
-    parser = ElementTree.fromstring(xml)
-    msg_type = to_unicode(parser.find('MsgType').text)
-    touser = to_unicode(parser.find('ToUserName').text)
-    fromuser = to_unicode(parser.find('FromUserName').text)
-    create_at = int(parser.find('CreateTime').text)
+        return
+
+    _msg = dict((child.tag, to_unicode(child.text))
+                for child in ElementTree.fromstring(xml))
+
+    msg_type = _msg.get('MsgType')
+    touser = _msg.get('ToUserName')
+    fromuser = _msg.get('FromUserName')
+    create_at = int(_msg.get('CreateTime'))
     msg = dict(
         touser=touser,
         fromuser=fromuser,
         time=create_at
     )
     if msg_type == MSG_TYPE_TEXT:
-        msg["content"] = to_unicode(parser.find('Content').text)
+        msg["content"] = _msg.get('Content')
         return TextMessage(**msg)
     elif msg_type == MSG_TYPE_LOCATION:
-        msg["location_x"] = to_unicode(parser.find('Location_X').text)
-        msg["location_y"] = to_unicode(parser.find('Location_Y').text)
-        msg["scale"] = int(parser.find('Scale').text)
-        msg["label"] = to_unicode(parser.find('Label').text)
+        msg["location_x"] = _msg.get('Location_X')
+        msg["location_y"] = _msg.get('Location_Y')
+        msg["scale"] = int(_msg.get('Scale'))
+        msg["label"] = _msg.get('Label')
         return LocationMessage(**msg)
     elif msg_type == MSG_TYPE_IMAGE:
-        msg["img"] = to_unicode(parser.find('PicUrl').text)
+        msg["img"] = _msg.get('PicUrl')
         return ImageMessage(**msg)
     elif msg_type == MSG_TYPE_EVENT:
-        msg["type"] = to_unicode(parser.find('Event').text).lower()
+        msg["type"] = _msg.get('Event').lower()
         if msg["type"] == "location":
-            msg["latitude"] = to_unicode(parser.find('Latitude').text)
-            msg["longitude"] = to_unicode(parser.find('Longitude').text)
-            msg["precision"] = to_unicode(parser.find('Precision').text)
+            msg["latitude"] = _msg.get('Latitude')
+            msg["longitude"] = _msg.get('Longitude')
+            msg["precision"] = _msg.get('Precision')
         return EventMessage(**msg)
     else:
         return UnknownMessage(xml)
