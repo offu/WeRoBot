@@ -52,7 +52,7 @@ class TextReply(WeChatReply):
     """)
 
     def render(self):
-        return TextReply.TEMPLATE.format(**self._args)
+        return TextReply.TEMPLATE.encode("utf-8").format(**self._args)
 
 
 class ArticlesReply(WeChatReply):
@@ -104,7 +104,7 @@ class ArticlesReply(WeChatReply):
         self._args["count"] = len(items)
         if "content" not in self._args:
             self._args["content"] = ''
-        return ArticlesReply.TEMPLATE.format(**self._args)
+        return ArticlesReply.TEMPLATE.encode("utf-8").format(**self._args)
 
 
 class MusicReply(WeChatReply):
@@ -125,7 +125,7 @@ class MusicReply(WeChatReply):
     """)
 
     def render(self):
-        return MusicReply.TEMPLATE.format(**self._args)
+        return MusicReply.TEMPLATE.encode("utf-8").format(**self._args)
 
 
 def create_reply(reply, message=None):
