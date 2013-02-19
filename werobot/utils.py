@@ -42,6 +42,10 @@ def to_unicode(value):
     return value
 
 
+def isstring(value):
+    return isinstance(value, basestring)
+
+
 def generate_token(length=''):
     if not length:
         length = random.randint(3, 32)

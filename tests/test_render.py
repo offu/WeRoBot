@@ -21,6 +21,14 @@ def test_text_render():
     assert result == to_unicode(reply_message)
 
 
+def test_convert():
+    message = werobot.test.make_text_message('test')
+    reply = werobot.reply.TextReply(message, content='中文', time=1359803261)
+    assert reply.render()
+    reply = werobot.reply.TextReply(message, content=to_unicode('中文'), time=1359803261)
+    assert reply.render()
+
+
 def test_create_reply():
     message = werobot.test.make_text_message('test')
     reply = werobot.reply.create_reply('hi', message)
