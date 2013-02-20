@@ -20,9 +20,6 @@ setup(
     packages=find_packages(),
     description='WeRoBot: a robot framework for wechat',
     long_description=open('docs/index.rst').read(),
-    install_requires=[
-        'bottle'
-    ],
     include_package_data=True,
     license='MIT License',
     classifiers=[
