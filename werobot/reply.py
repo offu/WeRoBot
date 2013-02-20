@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
-import logging
 from .messages import WeChatMessage
-from .utils import py3k, to_unicode
-
-if py3k:
-    basestring = str
+from .utils import isstring, to_unicode
 
 
 class Article(object):
@@ -33,7 +29,13 @@ class WeChatReply(object):
         else:
             kwargs["flag"] = 0
 
-        self._args = kwargs
+        args = dict()
+        for k, v in kwargs.items():
+            if isstring(v):
+                v = to_unicode(v)
+            args[k] = v
+
+        self._args = args
 
     def render(self):
         return ''
@@ -131,7 +133,7 @@ class MusicReply(WeChatReply):
 def create_reply(reply, message=None):
     if isinstance(reply, WeChatReply):
         return reply.render()
-    elif isinstance(reply, basestring):
+    elif isstring(reply):
         message = to_unicode(message)
         reply = TextReply(message=message, content=reply)
         return reply.render()
