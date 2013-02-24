@@ -24,9 +24,3 @@ def echo(message):
 
 robot.run()
 ```
-
-##捐助
-支付宝：
-```python
-    "whtsky#gmail.com".replace("#", "@")
-```
