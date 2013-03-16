@@ -36,8 +36,12 @@ class LocationMessage(WeChatMessage):
 
 
 class LinkMessage(WeChatMessage):
-    def __init__(self, **kwargs):
+    def __init__(self, title, description, url, **kwargs):
         super(LinkMessage, self).__init__(**kwargs)
+        self.type = 'link'
+        self.title = title
+        self.description = description
+        self.url = url
 
 
 class EventMessage(WeChatMessage):

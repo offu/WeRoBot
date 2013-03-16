@@ -47,7 +47,7 @@ WeRoBot会将合法的请求发送给handlers依次执行。
 
 Messages
 ---------
-目前WeRoBot共有五种Message： `TextMessage` ， `ImageMessage` ， `LocationMessage` ， `EventMessage` 和 `UnknownMessage` 。他们都继承自 WeChatMessage 。
+目前WeRoBot共有以下几种Message： `TextMessage` ， `ImageMessage` ， `LocationMessage` ， `EventMessage` 和 `UnknownMessage` 。他们都继承自 WeChatMessage 。
 
 TextMessage
 ~~~~~~~~~~~~
@@ -58,6 +58,7 @@ TextMessage的属性：
 ======== ===================================
 name      value
 ======== ===================================
+id        消息id，64位整型 [3]_
 type      'text' 或 'hello' [1]_
 target    信息的目标用户。通常是机器人用户。
 source    信息的来源用户。通常是发送信息的用户。
@@ -73,12 +74,29 @@ ImageMessage的属性：
 ======= ==================================
 name     value
 ======= ==================================
+id       消息id，64位整型 [3]_
 type     'image'
 target   信息的目标用户。通常是机器人用户。
 source   信息的来源用户。通常是发送信息的用户。
 time     信息发送的时间，一个UNIX时间戳。
 img      图片网址。你可以从这个网址下到图片
 ======= ==================================
+
+LinkMessage
+~~~~~~~~~~~~
+============    ==================================
+name             value
+============    ==================================
+id               消息id，64位整型 [3]_
+type             'link'
+target           信息的目标用户。通常是机器人用户。
+source           信息的来源用户。通常是发送信息的用户。
+time             信息发送的时间，一个UNIX时间戳。
+title            消息标题
+description      消息描述
+url              消息链接
+============    ==================================
+
 
 LocationMessage
 ~~~~~~~~~~~~~~~~
@@ -88,6 +106,7 @@ LocationMessage的属性：
 ========= ===================================
 name       value
 ========= ===================================
+id         消息id，64位整型 [3]_
 type       'location'
 target     信息的目标用户。通常是机器人用户。
 source     信息的来源用户。通常是发送信息的用户。
@@ -129,12 +148,11 @@ content    请求的正文部分。标准的XML格式。
 
 .. [1] 当有用户关注你的时候，你会收到一条来自该用户的、内容为 `Hello2BizUser` 的 TextMessage 。WeRoBot 会将其的type设为 `hello` 。
 .. [2] 有两种时间推送： 如果是用户进入会话， type 为 `enter` ； 如果是地理位置， type 为 `location` 。
+.. [3] 截至目前（ 2013.03.16 ），微信机器人所收到的消息中都不包含 MsgID.
 
 类型过滤
 --------------
-WeRoBot 一共有5类 Message ， 6种 type 。显然，一个 handler 不可能把这6种 type 都支持全。
-
-幸运的是， WeRoBot 可以帮你过滤收到的消息。
+在大多数情况下， 一个 Handler 并不能处理所有类型的消息。幸运的是， WeRoBot 可以帮你过滤收到的消息。
 
 只想处理被新用户关注的消息？::
 
@@ -472,6 +490,10 @@ Via Alipay（支付宝） ::
 
 Changelog
 -----------
+
+Version 0.3.3
+~~~~~~~~~~~~~~~~
++ Add `host` param in werobot.run
 
 Version 0.3.2
 ~~~~~~~~~~~~~~~~

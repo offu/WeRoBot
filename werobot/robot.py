@@ -61,6 +61,10 @@ class WeRoBot(object):
         self.add_handler(f, types=['enter'])
         return f
 
+    def link(self, f):
+        self.add_handler(f, types=['link'])
+        return f
+
     def unknown(self, f):
         """
         Decorator to add a new handler to the robot.
@@ -118,6 +122,6 @@ class WeRoBot(object):
             if reply:
                 return reply
 
-    def run(self, server='auto', port=8888):
+    def run(self, server='auto', host='127.0.0.1', port=8888):
         enable_pretty_logging()
-        self.app.run(server=server, host='0.0.0.0', port=port)
+        self.app.run(server=server, host=host, port=port)
