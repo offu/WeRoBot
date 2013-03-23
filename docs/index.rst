@@ -59,7 +59,7 @@ TextMessage的属性：
 name      value
 ======== ===================================
 id        消息id，64位整型 [4]_
-type      'text' 或 'hello' [1]_
+type      'text'
 target    信息的目标用户。通常是机器人用户。
 source    信息的来源用户。通常是发送信息的用户。
 time      信息发送的时间，一个UNIX时间戳。
@@ -121,16 +121,15 @@ EventMessage
 
 EventMessage的属性：
 
-========= ===================================
+========= =====================================
 name       value
-========= ===================================
-type       'enter' 或 'location' [2]_
+========= =====================================
+type       'subscribe' 'unsubscribe' 或 'click' [2]_
 target     信息的目标用户。通常是机器人用户。
 source     信息的来源用户。通常是发送信息的用户。
 time       信息发送的时间，一个UNIX时间戳。
-location   一个元组。(纬度, 经度)。 type 为 'location' 时存在。
-precision  地理位置精度。 type 为 'location' 时存在。
-========= ===================================
+key        事件 key 值。当 type = 'click' 时存在。
+========= =====================================
 
 UnknownMessage
 ~~~~~~~~~~~~~~~
@@ -146,8 +145,7 @@ content    请求的正文部分。标准的XML格式。
 
 .. note:: 如果你不为 WeRoBot 贡献代码，你完全可以无视掉 UnknownMessage 。在正常的使用中，WeRoBot应该不会收到 `UnknownMessage` ——除非 WeRoBot 停止开发。
 
-.. [1] 当有用户关注你的时候，你会收到一条来自该用户的、内容为 `Hello2BizUser` 的 TextMessage 。WeRoBot 会将其的type设为 `hello` 。
-.. [2] 有两种时间推送： 如果是用户进入会话， type 为 `enter` ； 如果是地理位置， type 为 `location` 。
+.. [2] 当你被用户关注时，会收到 type='subscribe' 的事件； 被取消关注时是 type='unsubscribe'  。
 .. [4] 截至目前（ 2013.03.16 ），微信机器人所收到的消息中都不包含 MsgID.
 
 类型过滤
@@ -160,8 +158,8 @@ content    请求的正文部分。标准的XML格式。
 
     robot = werobot.WeRoBot(token='tokenhere')
 
-    @robot.hello
-    def hello(message):
+    @robot.subscribe
+    def subscribe(message):
         return 'Hello My Friend!'
 
     robot.run()
@@ -178,13 +176,17 @@ content    请求的正文部分。标准的XML格式。
 
     robot.run()
 
-你也可以使用 ``robot.image`` 修饰符来只接受图像信息；
-``robot.location`` 修饰符来只接受位置信息；
-``robot.enter`` 修饰符来只接受进入会话信息。
-
-.. note:: `robot.location` 修饰符会让你的 handler 接受到两类消息——位置信息和事件推送中的地理位置。
-
-当然，还有 `robot.unknown` —— 如果你想收到未知属性的信息的话。
+==================  ===========
+修饰符                类型
+==================  ===========
+robot.text           文本
+robot.image          图像
+robot.location       位置
+robot.subscribe      被关注
+robot.unsubscribe    被取消关注
+robot.link           链接
+robot.unknown        未知类型
+==================  ===========
 
 额，这个 handler 想处理文本信息和地理位置信息？ ::
 
@@ -479,21 +481,14 @@ WeRoBot欢迎每个人贡献代码。
 
 另外，不能自动merge的和不能通过测试的代码不会被接受。你可以在安装nose（`pip install nose`）之后运行`nosetests`来进行测试。
 
-捐助
---------
-
-Buy me a cup of coffee :)
-
-Via Alipay（支付宝） ::
-
-    "whtsky#gmail.com".replace("#", "@")
-
 Changelog
 -----------
 
 Version 0.3.3
 ~~~~~~~~~~~~~~~~
 + Add `host` param in werobot.run
++ Update EventMessage
++ Add LinkMessage
 
 Version 0.3.2
 ~~~~~~~~~~~~~~~~

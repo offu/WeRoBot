@@ -47,14 +47,10 @@ class LinkMessage(WeChatMessage):
 class EventMessage(WeChatMessage):
     def __init__(self, type, **kwargs):
         super(EventMessage, self).__init__(**kwargs)
-        assert type in ['enter', 'location']
+        assert type in ['subscribe', 'unsubscribe', 'click']
         self.type = type
-        if type == 'location':
-            self.location = (
-                kwargs.get('latitude'),
-                kwargs.get('longitude')
-            )
-            self.precision = kwargs.get('precision')
+        if type == 'click':
+            self.key = kwargs.get('eventkey')
 
 
 class UnknownMessage(WeChatMessage):

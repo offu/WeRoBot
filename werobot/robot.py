@@ -110,7 +110,7 @@ class WeRoBot(object):
             message = parse_user_msg(body)
             reply = self._get_reply(message)
             if not reply:
-                return '.'
+                return ''
             response.content_type = 'application/xml'
             return create_reply(reply, message=message)
 
