@@ -15,8 +15,6 @@ class TextMessage(WeChatMessage):
         super(TextMessage, self).__init__(**kwargs)
         self.type = 'text'
         self.content = content
-        if content == 'Hello2BizUser':
-            self.type = 'hello'
 
 
 class ImageMessage(WeChatMessage):
