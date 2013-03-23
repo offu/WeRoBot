@@ -19,7 +19,23 @@ setup(
     url='https://github.com/whtsky/WeRoBot',
     packages=find_packages(),
     description='WeRoBot: a robot framework for wechat',
-    long_description=open('docs/index.rst').read(),
+    long_description="""
+    WeRoBot 是一个简单好用的 Python 微信机器人框架。
+
+    Hello World ::
+
+        import werobot
+
+        robot = werobot.WeRoBot(token='tokenhere')
+
+        @robot.handler
+        def echo(message):
+            return 'Hello World!'
+
+        robot.run()
+
+    文档： https://werobot.readthedocs.org/en/v%s/index.html
+    """ % werobot.__version__,
     include_package_data=True,
     license='MIT License',
     classifiers=[
