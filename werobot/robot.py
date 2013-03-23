@@ -12,7 +12,10 @@ __all__ = ['WeRoBot']
 class WeRoBot(object):
     def __init__(self, token):
         self._handlers = {
-            "hello": [],
+            "subscribe": [],
+            "unsubscribe": [],
+            "click": [],
+            "link": [],
             "text": [],
             "image": [],
             "location": [],
