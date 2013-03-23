@@ -1,53 +1,54 @@
 class WeChatMessage(object):
-    pass
+    def __init__(self, **kwargs):
+        if 'msgid' in kwargs:
+            self.id = int(kwargs['msgid'])
+        if 'touser' in kwargs:
+            self.target = kwargs['touser']
+        if 'fromuser' in kwargs:
+            self.source = kwargs['fromuser']
+        if 'time' in kwargs:
+            self.time = int(kwargs['time'])
 
 
 class TextMessage(WeChatMessage):
-    def __init__(self, touser, fromuser, time, content):
+    def __init__(self, content, **kwargs):
+        super(TextMessage, self).__init__(**kwargs)
         self.type = 'text'
-        self.target = touser
-        self.source = fromuser
-        self.time = int(time)
         self.content = content
-        if content == 'Hello2BizUser':
-            self.type = 'hello'
 
 
 class ImageMessage(WeChatMessage):
-    def __init__(self, touser, fromuser, time, img):
+    def __init__(self, img, **kwargs):
+        super(ImageMessage, self).__init__(**kwargs)
         self.type = 'image'
-        self.target = touser
-        self.source = fromuser
-        self.time = int(time)
         self.img = img
 
 
 class LocationMessage(WeChatMessage):
-    def __init__(self, touser, fromuser, time,
-                 location_x, location_y, scale, label):
+    def __init__(self, location_x, location_y, scale, label, **kwargs):
+        super(LocationMessage, self).__init__(**kwargs)
         self.type = 'location'
-        self.target = touser
-        self.source = fromuser
-        self.time = time
         self.location = (location_x, location_y)
         self.scale = scale
         self.label = label
 
 
+class LinkMessage(WeChatMessage):
+    def __init__(self, title, description, url, **kwargs):
+        super(LinkMessage, self).__init__(**kwargs)
+        self.type = 'link'
+        self.title = title
+        self.description = description
+        self.url = url
+
+
 class EventMessage(WeChatMessage):
-    def __init__(self, touser, fromuser, time,
-                type, **kwargs):
-        assert type in ['enter', 'location']
+    def __init__(self, type, **kwargs):
+        super(EventMessage, self).__init__(**kwargs)
+        assert type in ['subscribe', 'unsubscribe', 'click']
         self.type = type
-        self.target = touser
-        self.source = fromuser
-        self.time = time
-        if type == 'location':
-            self.location = (
-                kwargs.get('latitude'),
-                kwargs.get('longitude')
-            )
-            self.precision = kwargs.get('precision')
+        if type == 'click':
+            self.key = kwargs.get('eventkey')
 
 
 class UnknownMessage(WeChatMessage):

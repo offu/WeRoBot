@@ -29,12 +29,6 @@ class WeRoBot(object):
         self.add_handler(f, types=[])
         return f
 
-    def hello(self, f):
-        """
-        Decorator to add a new handler to the robot.
-        """
-        self.add_handler(f, types=['hello'])
-        return f
 
     def text(self, f):
         """
@@ -57,9 +51,18 @@ class WeRoBot(object):
         self.add_handler(f, types=['location'])
         return f
 
-    def enter(self, f):
-        self.add_handler(f, types=['enter'])
+    def link(self, f):
+        self.add_handler(f, types=['link'])
         return f
+
+    def subscribe(self, f):
+        self.add_handler(f, types=['subscribe'])
+
+    def unsubscribe(self, f):
+        self.add_handler(f, types=['unsubscribe'])
+
+    def click(self, f):
+        self.add_handler(f, types=['click'])
 
     def unknown(self, f):
         """
@@ -106,7 +109,7 @@ class WeRoBot(object):
             message = parse_user_msg(body)
             reply = self._get_reply(message)
             if not reply:
-                return '.'
+                return ''
             response.content_type = 'application/xml'
             return create_reply(reply, message=message)
 
@@ -118,6 +121,6 @@ class WeRoBot(object):
             if reply:
                 return reply
 
-    def run(self, server='auto', port=8888):
+    def run(self, server='auto', host='127.0.0.1', port=8888):
         enable_pretty_logging()
-        self.app.run(server=server, host='0.0.0.0', port=port)
+        self.app.run(server=server, host=host, port=port)
