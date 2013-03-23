@@ -4,7 +4,7 @@ from .bottle import Bottle, request, response, abort
 
 from .parser import parse_user_msg
 from .reply import create_reply
-from .utils import enable_pretty_logging, check_token, check_signature
+from .utils import check_token, check_signature
 
 __all__ = ['WeRoBot']
 
@@ -31,7 +31,6 @@ class WeRoBot(object):
         """
         self.add_handler(f, types=[])
         return f
-
 
     def text(self, f):
         """
@@ -125,5 +124,4 @@ class WeRoBot(object):
                 return reply
 
     def run(self, server='auto', host='127.0.0.1', port=8888):
-        enable_pretty_logging()
         self.app.run(server=server, host=host, port=port)
