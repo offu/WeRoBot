@@ -29,12 +29,6 @@ class WeRoBot(object):
         self.add_handler(f, types=[])
         return f
 
-    def hello(self, f):
-        """
-        Decorator to add a new handler to the robot.
-        """
-        self.add_handler(f, types=['hello'])
-        return f
 
     def text(self, f):
         """
@@ -57,13 +51,18 @@ class WeRoBot(object):
         self.add_handler(f, types=['location'])
         return f
 
-    def enter(self, f):
-        self.add_handler(f, types=['enter'])
-        return f
-
     def link(self, f):
         self.add_handler(f, types=['link'])
         return f
+
+    def subscribe(self, f):
+        self.add_handler(f, types=['subscribe'])
+
+    def unsubscribe(self, f):
+        self.add_handler(f, types=['unsubscribe'])
+
+    def click(self, f):
+        self.add_handler(f, types=['click'])
 
     def unknown(self, f):
         """
