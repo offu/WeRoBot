@@ -86,14 +86,4 @@ server 支持以下几种：
 在SAE上部署
 -----------------
 
-``werobot.app`` 是一个标准的 WSGI Application 。 如果你想在 SAE 上部署 WeRoBot ，可以参考以下代码 ::
-
-    import werobot
-
-    robot = werobot.WeRoBot(token='tokenhere')
-
-    @robot.handler
-    def echo(message):
-        return 'Hello World!'
-
-    application = sae.create_wsgi_app(robot.app)
+参考： `实例仓库 <https://github.com/whtsky/WeRoBot-SAE-demo>`_
