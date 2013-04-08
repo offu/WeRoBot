@@ -99,7 +99,7 @@ class BaseRoBot(object):
 class WeRoBot(BaseRoBot):
 
     @property
-    def app(self):
+    def wsgi(self):
         if not self._handlers:
             raise
         app = Bottle()
@@ -134,4 +134,4 @@ class WeRoBot(BaseRoBot):
         return app
 
     def run(self, server='auto', host='127.0.0.1', port=8888):
-        self.app.run(server=server, host=host, port=port)
+        self.wsgi.run(server=server, host=host, port=port)
