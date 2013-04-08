@@ -39,3 +39,7 @@ nosetests.xml
 
 #Sphinx
 docs/_
+
+#VirtualEnv
+.Python
+include/

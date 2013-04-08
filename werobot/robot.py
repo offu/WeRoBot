@@ -1,16 +1,16 @@
 import inspect
+import hashlib
 
 from .bottle import Bottle, request, response, abort
 
 from .parser import parse_user_msg
 from .reply import create_reply
-from .utils import enable_pretty_logging, check_token, check_signature
 
 __all__ = ['WeRoBot']
 
 
-class WeRoBot(object):
-    def __init__(self, token):
+class BaseRoBot(object):
+    def __init__(self, token=None):
         self._handlers = {
             "subscribe": [],
             "unsubscribe": [],
@@ -21,8 +21,6 @@ class WeRoBot(object):
             "location": [],
             "unknown": []
         }
-        if not check_token(token):
-            raise AttributeError('%s is not a vaild token.' % token)
         self.token = token
 
     def handler(self, f):
@@ -31,7 +29,6 @@ class WeRoBot(object):
         """
         self.add_handler(f, types=[])
         return f
-
 
     def text(self, f):
         """
@@ -85,27 +82,45 @@ class WeRoBot(object):
         for type in types:
             self._handlers[type].append(func)
 
+    def _get_reply(self, message):
+        for handler in self._handlers[message.type]:
+            reply = handler(message)
+            if reply:
+                return reply
+
+    def check_signature(self, timestamp, nonce, signature):
+        sign = [self.token, timestamp, nonce]
+        sign.sort()
+        sign = ''.join(sign)
+        sign = hashlib.sha1(sign).hexdigest()
+        return sign == signature
+
+
+class WeRoBot(BaseRoBot):
+
     @property
-    def app(self):
+    def wsgi(self):
         if not self._handlers:
             raise
         app = Bottle()
 
         @app.get('/')
         def echo():
-            if not check_signature(self.token,
+            if not self.check_signature(
                 request.query.timestamp,
                 request.query.nonce,
-                request.query.signature):
+                request.query.signature
+            ):
                 return abort('403')
             return request.query.echostr
 
         @app.post('/')
         def handle():
-            if not check_signature(self.token,
+            if not self.check_signature(
                 request.query.timestamp,
                 request.query.nonce,
-                request.query.signature):
+                request.query.signature
+            ):
                 return abort('403')
 
             body = request.body.read()
@@ -118,12 +133,5 @@ class WeRoBot(object):
 
         return app
 
-    def _get_reply(self, message):
-        for handler in self._handlers[message.type]:
-            reply = handler(message)
-            if reply:
-                return reply
-
     def run(self, server='auto', host='127.0.0.1', port=8888):
-        enable_pretty_logging()
-        self.app.run(server=server, host=host, port=port)
+        self.wsgi.run(server=server, host=host, port=port)

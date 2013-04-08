@@ -89,7 +89,7 @@ class ArticlesReply(WeChatReply):
             raise TypeError
         if len(self._articles) >= 10:
             raise AttributeError("Can't add more than 10 articles"
-                         " in an ArticlesReply")
+                                 " in an ArticlesReply")
         else:
             self._articles.append(article)
 
@@ -97,10 +97,10 @@ class ArticlesReply(WeChatReply):
         items = []
         for article in self._articles:
             items.append(ArticlesReply.ITEM_TEMPLATE.format(
-                title=article.title,
-                description=article.description,
-                img=article.img,
-                url=article.url
+                title=to_unicode(article.title),
+                description=to_unicode(article.description),
+                img=to_unicode(article.img),
+                url=to_unicode(article.url)
             ))
         self._args["items"] = ''.join(items)
         self._args["count"] = len(items)
