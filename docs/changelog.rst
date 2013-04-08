@@ -1,9 +1,15 @@
 Changelog
 =============
 
+Version 0.3.4
+----------------
++ Rename ``WeRoBot.app`` to ``WeRoBot.wsgi``
++ Add ``BaseRoBot`` class. It's useful for creating extensions.
++ Reorganized documents.
+
 Version 0.3.3
 ----------------
-+ Add `host` param in werobot.run
++ Add ``host`` param in werobot.run
 + Update EventMessage
 + Add LinkMessage
 
@@ -13,7 +19,7 @@ Version 0.3.2
 
 Version 0.3.1
 ----------------
-+ Add `server` param in werobot.run
++ Add ``server`` param in werobot.run
 
 Version 0.3.0
 ----------------
