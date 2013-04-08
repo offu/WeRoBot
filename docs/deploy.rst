@@ -86,4 +86,4 @@ server 支持以下几种：
 在SAE上部署
 -----------------
 
-参考： `实例仓库 <https://github.com/whtsky/WeRoBot-SAE-demo>`_
+参考： `示例仓库 <https://github.com/whtsky/WeRoBot-SAE-demo>`_
