@@ -1,6 +1,10 @@
 Changelog
 =============
 
+Version 0.3.5
+----------------
++ Bug fix: Make ``BaseRoBot`` importable
+
 Version 0.3.4
 ----------------
 + Rename ``WeRoBot.app`` to ``WeRoBot.wsgi``
