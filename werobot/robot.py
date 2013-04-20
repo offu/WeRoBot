@@ -6,7 +6,7 @@ from .bottle import Bottle, request, response, abort
 from .parser import parse_user_msg
 from .reply import create_reply
 
-__all__ = ['WeRoBot']
+__all__ = ['BaseRoBot', 'WeRoBot']
 
 
 class BaseRoBot(object):
