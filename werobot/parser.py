@@ -40,12 +40,13 @@ def parse_user_msg(xml):
         return ImageMessage(**msg)
     elif msg_type == 'event':
         msg["type"] = _msg.get('Event').lower()
-        if msg["type"] == "location":
-            msg["latitude"] = _msg.get('Latitude')
-            msg["longitude"] = _msg.get('Longitude')
-            msg["precision"] = _msg.get('Precision')
+        if msg["type"] == "click":
+            msg["eventkey"] = _msg.get('EventKey')
         return EventMessage(**msg)
     elif msg_type == 'link':
+        msg["title"] = _msg.get('Title')
+        msg["description"] = _msg.get('Description')
+        msg["url"] = _msg.get('Url')
         return LinkMessage(**msg)
     else:
         return UnknownMessage(xml)

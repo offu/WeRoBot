@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+
+
 class WeChatMessage(object):
     def __init__(self, **kwargs):
         if 'msgid' in kwargs:
@@ -13,6 +16,7 @@ class WeChatMessage(object):
 class TextMessage(WeChatMessage):
     def __init__(self, content, **kwargs):
         super(TextMessage, self).__init__(**kwargs)
+
         self.type = 'text'
         self.content = content
 
@@ -28,7 +32,7 @@ class LocationMessage(WeChatMessage):
     def __init__(self, location_x, location_y, scale, label, **kwargs):
         super(LocationMessage, self).__init__(**kwargs)
         self.type = 'location'
-        self.location = (location_x, location_y)
+        self.location = (float(location_x), float(location_y))
         self.scale = scale
         self.label = label
 
@@ -48,7 +52,7 @@ class EventMessage(WeChatMessage):
         assert type in ['subscribe', 'unsubscribe', 'click']
         self.type = type
         if type == 'click':
-            self.key = kwargs.get('eventkey')
+            self.key = kwargs["eventkey"]
 
 
 class UnknownMessage(WeChatMessage):

@@ -16,4 +16,4 @@ def test_echo():
 
     tester = werobot.test.WeTest(robot)
     message = werobot.test.make_location_message('20', '30', 40, 'label')
-    assert tester.send(message) == 'You are at (20, 30)'
+    assert tester.send(message) == 'You are at (20.0, 30.0)'
