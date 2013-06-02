@@ -30,7 +30,7 @@ setup(
 
     文档： https://werobot.readthedocs.org/en/v%s/index.html
     """ % werobot.__version__,
-    install_requires=["bottle==0.11.6"],
+    install_requires=open("requirements.txt").readlines(),
     include_package_data=True,
     license='MIT License',
     classifiers=[
