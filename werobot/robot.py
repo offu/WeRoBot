@@ -1,7 +1,7 @@
 import inspect
 import hashlib
 
-from .bottle import Bottle, request, response, abort
+from bottle import Bottle, request, response, abort
 
 from .parser import parse_user_msg
 from .reply import create_reply

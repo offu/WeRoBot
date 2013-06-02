@@ -4,6 +4,7 @@ import random
 
 try:
     import curses
+    assert curses
 except ImportError:
     curses = None
 

@@ -1,12 +1,6 @@
 #!/usr/bin/env python
 #coding=utf-8
 
-import sys
-kwargs = {}
-major, minor = sys.version_info[:2]
-if major >= 3:
-    kwargs['use_2to3'] = True
-
 from setuptools import setup, find_packages
 
 import werobot
@@ -36,6 +30,7 @@ setup(
 
     文档： https://werobot.readthedocs.org/en/v%s/index.html
     """ % werobot.__version__,
+    install_requires=["bottle==0.11.6"],
     include_package_data=True,
     license='MIT License',
     classifiers=[
@@ -49,8 +44,7 @@ setup(
         'Programming Language :: Python :: 3.1',
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
-        ],
+    ],
     tests_require=['nose'],
     test_suite='nose.collector',
-    **kwargs
 )

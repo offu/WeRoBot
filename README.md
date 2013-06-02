@@ -1,6 +1,7 @@
 #WeRoBot
 
 [![Build Status](https://travis-ci.org/whtsky/WeRoBot.png)](https://travis-ci.org/whtsky/WeRoBot)
+[![Coverage Status](https://coveralls.io/repos/whtsky/WeRoBot/badge.png)](https://coveralls.io/r/whtsky/WeRoBot)
 
 
 WeRoBot 是一个微信机器人框架，采用MIT协议发布。
