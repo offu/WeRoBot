@@ -7,7 +7,14 @@ python:
   - pypy
 
 install:
-  - "pip install bottle"
   - "python setup.py install"
 
 script: nosetests
+
+after_success:
+  - pip install coveralls
+  - coverage run --source=werobot setup.py -q nosetests
+  - coveralls
+
+notifications:
+  email: false
