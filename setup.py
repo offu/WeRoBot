@@ -3,11 +3,11 @@
 
 from setuptools import setup, find_packages
 
-import werobot
+version = '0.3.5'
 
 setup(
     name='WeRoBot',
-    version=werobot.__version__,
+    version=version,
     author='whtsky',
     author_email='whtsky@me.com',
     url='https://github.com/whtsky/WeRoBot',
@@ -29,8 +29,8 @@ setup(
         robot.run()
 
     文档： https://werobot.readthedocs.org/en/v%s/index.html
-    """ % werobot.__version__,
-    install_requires=["bottle==0.11.6"],
+    """ % version,
+    install_requires=open("requirements.txt").readlines(),
     include_package_data=True,
     license='MIT License',
     classifiers=[
