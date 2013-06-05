@@ -38,7 +38,7 @@ class WeChatReply(object):
         self._args = args
 
     def render(self):
-        return ''
+        raise NotImplementedError()
 
 
 class TextReply(WeChatReply):
@@ -80,13 +80,11 @@ class ArticlesReply(WeChatReply):
     </item>
     """)
 
-    def __init__(self, **kwargs):
-        super(ArticlesReply, self).__init__(**kwargs)
+    def __init__(self, message=None, star=False, **kwargs):
+        super(ArticlesReply, self).__init__(message, star, **kwargs)
         self._articles = []
 
     def add_article(self, article):
-        if not isinstance(article, Article):
-            raise TypeError
         if len(self._articles) >= 10:
             raise AttributeError("Can't add more than 10 articles"
                                  " in an ArticlesReply")
