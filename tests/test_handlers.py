@@ -10,9 +10,10 @@ def test_one():
     def first(message):
         return
 
-    @robot.handler
     def second(message):
         return "Hi"
+
+    robot.add_handler(second)
 
     tester = werobot.test.WeTest(robot)
     message = werobot.test.make_text_message('oo')
@@ -56,3 +57,19 @@ def test_three():
     assert tester.send(message) == 'txt'
     message = werobot.test.make_image_message('http://a.jpg')
     assert tester.send(message) == 'img'
+
+
+def test_add_handler():
+    robot = werobot.WeRoBot(token=werobot.utils.generate_token())
+
+    def a(message):
+        pass
+
+    robot.add_handler(a)
+
+    try:
+        robot.add_handler(5)
+    except TypeError:
+        pass
+    else:
+        raise

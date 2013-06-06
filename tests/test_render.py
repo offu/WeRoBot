@@ -6,7 +6,8 @@ from werobot.utils import to_unicode
 
 def test_wechatreply_render():
     message = werobot.test.make_text_message('test')
-    reply = werobot.reply.WeChatReply(message, content='hello', time=1359803261)
+    reply = werobot.reply.WeChatReply(message, content='hello',
+                                      time=1359803261)
     try:
         reply.render()
     except NotImplementedError:
@@ -54,13 +55,15 @@ def test_convert():
     message = werobot.test.make_text_message('test')
     reply = werobot.reply.TextReply(message, content='中文', time=1359803261)
     assert reply.render()
-    reply = werobot.reply.TextReply(message, content=to_unicode('中文'), time=1359803261)
+    reply = werobot.reply.TextReply(message, content=to_unicode('中文'),
+                                    time=1359803261)
     assert reply.render()
 
 
 def test_articles():
     message = werobot.test.make_text_message('test')
-    reply = werobot.reply.ArticlesReply(message, content='hello', time=1359803261)
+    reply = werobot.reply.ArticlesReply(message, content='hello',
+                                        time=1359803261)
     for _ in range(10):
         reply.add_article(0)
 
@@ -86,7 +89,7 @@ def test_create_reply():
         [
             "whtsky",
             "I wrote WeRoBot",
-            "https://secure.gravatar.com/avatar/0024710771815ef9b74881ab21ba4173?s=420",
+            "http://gravatar.com/avatar/0024710771815ef9b74881ab21ba4173",
             "http://whouz.com/"
         ]
     ], message)

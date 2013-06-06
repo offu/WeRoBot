@@ -6,7 +6,7 @@ import werobot.test
 def test_echo():
     robot = werobot.WeRoBot(token=werobot.utils.generate_token())
 
-    @robot.handler
+    @robot.location
     def report(message):
         x, y = message.location
         return 'You are at ({x}, {y})'.format(
