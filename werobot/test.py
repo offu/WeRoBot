@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from . import WeRoBot
 from .messages import WeChatMessage, TextMessage, ImageMessage, LocationMessage
 

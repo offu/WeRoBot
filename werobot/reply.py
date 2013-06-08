@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import time
 from .messages import WeChatMessage
 from .utils import isstring, to_unicode
