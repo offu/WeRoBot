@@ -5,6 +5,7 @@ from bottle import Bottle, request, response, abort
 
 from .parser import parse_user_msg
 from .reply import create_reply
+from .utils import py3k
 
 __all__ = ['BaseRoBot', 'WeRoBot']
 
@@ -92,6 +93,8 @@ class BaseRoBot(object):
         sign = [self.token, timestamp, nonce]
         sign.sort()
         sign = ''.join(sign)
+        if py3k:
+            sign = sign.encode()
         sign = hashlib.sha1(sign).hexdigest()
         return sign == signature
 

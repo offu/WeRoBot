@@ -19,4 +19,4 @@ def test_to_unicode():
     if py3k:
         assert to_unicode(b'b') == 'b'
     else:
-        assert to_unicode('喵') == unicode(u'喵')
+        assert to_unicode('喵') == unicode('喵'.decode('utf-8'))
