@@ -2,28 +2,42 @@
 
 import inspect
 import hashlib
-import warnings
 from bottle import Bottle, request, response, abort
 
 from .parser import parse_user_msg
 from .reply import create_reply
+from . import errors
+#from .settings import settings
+settings = None
 
 __all__ = ['BaseRoBot', 'WeRoBot']
 
 
-def fallback_handler(message):
-    return 'Unhandled'
+def fallback_handler(message, exc):
+    s = 'Error: Message Unhandled: '
+    if isinstance(exc, errors.tolerant_errors):
+        s += str(exc)
+    else:
+        if settings.DEBUG:
+            s += str(exc)
+        else:
+            s += 'Unexpected Exception'
+    return s
 
 
 class BaseRoBot(object):
     message_types = ['subscribe', 'unsubscribe', 'click'  # event
                      'text', 'image', 'link', 'location',
-                     'music', 'news']
+                     'music', 'news',
+                     # ``_fallback`` is not a real message type,
+                     # it is used only if the message has no relevent handler
+                     '_fallback']
 
     def __init__(self, token=None):
         self.token = token
+        # Initialize ``type -> function`` maps
         self._handlers = dict((k, None) for k in self.message_types)
-        self._fallback = {'handler': fallback_handler}
+        self._handlers['_fallback'] = fallback_handler
 
     def subscribe(self, f):
         """
@@ -75,11 +89,8 @@ class BaseRoBot(object):
         """
         Decorator to register handler function for messages that have no relevant handlers
         """
-        self._fallback['handler'] = f
+        self.add_handler(f, types=['_fallback'])
         return f
-
-    def get_fallback_handler(self):
-        return self._fallback['handler']
 
     def add_handler(self, func, types=None):
         """
@@ -93,11 +104,11 @@ class BaseRoBot(object):
 
     def _get_reply(self, message):
         if not message.type in self.message_types:
-            warnings.warn('Encounter new message type: %s' % message.type)
+            raise errors.UnknowMessageType('Type "%s" is not supported' % message.type)
 
         handler = self._handlers[message.type]
-        if handler is None:
-            handler = self.get_fallback_handler()
+        if not handler:
+            raise errors.HandlerNotFound('No handler is binded for message type "%"' % message.type)
 
         return handler(message)
 
@@ -138,9 +149,15 @@ class WeRoBot(BaseRoBot):
 
             body = request.body.read()
             message = parse_user_msg(body)
-            reply = self._get_reply(message)
-            if not reply:
-                return ''
+            try:
+                reply = self._get_reply(message)
+            except Exception, e:
+                reply = self.get_fallback_handler()(message, e)
+
+            # NOTE Commented no reply handling, there should always be given a reply
+            # if not reply:
+            #     return ''
+
             response.content_type = 'application/xml'
             return create_reply(reply, message=message)
 
