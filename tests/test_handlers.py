@@ -1,58 +1,91 @@
-import werobot
-import werobot.utils
-import werobot.test
+from werobot import WeRoBot
+from werobot.utils import generate_token
+from werobot import testing, errors
+from nose.tools import assert_raises
 
 
-def test_one():
-    robot = werobot.WeRoBot(token=werobot.utils.generate_token())
+def make_essential():
+    robot = WeRoBot(token=generate_token())
+    tester = testing.WeTest(robot)
+    return robot, tester
 
-    @robot.handler
+
+def test_errors():
+    robot, tester = make_essential()
+
+    with assert_raises(errors.HandlerNotFound):
+        tester.send(testing.make_text_message('oo'))
+
+    with assert_raises(errors.UnknownMessageType):
+        message = testing.make_text_message('xx')
+        message.type = 'html'
+        tester.send(message)
+
+
+def test_none():
+    robot, tester = make_essential()
+
+    @robot.text
     def first(message):
-        return
+        pass
 
-    @robot.handler
-    def second(message):
-        return "Hi"
-
-    tester = werobot.test.WeTest(robot)
-    message = werobot.test.make_text_message('oo')
-    assert tester.send(message) == 'Hi'
+    message = testing.make_text_message('oo')
+    assert tester.send(message) is None
 
 
-def test_two():
-    robot = werobot.WeRoBot(token=werobot.utils.generate_token())
+def test_text():
+    robot, tester = make_essential()
 
-    @robot.handler
+    @robot.text
     def first(message):
         if 'hi' in message.content:
             return 'Hello'
+        else:
+            return 'Hi'
 
-    @robot.handler
-    def second(message):
-        return "Hi"
-
-    tester = werobot.test.WeTest(robot)
-    message = werobot.test.make_text_message('oo')
+    message = testing.make_text_message('oo')
     assert tester.send(message) == 'Hi'
-    message = werobot.test.make_text_message('hi')
+    message = testing.make_text_message('hi')
     assert tester.send(message) == 'Hello'
 
 
-def test_three():
-    robot = werobot.WeRoBot(token=werobot.utils.generate_token())
+def test_image():
+    robot, tester = make_essential()
 
-    @robot.handler
+    image_url = 'http://a.com/b.jpg'
+
+    @robot.image
     def first(message):
-        if message.type == 'text':
-            return 'txt'
+        return message.img
 
-    @robot.handler
-    def second(message):
-        if message.type == 'image':
-            return 'img'
+    message = testing.make_image_message(image_url)
+    assert tester.send(message) == image_url
 
-    tester = werobot.test.WeTest(robot)
-    message = werobot.test.make_text_message('oo')
-    assert tester.send(message) == 'txt'
-    message = werobot.test.make_image_message('http://a.jpg')
-    assert tester.send(message) == 'img'
+
+def test_location():
+    robot, tester = make_essential()
+
+    @robot.location
+    def report(message):
+        x, y = message.location
+        return 'You are at ({x}, {y})'.format(
+            x=x,
+            y=y
+        )
+
+    message = testing.make_location_message('20', '30', 40, 'label')
+    assert tester.send(message) == 'You are at (20, 30)'
+
+
+def test_full_types():
+    pass
+
+
+#def test_():
+    #robot, tester = make_essential()
+
+    #@robot.
+    #def first(message):
+        #return
+
+    #tester.send(message)

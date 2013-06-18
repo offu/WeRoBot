@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 class WeChatMessage(object):
     def __init__(self, **kwargs):
         if 'msgid' in kwargs:

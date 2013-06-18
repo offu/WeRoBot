@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 import werobot.reply
-import werobot.test
+import werobot.testing
 from werobot.utils import to_unicode
 
 
 def test_text_render():
-    message = werobot.test.make_text_message('test')
+    message = werobot.testing.make_text_message('test')
     reply = werobot.reply.TextReply(message, content='hello', time=1359803261)
     reply_message = """
     <xml>
@@ -22,7 +22,7 @@ def test_text_render():
 
 
 def test_convert():
-    message = werobot.test.make_text_message('test')
+    message = werobot.testing.make_text_message('test')
     reply = werobot.reply.TextReply(message, content='中文', time=1359803261)
     assert reply.render()
     reply = werobot.reply.TextReply(message, content=to_unicode('中文'), time=1359803261)
@@ -30,7 +30,7 @@ def test_convert():
 
 
 def test_create_reply():
-    message = werobot.test.make_text_message('test')
+    message = werobot.testing.make_text_message('test')
     reply = werobot.reply.create_reply('hi', message)
     assert reply
     reply = werobot.reply.create_reply([

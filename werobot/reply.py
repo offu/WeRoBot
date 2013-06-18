@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import time
 from .messages import WeChatMessage
 from .utils import isstring, to_unicode
@@ -131,12 +132,17 @@ class MusicReply(WeChatReply):
 
 
 def create_reply(reply, message=None):
+    """
+    :param reply: reply could be of many types include ``None``
+    """
     if isinstance(reply, WeChatReply):
         return reply.render()
+
     elif isstring(reply):
         message = to_unicode(message)
         reply = TextReply(message=message, content=reply)
         return reply.render()
+
     elif isinstance(reply, list) and all([len(x) == 4 for x in reply]):
         if len(reply) > 10:
             raise AttributeError("Can't add more than 10 articles"
@@ -146,6 +152,7 @@ def create_reply(reply, message=None):
             article = Article(*article)
             r.add_article(article)
         return r.render()
+
     elif isinstance(reply, list) and 3 <= len(reply) <= 4:
         if len(reply) == 3:
             # 如果数组长度为3， 那么高质量音乐链接的网址和普通质量的网址相同。
