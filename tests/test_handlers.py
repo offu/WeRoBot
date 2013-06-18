@@ -6,35 +6,35 @@ from nose.tools import assert_raises
 
 def make_essential():
     robot = WeRoBot(token=generate_token())
-    client = testing.WeTest(robot)
-    return robot, client
+    tester = testing.WeTest(robot)
+    return robot, tester
 
 
 def test_errors():
-    robot, client = make_essential()
+    robot, tester = make_essential()
 
     with assert_raises(errors.HandlerNotFound):
-        client.send(testing.make_text_message('oo'))
+        tester.send(testing.make_text_message('oo'))
 
     with assert_raises(errors.UnknownMessageType):
         message = testing.make_text_message('xx')
         message.type = 'html'
-        client.send(message)
+        tester.send(message)
 
 
 def test_none():
-    robot, client = make_essential()
+    robot, tester = make_essential()
 
     @robot.text
     def first(message):
         pass
 
     message = testing.make_text_message('oo')
-    assert client.send(message) is None
+    assert tester.send(message) is None
 
 
 def test_text():
-    robot, client = make_essential()
+    robot, tester = make_essential()
 
     @robot.text
     def first(message):
@@ -44,13 +44,13 @@ def test_text():
             return 'Hi'
 
     message = testing.make_text_message('oo')
-    assert client.send(message) == 'Hi'
+    assert tester.send(message) == 'Hi'
     message = testing.make_text_message('hi')
-    assert client.send(message) == 'Hello'
+    assert tester.send(message) == 'Hello'
 
 
 def test_image():
-    robot, client = make_essential()
+    robot, tester = make_essential()
 
     image_url = 'http://a.com/b.jpg'
 
@@ -59,11 +59,11 @@ def test_image():
         return message.img
 
     message = testing.make_image_message(image_url)
-    assert client.send(message) == image_url
+    assert tester.send(message) == image_url
 
 
 def test_location():
-    robot, client = make_essential()
+    robot, tester = make_essential()
 
     @robot.location
     def report(message):
@@ -74,7 +74,7 @@ def test_location():
         )
 
     message = testing.make_location_message('20', '30', 40, 'label')
-    assert client.send(message) == 'You are at (20, 30)'
+    assert tester.send(message) == 'You are at (20, 30)'
 
 
 def test_full_types():
@@ -82,10 +82,10 @@ def test_full_types():
 
 
 #def test_():
-    #robot, client = make_essential()
+    #robot, tester = make_essential()
 
     #@robot.
     #def first(message):
         #return
 
-    #client.send(message)
+    #tester.send(message)
