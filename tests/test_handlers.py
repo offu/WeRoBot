@@ -6,11 +6,11 @@ import werobot.test
 def test_one():
     robot = werobot.WeRoBot(token=werobot.utils.generate_token())
 
-    @robot.handler
+    @robot.text
     def first(message):
         return
 
-    @robot.handler
+    @robot.text
     def second(message):
         return "Hi"
 
@@ -22,14 +22,12 @@ def test_one():
 def test_two():
     robot = werobot.WeRoBot(token=werobot.utils.generate_token())
 
-    @robot.handler
+    @robot.text
     def first(message):
         if 'hi' in message.content:
             return 'Hello'
-
-    @robot.handler
-    def second(message):
-        return "Hi"
+        else:
+            return 'Hi'
 
     tester = werobot.test.WeTest(robot)
     message = werobot.test.make_text_message('oo')
@@ -41,12 +39,12 @@ def test_two():
 def test_three():
     robot = werobot.WeRoBot(token=werobot.utils.generate_token())
 
-    @robot.handler
+    @robot.text
     def first(message):
         if message.type == 'text':
             return 'txt'
 
-    @robot.handler
+    @robot.image
     def second(message):
         if message.type == 'image':
             return 'img'

@@ -26,7 +26,7 @@ def fallback_handler(message, exc):
 
 
 class BaseRoBot(object):
-    message_types = ['subscribe', 'unsubscribe', 'click'  # event
+    message_types = ['subscribe', 'unsubscribe', 'click',  # event
                      'text', 'image', 'link', 'location',
                      'music', 'news',
                      # ``_fallback`` is not a real message type,
@@ -104,7 +104,7 @@ class BaseRoBot(object):
 
     def _get_reply(self, message):
         if not message.type in self.message_types:
-            raise errors.UnknowMessageType('Type "%s" is not supported' % message.type)
+            raise errors.UnknownMessageType('Type "%s" is not supported' % message.type)
 
         handler = self._handlers[message.type]
         if not handler:

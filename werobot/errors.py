@@ -6,7 +6,7 @@ class WebotException(Exception):
     pass
 
 
-class UnknownMessage(WebotException):
+class UnknownMessageType(WebotException):
     pass
 
 
