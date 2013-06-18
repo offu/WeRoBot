@@ -2,6 +2,7 @@
 
 import inspect
 import hashlib
+import logging
 from bottle import Bottle, request, response, abort
 
 from .parser import parse_user_msg
@@ -13,16 +14,13 @@ settings = None
 __all__ = ['BaseRoBot', 'WeRoBot']
 
 
-def fallback_handler(message, exc):
-    s = 'Error: Message Unhandled: '
-    if isinstance(exc, errors.tolerant_errors):
-        s += str(exc)
-    else:
-        if settings.DEBUG:
-            s += str(exc)
-        else:
-            s += 'Unexpected Exception'
-    return s
+_default_settings = {
+    'DEBUG': True,
+    'SERVER': 'auto',
+    'PORT': 8000,
+    'LOGGING': 'INFO',
+    'LOGGING_FORMAT': '[%(levelname)s %(asctime)s %(module)s-%(lineno)s] %(message)s'
+}
 
 
 class BaseRoBot(object):
@@ -38,6 +36,16 @@ class BaseRoBot(object):
         # Initialize ``type -> function`` maps
         self._handlers = dict((k, None) for k in self.message_types)
         self._handlers['_fallback'] = fallback_handler
+        self.settings = Settings(_default_settings)
+        self._set_logger()
+
+    def _set_logger(self):
+        formatter = logging.Formatter(self.settings.LOGGING_FORMAT)
+        handler = logging.StreamHandler()
+        handler.setFormatter(formatter)
+        root_logger = logging.getLogger()
+        root_logger.addHandler(handler)
+        root_logger.setLevel(getattr(logging, self.settings.LOGGING))
 
     def subscribe(self, f):
         """
@@ -120,6 +128,18 @@ class BaseRoBot(object):
         return sign == signature
 
 
+def fallback_handler(message, exc):
+    s = 'Error: Message Unhandled: '
+    if isinstance(exc, errors.tolerant_errors):
+        s += str(exc)
+    else:
+        if settings.DEBUG:
+            s += str(exc)
+        else:
+            s += 'Unexpected Exception'
+    return s
+
+
 class WeRoBot(BaseRoBot):
 
     @property
@@ -154,14 +174,55 @@ class WeRoBot(BaseRoBot):
             except Exception, e:
                 reply = self.get_fallback_handler()(message, e)
 
-            # NOTE Commented no reply handling, there should always be given a reply
-            # if not reply:
-            #     return ''
-
             response.content_type = 'application/xml'
             return create_reply(reply, message=message)
 
         return app
 
-    def run(self, server='auto', host='127.0.0.1', port=8888):
-        self.wsgi.run(server=server, host=host, port=port)
+    def run(self, server=None, host='127.0.0.1', port=None):
+        self._set_logger()
+        logging.debug('Settings: %s' % ','.join('%s=%s' % (k, v) for k, v in self.settings.iteritems()))
+        self.wsgi.run(
+            server=server or self.settings.SERVER,
+            host=host,
+            port=port or self.settings.PORT)
+
+
+class Settings(dict):
+    """
+    A dict class that can retrieve values in ``object.attribute`` way
+    """
+
+    def __getitem__(self, key):
+        try:
+            return super(Settings, self).__getitem__(key)
+        except KeyError:
+            try:
+                return super(Settings, self).__getitem__(key.lower())
+            except KeyError:
+                raise errors.SettingsError('Key "%s" is not defined in settings' % key)
+
+    def __setitem__(self, key, value):
+        for i in key:
+            if i != i.upper():
+                raise errors.SettingsError('Key "%s" is not allowed, you should always define'
+                                           ' UPPER CASE VARIABLE as setting' % key)
+        super(Settings, self).__setitem__(key.upper(), value)
+
+    def __getattr__(self, key):
+        try:
+            return self[key]
+        except KeyError:
+            raise AttributeError('Has no attribute %s' % key)
+
+    def __setattr__(self, key, value):
+        self[key] = value
+
+    def __delattr__(self, key):
+        try:
+            del self[key]
+        except KeyError:
+            raise AttributeError(key)
+
+    def __str__(self):
+        return '<Settings. %s >' % dict(self)

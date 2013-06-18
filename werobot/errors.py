@@ -12,3 +12,7 @@ class UnknownMessageType(WebotException):
 
 class HandlerNotFound(WebotException):
     pass
+
+
+class SettingsError(WebotException):
+    pass
