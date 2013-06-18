@@ -108,7 +108,7 @@ class BaseRoBot(object):
 
         handler = self._handlers[message.type]
         if not handler:
-            raise errors.HandlerNotFound('No handler is binded for message type "%"' % message.type)
+            raise errors.HandlerNotFound('No handler is binded for message type "%s"' % message.type)
 
         return handler(message)
 
