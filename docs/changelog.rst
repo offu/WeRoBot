@@ -1,6 +1,12 @@
 Changelog
 =============
 
+Version 0.4.0
+----------------
++ Add logging support
++ Rename ``werobot.test`` to ``werobot.testing``
++ Add fallback handler
+
 Version 0.3.5
 ----------------
 + Bug fix: Make ``BaseRoBot`` importable
