@@ -1,10 +1,13 @@
 import werobot
 import werobot.utils
-import werobot.test
+import werobot.testing
 
 
 def test_types():
     robot = werobot.WeRoBot(token=werobot.utils.generate_token())
+
+    for type in robot.message_types:
+        assert hasattr(robot, type)
 
     @robot.text
     def second(message):
@@ -14,8 +17,8 @@ def test_types():
     def third(message):
         return 'nice pic'
 
-    tester = werobot.test.WeTest(robot)
-    message = werobot.test.make_text_message('oo')
+    tester = werobot.testing.WeTest(robot)
+    message = werobot.testing.make_text_message('oo')
     assert tester.send(message) == 'Hi'
-    message = werobot.test.make_image_message('img')
+    message = werobot.testing.make_image_message('img')
     assert tester.send(message) == 'nice pic'

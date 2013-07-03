@@ -1,6 +1,6 @@
 import werobot
 import werobot.utils
-import werobot.test
+import werobot.testing
 
 
 def test_events():
@@ -11,7 +11,7 @@ def test_events():
     def first(message):
         return 'Hi'
 
-    tester = werobot.test.WeTest(robot)
+    tester = werobot.testing.WeTest(robot)
 
     xml = """
     <xml>

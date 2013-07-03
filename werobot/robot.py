@@ -16,7 +16,7 @@ class BaseRoBot(object):
 
     def __init__(self, token=None):
         self._handlers = dict((k, []) for k in self.message_types)
-        self._handlers['fallback'] = lambda x, err: None
+        self._fallback = lambda x, err: None
         self.token = token
 
     def handler(self, f):
@@ -90,7 +90,7 @@ class BaseRoBot(object):
         if not inspect.isfunction(func):
             raise TypeError
         if types == 'fallback':
-            self._handlers['fallback'] = func
+            self._fallback = func
         else:
             for type in types:
                 self._handlers[type].append(func)

@@ -20,7 +20,7 @@ class WeTest(object):
     def send(self, message):
         if not isinstance(message, WeChatMessage):
             raise TypeError
-        return self._app._get_reply(message)
+        return self._app.get_reply(message)
 
     def send_xml(self, xml):
         message = parse_user_msg(xml)

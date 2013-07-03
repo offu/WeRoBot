@@ -1,6 +1,6 @@
 import werobot
 import werobot.utils
-import werobot.test
+import werobot.testing
 
 
 def test_echo():
@@ -10,6 +10,6 @@ def test_echo():
     def echo(message):
         return message.img
 
-    tester = werobot.test.WeTest(robot)
-    message = werobot.test.make_image_message('http://a.com/b.jpg')
+    tester = werobot.testing.WeTest(robot)
+    message = werobot.testing.make_image_message('http://a.com/b.jpg')
     assert tester.send(message) == 'http://a.com/b.jpg'

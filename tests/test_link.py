@@ -1,6 +1,6 @@
 import werobot
 import werobot.utils
-import werobot.test
+import werobot.testing
 
 
 def test_link():
@@ -12,7 +12,7 @@ def test_link():
         assert message.description == 'description'
         assert message.url == 'url'
 
-    tester = werobot.test.WeTest(robot)
+    tester = werobot.testing.WeTest(robot)
 
     xml = """
     <xml>
