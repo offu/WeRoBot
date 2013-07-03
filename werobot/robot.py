@@ -1,5 +1,6 @@
 import inspect
 import hashlib
+import logging
 
 from bottle import Bottle, request, response, abort
 
@@ -14,10 +15,13 @@ class BaseRoBot(object):
     message_types = ['subscribe', 'unsubscribe', 'click',  # event
                      'text', 'image', 'link', 'location']
 
-    def __init__(self, token=None):
+    def __init__(self, token=None, logger=None):
         self._handlers = dict((k, []) for k in self.message_types)
         self._fallback = lambda x, err: None
         self.token = token
+        if logger is None:
+            logger = logging.getLogger("WeRoBot")
+        self.logger = logger
 
     def handler(self, f):
         """
@@ -105,6 +109,7 @@ class BaseRoBot(object):
                 if reply:
                     return reply
         except Exception, e:
+            self.logger.warning("Catch an exception", exc_info=True)
             fallback = self.get_fallback_handler()
             fallback(message, e)
 
@@ -147,13 +152,20 @@ class WeRoBot(BaseRoBot):
 
             body = request.body.read()
             message = parse_user_msg(body)
+            logging.info("Receive message %s" % message)
             reply = self.get_reply(message)
             if not reply:
+                self.logger.warning("No handler responded message %s"
+                                    % message)
                 return ''
             response.content_type = 'application/xml'
             return create_reply(reply, message=message)
 
         return app
 
-    def run(self, server='auto', host='127.0.0.1', port=8888):
+    def run(self, server='auto', host='127.0.0.1',
+            port=8888, enable_pretty_logging=True):
+        if enable_pretty_logging:
+            from werobot.utils import enable_pretty_logging
+            enable_pretty_logging(self.logger)
         self.wsgi.run(server=server, host=host, port=port)
