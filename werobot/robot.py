@@ -129,7 +129,7 @@ class BaseRoBot(object):
 
 
 def fallback_handler(message, exc):
-    s = 'Error: Message Unhandled: '
+    s = 'Fallback: Message Unhandled: '
     if isinstance(exc, errors.tolerant_errors):
         s += str(exc)
     else:
