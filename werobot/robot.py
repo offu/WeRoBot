@@ -1,6 +1,7 @@
 import inspect
 import hashlib
 import logging
+import json
 
 from bottle import Bottle, request, response, abort
 
@@ -15,13 +16,19 @@ class BaseRoBot(object):
     message_types = ['subscribe', 'unsubscribe', 'click',  # event
                      'text', 'image', 'link', 'location']
 
-    def __init__(self, token=None, logger=None):
+    def __init__(self, token=None, logger=None, enable_session=False,
+                 session_storage=None):
         self._handlers = dict((k, []) for k in self.message_types)
         self._fallback = lambda x, err: None
         self.token = token
         if logger is None:
             logger = logging.getLogger("WeRoBot")
         self.logger = logger
+
+        if enable_session and session_storage is None:
+            from .session.filestorage import FileStorage
+            session_storage = FileStorage()
+        self.session_storage = session_storage
 
     def handler(self, f):
         """
@@ -103,9 +110,16 @@ class BaseRoBot(object):
         """
         Return the raw xml reply for the given message.
         """
+        session_storage = self.session_storage
+        if session_storage:
+            id = message.source
+            session = json.loads(session_storage[id])
         try:
             for handler in self._handlers[message.type]:
-                reply = handler(message)
+                if session_storage:
+                    reply = handler(message, session)
+                    session = json.dumps(session)
+                    session_storage.set(id, session)
                 if reply:
                     return reply
         except Exception, e:
