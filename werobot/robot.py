@@ -3,13 +3,11 @@
 import inspect
 import hashlib
 import logging
-from bottle import Bottle, request, response, abort
+from bottle import Bottle, request, response, abort, debug
 
 from .parser import parse_user_msg
 from .reply import create_reply
 from . import errors
-#from .settings import settings
-settings = None
 
 __all__ = ['BaseRoBot', 'WeRoBot']
 
@@ -36,7 +34,7 @@ class BaseRoBot(object):
         # Initialize ``type -> function`` maps
         self._handlers = dict((k, None) for k in self.message_types)
         self._handlers['_fallback'] = fallback_handler
-        self.settings = Settings(_default_settings)
+        self.settings = settings
         self._set_logger()
 
     def _set_logger(self):
@@ -144,9 +142,9 @@ class WeRoBot(BaseRoBot):
 
     @property
     def wsgi(self):
-        if not self._handlers:
-            raise
         app = Bottle()
+        if self.settings.DEBUG:
+            debug(mode=True)
 
         @app.get('/')
         def echo():
@@ -226,3 +224,6 @@ class Settings(dict):
 
     def __str__(self):
         return '<Settings. %s >' % dict(self)
+
+
+settings = Settings(_default_settings)
