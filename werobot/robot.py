@@ -155,7 +155,7 @@ class WeRoBot(BaseRoBot):
                 request.query.nonce,
                 request.query.signature
             ):
-                return abort('403', 'What do you expect from me?')
+                return abort(403, 'What do you expect from me?')
             return request.query.echostr
 
         @app.post('/')
@@ -165,7 +165,7 @@ class WeRoBot(BaseRoBot):
                 request.query.nonce,
                 request.query.signature
             ):
-                return abort('403', 'What do you expect from me?')
+                return abort(403, 'What do you expect from me?')
 
             body = request.body.read()
             message = parse_user_msg(body)
