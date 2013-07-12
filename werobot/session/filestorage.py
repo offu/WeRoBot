@@ -1,3 +1,5 @@
+import json
+
 try:
     import anydbm as dbm
     assert dbm
@@ -12,10 +14,10 @@ class FileStorage(SessionStorage):
         self.db = dbm.open(filename, "c")
 
     def get(self, id):
-        return self.db.get(id, "")
+        return json.loads(self.db.get(id, "{}"))
 
     def set(self, id, value):
-        self.db[id] = value
+        self.db[id] = json.dumps(value)
 
     def delete(self, id):
         del self.db[id]
