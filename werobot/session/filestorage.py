@@ -12,7 +12,7 @@ class FileStorage(SessionStorage):
         self.db = dbm.open(filename, "c")
 
     def get(self, id):
-        return self.db[id]
+        return self.db.get(id, "")
 
     def set(self, id, value):
         self.db[id] = value

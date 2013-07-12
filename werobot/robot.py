@@ -90,7 +90,7 @@ class BaseRoBot(object):
         self.add_handler(f, types=['fallback'])
 
     def get_fallback_handler(self):
-        return self._handlers['fallback']
+        return self._fallback
 
     def add_handler(self, func, types=None):
         """
@@ -113,14 +113,21 @@ class BaseRoBot(object):
         session_storage = self.session_storage
         if session_storage:
             id = message.source
-            session = json.loads(session_storage[id])
+            raw_session = session_storage[id]
+            if raw_session:
+                session = json.loads(raw_session)
+            else:
+                session = {}
         try:
             for handler in self._handlers[message.type]:
                 if session_storage:
                     reply = handler(message, session)
-                    session = json.dumps(session)
-                    session_storage.set(id, session)
+                else:
+                    reply = handler(message)
                 if reply:
+                    if session_storage:
+                        session = json.dumps(session)
+                        session_storage.set(id, session)
                     return reply
         except Exception, e:
             self.logger.warning("Catch an exception", exc_info=True)

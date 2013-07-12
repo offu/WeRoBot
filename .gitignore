@@ -44,3 +44,5 @@ docs/_
 #VirtualEnv
 .Python
 include/
+
+werobot_session.db
