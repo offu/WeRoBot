@@ -38,7 +38,7 @@ Hello World
     robot = werobot.WeRoBot(token='tokenhere')
 
     @robot.text
-    def echo(message):
+    def hello_world(message):
         return 'Hello World!'
 
     robot.run()
@@ -53,10 +53,10 @@ WeRoBot 在 0.4.0 版本中开始支持 Session ， Session 可以用来方便�
     robot = werobot.WeRoBot(token='tokenhere', enable_session=True)
 
     @robot.text
-    def echo(message, session):
+    def session(message, session):
         last = session.get("last", None)
         if last:
-            return '你说的上一句话是：%s' % last
+            return last
         session["last"] = message.content
         return '这是你第一次和我说话'
 
