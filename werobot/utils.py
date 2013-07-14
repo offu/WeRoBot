@@ -3,6 +3,7 @@ import re
 import random
 import time
 import logging
+import json
 
 try:
     import curses
@@ -117,3 +118,12 @@ class _LogFormatter(logging.Formatter):
         if record.exc_text:
             formatted = formatted.rstrip() + "\n" + record.exc_text
         return formatted.replace("\n", "\n    ")
+
+
+def json_loads(s):
+    s = to_unicode(s)
+    return json.loads(s)
+
+
+def json_dumps(d):
+    return json.dumps(d)

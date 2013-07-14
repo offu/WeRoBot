@@ -1,7 +1,5 @@
-import json
-
 from . import SessionStorage
-from werobot.utils import py3k
+from werobot.utils import json_loads, json_dumps
 
 
 class MongoDBStorage(SessionStorage):
@@ -19,14 +17,12 @@ class MongoDBStorage(SessionStorage):
         document = self._get_document(id)
         if document:
             session_json = document["session"]
-            if py3k:
-                session_json = session_json.decode()
-            return json.loads(session_json)
+            return json_loads(session_json)
         return {}
 
     def set(self, id, value):
         document = self._get_document(id)
-        session = json.dumps(value)
+        session = json_dumps(value)
         if document:
             document["session"] = session
             self.collection.save(document)

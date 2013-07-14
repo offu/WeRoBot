@@ -1,7 +1,5 @@
-import json
-
 from . import SessionStorage
-from werobot.utils import py3k
+from werobot.utils import json_loads, json_dumps
 
 
 class RedisStorage(SessionStorage):
@@ -17,13 +15,11 @@ class RedisStorage(SessionStorage):
     def get(self, id):
         id = self.key_name(id)
         session_json = self.redis.get(id)
-        if py3k:
-            session_json = session_json.decode()
-        return json.loads(session_json)
+        return json_loads(session_json)
 
     def set(self, id, value):
         id = self.key_name(id)
-        self.redis.set(json.dumps(value))
+        self.redis.set(json_dumps(value))
 
     def delete(self, id):
         id = self.key_name(id)
