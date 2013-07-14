@@ -89,11 +89,8 @@ class BaseRoBot(object):
             types = self._handlers.keys()
         if not inspect.isfunction(func):
             raise TypeError
-        if types == 'fallback':
-            self._fallback = func
-        else:
-            for type in types:
-                self._handlers[type].append(func)
+        for type in types:
+            self._handlers[type].append(func)
 
     def get_reply(self, message):
         """
