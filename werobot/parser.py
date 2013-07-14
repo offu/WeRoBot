@@ -1,7 +1,7 @@
 from xml.etree import ElementTree
 
-from .messages import *
-from .messages import UnknownMessage
+from .messages import TextMessage, LocationMessage, ImageMessage, EventMessage
+from .messages import LinkMessage, UnknownMessage
 from .utils import to_unicode
 
 

@@ -10,9 +10,7 @@ try:
 except ImportError:
     curses = None
 
-
-py = sys.version_info
-py3k = py >= (3, 0, 0)
+py3k = sys.version_info >= (3, 0, 0)
 
 if py3k:
     basestring = unicode = str
@@ -89,14 +87,14 @@ class _LogFormatter(logging.Formatter):
             if (3, 0) < sys.version_info < (3, 2, 3):
                 fg_color = unicode(fg_color, "ascii")
             self._colors = {
-                logging.DEBUG: unicode(curses.tparm(fg_color, 4),  # Blue
-                    "ascii"),
-                logging.INFO: unicode(curses.tparm(fg_color, 2),  # Green
-                    "ascii"),
-                logging.WARNING: unicode(curses.tparm(fg_color, 3),  # Yellow
-                    "ascii"),
-                logging.ERROR: unicode(curses.tparm(fg_color, 1),  # Red
-                    "ascii"),
+                logging.DEBUG: unicode(curses.tparm(fg_color, 4),
+                                       "ascii"),  # Blue
+                logging.INFO: unicode(curses.tparm(fg_color, 2),
+                                      "ascii"),  # Green
+                logging.WARNING: unicode(curses.tparm(fg_color, 3),
+                                         "ascii"),  # Yellow
+                logging.ERROR: unicode(curses.tparm(fg_color, 1),
+                                       "ascii"),  # Red
             }
             self._normal = unicode(curses.tigetstr("sgr0"), "ascii")
 
@@ -107,7 +105,7 @@ class _LogFormatter(logging.Formatter):
             record.message = "Bad message (%r): %r" % (e, record.__dict__)
         record.asctime = time.strftime(
             "%y%m%d %H:%M:%S", self.converter(record.created))
-        prefix = '[%(levelname)1.1s %(asctime)s %(module)s:%(lineno)d]' %\
+        prefix = '[%(levelname)1.1s %(asctime)s %(module)s:%(lineno)d]' % \
                  record.__dict__
         if self._color:
             prefix = (self._colors.get(record.levelno, self._normal) +
