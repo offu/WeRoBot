@@ -7,6 +7,7 @@ except ImportError:
     import dbm
 
 from . import SessionStorage
+from werobot.utils import py3k
 
 
 class FileStorage(SessionStorage):
@@ -14,7 +15,10 @@ class FileStorage(SessionStorage):
         self.db = dbm.open(filename, "c")
 
     def get(self, id):
-        return json.loads(self.db.get(id, "{}"))
+        session_json = self.db.get(id, "{}")
+        if py3k:
+            session_json = session_json.decode()
+        return json.loads(session_json)
 
     def set(self, id, value):
         self.db[id] = json.dumps(value)

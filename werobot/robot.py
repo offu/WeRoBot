@@ -112,7 +112,7 @@ class BaseRoBot(object):
                     reply = handler(message)
                 if reply:
                     return reply
-        except Exception as e:
+        except:
             self.logger.warning("Catch an exception", exc_info=True)
 
     def check_signature(self, timestamp, nonce, signature):
