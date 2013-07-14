@@ -122,7 +122,7 @@ class BaseRoBot(object):
                     reply = handler(message)
                 if reply:
                     return reply
-        except Exception, e:
+        except Exception as e:
             self.logger.warning("Catch an exception", exc_info=True)
             fallback = self.get_fallback_handler()
             fallback(message, e)
