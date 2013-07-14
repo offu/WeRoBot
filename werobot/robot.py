@@ -18,7 +18,6 @@ class BaseRoBot(object):
     def __init__(self, token=None, logger=None, enable_session=False,
                  session_storage=None):
         self._handlers = dict((k, []) for k in self.message_types)
-        self._fallback = lambda x, err: None
         self.token = token
         if logger is None:
             logger = logging.getLogger("WeRoBot")
@@ -82,15 +81,6 @@ class BaseRoBot(object):
         """
         self.add_handler(f, types=['click'])
 
-    def fallback(self, f):
-        """
-        Decorator to register handler function for messages that have no relevant handlers
-        """
-        self.add_handler(f, types=['fallback'])
-
-    def get_fallback_handler(self):
-        return self._fallback
-
     def add_handler(self, func, types=None):
         """
         Add a handler function for messages of given types.
@@ -124,8 +114,6 @@ class BaseRoBot(object):
                     return reply
         except Exception as e:
             self.logger.warning("Catch an exception", exc_info=True)
-            fallback = self.get_fallback_handler()
-            fallback(message, e)
 
     def check_signature(self, timestamp, nonce, signature):
         sign = [self.token, timestamp, nonce]
