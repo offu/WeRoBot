@@ -8,13 +8,11 @@ python:
 
 install:
   - "python setup.py install"
+  - "pip install -r dev-requirements.txt"
 
-script: nosetests
+script: coverage run --source=werobot setup.py -q nosetests
 
-after_success:
-  - pip install coveralls
-  - coverage run --source=werobot setup.py -q nosetests
-  - coveralls
+after_success: coveralls
 
 notifications:
   email: false

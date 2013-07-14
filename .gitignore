@@ -26,6 +26,7 @@ pip-log.txt
 .tox
 nosetests.xml
 cover/
+htmlcov/
 
 # Translations
 *.mo
@@ -46,3 +47,5 @@ docs/_
 include/
 
 werobot_session.db
+
+.coveralls.yml
