@@ -1,0 +1,13 @@
+cov-core==1.7
+coverage==3.6
+flake8==2.0
+mccabe==0.2.1
+nose-cov==1.6
+nose==1.3.0
+pep8==1.4.6
+py==1.4.15
+pyflakes==0.7.3
+pymongo==2.5.2
+redis==2.7.6
+tox==1.5.0
+virtualenv==1.9.1
