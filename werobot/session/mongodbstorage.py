@@ -1,8 +1,27 @@
+# -*- coding: utf-8 -*-
+
 from . import SessionStorage
 from werobot.utils import json_loads, json_dumps
 
 
 class MongoDBStorage(SessionStorage):
+    """
+    MongoDBStorage 会把你的 Session 数据储存在一个 MongoDB Collection 中 ::
+
+        import pymongo
+        import werobot
+        from werobot.session.mongodbstorage import MongoDBStorage
+
+        collection = pymongo.MongoClient()["wechat"]["session"]
+        session_storage = mongodbstorage.MongoDBStorage(collection)
+        robot = werobot.WeRoBot(token="token", enable_session=True,
+                                session_storage=session_storage)
+
+
+    你需要安装 ``pymongo`` 才能使用 MongoDBStorage 。
+
+    :param collection: 一个 MongoDB Collection。
+    """
     def __init__(self, collection):
         import pymongo
         assert isinstance(collection,
