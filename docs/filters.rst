@@ -67,4 +67,4 @@ robot.unknown        未知类型
 
     robot.run()
 
-.. note:: 通过 `robot.handler` 添加的 handler 将收到所有信息。
+.. note:: 通过 ``robot.handler`` 添加的 handler 将收到所有信息；只有在其他 handler 没有给出返回值的情况下， 通过 ``robot.handler`` 添加的 handler 才会被调用。
