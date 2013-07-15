@@ -1,5 +1,4 @@
-from . import WeRoBot
-from .messages import WeChatMessage, TextMessage, ImageMessage, LocationMessage
+from .messages import TextMessage, ImageMessage, LocationMessage
 from .parser import parse_user_msg
 
 __all__ = ['WeTest']
