@@ -14,13 +14,13 @@ class RedisStorage(SessionStorage):
 
     def get(self, id):
         id = self.key_name(id)
-        session_json = self.redis.get(id)
+        session_json = self.redis.get(id) or '{}'
         return json_loads(session_json)
 
     def set(self, id, value):
         id = self.key_name(id)
-        self.redis.set(json_dumps(value))
+        self.redis.set(id, json_dumps(value))
 
     def delete(self, id):
         id = self.key_name(id)
-        self.redis.delte(id)
+        self.redis.delete(id)
