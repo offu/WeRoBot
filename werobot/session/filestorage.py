@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 try:
     import anydbm as dbm
     assert dbm
@@ -9,6 +11,11 @@ from werobot.utils import json_loads, json_dumps
 
 
 class FileStorage(SessionStorage):
+    """
+    FileStorage 会把你的 Session 数据以 dbm 形式储存在文件中。
+
+    :param filename: 文件名， 默认为 ``werobot_session``
+    """
     def __init__(self, filename='werobot_session'):
         self.db = dbm.open(filename, "c")
 
