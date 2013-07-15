@@ -56,7 +56,7 @@ def test_session_storage_get():
 @raises(NotImplementedError)
 def test_session_storage_set():
     session = SessionStorage()
-    session.set('s')
+    session.set('s', {})
 
 
 @raises(NotImplementedError)
