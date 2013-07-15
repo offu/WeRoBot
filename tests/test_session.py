@@ -4,9 +4,11 @@ import werobot
 import werobot.utils
 import werobot.testing
 from werobot.session import filestorage, mongodbstorage, redisstorage
+from werobot.session import SessionStorage
 
 import pymongo
 import redis
+from nose.tools import raises
 
 
 def remove_session(session):
@@ -43,3 +45,21 @@ def test_session():
         assert tester.send(message_1) == tester.send(message_2) == 'ss',\
             session_storage
         remove_session(session_storage)
+
+
+@raises(NotImplementedError)
+def test_session_storage_get():
+    session = SessionStorage()
+    session.get('s')
+
+
+@raises(NotImplementedError)
+def test_session_storage_set():
+    session = SessionStorage()
+    session.set('s')
+
+
+@raises(NotImplementedError)
+def test_session_storage_delete():
+    session = SessionStorage()
+    session.delete('s')
