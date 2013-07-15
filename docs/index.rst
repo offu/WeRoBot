@@ -10,8 +10,8 @@ WeRoBot是一个微信机器人框架，采用MIT协议发布。
     start
     handlers
     messages
-    filters
     replies
+    session
     deploy
     utils
     changelog
