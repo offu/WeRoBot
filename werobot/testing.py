@@ -13,13 +13,9 @@ _kwargs = {
 
 class WeTest(object):
     def __init__(self, app):
-        if not isinstance(app, WeRoBot):
-            raise TypeError
         self._app = app
 
     def send(self, message):
-        if not isinstance(message, WeChatMessage):
-            raise TypeError
         return self._app.get_reply(message)
 
     def send_xml(self, xml):
