@@ -1,9 +1,29 @@
+# -*- coding: utf-8 -*-
+
 from . import SessionStorage
 from werobot.utils import json_loads, json_dumps
 
 
 class RedisStorage(SessionStorage):
-    def __init__(self, redis, prefix='werobot_session_'):
+    """
+    RedisStorage 会把你的 Session 数据储存在 Redis 中 ::
+
+        import redis
+        import werobot
+        from werobot.session.redisstorage import RedisStorage
+
+        db = redis.Redis()
+        session_storage = RedisStorage(db, prefix="my_prefix_")
+        robot = werobot.WeRoBot(token="token", enable_session=True,
+                                session_storage=session_storage)
+
+
+    你需要安装 ``redis`` 才能使用 MongoDBStorage 。
+
+    :param redis: 一个 Redis Client。
+    :param prefix: Reids 中 Session 数据 key 的 prefix 。默认为 ``ws_``
+    """
+    def __init__(self, redis, prefix='ws_'):
         for method_name in ['get', 'set', 'delete']:
             assert hasattr(redis, method_name)
         self.redis = redis
