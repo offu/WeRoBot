@@ -39,6 +39,7 @@ def test_session():
     ]
 
     for session_storage in session_storages:
-        robot.session_storage = session_storages
-        assert tester.send(message_1) == tester.send(message_2) == 'ss'
+        robot.session_storage = session_storage
+        assert tester.send(message_1) == tester.send(message_2) == 'ss',\
+            session_storage
         remove_session(session_storage)
