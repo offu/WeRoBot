@@ -18,6 +18,7 @@ class BaseRoBot(object):
     def __init__(self, token=None, logger=None, enable_session=False,
                  session_storage=None):
         self._handlers = dict((k, []) for k in self.message_types)
+        self._handlers['all'] = []
         self.token = token
         if logger is None:
             logger = logging.getLogger("WeRoBot")
@@ -32,65 +33,65 @@ class BaseRoBot(object):
         """
         Decorator to add a handler function for every messages
         """
-        self.add_handler(f, types=[])
+        self.add_handler(f, type='all')
         return f
 
     def text(self, f):
         """
         Decorator to add a handler function for ``text`` messages
         """
-        self.add_handler(f, types=['text'])
+        self.add_handler(f, type='text')
         return f
 
     def image(self, f):
         """
         Decorator to add a handler function for ``image`` messages
         """
-        self.add_handler(f, types=['image'])
+        self.add_handler(f, type='image')
         return f
 
     def location(self, f):
         """
         Decorator to add a handler function for ``location`` messages
         """
-        self.add_handler(f, types=['location'])
+        self.add_handler(f, type='location')
         return f
 
     def link(self, f):
         """
         Decorator to add a handler function for ``link`` messages
         """
-        self.add_handler(f, types=['link'])
+        self.add_handler(f, type='link')
         return f
 
     def subscribe(self, f):
         """
         Decorator to add a handler function for ``subscribe event`` messages
         """
-        self.add_handler(f, types=['subscribe'])
+        self.add_handler(f, type='subscribe')
 
     def unsubscribe(self, f):
         """
         Decorator to add a handler function for ``unsubscribe event`` messages
         """
-        self.add_handler(f, types=['unsubscribe'])
+        self.add_handler(f, type='unsubscribe')
 
     def click(self, f):
         """
         Decorator to add a handler function for ``click`` messages
         """
-        self.add_handler(f, types=['click'])
+        self.add_handler(f, type='click')
 
-    def add_handler(self, func, types=None):
+    def add_handler(self, func, type):
         """
-        Add a handler function for messages of given types.
+        Add a handler function for messages of given type.
         """
-        if not types:
-            types = self._handlers.keys()
         if not inspect.isfunction(func):
             raise TypeError
-        for type in types:
-            self._handlers[type].append(func)
+        self._handlers[type].append(func)
+
+    def get_handlers(self, type):
+        return self._handlers[type] + self._handlers['all']
 
     def get_reply(self, message):
         """
@@ -100,8 +101,9 @@ class BaseRoBot(object):
         if session_storage:
             id = message.source
             session = session_storage[id]
+        handlers = self.get_handlers(message.type)
         try:
-            for handler in self._handlers[message.type]:
+            for handler in handlers:
                 if session_storage:
                     reply = handler(message, session)
                     session_storage[id] = session
