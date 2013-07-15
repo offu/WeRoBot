@@ -82,7 +82,7 @@ class BaseRoBot(object):
         """
         self.add_handler(f, type='click')
 
-    def add_handler(self, func, type):
+    def add_handler(self, func, type='all'):
         """
         Add a handler function for messages of given type.
         """
