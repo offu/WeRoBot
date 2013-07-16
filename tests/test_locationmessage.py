@@ -1,12 +1,12 @@
 import werobot
 import werobot.utils
-import werobot.test
+import werobot.testing
 
 
 def test_echo():
     robot = werobot.WeRoBot(token=werobot.utils.generate_token())
 
-    @robot.handler
+    @robot.location
     def report(message):
         x, y = message.location
         return 'You are at ({x}, {y})'.format(
@@ -14,6 +14,6 @@ def test_echo():
             y=y
         )
 
-    tester = werobot.test.WeTest(robot)
-    message = werobot.test.make_location_message('20', '30', 40, 'label')
-    assert tester.send(message) == 'You are at (20, 30)'
+    tester = werobot.testing.WeTest(robot)
+    message = werobot.testing.make_location_message('20', '30', 40, 'label')
+    assert tester.send(message) == 'You are at (20.0, 30.0)'

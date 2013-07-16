@@ -1,35 +1,20 @@
 #!/usr/bin/env python
 #coding=utf-8
 
-from setuptools import setup, find_packages
+import werobot
 
-version = '0.3.5'
+from setuptools import setup, find_packages
 
 setup(
     name='WeRoBot',
-    version=version,
-    author='whtsky',
+    version=werobot.__version__,
+    author=werobot.__author__,
     author_email='whtsky@me.com',
     url='https://github.com/whtsky/WeRoBot',
     packages=find_packages(),
-    description='WeRoBot: a robot framework for wechat',
-    long_description="""
-    WeRoBot 是一个简单好用的 Python 微信机器人框架。
-
-    Hello World ::
-
-        import werobot
-
-        robot = werobot.WeRoBot(token='tokenhere')
-
-        @robot.handler
-        def echo(message):
-            return 'Hello World!'
-
-        robot.run()
-
-    文档： https://werobot.readthedocs.org/en/v%s/index.html
-    """ % version,
+    keywords="wechat weixin werobot",
+    description='WeRoBot: writing WeChat Offical Account Robots with fun',
+    long_description=open("README.rst").read().replace("latest", werobot.__version__),
     install_requires=open("requirements.txt").readlines(),
     include_package_data=True,
     license='MIT License',
@@ -40,8 +25,8 @@ setup(
         'Operating System :: POSIX',
         'Operating System :: POSIX :: Linux',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.1',
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
     ],

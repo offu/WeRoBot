@@ -25,6 +25,8 @@ pip-log.txt
 .coverage
 .tox
 nosetests.xml
+cover/
+htmlcov/
 
 # Translations
 *.mo
@@ -43,3 +45,7 @@ docs/_
 #VirtualEnv
 .Python
 include/
+
+werobot_session.db
+
+.coveralls.yml

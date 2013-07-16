@@ -1,6 +1,6 @@
 import werobot
 import werobot.utils
-import werobot.test
+import werobot.testing
 
 
 def test_one():
@@ -10,12 +10,13 @@ def test_one():
     def first(message):
         return
 
-    @robot.handler
     def second(message):
         return "Hi"
 
-    tester = werobot.test.WeTest(robot)
-    message = werobot.test.make_text_message('oo')
+    robot.add_handler(second)
+
+    tester = werobot.testing.WeTest(robot)
+    message = werobot.testing.make_text_message('oo')
     assert tester.send(message) == 'Hi'
 
 
@@ -31,10 +32,10 @@ def test_two():
     def second(message):
         return "Hi"
 
-    tester = werobot.test.WeTest(robot)
-    message = werobot.test.make_text_message('oo')
+    tester = werobot.testing.WeTest(robot)
+    message = werobot.testing.make_text_message('oo')
     assert tester.send(message) == 'Hi'
-    message = werobot.test.make_text_message('hi')
+    message = werobot.testing.make_text_message('hi')
     assert tester.send(message) == 'Hello'
 
 
@@ -51,8 +52,24 @@ def test_three():
         if message.type == 'image':
             return 'img'
 
-    tester = werobot.test.WeTest(robot)
-    message = werobot.test.make_text_message('oo')
+    tester = werobot.testing.WeTest(robot)
+    message = werobot.testing.make_text_message('oo')
     assert tester.send(message) == 'txt'
-    message = werobot.test.make_image_message('http://a.jpg')
+    message = werobot.testing.make_image_message('http://a.jpg')
     assert tester.send(message) == 'img'
+
+
+def test_add_handler():
+    robot = werobot.WeRoBot(token=werobot.utils.generate_token())
+
+    def a(message):
+        pass
+
+    robot.add_handler(a)
+
+    try:
+        robot.add_handler(5)
+    except TypeError:
+        pass
+    else:
+        raise

@@ -1,6 +1,13 @@
 Changelog
 =============
 
+Version 0.4.0
+----------------
++ Add session support
++ Add logging support
++ Rename ``werobot.test`` to ``werobot.testing``
++ Handlers added by ``@robot.handler`` will have the lowest priority.
+
 Version 0.3.5
 ----------------
 + Bug fix: Make ``BaseRoBot`` importable
@@ -27,5 +34,4 @@ Version 0.3.1
 
 Version 0.3.0
 ----------------
-
 + Add new messages and replies support for WeChat 4.5

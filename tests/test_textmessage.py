@@ -1,6 +1,6 @@
 import werobot
 import werobot.utils
-import werobot.test
+import werobot.testing
 
 
 def test_echo():
@@ -10,6 +10,6 @@ def test_echo():
     def echo(message):
         return message.content
 
-    tester = werobot.test.WeTest(robot)
-    message = werobot.test.make_text_message('test')
+    tester = werobot.testing.WeTest(robot)
+    message = werobot.testing.make_text_message('test')
     assert tester.send(message) == 'test'

@@ -1,5 +1,5 @@
-from . import WeRoBot
-from .messages import WeChatMessage, TextMessage, ImageMessage, LocationMessage
+from .messages import TextMessage, ImageMessage, LocationMessage
+from .parser import parse_user_msg
 
 __all__ = ['WeTest']
 _kwargs = {
@@ -12,14 +12,14 @@ _kwargs = {
 
 class WeTest(object):
     def __init__(self, app):
-        if not isinstance(app, WeRoBot):
-            raise TypeError
         self._app = app
 
     def send(self, message):
-        if not isinstance(message, WeChatMessage):
-            raise TypeError
-        return self._app._get_reply(message)
+        return self._app.get_reply(message)
+
+    def send_xml(self, xml):
+        message = parse_user_msg(xml)
+        return self.send(message)
 
 
 def make_text_message(content):
