@@ -1,6 +1,10 @@
 Changelog
 =============
 
+Version 0.4.1
+----------------
++ Fix a bug when signature is invalid.
+
 Version 0.4.0
 ----------------
 + Add session support

@@ -139,7 +139,7 @@ class WeRoBot(BaseRoBot):
                 request.query.nonce,
                 request.query.signature
             ):
-                return abort('403')
+                return abort(403, "invalid signature")
             return request.query.echostr
 
         @app.post('/')
@@ -149,7 +149,7 @@ class WeRoBot(BaseRoBot):
                 request.query.nonce,
                 request.query.signature
             ):
-                return abort('403')
+                return abort(403, "invalid signature")
 
             body = request.body.read()
             message = parse_user_msg(body)
