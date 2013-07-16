@@ -12,6 +12,7 @@ setup(
     author_email='whtsky@me.com',
     url='https://github.com/whtsky/WeRoBot',
     packages=find_packages(),
+    keywords="wechat weixin werobot",
     description='WeRoBot: writing WeChat Offical Account Robots with fun',
     long_description=open("README.rst").read().replace("latest", werobot.__version__),
     install_requires=open("requirements.txt").readlines(),
