@@ -43,3 +43,6 @@ docs/_
 #VirtualEnv
 .Python
 include/
+
+# Special files
+tests/auth.txt

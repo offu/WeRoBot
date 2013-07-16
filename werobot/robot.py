@@ -37,6 +37,8 @@ class BaseRoBot(object):
         self.settings = settings
         self._set_logger()
 
+        self.app = Bottle()
+
     def _set_logger(self):
         formatter = logging.Formatter(self.settings.LOGGING_FORMAT)
         handler = logging.StreamHandler()
@@ -142,11 +144,10 @@ class WeRoBot(BaseRoBot):
 
     @property
     def wsgi(self):
-        app = Bottle()
         if self.settings.DEBUG:
             debug(mode=True)
 
-        @app.get('/')
+        @self.app.get('/')
         def echo():
             if not self.check_signature(
                 request.query.timestamp,
@@ -156,7 +157,7 @@ class WeRoBot(BaseRoBot):
                 return abort(403, 'What do you expect from me?')
             return request.query.echostr
 
-        @app.post('/')
+        @self.app.post('/')
         def handle():
             if not self.check_signature(
                 request.query.timestamp,
@@ -175,7 +176,7 @@ class WeRoBot(BaseRoBot):
             response.content_type = 'application/xml'
             return create_reply(reply, message=message)
 
-        return app
+        return self.app
 
     def run(self, server=None, host='127.0.0.1', port=None):
         self._set_logger()
