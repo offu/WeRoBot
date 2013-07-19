@@ -24,7 +24,8 @@ def parse_user_msg(xml):
     msg = dict(
         touser=touser,
         fromuser=fromuser,
-        time=create_at
+        time=create_at,
+        raw=xml
     )
     if msg_type == 'text':
         msg["content"] = _msg.get('Content')
