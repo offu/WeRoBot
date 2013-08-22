@@ -55,6 +55,15 @@ class EventMessage(WeChatMessage):
             self.key = kwargs["eventkey"]
 
 
+class VoiceMessage(WeChatMessage):
+    def __init__(self, media_id, format, recognition, **kwargs):
+        super(VoiceMessage, self).__init__(**kwargs)
+        self.type = 'voice'
+        self.media_id = media_id
+        self.format = format
+        self.recognition = recognition
+
+
 class UnknownMessage(WeChatMessage):
     def __init__(self, content):
         self.type = 'unknown'
