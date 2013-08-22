@@ -13,7 +13,7 @@ __all__ = ['BaseRoBot', 'WeRoBot']
 
 class BaseRoBot(object):
     message_types = ['subscribe', 'unsubscribe', 'click',  # event
-                     'text', 'image', 'link', 'location']
+                     'text', 'image', 'link', 'location', 'voice']
 
     def __init__(self, token=None, logger=None, enable_session=False,
                  session_storage=None):
