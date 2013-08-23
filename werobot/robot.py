@@ -82,6 +82,12 @@ class BaseRoBot(object):
         """
         self.add_handler(f, type='click')
 
+    def voice(self, f):
+        """
+        Decorator to add a handler function for ``voice`` messages
+        """
+        self.add_handler(f, type='voice')
+
     def add_handler(self, func, type='all'):
         """
         Add a handler function for messages of given type.
