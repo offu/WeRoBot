@@ -116,7 +116,7 @@ class BaseRoBot(object):
             for handler in handlers:
                 if session_storage:
                     reply = handler(message, session)
-                    if id != None:
+                    if id:
                         session_storage[id] = session
                 else:
                     reply = handler(message)

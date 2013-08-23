@@ -3,7 +3,9 @@ Changelog
 
 Version 0.4.1
 ----------------
++ Add VoiceMessage
 + Fix a bug when signature is invalid.
++ Ignore session when receive UnknownMessage
 
 Version 0.4.0
 ----------------
