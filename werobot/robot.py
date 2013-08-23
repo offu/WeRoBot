@@ -99,14 +99,19 @@ class BaseRoBot(object):
         """
         session_storage = self.session_storage
         if session_storage:
-            id = message.source
-            session = session_storage[id]
+            if hasattr(message, "source"):
+                id = message.source
+                session = session_storage[id]
+            else:
+                id = None
+                session = None
         handlers = self.get_handlers(message.type)
         try:
             for handler in handlers:
                 if session_storage:
                     reply = handler(message, session)
-                    session_storage[id] = session
+                    if id != None:
+                        session_storage[id] = session
                 else:
                     reply = handler(message)
                 if reply:
