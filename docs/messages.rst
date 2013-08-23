@@ -1,6 +1,6 @@
 消息
 ==========
-目前WeRoBot共有以下几种Message： `TextMessage` ， `ImageMessage` ， `LocationMessage` ， `EventMessage` 和 `UnknownMessage` 。他们都继承自 WeChatMessage 。
+目前WeRoBot共有以下几种Message： `TextMessage` ， `ImageMessage` ， `LocationMessage` ， `EventMessage` ， `VoiceMessage` [3]_ 和 `UnknownMessage` 。他们都继承自 WeChatMessage 。
 
 TextMessage
 ------------
@@ -84,6 +84,23 @@ time       信息发送的时间，一个UNIX时间戳。
 key        事件 key 值。当 type = 'click' 时存在。
 ========= =====================================
 
+VoiceMessage [3]_
+--------------
+
+VoiceMessage的属性：
+
+============ =====================================
+name          value
+============ =====================================
+type          'voice'
+target        信息的目标用户。通常是机器人用户。
+source        信息的来源用户。通常是发送信息的用户。
+time          信息发送的时间，一个UNIX时间戳。
+media_id      微信内部的一个文件ID。
+format        声音格式
+recognition   未公开字段，猜测为语音识别后的文字。
+============ =====================================
+
 UnknownMessage
 ---------------
 
@@ -100,3 +117,4 @@ content    请求的正文部分。标准的XML格式。
 
 .. [1] 当你被用户关注时，会收到 type='subscribe' 的事件； 被取消关注时是 type='unsubscribe'  。
 .. [2] 截至目前（ 2013.03.16 ），微信机器人所收到的消息中都不包含 MsgID.
+.. [3] voice消息类型接口未公开。

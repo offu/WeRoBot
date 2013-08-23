@@ -1,4 +1,4 @@
-from .messages import TextMessage, ImageMessage, LocationMessage
+from .messages import TextMessage, ImageMessage, LocationMessage, VoiceMessage
 from .parser import parse_user_msg
 
 __all__ = ['WeTest']
@@ -34,4 +34,9 @@ def make_image_message(img):
 
 def make_location_message(x, y, scale, label):
     message = LocationMessage(x, y, scale, label, **_kwargs)
+    return message
+
+
+def make_voice_message(media_id, format, recognition):
+    message = VoiceMessage(media_id, format, recognition, **_kwargs)
     return message
