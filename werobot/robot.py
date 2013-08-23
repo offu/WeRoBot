@@ -13,7 +13,7 @@ __all__ = ['BaseRoBot', 'WeRoBot']
 
 class BaseRoBot(object):
     message_types = ['subscribe', 'unsubscribe', 'click',  # event
-                     'text', 'image', 'link', 'location']
+                     'text', 'image', 'link', 'location', 'voice']
 
     def __init__(self, token=None, logger=None, enable_session=False,
                  session_storage=None):
@@ -81,6 +81,12 @@ class BaseRoBot(object):
         Decorator to add a handler function for ``click`` messages
         """
         self.add_handler(f, type='click')
+
+    def voice(self, f):
+        """
+        Decorator to add a handler function for ``voice`` messages
+        """
+        self.add_handler(f, type='voice')
 
     def add_handler(self, func, type='all'):
         """
