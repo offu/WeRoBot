@@ -11,7 +11,7 @@ class WeChatMessage(object):
             self.source = kwargs['fromuser']
         if 'time' in kwargs:
             self.time = int(kwargs['time'])
-        self.raw = kwargs['raw']
+        self.raw = kwargs.get('raw', '')
 
 
 class TextMessage(WeChatMessage):
