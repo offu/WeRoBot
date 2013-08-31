@@ -13,7 +13,7 @@ __all__ = ['BaseRoBot', 'WeRoBot']
 
 class BaseRoBot(object):
     message_types = ['subscribe', 'unsubscribe', 'click',  # event
-                     'text', 'image', 'link', 'location']
+                     'text', 'image', 'link', 'location', 'voice']
 
     def __init__(self, token=None, logger=None, enable_session=False,
                  session_storage=None):
@@ -82,6 +82,12 @@ class BaseRoBot(object):
         """
         self.add_handler(f, type='click')
 
+    def voice(self, f):
+        """
+        Decorator to add a handler function for ``voice`` messages
+        """
+        self.add_handler(f, type='voice')
+
     def add_handler(self, func, type='all'):
         """
         Add a handler function for messages of given type.
@@ -99,14 +105,19 @@ class BaseRoBot(object):
         """
         session_storage = self.session_storage
         if session_storage:
-            id = message.source
-            session = session_storage[id]
+            if hasattr(message, "source"):
+                id = message.source
+                session = session_storage[id]
+            else:
+                id = None
+                session = None
         handlers = self.get_handlers(message.type)
         try:
             for handler in handlers:
                 if session_storage:
                     reply = handler(message, session)
-                    session_storage[id] = session
+                    if id:
+                        session_storage[id] = session
                 else:
                     reply = handler(message)
                 if reply:
@@ -139,7 +150,7 @@ class WeRoBot(BaseRoBot):
                 request.query.nonce,
                 request.query.signature
             ):
-                return abort('403')
+                return abort(403)
             return request.query.echostr
 
         @app.post('/')
@@ -149,7 +160,7 @@ class WeRoBot(BaseRoBot):
                 request.query.nonce,
                 request.query.signature
             ):
-                return abort('403')
+                return abort(403)
 
             body = request.body.read()
             message = parse_user_msg(body)

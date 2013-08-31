@@ -1,7 +1,7 @@
 from xml.etree import ElementTree
 
 from .messages import TextMessage, LocationMessage, ImageMessage, EventMessage
-from .messages import LinkMessage, UnknownMessage
+from .messages import LinkMessage, VoiceMessage, UnknownMessage
 from .utils import to_unicode
 
 
@@ -24,7 +24,8 @@ def parse_user_msg(xml):
     msg = dict(
         touser=touser,
         fromuser=fromuser,
-        time=create_at
+        time=create_at,
+        raw=xml
     )
     if msg_type == 'text':
         msg["content"] = _msg.get('Content')
@@ -48,5 +49,10 @@ def parse_user_msg(xml):
         msg["description"] = _msg.get('Description')
         msg["url"] = _msg.get('Url')
         return LinkMessage(**msg)
+    elif msg_type == 'voice':
+        msg["media_id"] = _msg.get('MediaId')
+        msg["format"] = _msg.get('Format')
+        msg["recognition"] = _msg.get('Recognition')
+        return VoiceMessage(**msg)
     else:
         return UnknownMessage(xml)

@@ -1,6 +1,20 @@
 消息
 ==========
-目前WeRoBot共有以下几种Message： `TextMessage` ， `ImageMessage` ， `LocationMessage` ， `EventMessage` 和 `UnknownMessage` 。他们都继承自 WeChatMessage 。
+目前WeRoBot共有以下几种Message： `TextMessage` ， `ImageMessage` ， `LocationMessage` ， `EventMessage` ， `VoiceMessage` [3]_ 和 `UnknownMessage` 。他们都继承自 WeChatMessage 。
+
+公共属性
+--------------
+
+除了 UnknownMessage， 每一种 Message 都包括以下属性：
+======== ===================================
+name      value
+======== ===================================
+id        消息id，64位整型 [2]_
+target    信息的目标用户。通常是机器人用户。
+source    信息的来源用户。通常是发送信息的用户。
+time      信息发送的时间，一个UNIX时间戳。
+raw       信息的原始 XML 格式
+======== ===================================
 
 TextMessage
 ------------
@@ -11,11 +25,7 @@ TextMessage的属性：
 ======== ===================================
 name      value
 ======== ===================================
-id        消息id，64位整型 [2]_
 type      'text'
-target    信息的目标用户。通常是机器人用户。
-source    信息的来源用户。通常是发送信息的用户。
-time      信息发送的时间，一个UNIX时间戳。
 content   信息的内容
 ======== ===================================
 
@@ -27,11 +37,7 @@ ImageMessage的属性：
 ======= ==================================
 name     value
 ======= ==================================
-id       消息id，64位整型 [2]_
 type     'image'
-target   信息的目标用户。通常是机器人用户。
-source   信息的来源用户。通常是发送信息的用户。
-time     信息发送的时间，一个UNIX时间戳。
 img      图片网址。你可以从这个网址下到图片
 ======= ==================================
 
@@ -40,11 +46,7 @@ LinkMessage
 ============    ==================================
 name             value
 ============    ==================================
-id               消息id，64位整型 [2]_
 type             'link'
-target           信息的目标用户。通常是机器人用户。
-source           信息的来源用户。通常是发送信息的用户。
-time             信息发送的时间，一个UNIX时间戳。
 title            消息标题
 description      消息描述
 url              消息链接
@@ -59,11 +61,7 @@ LocationMessage的属性：
 ========= ===================================
 name       value
 ========= ===================================
-id         消息id，64位整型 [2]_
 type       'location'
-target     信息的目标用户。通常是机器人用户。
-source     信息的来源用户。通常是发送信息的用户。
-time       信息发送的时间，一个UNIX时间戳。
 location   一个元组。(纬度, 经度)
 scale      地图缩放大小
 label      地理位置信息
@@ -78,11 +76,22 @@ EventMessage的属性：
 name       value
 ========= =====================================
 type       'subscribe' 'unsubscribe' 或 'click' [1]_
-target     信息的目标用户。通常是机器人用户。
-source     信息的来源用户。通常是发送信息的用户。
-time       信息发送的时间，一个UNIX时间戳。
 key        事件 key 值。当 type = 'click' 时存在。
 ========= =====================================
+
+VoiceMessage [3]_
+--------------
+
+VoiceMessage的属性：
+
+============ =====================================
+name          value
+============ =====================================
+type          'voice'
+media_id      微信内部的一个文件ID。
+format        声音格式
+recognition   未公开字段，猜测为语音识别后的文字。
+============ =====================================
 
 UnknownMessage
 ---------------
@@ -93,10 +102,11 @@ UnknownMessage的属性：
 name       value
 ========= =====================================
 type       'unknown'
-content    请求的正文部分。标准的XML格式。
+raw        请求的正文部分。标准的XML格式。
 ========= =====================================
 
 .. note:: 如果你不为 WeRoBot 贡献代码，你完全可以无视掉 UnknownMessage 。在正常的使用中，WeRoBot应该不会收到 `UnknownMessage` ——除非 WeRoBot 停止开发。
 
 .. [1] 当你被用户关注时，会收到 type='subscribe' 的事件； 被取消关注时是 type='unsubscribe'  。
 .. [2] 截至目前（ 2013.03.16 ），微信机器人所收到的消息中都不包含 MsgID.
+.. [3] voice消息类型接口未公开。

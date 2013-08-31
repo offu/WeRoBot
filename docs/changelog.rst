@@ -1,6 +1,14 @@
 Changelog
 =============
 
+Version 0.4.1
+----------------
++ Add VoiceMessage
++ Add ``message.raw``: Raw XML of message
++ Rename ``UnknownMessage.content`` to ``UnknownMessage.raw``
++ Fix a bug when signature is invalid.
++ Ignore session when receive UnknownMessage
+
 Version 0.4.0
 ----------------
 + Add session support

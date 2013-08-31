@@ -11,6 +11,7 @@ class WeChatMessage(object):
             self.source = kwargs['fromuser']
         if 'time' in kwargs:
             self.time = int(kwargs['time'])
+        self.raw = kwargs.get('raw', '')
 
 
 class TextMessage(WeChatMessage):
@@ -55,7 +56,16 @@ class EventMessage(WeChatMessage):
             self.key = kwargs["eventkey"]
 
 
+class VoiceMessage(WeChatMessage):
+    def __init__(self, media_id, format, recognition, **kwargs):
+        super(VoiceMessage, self).__init__(**kwargs)
+        self.type = 'voice'
+        self.media_id = media_id
+        self.format = format
+        self.recognition = recognition
+
+
 class UnknownMessage(WeChatMessage):
-    def __init__(self, content):
+    def __init__(self, raw):
         self.type = 'unknown'
-        self.content = content
+        self.raw = raw

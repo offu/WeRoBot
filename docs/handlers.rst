@@ -61,6 +61,7 @@ robot.location       位置
 robot.subscribe      被关注
 robot.unsubscribe    被取消关注
 robot.link           链接
+robot.voice          语音
 robot.unknown        未知类型
 ==================  ===========
 
