@@ -141,4 +141,4 @@ def test_unknown_message():
     </xml>
     """
     message = parse_user_msg(xml)
-    assert message.content == xml
+    assert message.raw == xml
