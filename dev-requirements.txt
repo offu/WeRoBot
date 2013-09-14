@@ -13,7 +13,6 @@ py==1.4.15
 pyflakes==0.7.3
 pymongo==2.5.2
 redis==2.7.6
-requests==1.2.3
 sh==1.08
 tox==1.5.0
 virtualenv==1.9.1

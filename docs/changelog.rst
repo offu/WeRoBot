@@ -1,6 +1,10 @@
 Changelog
 =============
 
+Version 0.5.0
+----------------
++ Add ``werobot.client``
+
 Version 0.4.1
 ----------------
 + Add VoiceMessage
