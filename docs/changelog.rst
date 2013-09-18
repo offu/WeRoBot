@@ -4,6 +4,7 @@ Changelog
 Version 0.5.0
 ----------------
 + Add ``werobot.client``
++ Friendly 403 page
 
 Version 0.4.1
 ----------------
