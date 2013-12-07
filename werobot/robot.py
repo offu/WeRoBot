@@ -81,6 +81,19 @@ class BaseRoBot(object):
         Decorator to add a handler function for ``click`` messages
         """
         self.add_handler(f, type='click')
+        
+    def key_click(self, key):
+        """
+        Shortcut for ``click`` messages
+        @key_click('KEYNAME') for special key on click event
+        """
+        def d(f):
+            @self.click
+            def onclick(message, *args, **kwargs):
+                if message.key == key :
+                    return f(message, *args, **kwargs)
+
+        return d
 
     def voice(self, f):
         """
