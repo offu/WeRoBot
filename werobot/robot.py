@@ -88,10 +88,11 @@ class BaseRoBot(object):
         @key_click('KEYNAME') for special key on click event
         """
         def d(f):
+            argc = len(inspect.getargspec(f).args)
             @self.click
-            def onclick(message, *args, **kwargs):
+            def onclick(message, session):
                 if message.key == key :
-                    return f(message, *args, **kwargs)
+                    return f(*[message, session][:argc])
 
         return d
 
@@ -118,33 +119,24 @@ class BaseRoBot(object):
         Return the raw xml reply for the given message.
         """
         session_storage = self.session_storage
+
+        id = None
+        session = None
         if session_storage:
             if hasattr(message, "source"):
                 id = message.source
                 session = session_storage[id]
-            else:
-                id = None
-                session = None
+
         handlers = self.get_handlers(message.type)
         try:
             for handler in handlers:
                 
                 argc = len(inspect.getargspec(handler).args)
 
-                if argc == 0:
-                    # no arg
-                    reply = handler()
-                elif argc == 1:
-                    # message for first arg
-                    reply = handler(message)
-                elif argc == 2 and session_storage:
-                    # message and session 
-                    reply = handler(message, session)
-                    if id:
-                        session_storage[id] = session
-                else:
-                    # not reachable
-                    assert False
+                reply = handler(*[message, session][:argc])
+
+                if session_storage and id:
+                    session_storage[id] = session
 
                 if reply:
                     return reply
