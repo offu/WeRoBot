@@ -105,7 +105,7 @@ class BaseRoBot(object):
         """
         Add a handler function for messages of given type.
         """
-        if not inspect.isfunction(func) and len(inspect.getargspec(handler).args) < 3:
+        if not inspect.isfunction(func) or len(inspect.getargspec(func).args) > 2:
             raise TypeError
 
         self._handlers[type].append(func)
