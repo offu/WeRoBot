@@ -62,13 +62,31 @@ def test_three():
 def test_add_handler():
     robot = werobot.WeRoBot(token=werobot.utils.generate_token())
 
-    def a(message):
+    def noarg():
         pass
 
-    robot.add_handler(a)
+    def onearg(message):
+        pass
+
+    def twoargs(message, session):
+        pass
+
+    def manyargs(a, b, c):
+        pass
+
+    robot.add_handler(noarg)
+    robot.add_handler(onearg)
+    robot.add_handler(twoargs)
 
     try:
         robot.add_handler(5)
+    except TypeError:
+        pass
+    else:
+        raise
+
+    try:
+        robot.add_handler(manyargs)
     except TypeError:
         pass
     else:

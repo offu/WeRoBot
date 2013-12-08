@@ -85,6 +85,19 @@ class BaseRoBot(object):
         Decorator to add a handler function for ``click`` messages
         """
         self.add_handler(f, type='click')
+        
+    def key_click(self, key):
+        """
+        Shortcut for ``click`` messages
+        @key_click('KEYNAME') for special key on click event
+        """
+        def d(f):
+            @self.click
+            def onclick(message, *args, **kwargs):
+                if message.key == key :
+                    return f(message, *args, **kwargs)
+
+        return d
 
     def voice(self, f):
         """
@@ -96,8 +109,9 @@ class BaseRoBot(object):
         """
         Add a handler function for messages of given type.
         """
-        if not inspect.isfunction(func):
+        if not inspect.isfunction(func) or len(inspect.getargspec(func).args) > 2:
             raise TypeError
+
         self._handlers[type].append(func)
 
     def get_handlers(self, type):
@@ -118,12 +132,24 @@ class BaseRoBot(object):
         handlers = self.get_handlers(message.type)
         try:
             for handler in handlers:
-                if session_storage:
+                
+                argc = len(inspect.getargspec(handler).args)
+
+                if argc == 0:
+                    # no arg
+                    reply = handler()
+                elif argc == 1:
+                    # message for first arg
+                    reply = handler(message)
+                elif argc == 2 and session_storage:
+                    # message and session 
                     reply = handler(message, session)
                     if id:
                         session_storage[id] = session
                 else:
-                    reply = handler(message)
+                    # not reachable
+                    assert False
+
                 if reply:
                     return reply
         except:
