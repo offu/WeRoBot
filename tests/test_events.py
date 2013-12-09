@@ -79,3 +79,19 @@ def test_events():
 
     assert tester.send_xml(xml) == 'MYEVENT'
     assert t[2] == 'NOTCHANGED'
+
+    @robot.key_click('ARGS')
+    def key():
+        return 'ARGS'
+
+    xml = """
+    <xml>
+        <ToUserName><![CDATA[toUser]]></ToUserName>
+        <FromUserName><![CDATA[fromUser]]></FromUserName>
+        <CreateTime>123456789</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[CLICK]]></Event>
+        <EventKey><![CDATA[ARGS]]></EventKey>
+    </xml>
+    """
+    assert tester.send_xml(xml) == 'ARGS'
