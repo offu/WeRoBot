@@ -1,6 +1,16 @@
 # -*- coding: utf-8 -*-
 
 
+MESSAGE_TYPES = {}
+
+
+def handle_for_type(type):
+    def register(f):
+        MESSAGE_TYPES[type] = f
+        return f
+    return register
+
+
 class WeChatMessage(object):
     def __init__(self, **kwargs):
         if 'msgid' in kwargs:

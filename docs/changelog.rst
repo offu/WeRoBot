@@ -4,7 +4,7 @@ Changelog
 Version 0.4.2
 ----------------
 + Friendly 403 page
-
++ Improved server support
 
 Version 0.4.1
 ----------------

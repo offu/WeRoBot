@@ -188,8 +188,8 @@ class WeRoBot(BaseRoBot):
             raise
         app = Bottle()
 
-        @app.get('/')
-        def echo():
+        @app.get('/<t:path>')
+        def echo(t):
             if not self.check_signature(
                 request.query.timestamp,
                 request.query.nonce,
@@ -198,8 +198,8 @@ class WeRoBot(BaseRoBot):
                 return abort(403)
             return request.query.echostr
 
-        @app.post('/')
-        def handle():
+        @app.post('/<t:path>')
+        def handle(t):
             if not self.check_signature(
                 request.query.timestamp,
                 request.query.nonce,
