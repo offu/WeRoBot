@@ -5,7 +5,6 @@ from .utils import isstring, to_unicode
 
 
 class Article(object):
-
     def __init__(self, title, description, img, url):
         self.title = title
         self.description = description
@@ -16,12 +15,12 @@ class Article(object):
 class WeChatReply(object):
 
     def __init__(self, message=None, star=False, **kwargs):
-        if isinstance(message, WeChatMessage):
+        if "source" not in kwargs and isinstance(message, WeChatMessage):
             kwargs["source"] = message.target
-            kwargs["target"] = message.source
 
-        assert 'source' in kwargs
-        assert 'target' in kwargs
+        if "target" not in kwargs and isinstance(message, WeChatMessage):
+            kwargs["target"] = message.target
+
         if 'time' not in kwargs:
             kwargs["time"] = int(time.time())
         if star:
