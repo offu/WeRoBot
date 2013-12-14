@@ -21,7 +21,9 @@ class WeChatMessage(object):
 
 @handle_for_type("text")
 class TextMessage(WeChatMessage):
-    pass
+    def __init__(self, message):
+        self.content = message.pop("Content")
+        super(TextMessage, self).__init__(message)
 
 
 @handle_for_type("image")
