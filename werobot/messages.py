@@ -13,11 +13,9 @@ def handle_for_type(type):
 
 class WeChatMessage(object):
     def __init__(self, message):
-        self.touser = message.pop("ToUserName")
-        self.fromuser = message.pop('FromUserName')
-        self.create_at = int(message.get('CreateTime'))
-        if "time" in message:
-            self.time = int(message.pop("time"))
+        self.target = message.pop("ToUserName")
+        self.source = message.pop('FromUserName')
+        self.time = int(message.get('CreateTime'))
         self.__dict__.update(message)
 
 
