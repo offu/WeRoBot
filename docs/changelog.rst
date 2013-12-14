@@ -1,8 +1,9 @@
 Changelog
 =============
 
-Version 0.4.2
+Version 0.5.0
 ----------------
++ Rewrite ``werobot.message``
 + Friendly 403 page
 + Improved server support
 

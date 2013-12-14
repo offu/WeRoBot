@@ -12,70 +12,66 @@ def handle_for_type(type):
 
 
 class WeChatMessage(object):
-    def __init__(self, **kwargs):
-        if 'msgid' in kwargs:
-            self.id = int(kwargs['msgid'])
-        if 'touser' in kwargs:
-            self.target = kwargs['touser']
-        if 'fromuser' in kwargs:
-            self.source = kwargs['fromuser']
-        if 'time' in kwargs:
-            self.time = int(kwargs['time'])
-        self.raw = kwargs.get('raw', '')
+    def __init__(self, message):
+        self.touser = message.pop("ToUserName")
+        self.fromuser = message.pop('FromUserName')
+        self.create_at = int(message.get('CreateTime'))
+        if "time" in message:
+            self.time = int(message.pop("time"))
+        self.__dict__.update(message)
 
 
+@handle_for_type("text")
 class TextMessage(WeChatMessage):
-    def __init__(self, content, **kwargs):
-        super(TextMessage, self).__init__(**kwargs)
-
-        self.type = 'text'
-        self.content = content
+    pass
 
 
+@handle_for_type("image")
 class ImageMessage(WeChatMessage):
-    def __init__(self, img, **kwargs):
-        super(ImageMessage, self).__init__(**kwargs)
-        self.type = 'image'
-        self.img = img
+    def __init__(self, message):
+        self.img = message.pop("PicUrl")
+        super(ImageMessage, self).__init__(message)
 
 
+@handle_for_type("location")
 class LocationMessage(WeChatMessage):
-    def __init__(self, location_x, location_y, scale, label, **kwargs):
-        super(LocationMessage, self).__init__(**kwargs)
-        self.type = 'location'
+    def __init__(self, message):
+        location_x = message.pop('Location_X')
+        location_y = message.pop('Location_Y')
         self.location = (float(location_x), float(location_y))
-        self.scale = scale
-        self.label = label
+        self.scale = int(message.pop('Scale'))
+        self.label = message.pop('Label')
+        super(LocationMessage, self).__init__(message)
 
 
+@handle_for_type("link")
 class LinkMessage(WeChatMessage):
-    def __init__(self, title, description, url, **kwargs):
-        super(LinkMessage, self).__init__(**kwargs)
-        self.type = 'link'
-        self.title = title
-        self.description = description
-        self.url = url
+    def __init__(self, message):
+        self.title = message.pop('Title')
+        self.description = message.pop('Description')
+        self.url = message.pop('Url')
+        super(LinkMessage, self).__init__(message)
 
 
+@handle_for_type("event")
 class EventMessage(WeChatMessage):
-    def __init__(self, type, **kwargs):
-        super(EventMessage, self).__init__(**kwargs)
-        assert type in ['subscribe', 'unsubscribe', 'click']
-        self.type = type
-        if type == 'click':
-            self.key = kwargs["eventkey"]
+    def __init__(self, message):
+        self.type = message.pop("Event").lower()
+        if self.type == "click":
+            self.eventkey = message.pop('EventKey')
+        super(EventMessage, self).__init__(message)
 
 
+@handle_for_type("voice")
 class VoiceMessage(WeChatMessage):
-    def __init__(self, media_id, format, recognition, **kwargs):
-        super(VoiceMessage, self).__init__(**kwargs)
-        self.type = 'voice'
-        self.media_id = media_id
-        self.format = format
-        self.recognition = recognition
+    def __init__(self, message):
+        self.media_id = message.pop('MediaId')
+        self.format = message.pop('Format')
+        self.recognition = message.pop('Recognition')
+        super(VoiceMessage, self).__init__(message)
 
 
 class UnknownMessage(WeChatMessage):
-    def __init__(self, raw):
+    def __init__(self, message):
         self.type = 'unknown'
-        self.raw = raw
+        self.raw = message["raw"]
