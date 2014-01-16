@@ -15,7 +15,7 @@ class BaseRoBot(object):
     message_types = ['subscribe', 'unsubscribe', 'click',  # event
                      'text', 'image', 'link', 'location', 'voice']
 
-    def __init__(self, token=None, logger=None, enable_session=False,
+    def __init__(self, token, logger=None, enable_session=False,
                  session_storage=None):
         self._handlers = dict((k, []) for k in self.message_types)
         self._handlers['all'] = []
