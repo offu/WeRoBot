@@ -6,14 +6,17 @@ Version 0.5.0
 
 + Add ``werobot.client``
 + Add ``werobot.config``
-+ Rewrite ``werobot.message``
++ Add ``@werobot.key_click`` (Thanks @tg123)
++ Use smart args
 + Friendly 403 page
 + Improved server support
++ Enable session by default.
 + Drop ``werobot.testing.make_text_message``
 + Drop ``werobot.testing.make_image_message``
 + Drop ``werobot.testing.make_location_message``
 + Drop ``werobot.testing.make_voice_message``
 + Drop ``werobot.testing.WeTest.send``
++ Rewrite ``werobot.message``
 + Rewrite testing case
 
 Version 0.4.1

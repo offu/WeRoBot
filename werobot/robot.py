@@ -27,7 +27,7 @@ class BaseRoBot(object):
     message_types = ['subscribe', 'unsubscribe', 'click',  # event
                      'text', 'image', 'link', 'location', 'voice']
 
-    def __init__(self, token=None, logger=None, enable_session=False,
+    def __init__(self, token=None, logger=None, enable_session=True,
                  session_storage=None):
         self.config = Config(_DEFAULT_CONFIG)
         self._handlers = dict((k, []) for k in self.message_types)
@@ -105,10 +105,12 @@ class BaseRoBot(object):
         """
         def d(f):
             argc = len(inspect.getargspec(f).args)
+
             @self.click
             def onclick(message, session):
-                if message.key == key :
+                if message.key == key:
                     return f(*[message, session][:argc])
+            return f
 
         return d
 
