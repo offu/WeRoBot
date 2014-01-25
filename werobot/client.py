@@ -49,7 +49,7 @@ def create_menu(access_token, menu_data):
     r = requests.get(
         url="https://api.weixin.qq.com/cgi-bin/menu/create",
         params={
-            "access_token": "access_token",
+            "access_token": access_token,
         },
         data=menu_data
     )
