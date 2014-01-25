@@ -8,9 +8,10 @@ import logging
 
 from bottle import Bottle, request, response, abort, template
 
-from .parser import parse_user_msg
-from .reply import create_reply
-from .utils import py3k
+from werobot.config import Config
+from werobot.parser import parse_user_msg
+from werobot.reply import create_reply
+from werobot.utils import py3k
 
 __all__ = ['BaseRoBot', 'WeRoBot']
 
@@ -23,7 +24,6 @@ class BaseRoBot(object):
                  session_storage=None):
         self._handlers = dict((k, []) for k in self.message_types)
         self._handlers['all'] = []
-        self.token = token
         if logger is None:
             logger = logging.getLogger("WeRoBot")
         self.logger = logger
@@ -31,7 +31,10 @@ class BaseRoBot(object):
         if enable_session and session_storage is None:
             from .session.filestorage import FileStorage
             session_storage = FileStorage()
-        self.session_storage = session_storage
+        self.config = Config(
+            TOKEN=token,
+            SESSION_STORAGE=session_storage,
+        )
 
     def handler(self, f):
         """
@@ -155,6 +158,20 @@ class BaseRoBot(object):
             sign = sign.encode()
         sign = hashlib.sha1(sign).hexdigest()
         return sign == signature
+
+    def __getattribute__(self, item):
+        try:
+            return object.__getattribute__(self, item)
+        except AttributeError as e:
+            if item in ["token", "session_storage"]:
+                return self.config[item.upper()]
+            raise e
+
+    def __setattr__(self, key, value):
+        if key in ["token", "session_storage"]:
+            self.config[key.upper()] = value
+        else:
+            object.__setattr__(self, key, value)
 
 
 class WeRoBot(BaseRoBot):
