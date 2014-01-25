@@ -70,11 +70,46 @@ class Client(object):
 
     def create_menu(self, menu_data):
         """
-        创建自定义菜单。
+        创建自定义菜单 ::
+
+            client = Client("id", "secret")
+            client.create_menu({
+                "button":[
+                    {
+                        "type":"click",
+                        "name":"今日歌曲",
+                        "key":"V1001_TODAY_MUSIC"
+                    },
+                    {
+                        "type":"click",
+                        "name":"歌手简介",
+                        "key":"V1001_TODAY_SINGER"
+                    },
+                    {
+                        "name":"菜单",
+                        "sub_button":[
+                            {
+                                "type":"view",
+                                "name":"搜索",
+                                "url":"http://www.soso.com/"
+                            },
+                            {
+                                "type":"view",
+                                "name":"视频",
+                                "url":"http://v.qq.com/"
+                            },
+                            {
+                                "type":"click",
+                                "name":"赞一下我们",
+                                "key":"V1001_GOOD"
+                            }
+                        ]
+                    }
+                ]})
         详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=自定义菜单创建接口
 
         :param access_token: Access Token，可以使用 :func:`get_token` 获取。
-        :param menu_data: Python 字典。
+        :param menu_data: Python 字典
 
         :return: 返回的 JSON 数据包
         """
@@ -122,7 +157,6 @@ class Client(object):
         上传多媒体文件。
         详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=上传下载多媒体文件
 
-        :param access_token: Access Token，可以使用 :func:`get_token` 获取。
         :param type: 媒体文件类型，分别有图片（image）、语音（voice）、视频（video）和缩略图（thumb）
         :param media:要上传的文件，一个 File-object
 
@@ -139,3 +173,21 @@ class Client(object):
                 "media": media
             }
         )
+
+    def download_media(self, media_id):
+        """
+        下载多媒体文件。
+        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=上传下载多媒体文件
+
+        :param media_id: 媒体文件 ID
+
+        :return: requests 的 Response 实例
+        """
+        return requests.get(
+            "http://file.api.weixin.qq.com/cgi-bin/media/get",
+            params={
+                "access_token": self.token,
+                "media_id": media_id
+            }
+        )
+
