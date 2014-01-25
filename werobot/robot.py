@@ -16,12 +16,20 @@ from werobot.utils import py3k
 __all__ = ['BaseRoBot', 'WeRoBot']
 
 
+_DEFAULT_CONFIG = dict(
+    SERVER="auto",
+    HOST="127.0.0.1",
+    PORT="8888"
+)
+
+
 class BaseRoBot(object):
     message_types = ['subscribe', 'unsubscribe', 'click',  # event
                      'text', 'image', 'link', 'location', 'voice']
 
     def __init__(self, token=None, logger=None, enable_session=False,
                  session_storage=None):
+        self.config = Config(_DEFAULT_CONFIG)
         self._handlers = dict((k, []) for k in self.message_types)
         self._handlers['all'] = []
         if logger is None:
@@ -31,9 +39,10 @@ class BaseRoBot(object):
         if enable_session and session_storage is None:
             from .session.filestorage import FileStorage
             session_storage = FileStorage()
-        self.config = Config(
+        self.config.update(
             TOKEN=token,
             SESSION_STORAGE=session_storage,
+
         )
 
     def handler(self, f):
@@ -125,7 +134,7 @@ class BaseRoBot(object):
         """
         Return the raw xml reply for the given message.
         """
-        session_storage = self.session_storage
+        session_storage = self.config["SESSION_STORAGE"]
 
         id = None
         session = None
@@ -151,7 +160,7 @@ class BaseRoBot(object):
             self.logger.warning("Catch an exception", exc_info=True)
 
     def check_signature(self, timestamp, nonce, signature):
-        sign = [self.token, timestamp, nonce]
+        sign = [self.config["TOKEN"], timestamp, nonce]
         sign.sort()
         sign = ''.join(sign)
         if py3k:
@@ -242,9 +251,15 @@ class WeRoBot(BaseRoBot):
 
         return app
 
-    def run(self, server='auto', host='127.0.0.1',
-            port=8888, enable_pretty_logging=True):
+    def run(self, server=None, host=None,
+            port=None, enable_pretty_logging=True):
         if enable_pretty_logging:
             from werobot.utils import enable_pretty_logging
             enable_pretty_logging(self.logger)
+        if server is None:
+            server = self.config["SERVER"]
+        if host is None:
+            host = self.config["HOST"]
+        if port is None:
+            port = self.config["POST"]
         self.wsgi.run(server=server, host=host, port=port)
