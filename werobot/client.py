@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import time
 import requests
 
 
@@ -13,7 +14,7 @@ def check_error(json):
     如果返回码提示有错误，抛出一个 :class:`ClientException` 异常。否则返回 True 。
     """
     if "errcode" in json and json["errcode"] != 0:
-        raise ClientException(json["errmsg"])
+        raise ClientException("{}: {}".format(json["errcode"], json["errmsg"]))
     return True
 
 
@@ -24,7 +25,6 @@ def get_token(appid, appsecret):
 
     :param appid: 第三方用户唯一凭证
     :param appsecret: 第三方用户唯一凭证密钥，即 App Secret
-    :return: Access Token 值
     """
     r = requests.get(
         "https://api.weixin.qq.com/cgi-bin/token",
@@ -36,7 +36,8 @@ def get_token(appid, appsecret):
     )
     r.raise_for_status()
     json = r.json()
-    return check_error(json)
+    if check_error(json):
+        return json
 
 
 def create_menu(access_token, menu_data):
@@ -46,7 +47,7 @@ def create_menu(access_token, menu_data):
     :param access_token: Access Token，可以使用 :func:`get_token` 获取。
     :param menu_data:
     """
-    r = requests.get(
+    r = requests.post(
         url="https://api.weixin.qq.com/cgi-bin/menu/create",
         params={
             "access_token": access_token,
@@ -58,3 +59,28 @@ def create_menu(access_token, menu_data):
     if json.get("errcode", 0) == 0:
         return True
     raise ClientException(json["errmsg"])
+
+
+class Client(object):
+    def __init__(self, appid, appsecret):
+        self.appid = appid
+        self.appsecret = appsecret
+        self._token = None
+        self.token_expires_at = None
+
+    @property
+    def token(self):
+        if self._token:
+            now = time.time()
+            if self.token_expires_at - now > 60:
+                return self._token
+        json = get_token(self.appid, self.appsecret)
+        self._token = json["access_token"]
+        self.token_expires_at = int(time.time()) + json["expires_in"]
+        return self._token
+
+    def create_menu(self, menu_data):
+        return create_menu(
+            access_token=self.token,
+            menu_data=menu_data
+        )
