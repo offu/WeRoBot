@@ -4,5 +4,5 @@ __license__ = 'MIT'
 
 try:
     from .robot import WeRoBot
-except:
+except ImportError:
     pass

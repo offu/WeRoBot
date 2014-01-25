@@ -11,5 +11,14 @@ def test_echo():
         return message.content
 
     tester = werobot.testing.WeTest(robot)
-    message = werobot.testing.make_text_message('test')
-    assert tester.send(message) == 'test'
+    xml = """
+    <xml>
+    <ToUserName><![CDATA[toUser]]></ToUserName>
+    <FromUserName><![CDATA[fromUser]]></FromUserName>
+    <CreateTime>1348831860</CreateTime>
+    <MsgType><![CDATA[text]]></MsgType>
+    <Content><![CDATA[this is a test]]></Content>
+    <MsgId>1234567890123456</MsgId>
+    </xml>
+    """
+    assert tester.send_xml(xml) == 'this is a test'

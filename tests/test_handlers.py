@@ -11,13 +11,23 @@ def test_one():
         return
 
     def second(message):
+        assert message.time == 1348831860
         return "Hi"
 
     robot.add_handler(second)
 
     tester = werobot.testing.WeTest(robot)
-    message = werobot.testing.make_text_message('oo')
-    assert tester.send(message) == 'Hi'
+    xml = """
+    <xml>
+    <ToUserName><![CDATA[toUser]]></ToUserName>
+    <FromUserName><![CDATA[fromUser]]></FromUserName>
+    <CreateTime>1348831860</CreateTime>
+    <MsgType><![CDATA[text]]></MsgType>
+    <Content><![CDATA[this is a test]]></Content>
+    <MsgId>1234567890123456</MsgId>
+    </xml>
+    """
+    assert tester.send_xml(xml) == 'Hi'
 
 
 def test_two():
@@ -33,61 +43,25 @@ def test_two():
         return "Hi"
 
     tester = werobot.testing.WeTest(robot)
-    message = werobot.testing.make_text_message('oo')
-    assert tester.send(message) == 'Hi'
-    message = werobot.testing.make_text_message('hi')
-    assert tester.send(message) == 'Hello'
-
-
-def test_three():
-    robot = werobot.WeRoBot(token=werobot.utils.generate_token())
-
-    @robot.handler
-    def first(message):
-        if message.type == 'text':
-            return 'txt'
-
-    @robot.handler
-    def second(message):
-        if message.type == 'image':
-            return 'img'
-
-    tester = werobot.testing.WeTest(robot)
-    message = werobot.testing.make_text_message('oo')
-    assert tester.send(message) == 'txt'
-    message = werobot.testing.make_image_message('http://a.jpg')
-    assert tester.send(message) == 'img'
-
-
-def test_add_handler():
-    robot = werobot.WeRoBot(token=werobot.utils.generate_token())
-
-    def noarg():
-        pass
-
-    def onearg(message):
-        pass
-
-    def twoargs(message, session):
-        pass
-
-    def manyargs(a, b, c):
-        pass
-
-    robot.add_handler(noarg)
-    robot.add_handler(onearg)
-    robot.add_handler(twoargs)
-
-    try:
-        robot.add_handler(5)
-    except TypeError:
-        pass
-    else:
-        raise
-
-    try:
-        robot.add_handler(manyargs)
-    except TypeError:
-        pass
-    else:
-        raise
+    xml = """
+    <xml>
+    <ToUserName><![CDATA[toUser]]></ToUserName>
+    <FromUserName><![CDATA[fromUser]]></FromUserName>
+    <CreateTime>1348831860</CreateTime>
+    <MsgType><![CDATA[text]]></MsgType>
+    <Content><![CDATA[hi]]></Content>
+    <MsgId>1234567890123456</MsgId>
+    </xml>
+    """
+    assert tester.send_xml(xml) == 'Hi'
+    xml = """
+    <xml>
+    <ToUserName><![CDATA[toUser]]></ToUserName>
+    <FromUserName><![CDATA[fromUser]]></FromUserName>
+    <CreateTime>1348831860</CreateTime>
+    <MsgType><![CDATA[text]]></MsgType>
+    <Content><![CDATA[heee]]></Content>
+    <MsgId>1234567890123456</MsgId>
+    </xml>
+    """
+    assert tester.send_xml(xml) == 'Hello'

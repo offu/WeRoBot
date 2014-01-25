@@ -3,9 +3,17 @@ Changelog
 
 Version 0.5.0
 ----------------
+
++ Add ``werobot.client``
 + Rewrite ``werobot.message``
 + Friendly 403 page
 + Improved server support
++ Drop ``werobot.testing.make_text_message``
++ Drop ``werobot.testing.make_image_message``
++ Drop ``werobot.testing.make_location_message``
++ Drop ``werobot.testing.make_voice_message``
++ Drop ``werobot.testing.WeTest.send``
++ Rewrite testing case
 
 Version 0.4.1
 ----------------

@@ -5,3 +5,4 @@ WeRoBot.Client
 
 
 .. autofunction:: get_token
+.. autofunction:: create_menu
