@@ -5,6 +5,7 @@ Version 0.5.0
 ----------------
 
 + Add ``werobot.client``
++ Add ``werobot.config``
 + Rewrite ``werobot.message``
 + Friendly 403 page
 + Improved server support
