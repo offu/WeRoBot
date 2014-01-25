@@ -53,7 +53,7 @@ def test_two():
     <MsgId>1234567890123456</MsgId>
     </xml>
     """
-    assert tester.send_xml(xml) == 'Hi'
+    assert tester.send_xml(xml) == 'Hello'
     xml = """
     <xml>
     <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -64,4 +64,4 @@ def test_two():
     <MsgId>1234567890123456</MsgId>
     </xml>
     """
-    assert tester.send_xml(xml) == 'Hello'
+    assert tester.send_xml(xml) == 'Hi'

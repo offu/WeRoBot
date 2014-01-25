@@ -11,5 +11,15 @@ def test_echo():
         return message.img
 
     tester = werobot.testing.WeTest(robot)
-    message = werobot.testing.make_image_message('http://a.com/b.jpg')
-    assert tester.send(message) == 'http://a.com/b.jpg'
+    xml = """
+    <xml>
+    <ToUserName><![CDATA[toUser]]></ToUserName>
+    <FromUserName><![CDATA[fromUser]]></FromUserName>
+    <CreateTime>1348831860</CreateTime>
+    <MsgType><![CDATA[image]]></MsgType>
+    <PicUrl><![CDATA[this is a url]]></PicUrl>
+    <MediaId><![CDATA[media_id]]></MediaId>
+    <MsgId>1234567890123456</MsgId>
+    </xml>
+    """
+    assert tester.send_xml(xml) == "this is a url"

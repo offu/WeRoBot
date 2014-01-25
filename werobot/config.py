@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import imp
+
 
 class Config(dict):
     def from_pyfile(self, filename):
@@ -8,7 +10,8 @@ class Config(dict):
 
         :param filename: 配置文件的文件名。
         """
-        d = object()
+        d = imp.new_module('config')
+        d.__file__ = filename
         with open(filename) as config_file:
             exec (compile(config_file.read(), filename, 'exec'), d.__dict__)
         self.from_object(d)

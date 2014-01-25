@@ -22,4 +22,4 @@ def test_from_object():
     class ConfigObject():
         TOKEN = "456"
     config.from_object(ConfigObject())
-    assert config["token"] == "456"
+    assert config["TOKEN"] == "456"

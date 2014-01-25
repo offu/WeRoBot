@@ -16,7 +16,7 @@ def parse_user_msg(xml):
     wechat_message = dict((child.tag, to_unicode(child.text))
                           for child in ElementTree.fromstring(xml))
     wechat_message["raw"] = xml
-    wechat_message["type"] = wechat_message.pop("MsgType")
+    wechat_message["type"] = wechat_message.pop("MsgType").lower()
 
     message_type = MESSAGE_TYPES.get(wechat_message["type"], UnknownMessage)
     return message_type(wechat_message)

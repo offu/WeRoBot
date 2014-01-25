@@ -22,7 +22,7 @@ def test_events():
         <Event><![CDATA[subscribe]]></Event>
     </xml>
     """
-    assert tester.send_xml(xml) == 'Hi'
+    assert tester.send_xml(xml) == 'Hi', tester.send_xml(xml)
 
     @robot.unsubscribe
     def second(message):

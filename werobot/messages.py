@@ -56,9 +56,10 @@ class LinkMessage(WeChatMessage):
 @handle_for_type("event")
 class EventMessage(WeChatMessage):
     def __init__(self, message):
+        message.pop("type")
         self.type = message.pop("Event").lower()
         if self.type == "click":
-            self.eventkey = message.pop('EventKey')
+            self.key = message.pop('EventKey')
         super(EventMessage, self).__init__(message)
 
 
