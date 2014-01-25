@@ -96,7 +96,7 @@ robot.unknown        未知类型
 
 .. note:: 通过 ``robot.handler`` 添加的 handler 将收到所有信息；只有在其他 handler 没有给出返回值的情况下， 通过 ``robot.handler`` 添加的 handler 才会被调用。
 
-@robot.key_click 修饰符
+robot.key_click 修饰符
 -------------------------
 
 ``@robot.key_click`` 是对 ``@robot.click`` 修饰符的改进。

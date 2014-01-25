@@ -45,7 +45,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'WeRoBot'
-copyright = u'2013, whtsky'
+copyright = u'2014, whtsky'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -134,7 +134,11 @@ html_static_path = ['_static']
 #html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-#html_sidebars = {}
+html_sidebars = {
+    'index': ['sourcelink.html', 'sidebarintro.html', 'searchbox.html'],
+    '**': ['localtoc.html', 'relations.html', 'sidebarintro.html',
+           'searchbox.html']
+}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
