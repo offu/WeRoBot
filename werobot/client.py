@@ -3,6 +3,8 @@
 import time
 import requests
 
+from werobot.utils import to_unicode
+
 
 class ClientException(Exception):
     pass
@@ -25,7 +27,10 @@ class Client(object):
         self._token = None
         self.token_expires_at = None
 
-    def _request(self, method, url, **kwargs):
+    def request(self, method, url, **kwargs):
+        kwargs.setdefault("params", {
+            "access_token": self.token,
+        })
         r = requests.request(
             method=method,
             url=url,
@@ -35,6 +40,20 @@ class Client(object):
         json = r.json()
         if check_error(json):
             return json
+
+    def get(self, url, **kwargs):
+        return self.request(
+            method="get",
+            url=url,
+            **kwargs
+        )
+
+    def post(self, url, **kwargs):
+        return self.request(
+            method="post",
+            url=url,
+            **kwargs
+        )
 
     def grant_token(self):
         """
@@ -46,8 +65,7 @@ class Client(object):
 
         :return: 返回的 JSON 数据包
         """
-        return self._request(
-            method="get",
+        return self.get(
             url="https://api.weixin.qq.com/cgi-bin/token",
             params={
                 "grant_type": "client_credential",
@@ -55,7 +73,6 @@ class Client(object):
                 "secret": self.appsecret
             }
         )
-
 
     @property
     def token(self):
@@ -113,12 +130,8 @@ class Client(object):
 
         :return: 返回的 JSON 数据包
         """
-        return self._request(
-            method="post",
+        return self.post(
             url="https://api.weixin.qq.com/cgi-bin/menu/create",
-            params={
-                "access_token": self.token,
-            },
             data=menu_data
         )
 
@@ -129,13 +142,7 @@ class Client(object):
 
         :return: 返回的 JSON 数据包
         """
-        return self._request(
-            method="get",
-            url="https://api.weixin.qq.com/cgi-bin/menu/get",
-            params={
-                "access_token": self.token,
-            }
-        )
+        return self.get("https://api.weixin.qq.com/cgi-bin/menu/get")
 
     def delete_menu(self):
         """
@@ -144,13 +151,7 @@ class Client(object):
 
         :return: 返回的 JSON 数据包
         """
-        return self._request(
-            method="get",
-            url="https://api.weixin.qq.com/cgi-bin/menu/delete",
-            params={
-                "access_token": self.token,
-            }
-        )
+        return self.get("https://api.weixin.qq.com/cgi-bin/menu/delete")
 
     def upload_media(self, type, media):
         """
@@ -162,8 +163,7 @@ class Client(object):
 
         :return: 返回的 JSON 数据包
         """
-        return self._request(
-            method="post",
+        return self.post(
             url="https://api.weixin.qq.com/cgi-bin/menu/create",
             params={
                 "access_token": self.token,
@@ -191,3 +191,56 @@ class Client(object):
             }
         )
 
+    def create_group(self, name):
+        """
+        创建分组
+        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=分组管理接口
+
+        :param name: 分组名字（30个字符以内）
+        :return: 返回的 JSON 数据包
+
+        """
+        name = to_unicode(name)
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/groups/create",
+            data={"group": {"name": name}}
+        )
+
+    def get_groups(self):
+        """
+        查询所有分组
+        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=分组管理接口
+
+        :return: 返回的 JSON 数据包
+        """
+        return self.get("https://api.weixin.qq.com/cgi-bin/groups/get")
+
+    def get_group_by_id(self, openid):
+        """
+        查询用户所在分组
+        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=分组管理接口
+
+        :param openid: 用户的OpenID
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/groups/getid",
+            data={"openid": openid}
+        )
+
+    def update_group(self, group_id, name):
+        """
+        修改分组名
+        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=分组管理接口
+
+        :param group_id: 分组id，由微信分配
+        :param name: 分组名字（30个字符以内）
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/groups/update",
+            data={"group":{
+                "id": int(group_id),
+                "name": to_unicode(name)
+            }}
+        )

@@ -3,6 +3,24 @@
 import imp
 
 
+class ConfigAttribute(object):
+    """
+    让一个属性指向一个配置
+    """
+
+    def __init__(self, name):
+        self.__name__ = name
+
+    def __get__(self, obj, type=None):
+        if obj is None:
+            return self
+        rv = obj.config[self.__name__]
+        return rv
+
+    def __set__(self, obj, value):
+        obj.config[self.__name__] = value
+
+
 class Config(dict):
     def from_pyfile(self, filename):
         """

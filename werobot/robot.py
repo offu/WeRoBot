@@ -8,7 +8,7 @@ import logging
 
 from bottle import Bottle, request, response, abort, template
 
-from werobot.config import Config
+from werobot.config import Config, ConfigAttribute
 from werobot.parser import parse_user_msg
 from werobot.reply import create_reply
 from werobot.utils import py3k
@@ -26,6 +26,9 @@ _DEFAULT_CONFIG = dict(
 class BaseRoBot(object):
     message_types = ['subscribe', 'unsubscribe', 'click',  # event
                      'text', 'image', 'link', 'location', 'voice']
+
+    token = ConfigAttribute("TOKEN")
+    session_storage = ConfigAttribute("SESSION_STORAGE")
 
     def __init__(self, token=None, logger=None, enable_session=True,
                  session_storage=None):
@@ -169,20 +172,6 @@ class BaseRoBot(object):
             sign = sign.encode()
         sign = hashlib.sha1(sign).hexdigest()
         return sign == signature
-
-    def __getattribute__(self, item):
-        try:
-            return object.__getattribute__(self, item)
-        except AttributeError as e:
-            if item in ["token", "session_storage"]:
-                return self.config[item.upper()]
-            raise e
-
-    def __setattr__(self, key, value):
-        if key in ["token", "session_storage"]:
-            self.config[key.upper()] = value
-        else:
-            object.__setattr__(self, key, value)
 
 
 class WeRoBot(BaseRoBot):
