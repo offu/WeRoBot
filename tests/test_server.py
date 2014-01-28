@@ -1,8 +1,9 @@
 import hashlib
 import time
+import six
 
 from werobot import WeRoBot
-from werobot.utils import generate_token, py3k
+from werobot.utils import generate_token
 
 
 def test_signature_checker():
@@ -16,7 +17,7 @@ def test_signature_checker():
     sign = [token, timestamp, nonce]
     sign.sort()
     sign = ''.join(sign)
-    if py3k:
+    if six.PY3:
         sign = sign.encode()
     sign = hashlib.sha1(sign).hexdigest()
 

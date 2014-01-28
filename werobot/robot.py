@@ -7,11 +7,12 @@ import hashlib
 import logging
 
 from bottle import Bottle, request, response, abort, template
+from six import PY3
 
 from werobot.config import Config, ConfigAttribute
 from werobot.parser import parse_user_msg
 from werobot.reply import create_reply
-from werobot.utils import py3k
+from werobot.utils import to_binary
 
 __all__ = ['BaseRoBot', 'WeRoBot']
 
@@ -145,20 +146,16 @@ class BaseRoBot(object):
         session = None
         if session_storage:
             if hasattr(message, "source"):
-                id = message.source
+                id = to_binary(message.source)
                 session = session_storage[id]
 
         handlers = self.get_handlers(message.type)
         try:
             for handler in handlers:
-                
                 argc = len(inspect.getargspec(handler).args)
-
                 reply = handler(*[message, session][:argc])
-
                 if session_storage and id:
                     session_storage[id] = session
-
                 if reply:
                     return reply
         except:
@@ -168,7 +165,7 @@ class BaseRoBot(object):
         sign = [self.config["TOKEN"], timestamp, nonce]
         sign.sort()
         sign = ''.join(sign)
-        if py3k:
+        if PY3:
             sign = sign.encode()
         sign = hashlib.sha1(sign).hexdigest()
         return sign == signature

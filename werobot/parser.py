@@ -1,7 +1,7 @@
 from xml.etree import ElementTree
 
-from .messages import MESSAGE_TYPES, UnknownMessage
-from .utils import to_unicode
+from werobot.messages import MESSAGE_TYPES, UnknownMessage
+from werobot.utils import to_text
 
 
 def parse_user_msg(xml):
@@ -13,7 +13,7 @@ def parse_user_msg(xml):
     if not xml:
         return
 
-    wechat_message = dict((child.tag, to_unicode(child.text))
+    wechat_message = dict((child.tag, to_text(child.text))
                           for child in ElementTree.fromstring(xml))
     wechat_message["raw"] = xml
     wechat_message["type"] = wechat_message.pop("MsgType").lower()

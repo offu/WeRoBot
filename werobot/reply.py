@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import time
-from .messages import WeChatMessage
-from .utils import isstring, to_unicode
+
+from werobot.messages import WeChatMessage
+from werobot.utils import is_string, to_text
 
 
 class Article(object):
@@ -30,8 +31,8 @@ class WeChatReply(object):
 
         args = dict()
         for k, v in kwargs.items():
-            if isstring(v):
-                v = to_unicode(v)
+            if is_string(v):
+                v = to_text(v)
             args[k] = v
 
         self._args = args
@@ -41,7 +42,7 @@ class WeChatReply(object):
 
 
 class TextReply(WeChatReply):
-    TEMPLATE = to_unicode("""
+    TEMPLATE = to_text("""
     <xml>
     <ToUserName><![CDATA[{target}]]></ToUserName>
     <FromUserName><![CDATA[{source}]]></FromUserName>
@@ -57,7 +58,7 @@ class TextReply(WeChatReply):
 
 
 class ArticlesReply(WeChatReply):
-    TEMPLATE = to_unicode("""
+    TEMPLATE = to_text("""
     <xml>
     <ToUserName><![CDATA[{target}]]></ToUserName>
     <FromUserName><![CDATA[{source}]]></FromUserName>
@@ -70,7 +71,7 @@ class ArticlesReply(WeChatReply):
     </xml>
     """)
 
-    ITEM_TEMPLATE = to_unicode("""
+    ITEM_TEMPLATE = to_text("""
     <item>
     <Title><![CDATA[{title}]]></Title>
     <Description><![CDATA[{description}]]></Description>
@@ -94,10 +95,10 @@ class ArticlesReply(WeChatReply):
         items = []
         for article in self._articles:
             items.append(ArticlesReply.ITEM_TEMPLATE.format(
-                title=to_unicode(article.title),
-                description=to_unicode(article.description),
-                img=to_unicode(article.img),
-                url=to_unicode(article.url)
+                title=to_text(article.title),
+                description=to_text(article.description),
+                img=to_text(article.img),
+                url=to_text(article.url)
             ))
         self._args["items"] = ''.join(items)
         self._args["count"] = len(items)
@@ -107,7 +108,7 @@ class ArticlesReply(WeChatReply):
 
 
 class MusicReply(WeChatReply):
-    TEMPLATE = to_unicode("""
+    TEMPLATE = to_text("""
     <xml>
     <ToUserName><![CDATA[{target}]]></ToUserName>
     <FromUserName><![CDATA[{source}]]></FromUserName>
@@ -130,8 +131,8 @@ class MusicReply(WeChatReply):
 def create_reply(reply, message=None):
     if isinstance(reply, WeChatReply):
         return reply.render()
-    elif isstring(reply):
-        message = to_unicode(message)
+    elif is_string(reply):
+        message = to_text(message)
         reply = TextReply(message=message, content=reply)
         return reply.render()
     elif isinstance(reply, list) and all([len(x) == 4 for x in reply]):
@@ -150,9 +151,9 @@ def create_reply(reply, message=None):
         title, description, url, hq_url = reply
         reply = MusicReply(
             message=message,
-            title=to_unicode(title),
-            description=to_unicode(description),
-            url=to_unicode(url),
-            hq_url=to_unicode(hq_url)
+            title=to_text(title),
+            description=to_text(description),
+            url=to_text(url),
+            hq_url=to_text(hq_url)
         )
         return reply.render()

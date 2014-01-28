@@ -4,6 +4,7 @@ import random
 import time
 import logging
 import json
+import six
 
 try:
     import curses
@@ -11,30 +12,33 @@ try:
 except ImportError:
     curses = None
 
-py3k = sys.version_info >= (3, 0, 0)
-
-if py3k:
-    basestring = unicode = str
+string_types = (six.string_types, six.text_type, six.binary_type)
 
 
 def check_token(token):
     return re.match('^[A-Za-z0-9]{3,32}$', token)
 
 
-def to_unicode(value):
-    if isinstance(value, unicode):
-        return value
-    if isinstance(value, basestring):
-        return value.decode('utf-8')
+def to_text(value, encoding="utf-8"):
+    if isinstance(value, (six.string_types, six.binary_type)):
+        return value.decode(encoding)
     if isinstance(value, int):
-        return str(value)
-    if isinstance(value, bytes):
-        return value.decode('utf-8')
+        return six.text_type(value)
+    assert isinstance(value, six.text_type)
     return value
 
 
-def isstring(value):
-    return isinstance(value, basestring)
+def to_binary(value, encoding="utf-8"):
+    if isinstance(value, six.text_type):
+        return value.encode(encoding)
+    if isinstance(value, int):
+        return six.binary_type(value)
+    assert isinstance(value, six.binary_type)
+    return value
+
+
+def is_string(value):
+    return isinstance(value, string_types)
 
 
 def generate_token(length=''):
@@ -121,7 +125,7 @@ class _LogFormatter(logging.Formatter):
 
 
 def json_loads(s):
-    s = to_unicode(s)
+    s = to_text(s)
     return json.loads(s)
 
 
