@@ -444,3 +444,31 @@ class Client(object):
                 }
             }
         )
+
+    def create_qrcode(self, **data):
+        """
+        创建二维码
+        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=生成带参数的二维码
+
+        :param data: 你要发送的参数 dict
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/qrcode/create",
+            data=data
+        )
+
+    def show_qrcode(self, ticket):
+        """
+        通过ticket换取二维码
+        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=生成带参数的二维码
+
+        :param ticket: 二维码 ticket 。可以通过 :func:`create_qrcode` 获取到
+        :return: 返回的 Request 对象
+        """
+        return requests.get(
+            url="https://mp.weixin.qq.com/cgi-bin/showqrcode",
+            params={
+                "ticket": ticket
+            }
+        )
