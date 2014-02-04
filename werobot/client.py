@@ -295,4 +295,152 @@ class Client(object):
             params["next_openid"] = first_user_id
         return self.get("https://api.weixin.qq.com/cgi-bin/user/get", params=params)
 
-    
+    def send_text_message(self, user_id, content):
+        """
+        发送文本消息
+        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=发送客服消息
+
+        :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
+        :param content: 消息正文
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/message/custom/send",
+            data={
+                "touser": user_id,
+                "msgtype": "text",
+                "text": {
+                     "content": content
+                }
+            }
+        )
+
+    def send_image_message(self, user_id, media_id):
+        """
+        发送图片消息
+        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=发送客服消息
+
+        :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
+        :param media_id: 图片的媒体ID。 可以通过 :func:`upload_media` 上传。
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/message/custom/send",
+            data={
+                "touser": user_id,
+                "msgtype": "image",
+                "image": {
+                    "media_id": media_id
+                }
+            }
+        )
+
+    def send_voice_message(self, user_id, media_id):
+        """
+        发送语音消息
+        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=发送客服消息
+
+        :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
+        :param media_id: 发送的语音的媒体ID。 可以通过 :func:`upload_media` 上传。
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/message/custom/send",
+            data={
+                "touser": user_id,
+                "msgtype": "voice",
+                "voice": {
+                    "media_id": media_id
+                }
+            }
+        )
+
+    def send_video_message(self, user_id, media_id,
+                           title=None, description=None):
+        """
+        发送视频消息
+        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=发送客服消息
+
+        :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
+        :param media_id: 发送的视频的媒体ID。 可以通过 :func:`upload_media` 上传。
+        :param title: 视频消息的标题
+        :param description: 视频消息的描述
+        :return: 返回的 JSON 数据包
+        """
+        video_data = {
+            "media_id": media_id,
+        }
+        if title:
+            video_data["title"] = title
+        if description:
+            video_data["description"] = description
+
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/message/custom/send",
+            data={
+                "touser": user_id,
+                "msgtype": "video",
+                "video": video_data
+            }
+        )
+
+    def send_music_message(self, user_id, url, hq_url, thumb_media_id,
+                           title=None, description=None):
+        """
+        发送音乐消息
+        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=发送客服消息
+
+        :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
+        :param url: 音乐链接
+        :param hq_url: 高品质音乐链接，wifi环境优先使用该链接播放音乐
+        :param thumb_media_id: 缩略图的媒体ID。 可以通过 :func:`upload_media` 上传。
+        :param title: 音乐标题
+        :param description: 音乐描述
+        :return: 返回的 JSON 数据包
+        """
+        music_data = {
+            "musicurl": url,
+            "hqmusicurl": hq_url,
+            "thumb_media_id": thumb_media_id
+        }
+        if title:
+            music_data["title"] = title
+        if description:
+            music_data["description"] = description
+
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/message/custom/send",
+            data={
+                "touser": user_id,
+                "msgtype": "music",
+                "music": music_data
+            }
+        )
+
+    def send_article_message(self, user_id, articles):
+        """
+        发送图文消息
+        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=发送客服消息
+
+        :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
+        :param articles: 一个包含至多10个 :class:`Article` 实例的数组
+        :return: 返回的 JSON 数据包
+        """
+        articles_data = []
+        for article in articles:
+            articles_data.append({
+                "title": article.title,
+                "description": article.description,
+                "url": article.url,
+                "picurl": article.img
+            })
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/message/custom/send",
+            data={
+                "touser": user_id,
+                "msgtype": "news",
+                "news": {
+                    "articles": articles_data
+                }
+            }
+        )
