@@ -1,1 +1,3 @@
 bottle==0.11.6
+requests==2.2.1
+six==1.5.2

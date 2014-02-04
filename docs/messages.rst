@@ -6,6 +6,7 @@
 --------------
 
 除了 UnknownMessage， 每一种 Message 都包括以下属性：
+
 ======== ===================================
 name      value
 ======== ===================================
@@ -72,15 +73,18 @@ EventMessage
 
 EventMessage的属性：
 
-========= =====================================
-name       value
-========= =====================================
-type       'subscribe' 'unsubscribe' 或 'click' [1]_
-key        事件 key 值。当 type = 'click' 时存在。
-========= =====================================
+=========== ======================================================
+name         value
+=========== ======================================================
+type         'subscribe' 'unsubscribe' 'click' 或 'location' [1]_
+key          事件 key 值。当 type = 'click' 时存在。
+Latitude	 地理位置纬度。当 type = 'location' 时存在。
+Longitude	 地理位置经度。当 type = 'location' 时存在。
+Precision	 地理位置精度。当 type = 'location' 时存在。
+=========== ======================================================
 
-VoiceMessage [3]_
---------------
+VoiceMessage
+--------------------
 
 VoiceMessage的属性：
 
@@ -107,6 +111,5 @@ raw        请求的正文部分。标准的XML格式。
 
 .. note:: 如果你不为 WeRoBot 贡献代码，你完全可以无视掉 UnknownMessage 。在正常的使用中，WeRoBot应该不会收到 `UnknownMessage` ——除非 WeRoBot 停止开发。
 
-.. [1] 当你被用户关注时，会收到 type='subscribe' 的事件； 被取消关注时是 type='unsubscribe'  。
+.. [1] 当你被用户关注时，会收到 type='subscribe' 的事件； 被取消关注时是 type='unsubscribe' 。当用户点击自定义菜单按钮时 type 为 `click` ，用户上报地理位置的数据包 type 为 `location`
 .. [2] 截至目前（ 2013.03.16 ），微信机器人所收到的消息中都不包含 MsgID.
-.. [3] voice消息类型接口未公开。

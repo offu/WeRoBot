@@ -15,5 +15,17 @@ def test_echo():
         )
 
     tester = werobot.testing.WeTest(robot)
-    message = werobot.testing.make_location_message('20', '30', 40, 'label')
-    assert tester.send(message) == 'You are at (20.0, 30.0)'
+    xml = """
+    <xml>
+    <ToUserName><![CDATA[toUser]]></ToUserName>
+    <FromUserName><![CDATA[fromUser]]></FromUserName>
+    <CreateTime>1351776360</CreateTime>
+    <MsgType><![CDATA[location]]></MsgType>
+    <Location_X>20.00000</Location_X>
+    <Location_Y>30.00000</Location_Y>
+    <Scale>40</Scale>
+    <Label><![CDATA[label]]></Label>
+    <MsgId>1234567890123456</MsgId>
+    </xml>
+    """
+    assert tester.send_xml(xml) == 'You are at (20.0, 30.0)'

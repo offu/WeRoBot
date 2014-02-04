@@ -1,25 +1,41 @@
+# -*- coding: utf-8 -*-
+
+import werobot
+
 import inspect
 import hashlib
 import logging
 
-from bottle import Bottle, request, response, abort
+from bottle import Bottle, request, response, abort, template
+from six import PY3
 
-from .parser import parse_user_msg
-from .reply import create_reply
-from .utils import py3k
+from werobot.config import Config, ConfigAttribute
+from werobot.parser import parse_user_msg
+from werobot.reply import create_reply
+from werobot.utils import to_binary
 
 __all__ = ['BaseRoBot', 'WeRoBot']
+
+
+_DEFAULT_CONFIG = dict(
+    SERVER="auto",
+    HOST="127.0.0.1",
+    PORT="8888"
+)
 
 
 class BaseRoBot(object):
     message_types = ['subscribe', 'unsubscribe', 'click',  # event
                      'text', 'image', 'link', 'location', 'voice']
 
-    def __init__(self, token=None, logger=None, enable_session=False,
+    token = ConfigAttribute("TOKEN")
+    session_storage = ConfigAttribute("SESSION_STORAGE")
+
+    def __init__(self, token=None, logger=None, enable_session=True,
                  session_storage=None):
+        self.config = Config(_DEFAULT_CONFIG)
         self._handlers = dict((k, []) for k in self.message_types)
         self._handlers['all'] = []
-        self.token = token
         if logger is None:
             logger = logging.getLogger("WeRoBot")
         self.logger = logger
@@ -27,7 +43,11 @@ class BaseRoBot(object):
         if enable_session and session_storage is None:
             from .session.filestorage import FileStorage
             session_storage = FileStorage()
-        self.session_storage = session_storage
+        self.config.update(
+            TOKEN=token,
+            SESSION_STORAGE=session_storage,
+
+        )
 
     def handler(self, f):
         """
@@ -81,6 +101,22 @@ class BaseRoBot(object):
         Decorator to add a handler function for ``click`` messages
         """
         self.add_handler(f, type='click')
+        
+    def key_click(self, key):
+        """
+        Shortcut for ``click`` messages
+        @key_click('KEYNAME') for special key on click event
+        """
+        def d(f):
+            argc = len(inspect.getargspec(f).args)
+
+            @self.click
+            def onclick(message, session):
+                if message.key == key:
+                    return f(*[message, session][:argc])
+            return f
+
+        return d
 
     def voice(self, f):
         """
@@ -92,8 +128,9 @@ class BaseRoBot(object):
         """
         Add a handler function for messages of given type.
         """
-        if not inspect.isfunction(func):
+        if not inspect.isfunction(func) or len(inspect.getargspec(func).args) > 2:
             raise TypeError
+
         self._handlers[type].append(func)
 
     def get_handlers(self, type):
@@ -103,33 +140,32 @@ class BaseRoBot(object):
         """
         Return the raw xml reply for the given message.
         """
-        session_storage = self.session_storage
+        session_storage = self.config["SESSION_STORAGE"]
+
+        id = None
+        session = None
         if session_storage:
             if hasattr(message, "source"):
-                id = message.source
+                id = to_binary(message.source)
                 session = session_storage[id]
-            else:
-                id = None
-                session = None
+
         handlers = self.get_handlers(message.type)
         try:
             for handler in handlers:
-                if session_storage:
-                    reply = handler(message, session)
-                    if id:
-                        session_storage[id] = session
-                else:
-                    reply = handler(message)
+                argc = len(inspect.getargspec(handler).args)
+                reply = handler(*[message, session][:argc])
+                if session_storage and id:
+                    session_storage[id] = session
                 if reply:
                     return reply
         except:
             self.logger.warning("Catch an exception", exc_info=True)
 
     def check_signature(self, timestamp, nonce, signature):
-        sign = [self.token, timestamp, nonce]
+        sign = [self.config["TOKEN"], timestamp, nonce]
         sign.sort()
         sign = ''.join(sign)
-        if py3k:
+        if PY3:
             sign = sign.encode()
         sign = hashlib.sha1(sign).hexdigest()
         return sign == signature
@@ -137,14 +173,37 @@ class BaseRoBot(object):
 
 class WeRoBot(BaseRoBot):
 
+    ERROR_PAGE_TEMPLATE = """
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <meta charset="utf8" />
+            <title>Error: {{e.status}}</title>
+            <style type="text/css">
+              html {background-color: #eee; font-family: sans;}
+              body {background-color: #fff; border: 1px solid #ddd;
+                    padding: 15px; margin: 15px;}
+              pre {background-color: #eee; border: 1px solid #ddd; padding: 5px;}
+            </style>
+        </head>
+        <body>
+            <h1>Error: {{e.status}}</h1>
+            <p>微信机器人不可以通过 GET 方式直接进行访问。</p>
+            <p>想要使用本机器人，请在微信后台中将 URL 设置为 <pre>{{request.url}}</pre> 并将 Token 值设置正确。</p>
+
+            <p>如果你仍有疑问，请<a href="http://werobot.readthedocs.org/en/%s/">阅读文档</a>
+        </body>
+    </html>
+    """ % werobot.__version__
+
     @property
     def wsgi(self):
         if not self._handlers:
             raise
         app = Bottle()
 
-        @app.get('/')
-        def echo():
+        @app.get('/<t:path>')
+        def echo(t):
             if not self.check_signature(
                 request.query.timestamp,
                 request.query.nonce,
@@ -153,8 +212,8 @@ class WeRoBot(BaseRoBot):
                 return abort(403)
             return request.query.echostr
 
-        @app.post('/')
-        def handle():
+        @app.post('/<t:path>')
+        def handle(t):
             if not self.check_signature(
                 request.query.timestamp,
                 request.query.nonce,
@@ -173,11 +232,22 @@ class WeRoBot(BaseRoBot):
             response.content_type = 'application/xml'
             return create_reply(reply, message=message)
 
+        @app.error(403)
+        def error403(error):
+            return template(self.ERROR_PAGE_TEMPLATE,
+                            e=error, request=request)
+
         return app
 
-    def run(self, server='auto', host='127.0.0.1',
-            port=8888, enable_pretty_logging=True):
+    def run(self, server=None, host=None,
+            port=None, enable_pretty_logging=True):
         if enable_pretty_logging:
             from werobot.utils import enable_pretty_logging
             enable_pretty_logging(self.logger)
+        if server is None:
+            server = self.config["SERVER"]
+        if host is None:
+            host = self.config["HOST"]
+        if port is None:
+            port = self.config["POST"]
         self.wsgi.run(server=server, host=host, port=port)

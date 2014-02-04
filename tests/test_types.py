@@ -18,7 +18,26 @@ def test_types():
         return 'nice pic'
 
     tester = werobot.testing.WeTest(robot)
-    message = werobot.testing.make_text_message('oo')
-    assert tester.send(message) == 'Hi'
-    message = werobot.testing.make_image_message('img')
-    assert tester.send(message) == 'nice pic'
+    xml = """
+    <xml>
+    <ToUserName><![CDATA[toUser]]></ToUserName>
+    <FromUserName><![CDATA[fromUser]]></FromUserName>
+    <CreateTime>1348831860</CreateTime>
+    <MsgType><![CDATA[text]]></MsgType>
+    <Content><![CDATA[heee]]></Content>
+    <MsgId>1234567890123456</MsgId>
+    </xml>
+    """
+    assert tester.send_xml(xml) == 'Hi'
+    xml = """
+    <xml>
+    <ToUserName><![CDATA[toUser]]></ToUserName>
+    <FromUserName><![CDATA[fromUser]]></FromUserName>
+    <CreateTime>1348831860</CreateTime>
+    <MsgType><![CDATA[image]]></MsgType>
+    <PicUrl><![CDATA[this is a url]]></PicUrl>
+    <MediaId><![CDATA[media_id]]></MediaId>
+    <MsgId>1234567890123456</MsgId>
+    </xml>
+    """
+    assert tester.send_xml(xml) == 'nice pic'

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from . import SessionStorage
+from werobot.session import SessionStorage
 from werobot.utils import json_loads, json_dumps
 
 

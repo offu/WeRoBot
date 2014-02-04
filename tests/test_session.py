@@ -31,8 +31,26 @@ def test_session():
         return session['last']
 
     tester = werobot.testing.WeTest(robot)
-    message_1 = werobot.testing.make_text_message('ss')
-    message_2 = werobot.testing.make_text_message('dd')
+    xml_1 = """
+    <xml>
+    <ToUserName><![CDATA[toUser]]></ToUserName>
+    <FromUserName><![CDATA[fromUser]]></FromUserName>
+    <CreateTime>1348831860</CreateTime>
+    <MsgType><![CDATA[text]]></MsgType>
+    <Content><![CDATA[ss]]></Content>
+    <MsgId>1234567890123456</MsgId>
+    </xml>
+    """
+    xml_2 = """
+        <xml>
+        <ToUserName><![CDATA[toUser]]></ToUserName>
+        <FromUserName><![CDATA[fromUser]]></FromUserName>
+        <CreateTime>1348831860</CreateTime>
+        <MsgType><![CDATA[text]]></MsgType>
+        <Content><![CDATA[dd]]></Content>
+        <MsgId>1234567890123456</MsgId>
+        </xml>
+    """
 
     session_storages = [
         filestorage.FileStorage(),
@@ -42,7 +60,7 @@ def test_session():
 
     for session_storage in session_storages:
         robot.session_storage = session_storage
-        assert tester.send(message_1) == tester.send(message_2) == 'ss',\
+        assert tester.send_xml(xml_1) == tester.send_xml(xml_2) == 'ss',\
             session_storage
         remove_session(session_storage)
 
