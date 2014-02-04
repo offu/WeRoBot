@@ -3,7 +3,7 @@
 import time
 import requests
 
-from werobot.utils import to_unicode
+from werobot.utils import to_text
 
 
 class ClientException(Exception):
@@ -200,7 +200,7 @@ class Client(object):
         :return: 返回的 JSON 数据包
 
         """
-        name = to_unicode(name)
+        name = to_text(name)
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/groups/create",
             data={"group": {"name": name}}
@@ -241,7 +241,7 @@ class Client(object):
             url="https://api.weixin.qq.com/cgi-bin/groups/update",
             data={"group": {
                 "id": int(group_id),
-                "name": to_unicode(name)
+                "name": to_text(name)
             }}
         )
 
