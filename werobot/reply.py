@@ -20,7 +20,7 @@ class WeChatReply(object):
             kwargs["source"] = message.target
 
         if "target" not in kwargs and isinstance(message, WeChatMessage):
-            kwargs["target"] = message.target
+            kwargs["target"] = message.source
 
         if 'time' not in kwargs:
             kwargs["time"] = int(time.time())
