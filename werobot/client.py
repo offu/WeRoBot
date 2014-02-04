@@ -261,3 +261,22 @@ class Client(object):
                 "to_groupid": group_id
             }
         )
+
+    def get_user_info(self, user_id, lang="zh_CN"):
+        """
+        获取用户基本信息
+        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=获取用户基本信息
+
+        :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
+        :param lang: 返回国家地区语言版本，zh_CN 简体，zh_TW 繁体，en 英语
+        :return: 返回的 JSON 数据包
+        """
+        return self.get(
+            url="https://api.weixin.qq.com/cgi-bin/user/info",
+            params={
+                "access_token": self.token,
+                "openid": user_id,
+                "lang": lang
+            }
+        )
+
