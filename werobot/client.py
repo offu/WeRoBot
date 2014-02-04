@@ -239,8 +239,25 @@ class Client(object):
         """
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/groups/update",
-            data={"group":{
+            data={"group": {
                 "id": int(group_id),
                 "name": to_unicode(name)
             }}
+        )
+
+    def move_user(self, user_id, group_id):
+        """
+        移动用户分组
+        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=分组管理接口
+
+        :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
+        :param group_id: 分组 ID
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/groups/members/update",
+            data={
+                "openid": user_id,
+                "to_groupid": group_id
+            }
         )
