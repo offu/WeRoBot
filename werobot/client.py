@@ -280,3 +280,19 @@ class Client(object):
             }
         )
 
+    def get_followers(self, first_user_id=None):
+        """
+        获取关注者列表
+        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=获取关注者列表
+
+        :param first_user_id: 可选。第一个拉取的OPENID，不填默认从头开始拉取
+        :return: 返回的 JSON 数据包
+        """
+        params = {
+            "access_token": self.token
+        }
+        if first_user_id:
+            params["next_openid"] = first_user_id
+        return self.get("https://api.weixin.qq.com/cgi-bin/user/get", params=params)
+
+    
