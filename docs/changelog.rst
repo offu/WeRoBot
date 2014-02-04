@@ -7,6 +7,7 @@ Version 0.5.0
 + Add ``werobot.client``
 + Add ``werobot.config``
 + Add ``@werobot.key_click`` (Thanks @tg123)
++ Support Location Event
 + Use smart args
 + Friendly 403 page
 + Improved server support

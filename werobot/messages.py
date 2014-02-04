@@ -60,6 +60,10 @@ class EventMessage(WeChatMessage):
         self.type = message.pop("Event").lower()
         if self.type == "click":
             self.key = message.pop('EventKey')
+        elif self.type == "location":
+            self.latitude = float(message.pop("Latitude"))
+            self.longitude = float(message.pop("Longitude"))
+            self.precision = float(message.pop("Precision"))
         super(EventMessage, self).__init__(message)
 
 
