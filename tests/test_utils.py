@@ -11,8 +11,7 @@ def test_token_generator():
 
 
 def test_to_text():
-    assert to_text(5) == '5'
-    if six.PY3:
-        assert to_text(b'b') == 'b'
-    else:
-        assert to_text('喵') == unicode('喵'.decode('utf-8'))
+    assert to_text("6") == 6
+    assert to_text(six.binary_type("aa")) == six.text_type("aa")
+    assert to_text(six.text_type("cc")) == six.text_type("cc")
+

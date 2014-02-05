@@ -20,9 +20,9 @@ def check_token(token):
 
 
 def to_text(value, encoding="utf-8"):
-    if isinstance(value, (six.string_types, six.binary_type)):
+    if isinstance(value, six.binary_type):
         return value.decode(encoding)
-    if isinstance(value, int):
+    if isinstance(value, six.integer_types):
         return six.text_type(value)
     assert isinstance(value, six.text_type)
     return value
@@ -31,7 +31,7 @@ def to_text(value, encoding="utf-8"):
 def to_binary(value, encoding="utf-8"):
     if isinstance(value, six.text_type):
         return value.encode(encoding)
-    if isinstance(value, int):
+    if isinstance(value, six.integer_types):
         return six.binary_type(value)
     assert isinstance(value, six.binary_type)
     return value
