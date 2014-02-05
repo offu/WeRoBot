@@ -1,6 +1,5 @@
 import werobot
 import werobot.utils
-import werobot.testing
 
 
 def test_types():
@@ -10,34 +9,13 @@ def test_types():
         assert hasattr(robot, type)
 
     @robot.text
-    def second(message):
+    def text_handler(message):
         return "Hi"
 
+    assert robot._handlers["text"] == [text_handler]
+
     @robot.image
-    def third(message):
+    def image_handler(message):
         return 'nice pic'
 
-    tester = werobot.testing.WeTest(robot)
-    xml = """
-    <xml>
-    <ToUserName><![CDATA[toUser]]></ToUserName>
-    <FromUserName><![CDATA[fromUser]]></FromUserName>
-    <CreateTime>1348831860</CreateTime>
-    <MsgType><![CDATA[text]]></MsgType>
-    <Content><![CDATA[heee]]></Content>
-    <MsgId>1234567890123456</MsgId>
-    </xml>
-    """
-    assert tester.send_xml(xml) == 'Hi'
-    xml = """
-    <xml>
-    <ToUserName><![CDATA[toUser]]></ToUserName>
-    <FromUserName><![CDATA[fromUser]]></FromUserName>
-    <CreateTime>1348831860</CreateTime>
-    <MsgType><![CDATA[image]]></MsgType>
-    <PicUrl><![CDATA[this is a url]]></PicUrl>
-    <MediaId><![CDATA[media_id]]></MediaId>
-    <MsgId>1234567890123456</MsgId>
-    </xml>
-    """
-    assert tester.send_xml(xml) == 'nice pic'
+    assert robot._handlers["image"] == [image_handler]

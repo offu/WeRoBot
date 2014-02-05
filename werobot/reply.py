@@ -132,7 +132,6 @@ def create_reply(reply, message=None):
     if isinstance(reply, WeChatReply):
         return reply.render()
     elif is_string(reply):
-        message = to_text(message)
         reply = TextReply(message=message, content=reply)
         return reply.render()
     elif isinstance(reply, list) and all([len(x) == 4 for x in reply]):
@@ -151,9 +150,9 @@ def create_reply(reply, message=None):
         title, description, url, hq_url = reply
         reply = MusicReply(
             message=message,
-            title=to_text(title),
-            description=to_text(description),
-            url=to_text(url),
-            hq_url=to_text(hq_url)
+            title=title,
+            description=description,
+            url=url,
+            hq_url=hq_url
         )
         return reply.render()
