@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 MESSAGE_TYPES = {}
 
 
