@@ -3,7 +3,7 @@
 import time
 import requests
 
-from werobot.utils import to_unicode
+from werobot.utils import to_text
 
 
 class ClientException(Exception):
@@ -28,9 +28,8 @@ class Client(object):
         self.token_expires_at = None
 
     def request(self, method, url, **kwargs):
-        kwargs.setdefault("params", {
-            "access_token": self.token,
-        })
+        if "params" not in kwargs:
+            kwargs["params"] = {"access_token": self.token}
         r = requests.request(
             method=method,
             url=url,
@@ -59,9 +58,6 @@ class Client(object):
         """
         获取 Access Token 。
         详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=通用接口文档
-
-        :param appid: 第三方用户唯一凭证
-        :param appsecret: 第三方用户唯一凭证密钥，即 App Secret
 
         :return: 返回的 JSON 数据包
         """
@@ -125,7 +121,6 @@ class Client(object):
                 ]})
         详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=自定义菜单创建接口
 
-        :param access_token: Access Token，可以使用 :func:`get_token` 获取。
         :param menu_data: Python 字典
 
         :return: 返回的 JSON 数据包
@@ -153,13 +148,13 @@ class Client(object):
         """
         return self.get("https://api.weixin.qq.com/cgi-bin/menu/delete")
 
-    def upload_media(self, type, media):
+    def upload_media(self, media_type, media_file):
         """
         上传多媒体文件。
         详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=上传下载多媒体文件
 
-        :param type: 媒体文件类型，分别有图片（image）、语音（voice）、视频（video）和缩略图（thumb）
-        :param media:要上传的文件，一个 File-object
+        :param media_type: 媒体文件类型，分别有图片（image）、语音（voice）、视频（video）和缩略图（thumb）
+        :param media_file:要上传的文件，一个 File-object
 
         :return: 返回的 JSON 数据包
         """
@@ -167,10 +162,10 @@ class Client(object):
             url="https://api.weixin.qq.com/cgi-bin/menu/create",
             params={
                 "access_token": self.token,
-                "type": type
+                "type": media_type
             },
             files={
-                "media": media
+                "media": media_file
             }
         )
 
@@ -200,7 +195,7 @@ class Client(object):
         :return: 返回的 JSON 数据包
 
         """
-        name = to_unicode(name)
+        name = to_text(name)
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/groups/create",
             data={"group": {"name": name}}
@@ -241,7 +236,7 @@ class Client(object):
             url="https://api.weixin.qq.com/cgi-bin/groups/update",
             data={"group": {
                 "id": int(group_id),
-                "name": to_unicode(name)
+                "name": to_text(name)
             }}
         )
 
@@ -309,9 +304,7 @@ class Client(object):
             data={
                 "touser": user_id,
                 "msgtype": "text",
-                "text": {
-                     "content": content
-                }
+                "text": {"content": content}
             }
         )
 
