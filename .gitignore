@@ -49,3 +49,4 @@ include/
 werobot_session.db
 
 .coveralls.yml
+werobot_session

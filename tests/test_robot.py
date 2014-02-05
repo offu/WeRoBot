@@ -34,10 +34,10 @@ def test_register_handlerss():
     def text_handler():
         return "Hi"
 
-    assert robot._handlers["text"] == [text_handler]
+    assert robot._handlers["text"] == [(text_handler, 0)]
 
     @robot.image
-    def image_handler():
+    def image_handler(message):
         return 'nice pic'
 
-    assert robot._handlers["image"] == [image_handler]
+    assert robot._handlers["image"] == [(image_handler, 1)]

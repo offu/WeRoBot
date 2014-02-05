@@ -13,9 +13,10 @@ def handle_for_type(type):
 
 class WeChatMessage(object):
     def __init__(self, message):
-        self.target = message.pop("ToUserName")
-        self.source = message.pop('FromUserName')
-        self.time = int(message.get('CreateTime'))
+        self.id = message.pop("MsgId", None)
+        self.target = message.pop("ToUserName", None)
+        self.source = message.pop('FromUserName', None)
+        self.time = int(message.get('CreateTime', 0))
         self.__dict__.update(message)
 
 
@@ -79,4 +80,4 @@ class VoiceMessage(WeChatMessage):
 class UnknownMessage(WeChatMessage):
     def __init__(self, message):
         self.type = 'unknown'
-        self.raw = message["raw"]
+        super(UnknownMessage, self).__init__(message)

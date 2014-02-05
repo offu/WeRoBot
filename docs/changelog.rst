@@ -6,6 +6,7 @@ Version 0.5.0
 
 + Add ``werobot.client``
 + Add ``werobot.config``
++ Add ``werobot.logger``
 + Add ``@werobot.key_click`` (Thanks @tg123)
 + Support Location Event
 + Use smart args

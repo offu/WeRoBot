@@ -12,7 +12,10 @@ from nose.tools import raises
 
 
 def remove_session(session):
-    del session['test']
+    try:
+        del session['test']
+    except:
+        pass
 
 
 def test_session():

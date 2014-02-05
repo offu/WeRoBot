@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import werobot
-
+import os
 import inspect
 import hashlib
 import logging
@@ -43,7 +43,9 @@ class BaseRoBot(object):
 
         if enable_session and session_storage is None:
             from .session.filestorage import FileStorage
-            session_storage = FileStorage()
+            session_storage = FileStorage(
+                filename=os.path.abspath("werobot_session")
+            )
         self.config.update(
             TOKEN=token,
             SESSION_STORAGE=session_storage,
@@ -132,7 +134,7 @@ class BaseRoBot(object):
         if not inspect.isfunction(func) or len(inspect.getargspec(func).args) > 2:
             raise TypeError
 
-        self._handlers[type].append(func)
+        self._handlers[type].append((func, len(inspect.getargspec(func).args)))
 
     def get_handlers(self, type):
         return self._handlers[type] + self._handlers['all']
@@ -145,16 +147,15 @@ class BaseRoBot(object):
 
         id = None
         session = None
-        if session_storage:
-            if hasattr(message, "source"):
-                id = to_binary(message.source)
-                session = session_storage[id]
+        if session_storage and hasattr(message, "source"):
+            id = to_binary(message.source)
+            session = session_storage[id]
 
         handlers = self.get_handlers(message.type)
         try:
-            for handler in handlers:
-                argc = len(inspect.getargspec(handler).args)
-                reply = handler(*[message, session][:argc])
+            for handler, args_count in handlers:
+                args = [message, session][:args_count]
+                reply = handler(*args)
                 if session_storage and id:
                     session_storage[id] = session
                 if reply:
@@ -165,9 +166,7 @@ class BaseRoBot(object):
     def check_signature(self, timestamp, nonce, signature):
         sign = [self.config["TOKEN"], timestamp, nonce]
         sign.sort()
-        sign = ''.join(sign)
-        if PY3:
-            sign = sign.encode()
+        sign = to_binary(''.join(sign))
         sign = hashlib.sha1(sign).hexdigest()
         return sign == signature
 
