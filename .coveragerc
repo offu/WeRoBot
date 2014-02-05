@@ -1,0 +1,5 @@
+[run]
+include = werobot/*
+omit =
+  client
+  logger

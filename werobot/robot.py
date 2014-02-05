@@ -37,7 +37,8 @@ class BaseRoBot(object):
         self._handlers = dict((k, []) for k in self.message_types)
         self._handlers['all'] = []
         if logger is None:
-            logger = logging.getLogger("WeRoBot")
+            import werobot.logger
+            logger = werobot.logger.logger
         self.logger = logger
 
         if enable_session and session_storage is None:
@@ -242,7 +243,7 @@ class WeRoBot(BaseRoBot):
     def run(self, server=None, host=None,
             port=None, enable_pretty_logging=True):
         if enable_pretty_logging:
-            from werobot.utils import enable_pretty_logging
+            from werobot.logger import enable_pretty_logging
             enable_pretty_logging(self.logger)
         if server is None:
             server = self.config["SERVER"]
