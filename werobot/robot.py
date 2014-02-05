@@ -87,30 +87,40 @@ class BaseRoBot(object):
         self.add_handler(f, type='link')
         return f
 
+    def voice(self, f):
+        """
+        Decorator to add a handler function for ``voice`` messages
+        """
+        self.add_handler(f, type='voice')
+        return f
+
     def subscribe(self, f):
         """
         Decorator to add a handler function for ``subscribe event`` messages
         """
         self.add_handler(f, type='subscribe')
+        return f
 
     def unsubscribe(self, f):
         """
         Decorator to add a handler function for ``unsubscribe event`` messages
         """
         self.add_handler(f, type='unsubscribe')
+        return f
 
     def click(self, f):
         """
         Decorator to add a handler function for ``click`` messages
         """
         self.add_handler(f, type='click')
+        return f
         
     def key_click(self, key):
         """
         Shortcut for ``click`` messages
         @key_click('KEYNAME') for special key on click event
         """
-        def d(f):
+        def wraps(f):
             argc = len(inspect.getargspec(f).args)
 
             @self.click
@@ -119,13 +129,7 @@ class BaseRoBot(object):
                     return f(*[message, session][:argc])
             return f
 
-        return d
-
-    def voice(self, f):
-        """
-        Decorator to add a handler function for ``voice`` messages
-        """
-        self.add_handler(f, type='voice')
+        return wraps
 
     def add_handler(self, func, type='all'):
         """
