@@ -13,10 +13,7 @@ from nose.tools import raises
 
 
 def remove_session(session):
-    try:
-        del session[to_binary("fromUser")]
-    except:
-        pass
+    del session[to_binary("fromUser")]
 
 
 def test_session():
