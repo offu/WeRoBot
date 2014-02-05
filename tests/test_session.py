@@ -5,6 +5,7 @@ import werobot.utils
 import werobot.testing
 from werobot.session import filestorage, mongodbstorage, redisstorage
 from werobot.session import SessionStorage
+from werobot.utils import to_binary
 
 import pymongo
 import redis
@@ -13,7 +14,7 @@ from nose.tools import raises
 
 def remove_session(session):
     try:
-        del session['test']
+        del session[to_binary("fromUser")]
     except:
         pass
 
