@@ -131,8 +131,8 @@ class BaseRoBot(object):
         """
         Add a handler function for messages of given type.
         """
-        if not inspect.isfunction(func) or len(inspect.getargspec(func).args) > 2:
-            raise TypeError
+        if not callable(func):
+            raise ValueError("{} is not callable".format(func))
 
         self._handlers[type].append((func, len(inspect.getargspec(func).args)))
 

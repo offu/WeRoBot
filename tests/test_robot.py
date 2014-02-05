@@ -2,6 +2,7 @@ import hashlib
 import time
 import six
 
+from nose.tools import raises
 from werobot import WeRoBot
 from werobot.utils import generate_token
 
@@ -41,3 +42,9 @@ def test_register_handlerss():
         return 'nice pic'
 
     assert robot._handlers["image"] == [(image_handler, 1)]
+
+
+@raises(ValueError)
+def test_register_not_callable_object():
+    robot = WeRoBot()
+    robot.add_handler("s")
