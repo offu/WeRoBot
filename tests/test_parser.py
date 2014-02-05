@@ -21,7 +21,7 @@ def test_text_message():
     assert message.time == 1348831860
     assert message.type == 'text'
     assert message.content == 'this is a test'
-    #assert message.id == 1234567890123456
+    assert message.id == 1234567890123456
 
 
 def test_image_message():

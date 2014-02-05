@@ -22,3 +22,22 @@ def test_signature_checker():
     sign = hashlib.sha1(sign).hexdigest()
 
     assert robot.check_signature(timestamp, nonce, sign)
+
+
+def test_register_handlerss():
+    robot = WeRoBot()
+
+    for type in robot.message_types:
+        assert hasattr(robot, type)
+
+    @robot.text
+    def text_handler():
+        return "Hi"
+
+    assert robot._handlers["text"] == [text_handler]
+
+    @robot.image
+    def image_handler():
+        return 'nice pic'
+
+    assert robot._handlers["image"] == [image_handler]

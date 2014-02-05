@@ -27,19 +27,19 @@ def test_session():
         return message.content
 
     @robot.text
-    def second(message, session):
+    def second(_, session):
         return session['last']
 
     tester = werobot.testing.WeTest(robot)
     xml_1 = """
-    <xml>
-    <ToUserName><![CDATA[toUser]]></ToUserName>
-    <FromUserName><![CDATA[fromUser]]></FromUserName>
-    <CreateTime>1348831860</CreateTime>
-    <MsgType><![CDATA[text]]></MsgType>
-    <Content><![CDATA[ss]]></Content>
-    <MsgId>1234567890123456</MsgId>
-    </xml>
+        <xml>
+        <ToUserName><![CDATA[toUser]]></ToUserName>
+        <FromUserName><![CDATA[fromUser]]></FromUserName>
+        <CreateTime>1348831860</CreateTime>
+        <MsgType><![CDATA[text]]></MsgType>
+        <Content><![CDATA[ss]]></Content>
+        <MsgId>1234567890123456</MsgId>
+        </xml>
     """
     xml_2 = """
         <xml>
