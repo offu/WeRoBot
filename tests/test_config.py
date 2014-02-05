@@ -2,7 +2,9 @@ import os
 
 basedir = os.path.dirname(os.path.abspath(__file__))
 
+from werobot import WeRoBot
 from werobot.config import Config
+from werobot.utils import generate_token
 
 
 TOKEN = "123"
@@ -23,3 +25,15 @@ def test_from_object():
         TOKEN = "456"
     config.from_object(ConfigObject())
     assert config["TOKEN"] == "456"
+
+
+def test_config_attribute():
+    robot = WeRoBot()
+    assert not robot.token
+    token = generate_token()
+    robot.config["TOKEN"] = token
+    assert robot.token == token
+
+    token = generate_token()
+    robot.token = token
+    assert robot.config["TOKEN"] == token
