@@ -24,9 +24,10 @@ WeRoBot 是一个微信机器人框架，采用MIT协议发布。
 
 如果你没有安装 pip 而且正在使用一台 OS X / Linux 电脑，那么你应该运行 ::
 
+    curl http://peak.telecommunity.com/dist/ez_setup.py | python
     curl https://raw.github.com/pypa/pip/master/contrib/get-pip.py | python
 
-如果你是 Windows 用户， 那么下载 https://raw.github.com/pypa/pip/master/contrib/get-pip.py 这个文件，双击运行。
+如果你是 Windows 用户， 那么下载 http://peak.telecommunity.com/dist/ez_setup.py 和 https://raw.github.com/pypa/pip/master/contrib/get-pip.py 这两个文件，双击运行。
 
 Hello World
 =============
@@ -38,7 +39,7 @@ Hello World
     robot = werobot.WeRoBot(token='tokenhere')
 
     @robot.text
-    def hello_world(message):
+    def hello_world():
         return 'Hello World!'
 
     robot.run()
