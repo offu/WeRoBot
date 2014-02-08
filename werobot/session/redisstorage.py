@@ -18,7 +18,7 @@ class RedisStorage(SessionStorage):
                                 session_storage=session_storage)
 
 
-    你需要安装 ``redis`` 才能使用 MongoDBStorage 。
+    你需要安装 ``redis`` 才能使用 RedisStorage 。
 
     :param redis: 一个 Redis Client。
     :param prefix: Reids 中 Session 数据 key 的 prefix 。默认为 ``ws_``
