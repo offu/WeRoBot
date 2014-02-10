@@ -253,5 +253,5 @@ class WeRoBot(BaseRoBot):
         if host is None:
             host = self.config["HOST"]
         if port is None:
-            port = self.config["POST"]
+            port = self.config["PORT"]
         self.wsgi.run(server=server, host=host, port=port)
