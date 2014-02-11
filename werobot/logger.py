@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 
+import six
 import sys
 import time
 import logging
@@ -38,28 +39,21 @@ class _LogFormatter(logging.Formatter):
         logging.Formatter.__init__(self, *args, **kwargs)
         self._color = color
         if color:
-            # The curses module has some str/bytes confusion in
-            # python3.  Until version 3.2.3, most methods return
-            # bytes, but only accept strings.  In addition, we want to
-            # output these strings with the logging module, which
-            # works with unicode strings.  The explicit calls to
-            # unicode() below are harmless in python2 but will do the
-            # right conversion in python 3.
             fg_color = (curses.tigetstr("setaf") or
                         curses.tigetstr("setf") or "")
             if (3, 0) < sys.version_info < (3, 2, 3):
-                fg_color = unicode(fg_color, "ascii")
+                fg_color = six.text_type(fg_color, "ascii")
             self._colors = {
-                logging.DEBUG: unicode(curses.tparm(fg_color, 4),
+                logging.DEBUG: six.text_type(curses.tparm(fg_color, 4),
                                        "ascii"),  # Blue
-                logging.INFO: unicode(curses.tparm(fg_color, 2),
+                logging.INFO: six.text_type(curses.tparm(fg_color, 2),
                                       "ascii"),  # Green
-                logging.WARNING: unicode(curses.tparm(fg_color, 3),
+                logging.WARNING: six.text_type(curses.tparm(fg_color, 3),
                                          "ascii"),  # Yellow
-                logging.ERROR: unicode(curses.tparm(fg_color, 1),
+                logging.ERROR: six.text_type(curses.tparm(fg_color, 1),
                                        "ascii"),  # Red
             }
-            self._normal = unicode(curses.tigetstr("sgr0"), "ascii")
+            self._normal = six.text_type(curses.tigetstr("sgr0"), "ascii")
 
     def format(self, record):
         try:
