@@ -1,6 +1,11 @@
 Changelog
 =============
 
+Version 0.5.2
+----------------
+
++ Fix Python 3 support
+
 Version 0.5.1
 ----------------
 
