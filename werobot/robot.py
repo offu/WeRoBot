@@ -114,7 +114,7 @@ class BaseRoBot(object):
         """
         self.add_handler(f, type='click')
         return f
-        
+
     def key_click(self, key):
         """
         Shortcut for ``click`` messages
@@ -206,7 +206,7 @@ class WeRoBot(BaseRoBot):
             raise
         app = Bottle()
 
-        @app.get('/<t:path>')
+        @app.get('<t:path>')
         def echo(t):
             if not self.check_signature(
                 request.query.timestamp,
@@ -216,7 +216,7 @@ class WeRoBot(BaseRoBot):
                 return abort(403)
             return request.query.echostr
 
-        @app.post('/<t:path>')
+        @app.post('<t:path>')
         def handle(t):
             if not self.check_signature(
                 request.query.timestamp,
