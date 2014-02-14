@@ -13,7 +13,7 @@
     def echo(message):
         return 'Hello World!'
 
-    robot.run(server='tornado')
+    robot.run(server='gevent')
 
 server 支持以下几种：
 
