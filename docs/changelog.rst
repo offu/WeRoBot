@@ -1,6 +1,11 @@
 Changelog
 =============
 
+Version 0.5.3
+----------------
+
++ Fix: can't handle request for root path
+
 Version 0.5.2
 ----------------
 
