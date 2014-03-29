@@ -513,10 +513,9 @@ class Client(object):
         package.setdefault('input_charset', 'UTF-8')
         
         params = package.items()
-        _params = params + [('key', self.pay_partner_key)]
-        _params.sort()
+        params.sort()
 
-        sign = md5('&'.join(["%s=%s" % (str(p[0]), str(p[1])) for p in _params])).hexdigest().upper()
+        sign = md5('&'.join(["%s=%s" % (str(p[0]), str(p[1])) for p in params + [('key', self.pay_partner_key)]])).hexdigest().upper()
         
         return urlencode(params + [('sign', sign)])
 
@@ -526,7 +525,7 @@ class Client(object):
         pay_param['paySign'] = sign
         pay_param['signType'] = sign_type
 
-        # 腾讯这个还得转成大写 JS 才忍
+        # 腾讯这个还得转成大写 JS 才认
         for key in ('appId', 'timeStamp', 'nonceStr'):
             oldkey = key.lower()
             t = pay_param[oldkey]
