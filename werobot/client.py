@@ -3,7 +3,11 @@
 import time
 import requests
 
+from hashlib import sha1, md5
+from urllib import urlencode
+
 from werobot.utils import to_text
+from werobot.utils import generate_token
 
 
 class ClientException(Exception):
@@ -25,11 +29,14 @@ class Client(object):
     微信 API 操作类
     通过这个类可以方便的通过微信 API 进行一系列操作，比如主动发送消息、创建自定义菜单等
     """
-    def __init__(self, appid, appsecret):
+    def __init__(self, appid, appsecret, pay_sign_key=None, pay_partner_id=None, pay_partner_key=None):
         self.appid = appid
         self.appsecret = appsecret
         self._token = None
         self.token_expires_at = None
+        self.pay_sign_key = pay_sign_key
+        self.pay_partner_id = pay_partner_id
+        self.pay_partner_key = pay_partner_key
 
     def request(self, method, url, **kwargs):
         if "params" not in kwargs:
@@ -469,3 +476,79 @@ class Client(object):
                 "ticket": ticket
             }
         )
+
+    def _pay_sign_dict(self, **kwargs):
+        """
+        对参数进行签名
+        """
+        assert self.pay_sign_key, "PAY SIGN KEY IS EMPTY"
+
+        kwargs.update({
+            'appid'     : self.appid,
+            'timestamp' : int(time.time()),
+            'noncestr'  : generate_token(),
+        })
+
+        params = kwargs.items()
+        
+        _params = params + [('appkey', self.pay_sign_key)]
+        _params.sort()
+
+        sign = sha1('&'.join(["%s=%s" % (str(p[0]), str(p[1])) for p in _params])).hexdigest()
+        sign_type = 'SHA1'
+
+        return dict(params), sign, sign_type
+        
+        
+    def create_js_pay_package(self, **package):
+        assert self.pay_partner_id,  "PAY_PARTNER_ID IS EMPTY"
+        assert self.pay_partner_key, "PAY_PARTNER_KEY IS EMPTY"
+
+        package.update({
+            'partner' : self.pay_partner_id,
+        })
+
+        package.setdefault('bank_type', 'WX')
+        package.setdefault('fee_type', '1')
+        package.setdefault('input_charset', 'UTF-8')
+        
+        params = package.items()
+        _params = params + [('key', self.pay_partner_key)]
+        _params.sort()
+
+        sign = md5('&'.join(["%s=%s" % (str(p[0]), str(p[1])) for p in _params])).hexdigest().upper()
+        
+        return urlencode(params + [('sign', sign)])
+
+
+    def create_js_pay_params(self, **package):
+        pay_param, sign, sign_type = self._pay_sign_dict(package=self.create_js_pay_package(**package))
+        pay_param['paySign'] = sign
+        pay_param['signType'] = sign_type
+
+        # 腾讯这个还得转成大写 JS 才忍
+        for key in ('appId', 'timeStamp', 'nonceStr'):
+            oldkey = key.lower()
+            t = pay_param[oldkey]
+            del pay_param[oldkey]
+            pay_param[key] = t
+
+        return pay_param
+
+    def create_native_pay_url(self, productid):
+        """
+        创建 native pay url
+        详情请参考 支付开发文档
+
+        :param productid: 本地商品ID
+        :return: 返回URL
+        """
+
+        params, sign, _ = self._pay_sign_dict(productid=productid)
+
+        params['sign'] = sign
+
+        NATIVE_BASE_URL = 'weixin://wxpay/bizpayurl?'
+
+        return NATIVE_BASE_URL + urlencode(params)
+
