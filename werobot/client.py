@@ -6,6 +6,8 @@ import requests
 from hashlib import sha1, md5
 from urllib import urlencode
 
+
+from requests.compat import json
 from werobot.utils import to_text
 from werobot.utils import generate_token
 
@@ -41,6 +43,8 @@ class Client(object):
     def request(self, method, url, **kwargs):
         if "params" not in kwargs:
             kwargs["params"] = {"access_token": self.token}
+        if isinstance(kwargs.get("data", ""), dict):
+            kwargs["data"] = json.dumps(kwargs["data"])
         r = requests.request(
             method=method,
             url=url,
