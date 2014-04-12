@@ -7,7 +7,7 @@ from hashlib import sha1, md5
 from urllib import urlencode
 
 
-from requests.compat import json
+from requests.compat import json as _json
 from werobot.utils import to_text
 from werobot.utils import generate_token
 
@@ -44,7 +44,7 @@ class Client(object):
         if "params" not in kwargs:
             kwargs["params"] = {"access_token": self.token}
         if isinstance(kwargs.get("data", ""), dict):
-            kwargs["data"] = json.dumps(kwargs["data"])
+            kwargs["data"] = _json.dumps(kwargs["data"])
         r = requests.request(
             method=method,
             url=url,
@@ -481,17 +481,23 @@ class Client(object):
             }
         )
 
-    def _pay_sign_dict(self, **kwargs):
+    def _pay_sign_dict(self, add_noncestr=True, add_timestamp=True, **kwargs):
         """
         对参数进行签名
         """
         assert self.pay_sign_key, "PAY SIGN KEY IS EMPTY"
 
         kwargs.update({
-            'appid'     : self.appid,
-            'timestamp' : int(time.time()),
-            'noncestr'  : generate_token(),
+            'appid': self.appid,
         })
+
+        if add_noncestr:
+            kwargs.update({'noncestr': generate_token()})
+
+        if add_timestamp:
+            kwargs.update({'timestamp': int(time.time())})
+
+
 
         params = kwargs.items()
         
@@ -554,4 +560,39 @@ class Client(object):
         NATIVE_BASE_URL = 'weixin://wxpay/bizpayurl?'
 
         return NATIVE_BASE_URL + urlencode(params)
+
+    def pay_delivernotify(self, **deliver_info):
+        params, sign, _ = self._pay_sign_dict(add_noncestr=False, add_timestamp=False, **deliver_info)
+
+        params['app_signature'] = sign
+        params['sign_method'] = 'sha1'
+
+        return self.post(
+            url="https://api.weixin.qq.com/pay/delivernotify",
+            data=params
+        )
+
+    def pay_orderquery(self, out_trade_no):
+
+        package = {
+            'partner' : self.pay_partner_id,
+            'out_trade_no' : out_trade_no,
+        }
+
+        sign = md5('&'.join(["%s=%s" % (str(p[0]), str(p[1])) for p in package.items() + [('key', self.pay_partner_key)]])).hexdigest().upper()
+        package['sign'] = sign
+
+        package = '&'.join(["%s=%s" %(p[0], p[1]) for p in package.items()])
+
+        params, sign, _ = self._pay_sign_dict(add_noncestr=False, package=package)
+
+        params['app_signature'] = sign
+        params['sign_method'] = 'sha1'
+
+        return self.post(
+            url="https://api.weixin.qq.com/pay/orderquery",
+            data=params
+        )
+
+
 
