@@ -44,7 +44,10 @@ class Client(object):
         if "params" not in kwargs:
             kwargs["params"] = {"access_token": self.token}
         if isinstance(kwargs.get("data", ""), dict):
-            kwargs["data"] = _json.dumps(kwargs["data"])
+            body = _json.dumps(kwargs["data"], ensure_ascii=False)
+            body = body.encode('utf8')
+            kwargs["data"] = body
+
         r = requests.request(
             method=method,
             url=url,
