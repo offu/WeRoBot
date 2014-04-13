@@ -555,7 +555,10 @@ class Client(object):
             'out_trade_no' : out_trade_no,
         }
 
-        sign = md5('&'.join(["%s=%s" % (str(p[0]), str(p[1])) for p in package.items() + [('key', self.pay_partner_key)]])).hexdigest().upper()
+        _package = package.items()
+        _package.sort()
+
+        sign = md5('&'.join(["%s=%s" % (str(p[0]), str(p[1])) for p in _package + [('key', self.pay_partner_key)]])).hexdigest().upper()
         package['sign'] = sign
 
         package = '&'.join(["%s=%s" %(p[0], p[1]) for p in package.items()])
