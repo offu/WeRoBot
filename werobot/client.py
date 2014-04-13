@@ -518,6 +518,9 @@ class Client(object):
             del pay_param[oldkey]
             pay_param[key] = t
 
+        # 不转成字符串 ios 会出错
+        pay_param = dict([(str(k), str(v)) for k,v in pay_param.items()])
+
         return pay_param
 
     def create_native_pay_url(self, productid):
