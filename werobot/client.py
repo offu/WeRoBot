@@ -8,8 +8,8 @@ from urllib import urlencode
 
 
 from requests.compat import json as _json
-from werobot.utils import to_text
-from werobot.utils import generate_token
+from werobot.utils import to_text, pay_sign_dict
+from functools import partial
 
 
 class ClientException(Exception):
@@ -39,6 +39,7 @@ class Client(object):
         self.pay_sign_key = pay_sign_key
         self.pay_partner_id = pay_partner_id
         self.pay_partner_key = pay_partner_key
+        self._pay_sign_dict = partial(pay_sign_dict, appid, pay_sign_key)
 
     def request(self, method, url, **kwargs):
         if "params" not in kwargs:
@@ -484,34 +485,7 @@ class Client(object):
             }
         )
 
-    def _pay_sign_dict(self, add_noncestr=True, add_timestamp=True, **kwargs):
-        """
-        对参数进行签名
-        """
-        assert self.pay_sign_key, "PAY SIGN KEY IS EMPTY"
 
-        kwargs.update({
-            'appid': self.appid,
-        })
-
-        if add_noncestr:
-            kwargs.update({'noncestr': generate_token()})
-
-        if add_timestamp:
-            kwargs.update({'timestamp': int(time.time())})
-
-
-
-        params = kwargs.items()
-        
-        _params = params + [('appkey', self.pay_sign_key)]
-        _params.sort()
-
-        sign = sha1('&'.join(["%s=%s" % (str(p[0]), str(p[1])) for p in _params])).hexdigest()
-        sign_type = 'SHA1'
-
-        return dict(params), sign, sign_type
-        
         
     def create_js_pay_package(self, **package):
         assert self.pay_partner_id,  "PAY_PARTNER_ID IS EMPTY"
@@ -531,7 +505,6 @@ class Client(object):
         sign = md5('&'.join(["%s=%s" % (str(p[0]), str(p[1])) for p in params + [('key', self.pay_partner_key)]])).hexdigest().upper()
         
         return urlencode(params + [('sign', sign)])
-
 
     def create_js_pay_params(self, **package):
         pay_param, sign, sign_type = self._pay_sign_dict(package=self.create_js_pay_package(**package))

@@ -1,7 +1,11 @@
+#coding: utf8
+
 import re
 import random
 import json
 import six
+import time
+from hashlib import sha1
 
 string_types = (six.string_types, six.text_type, six.binary_type)
 
@@ -51,3 +55,30 @@ def json_loads(s):
 
 def json_dumps(d):
     return json.dumps(d)
+
+
+def pay_sign_dict(appid, pay_sign_key, add_noncestr=True, add_timestamp=True, add_appid=True, **kwargs):
+    """
+    支付参数签名
+    """
+    assert pay_sign_key, "PAY SIGN KEY IS EMPTY"
+
+    if add_appid:
+        kwargs.update({'appid': appid})
+
+    if add_noncestr:
+        kwargs.update({'noncestr': generate_token()})
+
+    if add_timestamp:
+        kwargs.update({'timestamp': int(time.time())})
+
+    params = kwargs.items()
+
+    _params = [(k.lower(), v) for k, v in kwargs.items() if k.lower() != "appid"] + [('appid', appid), ('appkey', pay_sign_key)]
+    _params.sort()
+
+    sign = sha1('&'.join(["%s=%s" % (str(p[0]), str(p[1])) for p in _params])).hexdigest()
+    sign_type = 'SHA1'
+
+    return dict(params), sign, sign_type
+
