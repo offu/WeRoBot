@@ -62,7 +62,7 @@ url           点击图片后跳转链接
     reply = ArticlesReply(message=message)
     article = Article(
         title="WeRoBot",
-        desription="WeRoBot是一个微信机器人框架",
+        description="WeRoBot是一个微信机器人框架",
         img="https://github.com/apple-touch-icon-144.png",
         url="https://github.com/whtsky/WeRoBot"
     )
