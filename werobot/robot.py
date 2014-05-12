@@ -25,8 +25,9 @@ _DEFAULT_CONFIG = dict(
 
 
 class BaseRoBot(object):
-    message_types = ['subscribe', 'unsubscribe', 'click',  # event
-                     'text', 'image', 'link', 'location', 'voice']
+
+    bulitin_message_types = ['subscribe', 'unsubscribe', 'click',
+                             'text', 'image', 'link', 'location', 'voice']
 
     token = ConfigAttribute("TOKEN")
     session_storage = ConfigAttribute("SESSION_STORAGE")
@@ -34,8 +35,12 @@ class BaseRoBot(object):
     def __init__(self, token=None, logger=None, enable_session=True,
                  session_storage=None):
         self.config = Config(_DEFAULT_CONFIG)
-        self._handlers = dict((k, []) for k in self.message_types)
-        self._handlers['all'] = []
+
+        self._handlers = {}
+        for message_type in self.bulitin_message_types:
+            self.add_message_type(message_type)
+        self.add_message_type('all')
+
         if logger is None:
             import werobot.logger
             logger = werobot.logger.logger
@@ -51,6 +56,14 @@ class BaseRoBot(object):
             SESSION_STORAGE=session_storage,
 
         )
+
+    def add_message_type(self, message_type):
+        """
+        Add custom message type.
+
+        :param message_type: custom message type's name
+        """
+        self._handlers[message_type] = self._handlers.get(message_type, [])
 
     def handler(self, f):
         """
