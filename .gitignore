@@ -53,3 +53,8 @@ werobot_session
 
 # Virtualenv
 .env
+
+
+# tags
+tags
+types_*
