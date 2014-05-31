@@ -25,7 +25,7 @@ _DEFAULT_CONFIG = dict(
 
 
 class BaseRoBot(object):
-    message_types = ['subscribe', 'unsubscribe', 'click',  # event
+    message_types = ['subscribe', 'unsubscribe', 'click',  'view', # event
                      'text', 'image', 'link', 'location', 'voice']
 
     token = ConfigAttribute("TOKEN")
@@ -130,6 +130,13 @@ class BaseRoBot(object):
             return f
 
         return wraps
+        
+    def view(self, f):
+        """
+        Decorator to add a handler function for ``view event`` messages
+        """
+        self.add_handler(f, type='view')
+        return f
 
     def add_handler(self, func, type='all'):
         """
