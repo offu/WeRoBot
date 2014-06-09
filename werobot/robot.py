@@ -174,6 +174,17 @@ class BaseRoBot(object):
         sign = hashlib.sha1(sign).hexdigest()
         return sign == signature
 
+    def filter(self, filter=[]):
+        def _wrap(f):
+            def __wrap(message):
+                if message.content in filter:
+                    ret = f(message)
+                else:
+                    ret = None
+                return ret
+            return __wrap
+        return _wrap
+
 
 class WeRoBot(BaseRoBot):
 
