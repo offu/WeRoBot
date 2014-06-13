@@ -6,7 +6,6 @@ import requests
 from hashlib import sha1, md5
 from urllib import urlencode
 
-
 from requests.compat import json as _json
 from werobot.utils import to_text, pay_sign_dict, generate_token
 from functools import partial
