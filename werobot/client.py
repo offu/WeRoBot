@@ -8,7 +8,7 @@ from urllib import urlencode
 
 
 from requests.compat import json as _json
-from werobot.utils import to_text, pay_sign_dict
+from werobot.utils import to_text, pay_sign_dict, generate_token
 from functools import partial
 
 
@@ -485,14 +485,19 @@ class Client(object):
             }
         )
 
-
-        
     def create_js_pay_package(self, **package):
+        """
+        签名 pay package 需要的参数
+        详情请参考 支付开发文档
+
+        :param 需要签名的的参数
+        :return: 可以使用的packagestr
+        """
         assert self.pay_partner_id,  "PAY_PARTNER_ID IS EMPTY"
         assert self.pay_partner_key, "PAY_PARTNER_KEY IS EMPTY"
 
         package.update({
-            'partner' : self.pay_partner_id,
+            'partner': self.pay_partner_id,
         })
 
         package.setdefault('bank_type', 'WX')
@@ -502,11 +507,25 @@ class Client(object):
         params = package.items()
         params.sort()
 
-        sign = md5('&'.join(["%s=%s" % (str(p[0]), str(p[1])) for p in params + [('key', self.pay_partner_key)]])).hexdigest().upper()
+        sign = md5('&'.join(
+            ["%s=%s" % (str(p[0]), str(p[1])) for p in params + [('key', self.pay_partner_key)]])).hexdigest().upper()
         
         return urlencode(params + [('sign', sign)])
 
     def create_js_pay_params(self, **package):
+        """
+        签名 js 需要的参数
+        详情请参考 支付开发文档
+
+        一般形式
+        wxclient.create_js_pay_params(body=标题, out_trade_no=本地订单号, total_fee=价格单位分,
+                                               notify_url=通知url,
+                                               spbill_create_ip=建议为支付人ip, )
+
+        :param 需要签名的的参数
+        :return: 支付需要的对象
+        这个对象 json encode 之后可以直接给 js 使用
+        """
         pay_param, sign, sign_type = self._pay_sign_dict(package=self.create_js_pay_package(**package))
         pay_param['paySign'] = sign
         pay_param['signType'] = sign_type
@@ -519,9 +538,45 @@ class Client(object):
             pay_param[key] = t
 
         # 不转成字符串 ios 会出错
-        pay_param = dict([(str(k), str(v)) for k,v in pay_param.items()])
+        pay_param = dict([(str(k), str(v)) for k, v in pay_param.items()])
 
         return pay_param
+
+    def create_js_edit_address_param(self, accesstoken, **params):
+        """
+        alpha
+        暂时不建议使用
+        这个接口使用起来十分不友好
+        而且会引起巨大的误解
+
+        url 需要带上 code 和 state (url?code=xxx&state=1)
+        code 和state 是 oauth 时候回来的
+
+        token 要传用户的 token
+
+        这尼玛 你能相信这些支付接口都是腾讯出的？
+        """
+        params.update({
+            'appId': self.appid,
+            'nonceStr':  generate_token(8),
+            'timeStamp': (int(time.time()))
+        })
+
+        _params = [(k.lower(), v) for k, v in params.items()] + [('accesstoken', accesstoken)]
+        _params.sort()
+
+
+        string1 = '&'.join(["%s=%s" % (str(p[0]), str(p[1])) for p in _params])
+        sign = sha1(string1).hexdigest()
+
+        params = dict([(str(k), str(v)) for k,v in params.items()])
+
+        params['addrSign'] = sign
+        params['signType'] = 'sha1'
+        params['scope'] = params.get('scope', 'jsapi_address')
+
+        return params
+
 
     def create_native_pay_url(self, productid):
         """
@@ -540,7 +595,21 @@ class Client(object):
 
         return NATIVE_BASE_URL + urlencode(params)
 
-    def pay_delivernotify(self, **deliver_info):
+    def pay_deliver_notify(self, **deliver_info):
+        """
+        通知 腾讯发货
+
+        一般形式
+         wxclient.pay_delivernotify(openid=openid,
+                                       transid=transaction_id,
+                                       out_trade_no=本地订单号,
+                                       deliver_timestamp=int(time.time()),
+                                       deliver_status="1",
+                                       deliver_msg="ok" )
+
+        :param 需要签名的的参数
+        :return: 支付需要的对象
+        """
         params, sign, _ = self._pay_sign_dict(add_noncestr=False, add_timestamp=False, **deliver_info)
 
         params['app_signature'] = sign
@@ -551,20 +620,28 @@ class Client(object):
             data=params
         )
 
-    def pay_orderquery(self, out_trade_no):
+    def pay_order_query(self, out_trade_no):
+        """
+        查询订单状态
+        一般用于无法确定 订单状态时候补偿
+
+        :param 本地订单号
+        :return: 订单信息dict
+        """
 
         package = {
-            'partner' : self.pay_partner_id,
-            'out_trade_no' : out_trade_no,
+            'partner': self.pay_partner_id,
+            'out_trade_no': out_trade_no,
         }
 
         _package = package.items()
         _package.sort()
 
-        sign = md5('&'.join(["%s=%s" % (str(p[0]), str(p[1])) for p in _package + [('key', self.pay_partner_key)]])).hexdigest().upper()
+        sign = md5('&'.join(
+            ["%s=%s" % (str(p[0]), str(p[1])) for p in _package + [('key', self.pay_partner_key)]])).hexdigest().upper()
         package['sign'] = sign
 
-        package = '&'.join(["%s=%s" %(p[0], p[1]) for p in package.items()])
+        package = '&'.join(["%s=%s" % (p[0], p[1]) for p in package.items()])
 
         params, sign, _ = self._pay_sign_dict(add_noncestr=False, package=package)
 
