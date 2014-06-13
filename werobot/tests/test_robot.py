@@ -61,7 +61,7 @@ def test_register_handlers():
     @robot.link
     def link_handler():
         pass
-    
+
     assert robot._handlers["link"] == [(link_handler, 0)]
 
     @robot.subscribe
