@@ -128,6 +128,20 @@ class MusicReply(WeChatReply):
         return MusicReply.TEMPLATE.format(**self._args)
 
 
+class TransferCustomerServiceReply(WeChatReply):
+    TEMPLATE = to_text("""
+    <xml>
+    <ToUserName><![CDATA[{target}]]></ToUserName>
+    <FromUserName><![CDATA[{source}]]></FromUserName>
+    <CreateTime>{time}</CreateTime>
+    <MsgType><![CDATA[transfer_customer_service]]></MsgType>
+    </xml>
+    """)
+
+    def render(self):
+        return TransferCustomerServiceReply.TEMPLATE.format(**self._args)
+
+
 def create_reply(reply, message=None):
     if isinstance(reply, WeChatReply):
         return reply.render()
