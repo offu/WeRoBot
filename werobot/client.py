@@ -11,6 +11,9 @@ from werobot.utils import to_text, pay_sign_dict, generate_token
 from functools import partial
 
 
+NATIVE_BASE_URL = 'weixin://wxpay/bizpayurl?'
+
+
 class ClientException(Exception):
     pass
 
@@ -516,28 +519,24 @@ class Client(object):
         签名 js 需要的参数
         详情请参考 支付开发文档
 
-        一般形式
-        wxclient.create_js_pay_params(body=标题, out_trade_no=本地订单号, total_fee=价格单位分,
-                                               notify_url=通知url,
-                                               spbill_create_ip=建议为支付人ip, )
+        ::
 
-        :param 需要签名的的参数
+            wxclient.create_js_pay_params(
+                body=标题, out_trade_no=本地订单号, total_fee=价格单位分,
+                notify_url=通知url,
+                spbill_create_ip=建议为支付人ip,
+            )
+
+        :param package: 需要签名的的参数
         :return: 支付需要的对象
-        这个对象 json encode 之后可以直接给 js 使用
         """
         pay_param, sign, sign_type = self._pay_sign_dict(package=self.create_js_pay_package(**package))
         pay_param['paySign'] = sign
         pay_param['signType'] = sign_type
 
         # 腾讯这个还得转成大写 JS 才认
-        for key in ('appId', 'timeStamp', 'nonceStr'):
-            oldkey = key.lower()
-            t = pay_param[oldkey]
-            del pay_param[oldkey]
-            pay_param[key] = t
-
-        # 不转成字符串 ios 会出错
-        pay_param = dict([(str(k), str(v)) for k, v in pay_param.items()])
+        for key in ['appId', 'timeStamp', 'nonceStr']:
+            pay_param[key] = str(pay_param.pop(key.lower()))
 
         return pay_param
 
@@ -558,24 +557,22 @@ class Client(object):
         params.update({
             'appId': self.appid,
             'nonceStr':  generate_token(8),
-            'timeStamp': (int(time.time()))
+            'timeStamp': int(time.time())
         })
 
-        _params = [(k.lower(), v) for k, v in params.items()] + [('accesstoken', accesstoken)]
+        _params = [(k.lower(), str(v)) for k, v in params.items()] + [('accesstoken', accesstoken)]
         _params.sort()
 
-
-        string1 = '&'.join(["%s=%s" % (str(p[0]), str(p[1])) for p in _params])
+        string1 = '&'.join(["%s=%s" % (p[0], p[1]) for p in _params])
         sign = sha1(string1).hexdigest()
 
-        params = dict([(str(k), str(v)) for k,v in params.items()])
+        params = dict([(k, str(v)) for k, v in params.items()])
 
         params['addrSign'] = sign
         params['signType'] = 'sha1'
         params['scope'] = params.get('scope', 'jsapi_address')
 
         return params
-
 
     def create_native_pay_url(self, productid):
         """
@@ -586,11 +583,9 @@ class Client(object):
         :return: 返回URL
         """
 
-        params, sign, _ = self._pay_sign_dict(productid=productid)
+        params, sign, = self._pay_sign_dict(productid=productid)
 
         params['sign'] = sign
-
-        NATIVE_BASE_URL = 'weixin://wxpay/bizpayurl?'
 
         return NATIVE_BASE_URL + urlencode(params)
 
@@ -599,12 +594,13 @@ class Client(object):
         通知 腾讯发货
 
         一般形式
-         wxclient.pay_delivernotify(openid=openid,
-                                       transid=transaction_id,
-                                       out_trade_no=本地订单号,
-                                       deliver_timestamp=int(time.time()),
-                                       deliver_status="1",
-                                       deliver_msg="ok" )
+         wxclient.pay_delivernotify(
+         openid=openid,
+       transid=transaction_id,
+       out_trade_no=本地订单号,
+       deliver_timestamp=int(time.time()),
+       deliver_status="1",
+       deliver_msg="ok" )
 
         :param 需要签名的的参数
         :return: 支付需要的对象
@@ -624,7 +620,7 @@ class Client(object):
         查询订单状态
         一般用于无法确定 订单状态时候补偿
 
-        :param 本地订单号
+        :param out_trade_no: 本地订单号
         :return: 订单信息dict
         """
 
@@ -636,9 +632,8 @@ class Client(object):
         _package = package.items()
         _package.sort()
 
-        sign = md5('&'.join(
-            ["%s=%s" % (str(p[0]), str(p[1])) for p in _package + [('key', self.pay_partner_key)]])).hexdigest().upper()
-        package['sign'] = sign
+        s = '&'.join(["%s=%s" % (p[0], str(p[1])) for p in _package + [('key', self.pay_partner_key)]])
+        package['sign'] = md5(s).hexdigest().upper()
 
         package = '&'.join(["%s=%s" % (p[0], p[1]) for p in package.items()])
 
