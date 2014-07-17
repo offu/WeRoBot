@@ -2,7 +2,10 @@
 
 from . import SessionStorage
 
-import sae.kvdb
+try:
+    import sae.kvdb
+except ImportError:
+    raise RuntimeError("SaeKVDBStorage requires SAE environment")
 
 
 class SaeKVDBStorage(SessionStorage):
@@ -18,19 +21,18 @@ class SaeKVDBStorage(SessionStorage):
                             session_storage=session_storage)
 
     """
-    def __init__(self, prefix='WESESSION'):
+    def __init__(self, prefix='WeRoBotSession_'):
         self.kv = sae.kvdb.KVClient()
         self.prefix = prefix
 
-    def prefixid(self, id):
-        return self.prefix + str(id)
+    def key_name(self, s):
+        return '{prefix}{s}'.format(prefix=self.prefix, s=s)
 
     def get(self, id):
-        return self.kv.get(self.prefixid(id)) or {}
+        return self.kv.get(self.key_name(id)) or {}
 
     def set(self, id, value):
-        return self.kv.set(self.prefixid(id), value)
+        return self.kv.set(self.key_name(id), value)
 
     def delete(self, id):
-        return self.kv.delete(self.prefixid(id))
-
+        return self.kv.delete(self.key_name(id))
