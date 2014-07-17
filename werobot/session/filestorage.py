@@ -20,7 +20,10 @@ class FileStorage(SessionStorage):
         self.db = dbm.open(filename, "c")
 
     def get(self, id):
-        session_json = self.db.get(id, "{}")
+        try:
+            session_json = self.db["id"]
+        except KeyError:
+            session_json = "{}"
         return json_loads(session_json)
 
     def set(self, id, value):
