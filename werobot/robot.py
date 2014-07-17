@@ -25,7 +25,7 @@ _DEFAULT_CONFIG = dict(
 
 
 class BaseRoBot(object):
-    message_types = ['subscribe', 'unsubscribe', 'click',  'view', # event
+    message_types = ['subscribe', 'unsubscribe', 'click',  'view',  # event
                      'text', 'image', 'link', 'location', 'voice']
 
     token = ConfigAttribute("TOKEN")
