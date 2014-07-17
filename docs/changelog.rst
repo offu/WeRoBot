@@ -1,6 +1,14 @@
 Changelog
 =============
 
+Version 0.6.0
+----------------
+
++ Fix FileStorage's bug
++ Add ``werobot.session.saekvstorage.SaeKVDBStorage``
++ Add support for Weixin Pay
++ Add ``werobot.reply.TransferCustomerServiceReply``
+
 Version 0.5.3
 ----------------
 
