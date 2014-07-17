@@ -21,7 +21,7 @@ class FileStorage(SessionStorage):
 
     def get(self, id):
         try:
-            session_json = self.db["id"]
+            session_json = self.db[id]
         except KeyError:
             session_json = "{}"
         return json_loads(session_json)
