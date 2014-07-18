@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import six
 import werobot
 import os
 import inspect
@@ -7,12 +8,11 @@ import hashlib
 import logging
 
 from bottle import Bottle, request, response, abort, template
-from six import PY3
 
 from werobot.config import Config, ConfigAttribute
 from werobot.parser import parse_user_msg
 from werobot.reply import create_reply
-from werobot.utils import to_binary
+from werobot.utils import to_binary, to_text
 
 __all__ = ['BaseRoBot', 'WeRoBot']
 
@@ -124,13 +124,50 @@ class BaseRoBot(object):
             argc = len(inspect.getargspec(f).args)
 
             @self.click
-            def onclick(message, session):
+            def onclick(message, session=None):
                 if message.key == key:
                     return f(*[message, session][:argc])
             return f
 
         return wraps
-        
+
+    def filter(self, target_content):
+        """
+        Shortcut for ``text`` messages
+
+        TODO: 详细的文档
+        """
+
+        if isinstance(target_content, (list, tuple)):
+            target_content = tuple(target_content)
+
+            def _check_content(message):
+                return message.content in target_content
+        elif isinstance(target_content, six.string_types):
+            target_content = to_text(target_content)
+
+            def _check_content(message):
+                return message.content == target_content
+        elif hasattr(target_content, "match") and callable(target_content.match):
+            # 正则表达式什么的
+
+            def _check_content(message):
+                return target_content.match(message.content)
+        else:
+            raise TypeError("%s is not a valid target_content" % target_content)
+
+        def wraps(f):
+            argc = len(inspect.getargspec(f).args)
+
+            @self.text
+            def _f(message, session=None):
+                if _check_content(message):
+                    return f(*[message, session][:argc])
+
+            return f
+
+        return wraps
+
     def view(self, f):
         """
         Decorator to add a handler function for ``view event`` messages
