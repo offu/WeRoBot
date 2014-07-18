@@ -28,7 +28,7 @@ class WeixinPayClient(Client):
         签名 pay package 需要的参数
         详情请参考 支付开发文档
 
-        :param 需要签名的的参数
+        :param package: 需要签名的的参数
         :return: 可以使用的packagestr
         """
         assert self.pay_partner_id,  "PAY_PARTNER_ID IS EMPTY"
@@ -129,14 +129,15 @@ class WeixinPayClient(Client):
         """
         通知 腾讯发货
 
-        一般形式
-         wxclient.pay_delivernotify(
-         openid=openid,
-       transid=transaction_id,
-       out_trade_no=本地订单号,
-       deliver_timestamp=int(time.time()),
-       deliver_status="1",
-       deliver_msg="ok" )
+        一般形式 ::
+            wxclient.pay_delivernotify(
+                openid=openid,
+                transid=transaction_id,
+                out_trade_no=本地订单号,
+                deliver_timestamp=int(time.time()),
+                deliver_status="1",
+                deliver_msg="ok"
+            )
 
         :param 需要签名的的参数
         :return: 支付需要的对象
