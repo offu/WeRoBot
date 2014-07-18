@@ -14,7 +14,7 @@ setup(
     packages=find_packages(),
     keywords="wechat weixin werobot",
     description='WeRoBot: writing WeChat Offical Account Robots with fun',
-    long_description=open("README.rst").read().replace("latest", werobot.__version__),
+    long_description=open("README.rst").read().replace("latest", werobot.__version__).replace("develop", "master"),
     install_requires=open("requirements.txt").readlines(),
     include_package_data=True,
     license='MIT License',
