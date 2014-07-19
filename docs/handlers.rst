@@ -129,11 +129,11 @@ robot.filter ——  回应有指定文本的消息
     import re
 
 
-    @robot.filter(re.compile("bb"))
+    @robot.filter(re.compile(".*?bb.*?"))
     def b():
         return "正文中含有 b "
 
-    @robot.filter(re.compile("c"), "d")
+    @robot.filter(re.compile(".*?c.*?"), "d")
     def c():
         return "正文中含有 c 或正文为 d"
 
@@ -148,10 +148,10 @@ robot.filter ——  回应有指定文本的消息
 
     @robot.text
     def b():
-        if re.compile("bb").match(message.content):
+        if re.compile(".*?bb.*?").match(message.content):
             return "正文中含有 b "
 
     @robot.text
     def c():
-        if re.compile("c").match(message.content) or message.content == "d":
+        if re.compile(".*?c.*?").match(message.content) or message.content == "d":
             return "正文中含有 c 或正文为 d"

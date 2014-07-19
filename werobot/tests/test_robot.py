@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+
 import hashlib
 import time
 import six
@@ -93,6 +95,65 @@ def test_register_handlers():
         pass
 
     assert len(robot._handlers["click"]) == 2
+
+
+def test_filter():
+    import re
+    import werobot.testing
+    robot = WeRoBot()
+
+    @robot.filter("喵")
+    def _():
+        return "喵"
+
+    assert len(robot._handlers["text"]) == 1
+
+    @robot.filter(re.compile(".*?呵呵.*?"))
+    def _():
+        return "哼"
+
+    assert len(robot._handlers["text"]) == 2
+
+    @robot.text
+    def _():
+        return "汪"
+
+    def _make_xml(content):
+        return """
+            <xml>
+            <ToUserName><![CDATA[toUser]]></ToUserName>
+            <FromUserName><![CDATA[fromUser]]></FromUserName>
+            <CreateTime>1348831860</CreateTime>
+            <MsgType><![CDATA[text]]></MsgType>
+            <Content><![CDATA[%s]]></Content>
+            <MsgId>1234567890123456</MsgId>
+            </xml>
+        """ % content
+
+    tester = werobot.testing.WeTest(robot)
+
+    assert tester.send_xml(_make_xml("啊")) == "汪"
+    assert tester.send_xml(_make_xml("啊呵呵")) == "哼"
+    assert tester.send_xml(_make_xml("喵")) == "喵"
+
+    robot = WeRoBot()
+
+    @robot.filter("帮助", "跪求帮助", re.compile(".*?help.*?"))
+    def _():
+        return "就不帮"
+
+    @robot.text
+    def _():
+        return "哦"
+
+    assert len(robot._handlers["text"]) == 3
+
+    tester = werobot.testing.WeTest(robot)
+
+    assert tester.send_xml(_make_xml("啊")) == "哦"
+    assert tester.send_xml(_make_xml("帮助")) == "就不帮"
+    assert tester.send_xml(_make_xml("跪求帮助")) == "就不帮"
+    assert tester.send_xml(_make_xml("ooohelp")) == "就不帮"
 
 
 @raises(ValueError)
