@@ -2,26 +2,27 @@
 
 from . import SessionStorage
 
-try:
-    import sae.kvdb
-except ImportError:
-    raise RuntimeError("SaeKVDBStorage requires SAE environment")
-
 
 class SaeKVDBStorage(SessionStorage):
     """
-    SaeKVDBStorage 使用SAE 的 KVDB 来保存你的session
-    
+    SaeKVDBStorage 使用SAE 的 KVDB 来保存你的session ::
+
+        import werobot
+        from werobot.session.saekvstorage import SaeKVDBStorage
+
+        session_storage = SaeKVDBStorage()
+        robot = werobot.WeRoBot(token="token", enable_session=True,
+                                session_storage=session_storage)
+
     需要先在后台开启 KVDB 支持
 
-    from werobot.session.saekvstorage import SaeKVDBStorage
-
-    session_storage = SaeKVDBStorage()
-    robot = werobot.WeRoBot(token="token", enable_session=True,
-                            session_storage=session_storage)
 
     """
     def __init__(self, prefix='WeRoBotSession_'):
+        try:
+            import sae.kvdb
+        except ImportError:
+            raise RuntimeError("SaeKVDBStorage requires SAE environment")
         self.kv = sae.kvdb.KVClient()
         self.prefix = prefix
 
