@@ -6,7 +6,7 @@ import six
 
 from nose.tools import raises
 from werobot import WeRoBot
-from werobot.utils import generate_token
+from werobot.utils import generate_token, to_text
 
 
 def test_signature_checker():
@@ -108,7 +108,7 @@ def test_filter():
 
     assert len(robot._handlers["text"]) == 1
 
-    @robot.filter(re.compile(".*?呵呵.*?"))
+    @robot.filter(re.compile(to_text(".*?呵呵.*?")))
     def _():
         return "哼"
 
@@ -142,11 +142,11 @@ def test_filter():
     def _():
         return "就不帮"
 
+    assert len(robot._handlers["text"]) == 3
+
     @robot.text
     def _():
         return "哦"
-
-    assert len(robot._handlers["text"]) == 3
 
     tester = werobot.testing.WeTest(robot)
 

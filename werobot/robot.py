@@ -159,7 +159,7 @@ class BaseRoBot(object):
 
         def wraps(f):
             if content_is_list:
-                for x in target_content:
+                for x in args:
                     self.filter(x)(f)
                 return f
             argc = len(inspect.getargspec(f).args)
