@@ -4,6 +4,7 @@ Changelog
 Version 0.6.0
 ----------------
 
++ Add ``@werobot.filter``
 + Add ``werobot.session.saekvstorage.SaeKVDBStorage``
 + Add support for Weixin Pay ( ``werobot.pay.WeixinPayClient`` )
 + Add ``werobot.reply.TransferCustomerServiceReply``
