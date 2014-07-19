@@ -131,32 +131,37 @@ class BaseRoBot(object):
 
         return wraps
 
-    def filter(self, target_content):
+    def filter(self, *args):
         """
         Shortcut for ``text`` messages
-
-        TODO: 详细的文档
+        ``@filter("xxx")``, ``@filter(re.compile("xxx"))``
+        or ``@filter("xxx", "xxx2")`` to handle message with special content
         """
 
-        if isinstance(target_content, (list, tuple)):
-            target_content = tuple(target_content)
+        content_is_list = False
 
-            def _check_content(message):
-                return message.content in target_content
-        elif isinstance(target_content, six.string_types):
-            target_content = to_text(target_content)
-
-            def _check_content(message):
-                return message.content == target_content
-        elif hasattr(target_content, "match") and callable(target_content.match):
-            # 正则表达式什么的
-
-            def _check_content(message):
-                return target_content.match(message.content)
+        if len(args) > 1:
+            content_is_list = True
         else:
-            raise TypeError("%s is not a valid target_content" % target_content)
+            target_content = args[0]
+            if isinstance(target_content, six.string_types):
+                target_content = to_text(target_content)
+
+                def _check_content(message):
+                    return message.content == target_content
+            elif hasattr(target_content, "match") and callable(target_content.match):
+                # 正则表达式什么的
+
+                def _check_content(message):
+                    return target_content.match(message.content)
+            else:
+                raise TypeError("%s is not a valid target_content" % target_content)
 
         def wraps(f):
+            if content_is_list:
+                for x in target_content:
+                    self.filter(x)(f)
+                return f
             argc = len(inspect.getargspec(f).args)
 
             @self.text
