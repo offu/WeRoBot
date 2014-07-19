@@ -88,4 +88,4 @@ server 支持以下几种：
 
 参考： `示例仓库 <https://github.com/whtsky/WeRoBot-SAE-demo>`_
 
-如果你需要使用 Session ，最好使用 ``werobot.session.saekvstorage`` 。
+如果你需要使用 Session ，最好使用 :class:`werobot.session.saekvstorage` 。
