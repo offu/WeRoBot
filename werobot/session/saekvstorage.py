@@ -16,9 +16,9 @@ class SaeKVDBStorage(SessionStorage):
 
     需要先在后台开启 KVDB 支持
 
-
+    :param prefix: KVDB 中 Session 数据 key 的 prefix 。默认为 ``ws_``
     """
-    def __init__(self, prefix='WeRoBotSession_'):
+    def __init__(self, prefix='ws_'):
         try:
             import sae.kvdb
         except ImportError:
