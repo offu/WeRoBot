@@ -60,3 +60,7 @@ WeRoBot 0.4.0 中增加了功能强大的 Session 系统，你可以通过 Sessi
 .. module:: werobot.session.redisstorage
 
 .. autoclass:: RedisStorage
+
+.. module:: werobot.session.saekvstorage
+
+.. autoclass:: SaeKVDBStorage

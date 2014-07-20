@@ -96,8 +96,8 @@ robot.unknown        未知类型
 
 .. note:: 通过 ``robot.handler`` 添加的 handler 将收到所有信息；只有在其他 handler 没有给出返回值的情况下， 通过 ``robot.handler`` 添加的 handler 才会被调用。
 
-robot.key_click 修饰符
--------------------------
+robot.key_click —— 回应自定义菜单
+---------------------------------
 
 ``@robot.key_click`` 是对 ``@robot.click`` 修饰符的改进。
 
@@ -114,3 +114,44 @@ robot.key_click 修饰符
         if message.key == "abort":
             return "I'm a robot"
 两者是等价的。
+
+robot.filter ——  回应有指定文本的消息
+-------------------------------------
+
+``@robot.filter`` 是对 ``@robot.text`` 修饰符的改进。
+
+现在你可以写这样的代码 ::
+
+    @robot.filter("a")
+    def a():
+        return "正文为 a "
+
+    import re
+
+
+    @robot.filter(re.compile(".*?bb.*?"))
+    def b():
+        return "正文中含有 b "
+
+    @robot.filter(re.compile(".*?c.*?"), "d")
+    def c():
+        return "正文中含有 c 或正文为 d"
+
+这段代码等价于 ::
+
+    @robot.text
+    def a(message):
+        if message.content == "a":
+            return "正文为 a "
+    import re
+
+
+    @robot.text
+    def b():
+        if re.compile(".*?bb.*?").match(message.content):
+            return "正文中含有 b "
+
+    @robot.text
+    def c():
+        if re.compile(".*?c.*?").match(message.content) or message.content == "d":
+            return "正文中含有 c 或正文为 d"

@@ -1,7 +1,7 @@
 回复
 ==============
 
-目前WeRoBot共有三种Reply： `TextReply` ， `ArticlesReply` 和 `MusicReply` 。他们都继承自 `WeChatReply` 。
+目前WeRoBot共有四种Reply： `TextReply` ， `ArticlesReply` ， `MusicReply` 和 `TransferCustomerServiceReply` 。他们都继承自 `WeChatReply` 。
 
 TextReply
 -----------
@@ -62,7 +62,7 @@ url           点击图片后跳转链接
     reply = ArticlesReply(message=message)
     article = Article(
         title="WeRoBot",
-        desription="WeRoBot是一个微信机器人框架",
+        description="WeRoBot是一个微信机器人框架",
         img="https://github.com/apple-touch-icon-144.png",
         url="https://github.com/whtsky/WeRoBot"
     )
@@ -143,3 +143,8 @@ flag              如果是True， WeRoBot会对这条消息进行星标。你�
 
 
 .. [3] 如果你省略了高质量音乐链接的地址， WeRoBot 会自动将音乐链接的地址用于高质量音乐链接。
+
+TransferCustomerServiceReply
+-----------------------------
+
+将消息转发到多客服
