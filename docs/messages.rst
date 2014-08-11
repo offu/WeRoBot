@@ -1,6 +1,6 @@
 消息
 ==========
-目前WeRoBot共有以下几种Message： `TextMessage` ， `ImageMessage` ， `LocationMessage` ， `EventMessage` ， `VoiceMessage` [3]_ 和 `UnknownMessage` 。他们都继承自 WeChatMessage 。
+目前WeRoBot共有以下几种Message： `TextMessage` ， `ImageMessage` ，`LinkMessage`， `LocationMessage` ， `EventMessage` ， `VoiceMessage` [3]_ 和 `UnknownMessage` 。他们都继承自 WeChatMessage 。
 
 公共属性
 --------------
