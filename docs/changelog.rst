@@ -5,6 +5,7 @@ Version 0.6.1
 ----------------
 
 + Fix wrong URL in ``upload_media``
++ Add VideoMessage
 
 Version 0.6.0
 ----------------
