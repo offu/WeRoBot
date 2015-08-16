@@ -45,8 +45,13 @@ docs/_
 #VirtualEnv
 .Python
 include/
+Scripts/
+pyvenv.cfg
 
 werobot_session.db
 
 .coveralls.yml
+
 werobot_session
+pip-selfcheck.json
+

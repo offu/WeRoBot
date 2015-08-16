@@ -1,6 +1,5 @@
 消息
 ==========
-目前WeRoBot共有以下几种Message： `TextMessage` ， `ImageMessage` ， `LocationMessage` ， `EventMessage` ， `VoiceMessage` [3]_ 和 `UnknownMessage` 。他们都继承自 WeChatMessage 。
 
 公共属性
 --------------
@@ -11,8 +10,8 @@
 name      value
 ======== ===================================
 id        消息id，64位整型 [2]_
-target    信息的目标用户。通常是机器人用户。
-source    信息的来源用户。通常是发送信息的用户。
+target    开发者账号（ OpenID ）
+source    发送方账号（ OpenID ）
 time      信息发送的时间，一个UNIX时间戳。
 raw       信息的原始 XML 格式
 ======== ===================================
@@ -92,10 +91,23 @@ VoiceMessage的属性：
 name          value
 ============ =====================================
 type          'voice'
-media_id      微信内部的一个文件ID。
+media_id      消息媒体 ID
 format        声音格式
-recognition   未公开字段，猜测为语音识别后的文字。
+recognition   语音识别结果
 ============ =====================================
+
+VideoMessage
+--------------------
+
+VideoMessage：
+
+================ =====================================
+name              value
+================ =====================================
+type              'video'
+media_id          消息媒体 ID
+thumb_media_id    视频缩略图媒体 ID
+=============== =====================================
 
 UnknownMessage
 ---------------

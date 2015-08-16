@@ -13,7 +13,7 @@
     def echo(message):
         return 'Hello World!'
 
-    robot.run(server='gevent')
+    robot.run(server='gevent', port=12233)
 
 server 支持以下几种：
 
@@ -77,11 +77,11 @@ server 支持以下几种：
         location / {
             proxy_pass_header Server;
             proxy_redirect off;
-            proxy_pass http://127.0.0.1:8888;
+            proxy_pass http://127.0.0.1:12233;
         }
     }
 
-.. note:: 在这个例子中， WeRoBot 的端口号为8888。你应该在微信管理后台中将服务器地址设为 ``http://example.com`` 。
+.. note:: 在这个例子中， WeRoBot 的端口号为 12233。你应该在微信管理后台中将服务器地址设为 ``http://example.com`` 。
 
 在SAE上部署
 -----------------

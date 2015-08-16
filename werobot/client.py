@@ -170,7 +170,7 @@ class Client(object):
         :return: 返回的 JSON 数据包
         """
         return self.post(
-            url="https://api.weixin.qq.com/cgi-bin/menu/create",
+            url="http://file.api.weixin.qq.com/cgi-bin/media/upload",
             params={
                 "access_token": self.token,
                 "type": media_type
