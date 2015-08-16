@@ -77,6 +77,7 @@ class VoiceMessage(WeChatMessage):
 
 
 @handle_for_type("video")
+@handle_for_type("shortvideo")
 class VideoMessage(WeChatMessage):
     def __init__(self, message):
         self.media_id = message.pop('MediaId')
