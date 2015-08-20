@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
 
 import six
-import werobot
 import os
 import inspect
-import hashlib
 import logging
 
-from bottle import Bottle, request, response, abort, template
+import werobot
 
 from werobot.config import Config, ConfigAttribute
 from werobot.parser import parse_user_msg
 from werobot.reply import create_reply
-from werobot.utils import to_binary, to_text
+from werobot.utils import to_binary, to_text, check_signature
 
 __all__ = ['BaseRoBot', 'WeRoBot']
 
@@ -189,7 +188,7 @@ class BaseRoBot(object):
         self._handlers[type].append((func, len(inspect.getargspec(func).args)))
 
     def get_handlers(self, type):
-        return self._handlers,get(type, []) + self._handlers['all']
+        return self._handlers.get(type, []) + self._handlers['all']
 
     def get_reply(self, message):
         """
@@ -216,11 +215,7 @@ class BaseRoBot(object):
             self.logger.warning("Catch an exception", exc_info=True)
 
     def check_signature(self, timestamp, nonce, signature):
-        sign = [self.config["TOKEN"], timestamp, nonce]
-        sign.sort()
-        sign = to_binary(''.join(sign))
-        sign = hashlib.sha1(sign).hexdigest()
-        return sign == signature
+        return check_signature(self.config["TOKEN"], timestamp, nonce, signature)
 
 
 class WeRoBot(BaseRoBot):
@@ -252,6 +247,8 @@ class WeRoBot(BaseRoBot):
     def wsgi(self):
         if not self._handlers:
             raise
+        from bottle import Bottle, request, response, abort, template
+
         app = Bottle()
 
         @app.get('<t:path>')

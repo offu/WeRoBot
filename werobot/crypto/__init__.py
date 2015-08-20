@@ -4,6 +4,7 @@ from __future__ import absolute_import, unicode_literals
 import base64
 import socket
 import struct
+import time
 
 try:
     from Crypto.Cipher import AES
@@ -11,8 +12,8 @@ except ImportError:
     raise RuntimeError("You need to install PyCrypto.")
 
 from . import pkcs7
-from .exceptions import UnvalidEncodingAESKey, AppIdValidationError
-from werobot.utils import to_text, to_binary, generate_token, byte2int
+from .exceptions import UnvalidEncodingAESKey, AppIdValidationError, InvalidSignature
+from werobot.utils import to_text, to_binary, generate_token, byte2int, get_signature
 
 
 class PrpCrypto(object):
@@ -70,6 +71,16 @@ class PrpCrypto(object):
 
 
 class MessageCrypt(object):
+
+    ENCRYPTED_MESSAGE_XML = """
+<xml>
+<Encrypt><![CDATA[{encrypt}]]></Encrypt>
+<MsgSignature><![CDATA[{signature}]]></MsgSignature>
+<TimeStamp>{timestamp}</TimeStamp>
+<Nonce><![CDATA[{nonce}]]></Nonce>
+</xml>
+    """.strip()
+
     def __init__(self, token, encoding_aes_key, app_id):
         key = base64.b64decode(to_binary(encoding_aes_key + '='))
         if len(key) != 32:
@@ -88,13 +99,27 @@ class MessageCrypt(object):
         :param encrypt_msg: 收到的加密文本. ( XML 中的 <Encrypt> 部分 )
         :return: 解密后的 XML 文本
         """
-        pass
+        signature = get_signature(self.token, timestamp, nonce, encrypt_msg)
+        if signature != msg_signature:
+            raise InvalidSignature(msg_signature)
+        return self.prp_crypto.decrypt(encrypt_msg, self.app_id)
 
-    def encrypt_message(self, reply):
+    def encrypt_message(self, reply, timestamp=None, nonce=None):
         """
         加密微信回复
         :param reply: 加密前的回复
-        :type reply: WeChatReply
+        :type reply: WeChatReply 或 XML 文本
         :return: 加密后的回复文本
         """
-        pass
+        if hasattr(reply, "render"):
+            reply = reply.render()
+
+        timestamp = timestamp or to_binary(int(time.time()))
+        encrypt = to_text(self.prp_crypto.encrypt(reply, self.app_id))
+        signature = get_signature(self.token, timestamp, nonce, encrypt)
+        return to_text(self.ENCRYPTED_MESSAGE_XML.format(
+            encrypt=encrypt,
+            signature=signature,
+            timestamp=timestamp,
+            nonce=nonce
+        ))

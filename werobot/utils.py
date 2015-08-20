@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+import hashlib
 
 import re
 import random
@@ -10,6 +11,18 @@ import time
 from hashlib import sha1
 
 string_types = (six.string_types, six.text_type, six.binary_type)
+
+
+def get_signature(token, timestamp, nonce, *args):
+    sign = [token, timestamp, nonce] + args
+    sign.sort()
+    sign = to_binary(''.join(sign))
+    return hashlib.sha1(sign).hexdigest()
+
+
+def check_signature(token, timestamp, nonce, signature):
+    sign = get_signature(token, timestamp, nonce)
+    return sign == signature
 
 
 def check_token(token):

@@ -8,3 +8,7 @@ class UnvalidEncodingAESKey(Exception):
 
 class AppIdValidationError(Exception):
     pass
+
+
+class InvalidSignature(Exception):
+    pass
