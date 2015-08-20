@@ -14,7 +14,7 @@ string_types = (six.string_types, six.text_type, six.binary_type)
 
 
 def get_signature(token, timestamp, nonce, *args):
-    sign = [token, timestamp, nonce] + args
+    sign = [token, timestamp, nonce] + list(args)
     sign.sort()
     sign = to_binary(''.join(sign))
     return hashlib.sha1(sign).hexdigest()
