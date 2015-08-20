@@ -9,8 +9,9 @@ import logging
 import werobot
 
 from werobot.config import Config, ConfigAttribute
-from werobot.parser import parse_user_msg
-from werobot.reply import create_reply
+from werobot.exceptions import ConfigError
+from werobot.parser import parse_xml, process_message
+from werobot.replies import process_function_reply
 from werobot.utils import to_binary, to_text, check_signature
 
 __all__ = ['BaseRoBot', 'WeRoBot']
@@ -31,7 +32,9 @@ class BaseRoBot(object):
     session_storage = ConfigAttribute("SESSION_STORAGE")
 
     def __init__(self, token=None, logger=None, enable_session=True,
-                 session_storage=None):
+                 session_storage=None,
+                 app_id=None, app_secret=None, encoding_aes_key=None,
+                 **kwargs):
         self.config = Config(_DEFAULT_CONFIG)
         self._handlers = dict((k, []) for k in self.message_types)
         self._handlers['all'] = []
@@ -48,7 +51,37 @@ class BaseRoBot(object):
         self.config.update(
             TOKEN=token,
             SESSION_STORAGE=session_storage,
+            APP_ID=app_id,
+            APP_SECRET=app_secret,
+            ENCODING_AES_KEY=encoding_aes_key
         )
+
+        self.use_encryption = False
+
+        for k, v in kwargs.items():
+            self.config[k.upper()] = v
+
+    @property
+    def crypto(self):
+        if hasattr(self, "_crypto"):
+            return self._crypto
+        app_id = self.config.get("APP_ID", None)
+        if not app_id:
+            raise ConfigError("You need to provide app_id to encrypt/decrypt messages")
+
+        encoding_aes_key = self.config.get("ENCODING_AES_KEY", None)
+        if not encoding_aes_key:
+            raise ConfigError("You need to provide encoding_aes_key to encrypt/decrypt messages")
+
+        from .crypto import MessageCrypt
+        self._crypto = MessageCrypt(
+            token=self.config["TOKEN"],
+            encoding_aes_key=encoding_aes_key,
+            app_id=app_id
+        )
+        self.use_encryption = True
+        return self._crypto
+
 
     def handler(self, f):
         """
@@ -192,7 +225,7 @@ class BaseRoBot(object):
 
     def get_reply(self, message):
         """
-        Return the raw xml reply for the given message.
+        Return the Reply Object for the given message.
         """
         session_storage = self.config["SESSION_STORAGE"]
 
@@ -210,7 +243,7 @@ class BaseRoBot(object):
                 if session_storage and id:
                     session_storage[id] = session
                 if reply:
-                    return reply
+                    return process_function_reply(reply)
         except:
             self.logger.warning("Catch an exception", exc_info=True)
 
@@ -271,7 +304,16 @@ class WeRoBot(BaseRoBot):
                 return abort(403)
 
             body = request.body.read()
-            message = parse_user_msg(body)
+            message_dict = parse_xml(body)
+            if "Encrypt" in message_dict:
+                xml = self.crypto.decrypt_message(
+                    timestamp=request.query.timestamp,
+                    nonce=request.query.nonce,
+                    msg_signature=request.query.msg_signature,
+                    encrypt_msg=message_dict["Encrypt"]
+                )
+                message_dict = parse_xml(xml)
+            message = process_message(message_dict)
             logging.info("Receive message %s" % message)
             reply = self.get_reply(message)
             if not reply:
@@ -279,7 +321,10 @@ class WeRoBot(BaseRoBot):
                                     % message)
                 return ''
             response.content_type = 'application/xml'
-            return create_reply(reply, message=message)
+            if self.use_encryption:
+                return self.crypto.encrypt_message(reply)
+            else:
+                return reply.render()
 
         @app.error(403)
         def error403(error):

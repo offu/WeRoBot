@@ -1,22 +1,28 @@
-from xml.etree import ElementTree
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
+
+import xmltodict
 
 from werobot.messages import MESSAGE_TYPES, UnknownMessage
 from werobot.utils import to_text
 
 
 def parse_user_msg(xml):
-    """
-    Parse xml from wechat server and return an Message
-    :param xml: raw xml from wechat server.
-    :return: an Message object
-    """
-    if not xml:
-        return
+    return process_message(parse_xml(xml))
 
-    wechat_message = dict((child.tag, to_text(child.text))
-                          for child in ElementTree.fromstring(xml))
-    wechat_message["raw"] = xml
-    wechat_message["type"] = wechat_message.pop("MsgType").lower()
 
-    message_type = MESSAGE_TYPES.get(wechat_message["type"], UnknownMessage)
-    return message_type(wechat_message)
+def parse_xml(text):
+    xml_dict = xmltodict.parse(text)
+    xml_dict["raw"] = text
+    return xml_dict
+
+
+def process_message(message):
+    """
+    Process a message dict and return a Message Object
+    :param message: Message dict returned by `parse_xml` function
+    :return: Message Object
+    """
+    message["type"] = message.pop("MsgType").lower()
+    message_type = MESSAGE_TYPES.get(message["type"], UnknownMessage)
+    return message_type(message)
