@@ -1,10 +1,12 @@
-#coding: utf8
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
 
 import re
 import random
 import json
 import six
 import time
+
 from hashlib import sha1
 
 string_types = (six.string_types, six.text_type, six.binary_type)
@@ -32,6 +34,19 @@ def to_binary(value, encoding="utf-8"):
 
 def is_string(value):
     return isinstance(value, string_types)
+
+
+def byte2int(s, index=0):
+    """Get the ASCII int value of a character in a string.
+
+    :param s: a string
+    :param index: the position of desired character
+
+    :return: ASCII int value
+    """
+    if six.PY2:
+        return ord(s[index])
+    return s[index]
 
 
 def generate_token(length=''):
