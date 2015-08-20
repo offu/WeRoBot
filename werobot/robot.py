@@ -49,7 +49,6 @@ class BaseRoBot(object):
         self.config.update(
             TOKEN=token,
             SESSION_STORAGE=session_storage,
-
         )
 
     def handler(self, f):
@@ -190,7 +189,7 @@ class BaseRoBot(object):
         self._handlers[type].append((func, len(inspect.getargspec(func).args)))
 
     def get_handlers(self, type):
-        return self._handlers[type] + self._handlers['all']
+        return self._handlers,get(type, []) + self._handlers['all']
 
     def get_reply(self, message):
         """
