@@ -115,6 +115,7 @@ class MessageCrypt(object):
             reply = reply.render()
 
         timestamp = timestamp or to_binary(int(time.time()))
+        nonce = nonce or generate_token(5)
         encrypt = to_text(self.prp_crypto.encrypt(reply, self.app_id))
         signature = get_signature(self.token, timestamp, nonce, encrypt)
         return to_text(self.ENCRYPTED_MESSAGE_XML.format(

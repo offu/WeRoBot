@@ -243,7 +243,7 @@ class BaseRoBot(object):
                 if session_storage and id:
                     session_storage[id] = session
                 if reply:
-                    return process_function_reply(reply)
+                    return process_function_reply(reply, message=message)
         except:
             self.logger.warning("Catch an exception", exc_info=True)
 

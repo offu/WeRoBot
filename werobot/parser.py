@@ -4,7 +4,6 @@ from __future__ import absolute_import, unicode_literals
 import xmltodict
 
 from werobot.messages import MESSAGE_TYPES, UnknownMessage
-from werobot.utils import to_text
 
 
 def parse_user_msg(xml):
@@ -12,7 +11,7 @@ def parse_user_msg(xml):
 
 
 def parse_xml(text):
-    xml_dict = xmltodict.parse(text)
+    xml_dict = xmltodict.parse(text)["xml"]
     xml_dict["raw"] = text
     return xml_dict
 
