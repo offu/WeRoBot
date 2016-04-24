@@ -5,6 +5,7 @@
 
 # Packages
 *.egg
+.egg
 *.egg-info
 dist
 build
@@ -55,3 +56,4 @@ werobot_session.db
 werobot_session
 pip-selfcheck.json
 
+venv
