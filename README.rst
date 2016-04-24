@@ -2,10 +2,10 @@
 WeRoBot
 ====================================
 
-.. image:: https://travis-ci.org/whtsky/WeRoBot.svg?branch=master
+.. image:: https://travis-ci.org/whtsky/WeRoBot.svg?branch=develop
     :target: https://travis-ci.org/whtsky/WeRoBot
-.. image:: https://coveralls.io/repos/github/whtsky/WeRoBot/badge.svg?branch=master 
-    :target: https://coveralls.io/github/whtsky/WeRoBot?branch=master
+.. image:: https://coveralls.io/repos/github/whtsky/WeRoBot/badge.svg?branch=develop 
+    :target: https://coveralls.io/github/whtsky/WeRoBot?branch=develop
 .. image:: https://scrutinizer-ci.com/g/whtsky/WeRoBot/badges/quality-score.png?b=develop
     :target: https://scrutinizer-ci.com/g/whtsky/WeRoBot/?branch=develop
 
