@@ -7,13 +7,10 @@ MESSAGE_TYPES = {}
 
 class MessageMetaClass(type):
     def __new__(mcs, name, bases, attrs):
-        for k, v in attrs.items():
-            if isinstance(v, MessageEntry):
-                pass
         return type.__new__(mcs, name, bases, attrs)
 
     def __init__(cls, name, bases, attrs):
-        if '__type__' in attrs.keys():
+        if '__type__' in attrs:
             if isinstance(attrs['__type__'], list):
                 for _type in attrs['__type__']:
                     MESSAGE_TYPES[_type] = cls
@@ -22,65 +19,59 @@ class MessageMetaClass(type):
         type.__init__(cls, name, bases, attrs)
 
 
-class MessageEntry(object):
-    def __init__(self, entry, default=None):
+class BaseEntry(object):
+    def __init__(self, entry, type, default=None):
         self.entry = entry
         self.default = default
+        self.type = type
 
     def __get__(self, instance, owner):
-        return instance.__dict__.get(self.entry, self.default)
+        result = {
+            0: lambda v: int(v),
+            1: lambda v: float(v),
+            2: lambda v: str(v),
+        }
+        return result[self.type](instance.__dict__.get(self.entry, self.default))
 
 
-class IntMessageEntry(MessageEntry):
-    def __get__(self, instance, owner):
-        value = instance.__dict__.get(self.entry, self.default)
-        if value:
-            return int(value)
-        else:
-            return None
-
-
-class FloatMessageEntry(MessageEntry):
-    def __get__(self, instance, owner):
-        value = instance.__dict__.get(self.entry, self.default)
-        if value:
-            return float(value)
-        else:
-            return None
-
-
-class TupleMessageEntry(object):
-    def __init__(self, t1, t2, default=None):
-        self.t1 = t1;
-        self.t2 = t2;
-        self.default = default
+class TupleEntry(object):
+    def __init__(self, entry, type):
+        self.entry1 = entry[0]
+        self.entry2 = entry[1]
+        self.type = type
 
     def __get__(self, instance, owner):
-        v1 = instance.__dict__.get(self.t1, None)
-        v2 = instance.__dict__.get(self.t2, None)
-        if v1 or v2:
-            return (v1, v2)
-        else:
-            return self.default
+        result = {
+            3: lambda v: float(v),
+        }
+        return result[self.type](instance.__dict__.get(self.entry1)), result[self.type](
+            instance.__dict__.get(self.entry2))
 
 
-class FloatTupleMessageEntry(TupleMessageEntry):
-    def __get__(self, instance, owner):
-        v1 = instance.__dict__.get(self.t1, None)
-        v2 = instance.__dict__.get(self.t2, None)
-        if v1 or v2:
-            return (float(v1), float(v2))
-        else:
-            return self.default
+class EntryGenerator(object):
+    Int = 0
+    Float = 1
+    String = 2
+    FloatTuple = 3
+
+    def generate(self, entry, _type, default=None):
+        if _type in (0, 2):
+            e = BaseEntry(entry, _type, default)
+            return e
+        if _type == 3:
+            e = TupleEntry(entry, _type)
+            return e
+
+
+generator = EntryGenerator()
 
 
 @six.add_metaclass(MessageMetaClass)
 class WeChatMessage(object):
-    id = IntMessageEntry('MsgId', 0)
-    target = MessageEntry('ToUserName')
-    source = MessageEntry('FromUserName')
-    target = MessageEntry('ToUserName')
-    time = IntMessageEntry('CreateTime', 0)
+    id = generator.generate('MsgId', EntryGenerator.Int, 0)
+    target = generator.generate('ToUserName', EntryGenerator.String)
+    source = generator.generate('FromUserName', EntryGenerator.String)
+    time = generator.generate('CreateTime', EntryGenerator.Int, 0)
 
     def __init__(self, message):
         self.__dict__.update(message)
@@ -88,32 +79,32 @@ class WeChatMessage(object):
 
 class TextMessage(WeChatMessage):
     __type__ = 'text'
-    content = MessageEntry('Content')
+    content = generator.generate('Content', EntryGenerator.String)
 
 
 class ImageMessage(WeChatMessage):
     __type__ = 'image'
-    img = MessageEntry('PicUrl')
+    img = generator.generate('PicUrl', EntryGenerator.String)
 
 
 class LocationMessage(WeChatMessage):
     __type__ = 'location'
-    location_x = FloatMessageEntry('Location_X')
-    location_y = FloatMessageEntry('Location_Y')
-    label = MessageEntry('Label')
-    scale = IntMessageEntry('Scale')
-    location = FloatTupleMessageEntry('Location_X', 'Location_Y')
+    location_x = generator.generate('Location_X', EntryGenerator.Float)
+    location_y = generator.generate('Location_Y', EntryGenerator.Float)
+    label = generator.generate('Label', EntryGenerator.String)
+    scale = generator.generate('Scale', EntryGenerator.Int)
+    location = generator.generate(('Location_X', 'Location_Y'), EntryGenerator.FloatTuple)
 
 
 class LinkMessage(WeChatMessage):
     __type__ = 'link'
-    title = MessageEntry('Title')
-    description = MessageEntry('Description')
-    url = MessageEntry('Url')
+    title = generator.generate('Title', EntryGenerator.String)
+    description = generator.generate('Description', EntryGenerator.String)
+    url = generator.generate('Url', EntryGenerator.String)
 
 
 class EventMessage(WeChatMessage):
-    __type__ = 'event'
+    __type__ = ['event']
 
     def __init__(self, message):
         message.pop("type")
@@ -130,15 +121,15 @@ class EventMessage(WeChatMessage):
 
 class VoiceMessage(WeChatMessage):
     __type__ = 'voice'
-    media_id = MessageEntry('MediaId')
-    format = MessageEntry('Format')
-    recognition = MessageEntry('Recognition')
+    media_id = generator.generate('MediaId', generator.String)
+    format = generator.generate('Format', generator.String)
+    recognition = generator.generate('Recognition', generator.String)
 
 
 class VideoMessage(WeChatMessage):
     __type__ = ['video', 'shortvideo']
-    media_id = MessageEntry('MediaId')
-    thumb_media_id = MessageEntry('ThumbMediaId')
+    media_id = generator.generate('MediaId', generator.String)
+    thumb_media_id = generator.generate('ThumbMediaId', generator.String)
 
 
 class UnknownMessage(WeChatMessage):
