@@ -65,9 +65,9 @@ def test_session():
     for session_storage in session_storages:
         remove_session(session_storage)
         robot.session_storage = session_storage
-        reply_1 = tester.send_xml(xml_1)
+        reply_1 = tester.send_xml(xml_1)._args['content']
         assert reply_1 == 'ss', (reply_1, session_storage)
-        reply_2 = tester.send_xml(xml_2)
+        reply_2 = tester.send_xml(xml_2)._args['content']
         assert reply_2 == 'ss', (reply_2, session_storage)
         remove_session(session_storage)
 
