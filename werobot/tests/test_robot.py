@@ -117,6 +117,8 @@ def test_filter():
     def _():
         return "汪"
 
+    assert len(robot._handlers["text"]) == 3
+
     def _make_xml(content):
         return """
             <xml>
@@ -135,7 +137,7 @@ def test_filter():
     assert tester.send_xml(_make_xml("啊呵呵"))._args['content'] == "哼"
     assert tester.send_xml(_make_xml("喵"))._args['content'] == "喵"
 
-    # robot = WeRoBot()
+    robot = WeRoBot()
 
     @robot.filter("帮助", "跪求帮助", re.compile(".*?help.*?"))
     def _():
@@ -146,6 +148,8 @@ def test_filter():
     @robot.text
     def _():
         return "哦"
+
+    assert len(robot._handlers["text"]) == 4
 
     tester = werobot.testing.WeTest(robot)
 
