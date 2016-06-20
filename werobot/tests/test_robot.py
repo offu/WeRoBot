@@ -133,9 +133,9 @@ def test_filter():
 
     tester = werobot.testing.WeTest(robot)
 
-    assert tester.send_xml(_make_xml("啊"))._args['content'] == "汪"
-    assert tester.send_xml(_make_xml("啊呵呵"))._args['content'] == "哼"
-    assert tester.send_xml(_make_xml("喵"))._args['content'] == "喵"
+    assert tester.send_xml(_make_xml("啊"))._args['content'] == u"汪"
+    assert tester.send_xml(_make_xml("啊呵呵"))._args['content'] == u"哼"
+    assert tester.send_xml(_make_xml("喵"))._args['content'] == u"喵"
 
     robot = WeRoBot()
 
@@ -153,10 +153,10 @@ def test_filter():
 
     tester = werobot.testing.WeTest(robot)
 
-    assert tester.send_xml(_make_xml("啊"))._args['content'] == "哦"
-    assert tester.send_xml(_make_xml("帮助"))._args['content'] == "就不帮"
-    assert tester.send_xml(_make_xml("跪求帮助"))._args['content'] == "就不帮"
-    assert tester.send_xml(_make_xml("ooohelp"))._args['content'] == "就不帮"
+    assert tester.send_xml(_make_xml("啊"))._args['content'] == u"哦"
+    assert tester.send_xml(_make_xml("帮助"))._args['content'] == u"就不帮"
+    assert tester.send_xml(_make_xml("跪求帮助"))._args['content'] == u"就不帮"
+    assert tester.send_xml(_make_xml("ooohelp"))._args['content'] == u"就不帮"
 
 
 @raises(ValueError)
