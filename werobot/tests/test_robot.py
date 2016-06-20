@@ -3,10 +3,15 @@
 import hashlib
 import time
 import six
+import os
 
 from nose.tools import raises
 from werobot import WeRoBot
 from werobot.utils import generate_token, to_text
+
+
+def setup_remove():
+    os.remove(os.path.abspath("werobot_session"))
 
 
 def test_signature_checker():
@@ -137,6 +142,7 @@ def test_filter():
     assert tester.send_xml(_make_xml("啊呵呵"))._args['content'] == u"哼"
     assert tester.send_xml(_make_xml("喵"))._args['content'] == u"喵"
 
+    setup_remove()
     robot = WeRoBot()
 
     @robot.filter("帮助", "跪求帮助", re.compile(".*?help.*?"))

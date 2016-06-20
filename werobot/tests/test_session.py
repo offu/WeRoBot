@@ -9,6 +9,7 @@ from werobot.utils import to_binary
 
 import pymongo
 import redis
+import os
 from nose.tools import raises
 
 
@@ -17,6 +18,10 @@ def remove_session(session):
         del session[to_binary("fromUser")]
     except:
         pass
+
+
+def setup_remove():
+    os.remove(os.path.abspath("werobot_session"))
 
 
 def test_session():
@@ -57,7 +62,7 @@ def test_session():
     """
 
     session_storages = [
-        filestorage.FileStorage(),
+        filestorage.FileStorage(filename="werobot_session_test"),
         mongodbstorage.MongoDBStorage(pymongo.MongoClient().t.t),
         redisstorage.RedisStorage(redis.Redis()),
     ]

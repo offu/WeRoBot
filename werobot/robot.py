@@ -5,7 +5,6 @@ import six
 import os
 import inspect
 import logging
-import tempfile
 
 import werobot
 
@@ -46,7 +45,7 @@ class BaseRoBot(object):
         if enable_session and session_storage is None:
             from .session.filestorage import FileStorage
             session_storage = FileStorage(
-                filename=os.path.abspath("werobot_session_%s" % (next(tempfile._get_candidate_names())))
+                filename=os.path.abspath("werobot_session")
             )
         self.config.update(
             TOKEN=token,
