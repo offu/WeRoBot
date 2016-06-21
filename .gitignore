@@ -53,7 +53,8 @@ werobot_session.db
 
 .coveralls.yml
 
-werobot_session
+werobot_session*
 pip-selfcheck.json
+venv
 
 venv

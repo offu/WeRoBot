@@ -2,12 +2,12 @@
 WeRoBot
 ====================================
 
-.. image:: https://api.travis-ci.org/whtsky/WeRoBot.png?branch=develop
-    :target: http://travis-ci.org/whtsky/WeRoBot
-.. image:: https://coveralls.io/repos/whtsky/WeRoBot/badge.png?branch=develop
-    :target: https://coveralls.io/r/whtsky/WeRoBot
+.. image:: https://travis-ci.org/whtsky/WeRoBot.svg?branch=develop
+    :target: https://travis-ci.org/whtsky/WeRoBot
+.. image:: https://coveralls.io/repos/github/whtsky/WeRoBot/badge.svg?branch=develop 
+    :target: https://coveralls.io/github/whtsky/WeRoBot?branch=develop
 .. image:: https://scrutinizer-ci.com/g/whtsky/WeRoBot/badges/quality-score.png?b=develop
-   :target: https://scrutinizer-ci.com/g/whtsky/WeRoBot/?branch=develop
+    :target: https://scrutinizer-ci.com/g/whtsky/WeRoBot/?branch=develop
 
 
 WeRoBot 是一个微信机器人框架，采用MIT协议发布。

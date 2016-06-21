@@ -16,7 +16,6 @@ from werobot.utils import to_binary, to_text, check_signature
 
 __all__ = ['BaseRoBot', 'WeRoBot']
 
-
 _DEFAULT_CONFIG = dict(
     SERVER="auto",
     HOST="127.0.0.1",
@@ -25,7 +24,7 @@ _DEFAULT_CONFIG = dict(
 
 
 class BaseRoBot(object):
-    message_types = ['subscribe', 'unsubscribe', 'click',  'view',  # event
+    message_types = ['subscribe', 'unsubscribe', 'click', 'view',  # event
                      'text', 'image', 'link', 'location', 'voice']
 
     token = ConfigAttribute("TOKEN")
@@ -81,7 +80,6 @@ class BaseRoBot(object):
         )
         self.use_encryption = True
         return self._crypto
-
 
     def handler(self, f):
         """
@@ -151,6 +149,7 @@ class BaseRoBot(object):
         Shortcut for ``click`` messages
         @key_click('KEYNAME') for special key on click event
         """
+
         def wraps(f):
             argc = len(inspect.getargspec(f).args)
 
@@ -158,6 +157,7 @@ class BaseRoBot(object):
             def onclick(message, session=None):
                 if message.key == key:
                     return f(*[message, session][:argc])
+
             return f
 
         return wraps
@@ -252,7 +252,6 @@ class BaseRoBot(object):
 
 
 class WeRoBot(BaseRoBot):
-
     ERROR_PAGE_TEMPLATE = """
     <!DOCTYPE html>
     <html>
@@ -287,9 +286,9 @@ class WeRoBot(BaseRoBot):
         @app.get('<t:path>')
         def echo(t):
             if not self.check_signature(
-                request.query.timestamp,
-                request.query.nonce,
-                request.query.signature
+                    request.query.timestamp,
+                    request.query.nonce,
+                    request.query.signature
             ):
                 return abort(403)
             return request.query.echostr
@@ -297,9 +296,9 @@ class WeRoBot(BaseRoBot):
         @app.post('<t:path>')
         def handle(t):
             if not self.check_signature(
-                request.query.timestamp,
-                request.query.nonce,
-                request.query.signature
+                    request.query.timestamp,
+                    request.query.nonce,
+                    request.query.signature
             ):
                 return abort(403)
 

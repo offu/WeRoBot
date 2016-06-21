@@ -7,7 +7,8 @@ from werobot.messages import MESSAGE_TYPES, UnknownMessage
 
 
 def parse_user_msg(xml):
-    return process_message(parse_xml(xml))
+    message = process_message(parse_xml(xml)) if xml else None
+    return message
 
 
 def parse_xml(text):
