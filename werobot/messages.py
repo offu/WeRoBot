@@ -20,6 +20,10 @@ class MessageMetaClass(type):
 
 
 class BaseEntry(object):
+    INT = 0
+    FLOAT = 1
+    STRING = 2
+
     def __init__(self, entry, type, default=None):
         self.entry = entry
         self.default = default
@@ -27,14 +31,16 @@ class BaseEntry(object):
 
     def __get__(self, instance, owner):
         result = {
-            0: lambda v: int(v),
-            1: lambda v: float(v),
-            2: lambda v: str(v),
+            self.INT: lambda v: int(v),
+            self.FLOAT: lambda v: float(v),
+            self.STRING: lambda v: v,
         }
         return result[self.type](instance.__dict__.get(self.entry, self.default))
 
 
 class TupleEntry(object):
+    FLOAT = 3
+
     def __init__(self, entry, type):
         self.entry1 = entry[0]
         self.entry2 = entry[1]
@@ -42,36 +48,18 @@ class TupleEntry(object):
 
     def __get__(self, instance, owner):
         result = {
-            3: lambda v: float(v),
+            self.FLOAT: lambda v: float(v),
         }
         return result[self.type](instance.__dict__.get(self.entry1)), result[self.type](
             instance.__dict__.get(self.entry2))
 
 
-class EntryGenerator(object):
-    Int = 0
-    Float = 1
-    String = 2
-    FloatTuple = 3
-
-    def generate(self, entry, _type, default=None):
-        if _type in (0, 2):
-            e = BaseEntry(entry, _type, default)
-            return e
-        if _type == 3:
-            e = TupleEntry(entry, _type)
-            return e
-
-
-generator = EntryGenerator()
-
-
 @six.add_metaclass(MessageMetaClass)
 class WeChatMessage(object):
-    id = generator.generate('MsgId', EntryGenerator.Int, 0)
-    target = generator.generate('ToUserName', EntryGenerator.String)
-    source = generator.generate('FromUserName', EntryGenerator.String)
-    time = generator.generate('CreateTime', EntryGenerator.Int, 0)
+    id = BaseEntry('MsgId', BaseEntry.INT, 0)
+    target = BaseEntry('ToUserName', BaseEntry.STRING)
+    source = BaseEntry('FromUserName', BaseEntry.STRING)
+    time = BaseEntry('CreateTime', BaseEntry.INT, 0)
 
     def __init__(self, message):
         self.__dict__.update(message)
@@ -79,28 +67,28 @@ class WeChatMessage(object):
 
 class TextMessage(WeChatMessage):
     __type__ = 'text'
-    content = generator.generate('Content', EntryGenerator.String)
+    content = BaseEntry('Content', BaseEntry.STRING)
 
 
 class ImageMessage(WeChatMessage):
     __type__ = 'image'
-    img = generator.generate('PicUrl', EntryGenerator.String)
+    img = BaseEntry('PicUrl', BaseEntry.STRING)
 
 
 class LocationMessage(WeChatMessage):
     __type__ = 'location'
-    location_x = generator.generate('Location_X', EntryGenerator.Float)
-    location_y = generator.generate('Location_Y', EntryGenerator.Float)
-    label = generator.generate('Label', EntryGenerator.String)
-    scale = generator.generate('Scale', EntryGenerator.Int)
-    location = generator.generate(('Location_X', 'Location_Y'), EntryGenerator.FloatTuple)
+    location_x = BaseEntry('Location_X', BaseEntry.FLOAT)
+    location_y = BaseEntry('Location_Y', BaseEntry.FLOAT)
+    label = BaseEntry('Label', BaseEntry.STRING)
+    scale = BaseEntry('Scale', BaseEntry.INT)
+    location = TupleEntry(['Location_X', 'Location_Y'], TupleEntry.FLOAT)
 
 
 class LinkMessage(WeChatMessage):
     __type__ = 'link'
-    title = generator.generate('Title', EntryGenerator.String)
-    description = generator.generate('Description', EntryGenerator.String)
-    url = generator.generate('Url', EntryGenerator.String)
+    title = BaseEntry('Title', BaseEntry.STRING)
+    description = BaseEntry('Description', BaseEntry.STRING)
+    url = BaseEntry('Url', BaseEntry.STRING)
 
 
 class EventMessage(WeChatMessage):
@@ -111,28 +99,26 @@ class EventMessage(WeChatMessage):
         self.type = message.pop('Event')
         self.type = str(self.type).lower()
         if self.type == "click":
-            self.key = message.pop('EventKey')
+            self.__class__.key = BaseEntry('EventKey', BaseEntry.STRING)
         elif self.type == "location":
-            self.latitude = float(message.pop("Latitude"))
-            self.longitude = float(message.pop("Longitude"))
-            self.precision = float(message.pop("Precision"))
+            self.__class__.latitude = BaseEntry('Latitude', BaseEntry.FLOAT)
+            self.__class__.longitude = BaseEntry('Longitude', BaseEntry.FLOAT)
+            self.__class__.precision = BaseEntry('Precision', BaseEntry.FLOAT)
         super(EventMessage, self).__init__(message)
 
 
 class VoiceMessage(WeChatMessage):
     __type__ = 'voice'
-    media_id = generator.generate('MediaId', generator.String)
-    format = generator.generate('Format', generator.String)
-    recognition = generator.generate('Recognition', generator.String)
+    media_id = BaseEntry('MediaId', BaseEntry.STRING)
+    format = BaseEntry('Format', BaseEntry.STRING)
+    recognition = BaseEntry('Recognition', BaseEntry.STRING)
 
 
 class VideoMessage(WeChatMessage):
     __type__ = ['video', 'shortvideo']
-    media_id = generator.generate('MediaId', generator.String)
-    thumb_media_id = generator.generate('ThumbMediaId', generator.String)
+    media_id = BaseEntry('MediaId', BaseEntry.STRING)
+    thumb_media_id = BaseEntry('ThumbMediaId', BaseEntry.STRING)
 
 
 class UnknownMessage(WeChatMessage):
-    def __init__(self, message):
-        self.type = 'unknown'
-        super(UnknownMessage, self).__init__(message)
+    __type__ = 'unknown'
