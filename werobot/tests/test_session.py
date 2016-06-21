@@ -20,10 +20,6 @@ def remove_session(session):
         pass
 
 
-def setup_remove():
-    os.remove(os.path.abspath("werobot_session"))
-
-
 def test_session():
     robot = werobot.WeRoBot(token=werobot.utils.generate_token(),
                             enable_session=True)
@@ -61,8 +57,9 @@ def test_session():
         </xml>
     """
 
+    os.remove(os.path.abspath("werobot_session"))
     session_storages = [
-        filestorage.FileStorage(filename="werobot_session_test"),
+        filestorage.FileStorage(),
         mongodbstorage.MongoDBStorage(pymongo.MongoClient().t.t),
         redisstorage.RedisStorage(redis.Redis()),
     ]
