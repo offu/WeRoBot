@@ -20,46 +20,32 @@ class MessageMetaClass(type):
 
 
 class BaseEntry(object):
-    INT = 0
-    FLOAT = 1
-    STRING = 2
-
-    def __init__(self, entry, type, default=None):
+    def __init__(self, entry, default=None):
         self.entry = entry
         self.default = default
-        self.type = type
 
+
+class IntEntry(BaseEntry):
     def __get__(self, instance, owner):
-        result = {
-            self.INT: lambda v: int(v),
-            self.FLOAT: lambda v: float(v),
-            self.STRING: lambda v: v,
-        }
-        return result[self.type](instance.__dict__.get(self.entry, self.default))
+        return int(instance.__dict__.get(self.entry, self.default))
 
 
-class TupleEntry(object):
-    FLOAT = 3
-
-    def __init__(self, entry, type):
-        self.entry1 = entry[0]
-        self.entry2 = entry[1]
-        self.type = type
-
+class FloatEntry(BaseEntry):
     def __get__(self, instance, owner):
-        result = {
-            self.FLOAT: lambda v: float(v),
-        }
-        return result[self.type](instance.__dict__.get(self.entry1)), result[self.type](
-            instance.__dict__.get(self.entry2))
+        return float(instance.__dict__.get(self.entry, self.default))
+
+
+class StringEntry(BaseEntry):
+    def __get__(self, instance, owner):
+        return instance.__dict__.get(self.entry, self.default)
 
 
 @six.add_metaclass(MessageMetaClass)
 class WeChatMessage(object):
-    id = BaseEntry('MsgId', BaseEntry.INT, 0)
-    target = BaseEntry('ToUserName', BaseEntry.STRING)
-    source = BaseEntry('FromUserName', BaseEntry.STRING)
-    time = BaseEntry('CreateTime', BaseEntry.INT, 0)
+    id = IntEntry('MsgId', 0)
+    target = StringEntry('ToUserName')
+    source = StringEntry('FromUserName')
+    time = IntEntry('CreateTime', 0)
 
     def __init__(self, message):
         self.__dict__.update(message)
@@ -67,28 +53,31 @@ class WeChatMessage(object):
 
 class TextMessage(WeChatMessage):
     __type__ = 'text'
-    content = BaseEntry('Content', BaseEntry.STRING)
+    content = StringEntry('Content')
 
 
 class ImageMessage(WeChatMessage):
     __type__ = 'image'
-    img = BaseEntry('PicUrl', BaseEntry.STRING)
+    img = StringEntry('PicUrl')
 
 
 class LocationMessage(WeChatMessage):
     __type__ = 'location'
-    location_x = BaseEntry('Location_X', BaseEntry.FLOAT)
-    location_y = BaseEntry('Location_Y', BaseEntry.FLOAT)
-    label = BaseEntry('Label', BaseEntry.STRING)
-    scale = BaseEntry('Scale', BaseEntry.INT)
-    location = TupleEntry(['Location_X', 'Location_Y'], TupleEntry.FLOAT)
+    location_x = FloatEntry('Location_X')
+    location_y = FloatEntry('Location_Y')
+    label = StringEntry('Label')
+    scale = IntEntry('Scale')
+
+    @property
+    def location(self):
+        return self.location_x, self.location_y
 
 
 class LinkMessage(WeChatMessage):
     __type__ = 'link'
-    title = BaseEntry('Title', BaseEntry.STRING)
-    description = BaseEntry('Description', BaseEntry.STRING)
-    url = BaseEntry('Url', BaseEntry.STRING)
+    title = StringEntry('Title')
+    description = StringEntry('Description')
+    url = StringEntry('Url')
 
 
 class EventMessage(WeChatMessage):
@@ -99,25 +88,25 @@ class EventMessage(WeChatMessage):
         self.type = message.pop('Event')
         self.type = str(self.type).lower()
         if self.type == "click":
-            self.__class__.key = BaseEntry('EventKey', BaseEntry.STRING)
+            self.__class__.key = StringEntry('EventKey')
         elif self.type == "location":
-            self.__class__.latitude = BaseEntry('Latitude', BaseEntry.FLOAT)
-            self.__class__.longitude = BaseEntry('Longitude', BaseEntry.FLOAT)
-            self.__class__.precision = BaseEntry('Precision', BaseEntry.FLOAT)
+            self.__class__.latitude = FloatEntry('Latitude')
+            self.__class__.longitude = FloatEntry('Longitude')
+            self.__class__.precision = FloatEntry('Precision')
         super(EventMessage, self).__init__(message)
 
 
 class VoiceMessage(WeChatMessage):
     __type__ = 'voice'
-    media_id = BaseEntry('MediaId', BaseEntry.STRING)
-    format = BaseEntry('Format', BaseEntry.STRING)
-    recognition = BaseEntry('Recognition', BaseEntry.STRING)
+    media_id = StringEntry('MediaId')
+    format = StringEntry('Format')
+    recognition = StringEntry('Recognition')
 
 
 class VideoMessage(WeChatMessage):
     __type__ = ['video', 'shortvideo']
-    media_id = BaseEntry('MediaId', BaseEntry.STRING)
-    thumb_media_id = BaseEntry('ThumbMediaId', BaseEntry.STRING)
+    media_id = StringEntry('MediaId')
+    thumb_media_id = StringEntry('ThumbMediaId')
 
 
 class UnknownMessage(WeChatMessage):
