@@ -2,8 +2,8 @@
 from __future__ import absolute_import, unicode_literals
 
 import xmltodict
-
 from werobot.messages import MESSAGE_TYPES, UnknownMessage
+from werobot.messages import EVENT_TYPES, UnknownEvent
 
 
 def parse_user_msg(xml):
@@ -24,5 +24,9 @@ def process_message(message):
     :return: Message Object
     """
     message["type"] = message.pop("MsgType").lower()
-    message_type = MESSAGE_TYPES.get(message["type"], UnknownMessage)
+    if message["type"] == 'event':
+        message["type"] = str(message.pop("Event")).lower() + '_event'
+        message_type = EVENT_TYPES.get(message["type"], UnknownEvent)
+    else:
+        message_type = MESSAGE_TYPES.get(message["type"], UnknownMessage)
     return message_type(message)
