@@ -81,8 +81,14 @@ class Client(object):
             }
         )
 
-    @property
-    def token(self):
+    def get_access_token(self):
+        """
+        判断现有的token是否过期。
+        用户需要多进程或者多机部署可以手动重写这个函数
+        来自定义token的存储，刷新策略。
+
+        :return:返回token
+        """
         if self._token:
             now = time.time()
             if self.token_expires_at - now > 60:
@@ -91,6 +97,10 @@ class Client(object):
         self._token = json["access_token"]
         self.token_expires_at = int(time.time()) + json["expires_in"]
         return self._token
+
+    @property
+    def token(self):
+        return self.get_access_token()
 
     def create_menu(self, menu_data):
         """
