@@ -39,7 +39,7 @@ class SubscribeEvent(TicketEvent):
     __type__ = 'subscribe'
 
 
-class UnSubscribeEvent(TicketEvent):
+class UnSubscribeEvent(WeChatEvent):
     __type__ = 'unsubscribe'
 
 
