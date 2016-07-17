@@ -161,7 +161,7 @@ class BaseRoBot(object):
 
     def view(self, f):
         """
-        Decorator to add a handler function for ``view event`` messages
+        Decorator to add a handler function for ``view`` event
         """
         self.add_handler(f, type='view_event')
         return f
