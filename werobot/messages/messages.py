@@ -60,22 +60,6 @@ class LinkMessage(WeChatMessage):
     url = StringEntry('Url')
 
 
-class EventMessage(WeChatMessage):
-    __type__ = ['event']
-
-    def __init__(self, message):
-        message.pop("type")
-        self.type = message.pop('Event')
-        self.type = str(self.type).lower()
-        if self.type == "click":
-            self.__class__.key = StringEntry('EventKey')
-        elif self.type == "location":
-            self.__class__.latitude = FloatEntry('Latitude')
-            self.__class__.longitude = FloatEntry('Longitude')
-            self.__class__.precision = FloatEntry('Precision')
-        super(EventMessage, self).__init__(message)
-
-
 class VoiceMessage(WeChatMessage):
     __type__ = 'voice'
     media_id = StringEntry('MediaId')

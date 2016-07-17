@@ -146,7 +146,7 @@ def test_subscribe_event():
     assert message.target == "toUser"
     assert message.source == "FromUser"
     assert message.time == 123456789
-    assert message.type == "subscribe"
+    assert message.type == "subscribe_event"
 
     message = parse_user_msg("""
     <xml><ToUserName><![CDATA[toUser]]></ToUserName>
@@ -161,7 +161,7 @@ def test_subscribe_event():
     assert message.target == "toUser"
     assert message.source == "FromUser"
     assert message.time == 123456789
-    assert message.type == "subscribe"
+    assert message.type == "subscribe_event"
     assert message.key == "qrscene_123123"
     assert message.ticket == "TICKET"
 
@@ -179,7 +179,7 @@ def test_unsubscribe_event():
     assert message.target == "toUser"
     assert message.source == "fromUser"
     assert message.time == 123456789
-    assert message.type == "unsubscribe"
+    assert message.type == "unsubscribe_event"
 
 
 def test_scan_event():
@@ -197,7 +197,7 @@ def test_scan_event():
     assert message.target == "toUser"
     assert message.source == "FromUser"
     assert message.time == 123456789
-    assert message.type == "scan"
+    assert message.type == "scan_event"
     assert message.key == "SCENE_VALUE"
     assert message.ticket == "TICKET"
 
@@ -216,7 +216,7 @@ def test_click_event():
     assert message.target == "toUser"
     assert message.source == "fromUser"
     assert message.time == 123456789
-    assert message.type == "click"
+    assert message.type == "click_event"
     assert message.key == "EVENTKEY"
 
 
@@ -233,7 +233,7 @@ def test_view_event():
     assert message.target == "toUser"
     assert message.source == "FromUser"
     assert message.time == 123456789
-    assert message.type == "view"
+    assert message.type == "view_event"
     assert message.key == "www.qq.com"
 
 
@@ -253,7 +253,7 @@ def test_location_event():
     assert message.target == "toUser"
     assert message.source == "fromUser"
     assert message.time == 123456789
-    assert message.type == "location"
+    assert message.type == "location_event"
     assert message.latitude == 23.137466
     assert message.longitude == 113.352425
     assert message.precision == 119.385040
@@ -272,4 +272,4 @@ def test_unknown_event():
     assert message.target == "toUser"
     assert message.source == "FromUser"
     assert message.time == 123456789
-    assert message.type == "unknown"
+    assert message.type == "unknown_event"

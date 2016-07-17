@@ -36,15 +36,15 @@ class TicketEvent(WeChatEvent):
 
 
 class SubscribeEvent(TicketEvent):
-    __type__ = 'subscribe'
+    __type__ = 'subscribe_event'
 
 
 class UnSubscribeEvent(WeChatEvent):
-    __type__ = 'unsubscribe'
+    __type__ = 'unsubscribe_event'
 
 
 class ScanEvent(TicketEvent):
-    __type__ = 'scan'
+    __type__ = 'scan_event'
 
 
 class SimpleEvent(WeChatEvent):
@@ -52,19 +52,19 @@ class SimpleEvent(WeChatEvent):
 
 
 class ClickEvent(SimpleEvent):
-    __type__ = 'click'
+    __type__ = 'click_event'
 
 
 class ViewEvent(SimpleEvent):
-    __type__ = 'view'
+    __type__ = 'view_event'
 
 
 class LocationEvent(WeChatEvent):
-    __type__ = 'location'
+    __type__ = 'location_event'
     latitude = FloatEntry('Latitude')
     longitude = FloatEntry('Longitude')
     precision = FloatEntry('Precision')
 
 
 class UnknownEvent(WeChatEvent):
-    __type__ = 'unknown'
+    __type__ = 'unknown_event'

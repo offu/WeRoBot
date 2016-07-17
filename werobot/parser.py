@@ -25,7 +25,7 @@ def process_message(message):
     """
     message["type"] = message.pop("MsgType").lower()
     if message["type"] == 'event':
-        message["type"] = str(message.pop("Event")).lower()
+        message["type"] = str(message.pop("Event")).lower() + '_event'
         message_type = EVENT_TYPES.get(message["type"], UnknownEvent)
     else:
         message_type = MESSAGE_TYPES.get(message["type"], UnknownMessage)
