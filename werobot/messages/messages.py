@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import six
+from werobot.messages.entries import *
 
 MESSAGE_TYPES = {}
 
@@ -17,27 +18,6 @@ class MessageMetaClass(type):
             else:
                 MESSAGE_TYPES[attrs['__type__']] = cls
         type.__init__(cls, name, bases, attrs)
-
-
-class BaseEntry(object):
-    def __init__(self, entry, default=None):
-        self.entry = entry
-        self.default = default
-
-
-class IntEntry(BaseEntry):
-    def __get__(self, instance, owner):
-        return int(instance.__dict__.get(self.entry, self.default))
-
-
-class FloatEntry(BaseEntry):
-    def __get__(self, instance, owner):
-        return float(instance.__dict__.get(self.entry, self.default))
-
-
-class StringEntry(BaseEntry):
-    def __get__(self, instance, owner):
-        return instance.__dict__.get(self.entry, self.default)
 
 
 @six.add_metaclass(MessageMetaClass)
