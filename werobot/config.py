@@ -8,12 +8,9 @@ class ConfigAttribute(object):
     让一个属性指向一个配置
     """
 
-    def __init__(self, name, appid, appsecret):
+    def __init__(self, name):
         self.__name__ = name
-        self._token=None
-        self.appid = appid
-        self.appsecret=appsecret
-        self.token_expires_at = None
+
 
 
     def __get__(self, obj, type=None):
