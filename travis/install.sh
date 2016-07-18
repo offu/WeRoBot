@@ -3,7 +3,9 @@
 if [ "$(uname)" == "Darwin" ]; then
   brew update
   brew install redis
+  brew services start redis
   brew install mongodb
+  brew services start mongodb
 
   source travis/terryfy/library_installers.sh
   clean_builds

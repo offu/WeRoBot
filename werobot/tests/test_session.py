@@ -57,7 +57,10 @@ def test_session():
         </xml>
     """
 
-    os.remove(os.path.abspath("werobot_session"))
+    try:
+        os.remove(os.path.abspath("werobot_session"))
+    except FileNotFoundError:
+        pass
     session_storages = [
         filestorage.FileStorage(),
         mongodbstorage.MongoDBStorage(pymongo.MongoClient().t.t),
