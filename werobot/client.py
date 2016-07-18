@@ -6,6 +6,7 @@ import requests
 
 from requests.compat import json as _json
 from werobot.utils import to_text
+from werobot.config import Config
 
 
 class ClientException(Exception):
@@ -27,9 +28,9 @@ class Client(object):
     微信 API 操作类
     通过这个类可以方便的通过微信 API 进行一系列操作，比如主动发送消息、创建自定义菜单等
     """
-    def __init__(self, appid, appsecret):
-        self.appid = appid
-        self.appsecret = appsecret
+    def __init__(self, Config):
+        self.appid = Config.get("APP_ID",None)
+        self.appsecret = Config.get("APP_SECRET",None)
         self._token = None
         self.token_expires_at = None
 
