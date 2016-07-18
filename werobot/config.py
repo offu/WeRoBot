@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import imp
-import time
+
 
 class ConfigAttribute(object):
     """
@@ -10,8 +10,6 @@ class ConfigAttribute(object):
 
     def __init__(self, name):
         self.__name__ = name
-
-
 
     def __get__(self, obj, type=None):
         if obj is None:
@@ -27,7 +25,6 @@ class Config(dict):
     def from_pyfile(self, filename):
         """
         在一个 Python 文件中读取配置。
-
         :param filename: 配置文件的文件名。
         """
         d = imp.new_module('config')
@@ -40,10 +37,8 @@ class Config(dict):
     def from_object(self, obj):
         """
         在给定的 Python 对象中读取配置。
-
         :param obj: 一个 Python 对象
         """
         for key in dir(obj):
             if key.isupper():
                 self[key] = getattr(obj, key)
-
