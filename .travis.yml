@@ -36,10 +36,29 @@ matrix:
       services:
         - mongodb
         - redis-server
+    - os: osx
+      language: objective-c
+      env:
+        - PYTHON_VERSION=2.6
+    - os: osx
+      language: objective-c
+      env:
+        - PYTHON_VERSION=2.7
+    - os: osx
+      language: objective-c
+      env:
+        - PYTHON_VERSION=3.3
+    - os: osx
+      language: objective-c
+      env:
+        - PYTHON_VERSION=3.4
+    - os: osx
+      language: objective-c
+      env:
+        - PYTHON_VERSION=3.5
 
 install:
-  - "python setup.py install"
-  - "pip install -r dev-requirements.txt"
+  - "source travis/install.sh"
 
 script:
   - flake8 werobot
