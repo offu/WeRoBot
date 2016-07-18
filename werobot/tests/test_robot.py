@@ -140,7 +140,7 @@ def test_filter():
 
     try:
         os.remove(os.path.abspath("werobot_session"))
-    except FileNotFoundError:
+    except OSError:
         pass
     robot = WeRoBot()
 

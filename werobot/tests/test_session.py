@@ -59,7 +59,7 @@ def test_session():
 
     try:
         os.remove(os.path.abspath("werobot_session"))
-    except FileNotFoundError:
+    except OSError:
         pass
     session_storages = [
         filestorage.FileStorage(),
