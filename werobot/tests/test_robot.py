@@ -103,19 +103,19 @@ def test_filter():
     robot = WeRoBot()
 
     @robot.filter("喵")
-    def _():
+    def _1():
         return "喵"
 
     assert len(robot._handlers["text"]) == 1
 
     @robot.filter(re.compile(to_text(".*?呵呵.*?")))
-    def _():
+    def _2():
         return "哼"
 
     assert len(robot._handlers["text"]) == 2
 
     @robot.text
-    def _():
+    def _3():
         return "汪"
 
     assert len(robot._handlers["text"]) == 3
@@ -148,7 +148,7 @@ def test_filter():
     assert len(robot._handlers["text"]) == 3
 
     @robot.text
-    def _():
+    def _4():
         return "哦"
 
     assert len(robot._handlers["text"]) == 4

@@ -13,7 +13,9 @@ install:
   - "python setup.py install"
   - "pip install -r dev-requirements.txt"
 
-script: coverage run --source=werobot setup.py -q nosetests
+script:
+  - flake8 werobot
+  - coverage run --source=werobot setup.py -q nosetests
 
 after_success: coveralls
 

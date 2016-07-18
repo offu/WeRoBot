@@ -12,8 +12,12 @@ except ImportError:
     raise RuntimeError("You need to install PyCrypto.")
 
 from . import pkcs7
-from .exceptions import UnvalidEncodingAESKey, AppIdValidationError, InvalidSignature
-from werobot.utils import to_text, to_binary, generate_token, byte2int, get_signature
+from .exceptions import (
+    UnvalidEncodingAESKey, AppIdValidationError, InvalidSignature
+)
+from werobot.utils import (
+    to_text, to_binary, generate_token, byte2int, get_signature
+)
 
 
 class PrpCrypto(object):
