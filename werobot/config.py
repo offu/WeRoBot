@@ -31,7 +31,7 @@ class Config(dict):
         d = imp.new_module('config')
         d.__file__ = filename
         with open(filename) as config_file:
-            exec (compile(config_file.read(), filename, 'exec'), d.__dict__)
+            exec(compile(config_file.read(), filename, 'exec'), d.__dict__)
         self.from_object(d)
         return True
 

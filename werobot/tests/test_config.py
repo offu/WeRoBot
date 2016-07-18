@@ -1,11 +1,10 @@
 import os
 
-basedir = os.path.dirname(os.path.abspath(__file__))
-
 from werobot import WeRoBot
 from werobot.config import Config
 from werobot.utils import generate_token
 
+basedir = os.path.dirname(os.path.abspath(__file__))
 
 TOKEN = "123"
 
@@ -21,8 +20,9 @@ def test_from_object():
     config = Config()
     config.from_pyfile(os.path.join(basedir, "test_config.py"))
 
-    class ConfigObject():
+    class ConfigObject:
         TOKEN = "456"
+
     config.from_object(ConfigObject())
     assert config["TOKEN"] == "456"
 

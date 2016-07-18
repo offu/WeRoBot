@@ -1,5 +1,4 @@
 from werobot.parser import parse_user_msg
-from werobot.utils import to_text
 
 
 def test_none_message():

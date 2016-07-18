@@ -12,8 +12,9 @@ def encode(text):
     pad = chr(amount_to_pad)
     return text + pad * amount_to_pad
 
+
 def decode(decrypted):
     pad = ord(decrypted[-1])
-    if pad<1 or pad >32:
+    if pad < 1 or pad > 32:
         pad = 0
     return decrypted[:-pad]
