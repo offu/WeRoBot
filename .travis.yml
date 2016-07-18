@@ -1,13 +1,41 @@
-language: python
-python:
-  - 2.6
-  - 2.7
-  - 3.3
-  - 3.4
-
-services:
-  - mongodb
-  - redis-server
+matrix:
+  include:
+    - os: linux
+      language: python
+      python: 2.6
+      services:
+        - mongodb
+        - redis-server
+    - os: linux
+      language: python
+      python: 2.7
+      services:
+        - mongodb
+        - redis-server
+    - os: linux
+      language: python
+      python: 3.3
+      services:
+        - mongodb
+        - redis-server
+    - os: linux
+      language: python
+      python: 3.4
+      services:
+        - mongodb
+        - redis-server
+    - os: linux
+      language: python
+      python: 3.5
+      services:
+        - mongodb
+        - redis-server
+    - os: linux
+      language: python
+      python: nightly
+      services:
+        - mongodb
+        - redis-server
 
 install:
   - "python setup.py install"
