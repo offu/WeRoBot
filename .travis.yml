@@ -14,6 +14,12 @@ matrix:
         - redis-server
     - os: linux
       language: python
+      python: pypy
+      services:
+        - mongodb
+        - redis-server
+    - os: linux
+      language: python
       python: 3.3
       services:
         - mongodb
