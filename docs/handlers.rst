@@ -52,19 +52,25 @@ WeRoBot会将合法的请求发送给 handlers 依次执行。
 
     robot.run()
 
-==================  =================
-修饰符                类型
-==================  =================
-robot.text           文本
-robot.image          图像
-robot.location       位置
-robot.link           链接
-robot.subscribe      被关注
-robot.unsubscribe    被取消关注
-robot.click          自定义菜单时间
-robot.voice          语音
-robot.unknown        未知类型
-==================  =================
+在 WeRobot 中我们把请求分成了 Message 和 Event 两种类型,针对两种类型的请求分别有不同的 Handler。
+
+=====================  =================
+修饰符                   类型
+=====================  =================
+robot.text              文本 (Message)
+robot.image             图像 (Message)
+robot.location          位置 (Message)
+robot.link              链接 (Message)
+robot.voice             语音 (Message)
+robot.unknown           未知类型 (Message)
+robot.subscribe         被关注 (Event)
+robot.unsubscribe       被取消关注 (Event)
+robot.click             自定义菜单事件 (Event)
+robot.view              链接 (Event)
+robot.scan              扫码 (Event)
+robot.location_event    上报位置 (Event)
+robot.unknown_event     未知类型 (Event)
+=====================  =================
 
 额，这个 handler 想处理文本信息和地理位置信息？ ::
 

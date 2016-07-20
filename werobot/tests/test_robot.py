@@ -32,7 +32,8 @@ def test_register_handlers():
     robot = WeRoBot()
 
     for type in robot.message_types:
-        assert hasattr(robot, type)
+        assert hasattr(robot, type) or \
+               hasattr(robot, type.replace('_event', ''))
 
     @robot.text
     def text_handler():
@@ -70,13 +71,13 @@ def test_register_handlers():
     def subscribe_handler():
         pass
 
-    assert robot._handlers["subscribe"] == [(subscribe_handler, 0)]
+    assert robot._handlers["subscribe_event"] == [(subscribe_handler, 0)]
 
     @robot.unsubscribe
     def unsubscribe_handler():
         pass
 
-    assert robot._handlers["unsubscribe"] == [(unsubscribe_handler, 0)]
+    assert robot._handlers["unsubscribe_event"] == [(unsubscribe_handler, 0)]
 
     @robot.voice
     def voice_handler():
@@ -88,13 +89,13 @@ def test_register_handlers():
     def click_handler():
         pass
 
-    assert robot._handlers["click"] == [(click_handler, 0)]
+    assert robot._handlers["click_event"] == [(click_handler, 0)]
 
     @robot.key_click("MENU")
     def menu_handler():
         pass
 
-    assert len(robot._handlers["click"]) == 2
+    assert len(robot._handlers["click_event"]) == 2
 
 
 def test_filter():
