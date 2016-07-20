@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 
-from werobot.messages import WeChatMessage
+from werobot.messages.messages import WeChatMessage
 from werobot.utils import is_string, to_text
 
 
