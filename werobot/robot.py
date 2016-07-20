@@ -25,8 +25,8 @@ _DEFAULT_CONFIG = dict(
 
 class BaseRoBot(object):
     message_types = ['subscribe_event', 'unsubscribe_event', 'click_event', 'view_event', 'scan_event',
-                     'location_event',  # event
-                     'text', 'image', 'link', 'location', 'voice']
+                     'location_event', 'unknown_event',  # event
+                     'text', 'image', 'link', 'location', 'voice', 'unknown']
 
     token = ConfigAttribute("TOKEN")
     session_storage = ConfigAttribute("SESSION_STORAGE")
@@ -124,6 +124,13 @@ class BaseRoBot(object):
         self.add_handler(f, type='voice')
         return f
 
+    def unknown(self, f):
+        """
+        Decorator to add a handler function for ``unknown`` messages
+        """
+        self.add_handler(f, type='unknown')
+        return f
+
     def subscribe(self, f):
         """
         Decorator to add a handler function for ``subscribe`` event
@@ -164,6 +171,13 @@ class BaseRoBot(object):
         Decorator to add a handler function for ``view`` event
         """
         self.add_handler(f, type='view_event')
+        return f
+
+    def unknown_event(self, f):
+        """
+        Decorator to add a handler function for ``unknown`` event
+        """
+        self.add_handler(f, type='unknown_event')
         return f
 
     def key_click(self, key):

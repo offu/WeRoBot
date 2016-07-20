@@ -2,6 +2,7 @@
 
 try:
     import anydbm as dbm
+
     assert dbm
 except ImportError:
     import dbm
@@ -16,6 +17,7 @@ class FileStorage(SessionStorage):
 
     :param filename: 文件名， 默认为 ``werobot_session``
     """
+
     def __init__(self, filename='werobot_session'):
         self.db = dbm.open(filename, "c")
 
