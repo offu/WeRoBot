@@ -67,11 +67,16 @@ class BaseRoBot(object):
             return self._crypto
         app_id = self.config.get("APP_ID", None)
         if not app_id:
-            raise ConfigError("You need to provide app_id to encrypt/decrypt messages")
+            raise ConfigError(
+                "You need to provide app_id to encrypt/decrypt messages"
+            )
 
         encoding_aes_key = self.config.get("ENCODING_AES_KEY", None)
         if not encoding_aes_key:
-            raise ConfigError("You need to provide encoding_aes_key to encrypt/decrypt messages")
+            raise ConfigError(
+                "You need to provide encoding_aes_key "
+                "to encrypt/decrypt messages"
+            )
 
         from .crypto import MessageCrypt
         self._crypto = MessageCrypt(
@@ -216,13 +221,16 @@ class BaseRoBot(object):
 
                 def _check_content(message):
                     return message.content == target_content
-            elif hasattr(target_content, "match") and callable(target_content.match):
+            elif (hasattr(target_content, "match") and
+                  callable(target_content.match)):
                 # 正则表达式什么的
 
                 def _check_content(message):
                     return target_content.match(message.content)
             else:
-                raise TypeError("%s is not a valid target_content" % target_content)
+                raise TypeError(
+                    "%s is not a valid target_content" % target_content
+                )
 
         def wraps(f):
             if content_is_list:
@@ -277,33 +285,42 @@ class BaseRoBot(object):
             self.logger.warning("Catch an exception", exc_info=True)
 
     def check_signature(self, timestamp, nonce, signature):
-        return check_signature(self.config["TOKEN"], timestamp, nonce, signature)
+        return check_signature(
+            self.config["TOKEN"], timestamp, nonce, signature
+        )
+
+
+ERROR_PAGE_TEMPLATE = """
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf8" />
+        <title>Error: {{e.status}}</title>
+        <style type="text/css">
+        html {background-color: #eee; font-family: sans;}
+        body {background-color: #fff; border: 1px solid #ddd;
+                padding: 15px; margin: 15px;}
+        pre {
+            background-color: #eee;
+            border: 1px solid #ddd;
+            padding: 5px;
+        }
+        </style>
+    </head>
+    <body>
+        <h1>Error: {{e.status}}</h1>
+        <p>微信机器人不可以通过 GET 方式直接进行访问。</p>
+        <p>
+        想要使用本机器人，请在微信后台中将 URL 设置为 <pre>{{request.url}}</pre> 并将 Token 值设置正确。
+        </p>
+
+        <p>如果你仍有疑问，请<a href="http://werobot.readthedocs.org/en/%s/">阅读文档</a>
+    </body>
+</html>
+""" % werobot.__version__
 
 
 class WeRoBot(BaseRoBot):
-    ERROR_PAGE_TEMPLATE = """
-    <!DOCTYPE html>
-    <html>
-        <head>
-            <meta charset="utf8" />
-            <title>Error: {{e.status}}</title>
-            <style type="text/css">
-              html {background-color: #eee; font-family: sans;}
-              body {background-color: #fff; border: 1px solid #ddd;
-                    padding: 15px; margin: 15px;}
-              pre {background-color: #eee; border: 1px solid #ddd; padding: 5px;}
-            </style>
-        </head>
-        <body>
-            <h1>Error: {{e.status}}</h1>
-            <p>微信机器人不可以通过 GET 方式直接进行访问。</p>
-            <p>想要使用本机器人，请在微信后台中将 URL 设置为 <pre>{{request.url}}</pre> 并将 Token 值设置正确。</p>
-
-            <p>如果你仍有疑问，请<a href="http://werobot.readthedocs.org/en/%s/">阅读文档</a>
-        </body>
-    </html>
-    """ % werobot.__version__
-
     @property
     def wsgi(self):
         if not self._handlers:
