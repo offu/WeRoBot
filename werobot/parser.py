@@ -2,8 +2,8 @@
 from __future__ import absolute_import, unicode_literals
 
 import xmltodict
-from werobot.messages import MESSAGE_TYPES, UnknownMessage
-from werobot.messages import EVENT_TYPES, UnknownEvent
+from werobot.messages.messages import MESSAGE_TYPES, UnknownMessage
+from werobot.messages.events import EVENT_TYPES, UnknownEvent
 
 
 def parse_user_msg(xml):

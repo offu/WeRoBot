@@ -32,7 +32,8 @@ def test_register_handlers():
     robot = WeRoBot()
 
     for type in robot.message_types:
-        assert hasattr(robot, type) or hasattr(robot, type.replace('_event', ''))
+        assert hasattr(robot, type) or \
+               hasattr(robot, type.replace('_event', ''))
 
     @robot.text
     def text_handler():

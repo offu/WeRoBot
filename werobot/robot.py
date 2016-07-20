@@ -24,15 +24,16 @@ _DEFAULT_CONFIG = dict(
 
 
 class BaseRoBot(object):
-    message_types = ['subscribe_event', 'unsubscribe_event', 'click_event', 'view_event', 'scan_event',
+    message_types = ['subscribe_event', 'unsubscribe_event', 'click_event',
+                     'view_event', 'scan_event',
                      'location_event', 'unknown_event',  # event
                      'text', 'image', 'link', 'location', 'voice', 'unknown']
 
     token = ConfigAttribute("TOKEN")
     session_storage = ConfigAttribute("SESSION_STORAGE")
 
-    def __init__(self, token=None, logger=None, enable_session=True,
-                 session_storage=None,
+    def __init__(self, token=None, logger=None,
+                 enable_session=True, session_storage=None,
                  app_id=None, app_secret=None, encoding_aes_key=None,
                  **kwargs):
         self.config = Config(_DEFAULT_CONFIG)
@@ -221,8 +222,8 @@ class BaseRoBot(object):
 
                 def _check_content(message):
                     return message.content == target_content
-            elif (hasattr(target_content, "match") and
-                  callable(target_content.match)):
+            elif hasattr(target_content, "match") \
+                    and callable(target_content.match):
                 # 正则表达式什么的
 
                 def _check_content(message):

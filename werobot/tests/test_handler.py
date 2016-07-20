@@ -2,7 +2,7 @@
 
 from werobot import WeRoBot
 from werobot.parser import parse_user_msg
-from werobot.replies import *
+from werobot.replies import TextReply
 import os
 
 werobot = WeRoBot()

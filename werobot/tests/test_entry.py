@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import six
-from werobot.messages import *
+from werobot.messages.entries import StringEntry, FloatEntry, IntEntry
 from werobot.utils import to_text
 
 

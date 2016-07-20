@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import six
-from werobot.messages.entries import *
+from werobot.messages.entries import StringEntry, IntEntry, FloatEntry
 
 EVENT_TYPES = {}
 
