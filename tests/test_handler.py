@@ -9,7 +9,10 @@ werobot = WeRoBot()
 
 
 def teardown_module(module):
-    os.remove(os.path.abspath("werobot_session"))
+    try:
+        os.remove(os.path.abspath("werobot_session"))
+    except OSError:
+        pass
 
 
 def test_subscribe_handler():
