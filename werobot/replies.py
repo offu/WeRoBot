@@ -14,8 +14,7 @@ class Article(object):
 
 
 class WeChatReply(object):
-
-    def __init__(self, message=None, star=False, **kwargs):
+    def __init__(self, message=None, **kwargs):
         if "source" not in kwargs and isinstance(message, WeChatMessage):
             kwargs["source"] = message.target
 
@@ -24,10 +23,6 @@ class WeChatReply(object):
 
         if 'time' not in kwargs:
             kwargs["time"] = int(time.time())
-        if star:
-            kwargs["flag"] = 1
-        else:
-            kwargs["flag"] = 0
 
         args = dict()
         for k, v in kwargs.items():
@@ -38,7 +33,7 @@ class WeChatReply(object):
         self._args = args
 
     def render(self):
-        raise NotImplementedError()
+        return self.TEMPLATE.format(**self._args)
 
 
 class TextReply(WeChatReply):
@@ -49,12 +44,22 @@ class TextReply(WeChatReply):
     <CreateTime>{time}</CreateTime>
     <MsgType><![CDATA[text]]></MsgType>
     <Content><![CDATA[{content}]]></Content>
-    <FuncFlag>{flag}</FuncFlag>
     </xml>
     """)
 
-    def render(self):
-        return TextReply.TEMPLATE.format(**self._args)
+
+class ImageReply(WeChatReply):
+    TEMPLATE = to_text("""
+    <xml>
+    <ToUserName><![CDATA[{target}]]></ToUserName>
+    <FromUserName><![CDATA[{source}]]></FromUserName>
+    <CreateTime>{time}</CreateTime>
+    <MsgType><![CDATA[image]]></MsgType>
+    <Image>
+    <MediaId><![CDATA[{media_id}]]></MediaId>
+    </Image>
+    </xml>
+    """)
 
 
 class ArticlesReply(WeChatReply):
@@ -67,7 +72,6 @@ class ArticlesReply(WeChatReply):
     <Content><![CDATA[{content}]]></Content>
     <ArticleCount>{count}</ArticleCount>
     <Articles>{items}</Articles>
-    <FuncFlag>{flag}</FuncFlag>
     </xml>
     """)
 
@@ -120,7 +124,6 @@ class MusicReply(WeChatReply):
     <MusicUrl><![CDATA[{url}]]></MusicUrl>
     <HQMusicUrl><![CDATA[{hq_url}]]></HQMusicUrl>
     </Music>
-    <FuncFlag>{flag}</FuncFlag>
     </xml>
     """)
 
