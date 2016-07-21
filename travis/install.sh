@@ -9,7 +9,7 @@ if [ "$(uname)" == "Darwin" ]; then
 
   source travis/terryfy/library_installers.sh
   clean_builds
-  get_python_environment macpython $PYTHON_VERSION venv
+  get_python_environment $PYTHON_INSTALL_METHOD $PYTHON_VERSION venv
 fi
 
 python setup.py install

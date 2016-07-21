@@ -46,22 +46,43 @@ matrix:
       language: objective-c
       env:
         - PYTHON_VERSION=2.6
+        - PYTHON_INSTALL_METHOD=macports
     - os: osx
       language: objective-c
       env:
         - PYTHON_VERSION=2.7
+        - PYTHON_INSTALL_METHOD=macpython
     - os: osx
       language: objective-c
       env:
         - PYTHON_VERSION=3.3
+        - PYTHON_INSTALL_METHOD=macpython
     - os: osx
       language: objective-c
       env:
         - PYTHON_VERSION=3.4
+        - PYTHON_INSTALL_METHOD=macpython
     - os: osx
       language: objective-c
       env:
         - PYTHON_VERSION=3.5
+        - PYTHON_INSTALL_METHOD=macpython
+    - os: osx
+      language: objective-c
+      env:
+        - PYTHON_VERSION=2
+        - PYTHON_INSTALL_METHOD=system
+    - os: osx
+      language: objective-c
+      env:
+        - PYTHON_VERSION=2
+        - PYTHON_INSTALL_METHOD=homebrew
+    - os: osx
+      language: objective-c
+      env:
+        - PYTHON_VERSION=3
+        - PYTHON_INSTALL_METHOD=homebrew
+
 
 install:
   - "source travis/install.sh"
