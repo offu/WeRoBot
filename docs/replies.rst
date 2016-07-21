@@ -1,7 +1,6 @@
 回复
 ==============
 
-目前WeRoBot共有四种Reply： `TextReply` ， `ArticlesReply` ， `MusicReply` 和 `TransferCustomerServiceReply` 。他们都继承自 `WeChatReply` 。
 
 TextReply
 -----------
@@ -148,3 +147,8 @@ TransferCustomerServiceReply
 -----------------------------
 
 将消息转发到多客服
+
+SuccessReply
+---------------
+给微信服务器回复 "success"。
+假如服务器无法保证在五秒内处理并回复，需要回复 `SuccessReply` ，这样微信服务器才不会对此作任何处理，并且不会发起重试。

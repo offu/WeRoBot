@@ -142,6 +142,11 @@ class TransferCustomerServiceReply(WeChatReply):
         return TransferCustomerServiceReply.TEMPLATE.format(**self._args)
 
 
+class SuccessReply(WeChatReply):
+    def render(self):
+        return "success"
+
+
 def process_function_reply(reply, message=None):
     if is_string(reply):
         return TextReply(message=message, content=reply)

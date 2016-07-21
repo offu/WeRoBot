@@ -6,6 +6,7 @@ Version 1.0.0
 
 + 增加对消息加解密的支持
 + 重写 werobot.messages ,完善对 Event 的支持
++ 增加 :class:`SuccessReply`
 + 修复 :class:`werobot.session.FileStorage` 在 PyPy 下的兼容性问题
 
 Version 0.6.1

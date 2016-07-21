@@ -2,7 +2,7 @@
 
 import time
 from werobot.parser import parse_user_msg
-from werobot.replies import TextReply
+from werobot.replies import TextReply, SuccessReply
 
 
 def test_render_text_reply():
@@ -28,3 +28,7 @@ def test_render_text_reply():
     <Content><![CDATA[aa]]></Content>
     <FuncFlag>0</FuncFlag>
     </xml>""".format(time=t).strip()
+
+
+def test_success_reply():
+    assert SuccessReply().render() == "success"
