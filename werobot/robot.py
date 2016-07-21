@@ -24,14 +24,16 @@ _DEFAULT_CONFIG = dict(
 
 
 class BaseRoBot(object):
-    message_types = ['subscribe', 'unsubscribe', 'click', 'view',  # event
-                     'text', 'image', 'link', 'location', 'voice']
+    message_types = ['subscribe_event', 'unsubscribe_event', 'click_event',
+                     'view_event', 'scan_event',
+                     'location_event', 'unknown_event',  # event
+                     'text', 'image', 'link', 'location', 'voice', 'unknown']
 
     token = ConfigAttribute("TOKEN")
     session_storage = ConfigAttribute("SESSION_STORAGE")
 
-    def __init__(self, token=None, logger=None, enable_session=True,
-                 session_storage=None,
+    def __init__(self, token=None, logger=None,
+                 enable_session=True, session_storage=None,
                  app_id=None, app_secret=None, encoding_aes_key=None,
                  **kwargs):
         self.config = Config(_DEFAULT_CONFIG)
@@ -128,25 +130,60 @@ class BaseRoBot(object):
         self.add_handler(f, type='voice')
         return f
 
+    def unknown(self, f):
+        """
+        Decorator to add a handler function for ``unknown`` messages
+        """
+        self.add_handler(f, type='unknown')
+        return f
+
     def subscribe(self, f):
         """
-        Decorator to add a handler function for ``subscribe event`` messages
+        Decorator to add a handler function for ``subscribe`` event
         """
-        self.add_handler(f, type='subscribe')
+        self.add_handler(f, type='subscribe_event')
         return f
 
     def unsubscribe(self, f):
         """
-        Decorator to add a handler function for ``unsubscribe event`` messages
+        Decorator to add a handler function for ``unsubscribe`` event
         """
-        self.add_handler(f, type='unsubscribe')
+        self.add_handler(f, type='unsubscribe_event')
         return f
 
     def click(self, f):
         """
-        Decorator to add a handler function for ``click`` messages
+        Decorator to add a handler function for ``click`` event
         """
-        self.add_handler(f, type='click')
+        self.add_handler(f, type='click_event')
+        return f
+
+    def scan(self, f):
+        """
+        Decorator to add a handler function for ``scan`` event
+        """
+        self.add_handler(f, type='scan_event')
+        return f
+
+    def location_event(self, f):
+        """
+        Decorator to add a handler function for ``location`` event
+        """
+        self.add_handler(f, type='location_event')
+        return f
+
+    def view(self, f):
+        """
+        Decorator to add a handler function for ``view`` event
+        """
+        self.add_handler(f, type='view_event')
+        return f
+
+    def unknown_event(self, f):
+        """
+        Decorator to add a handler function for ``unknown`` event
+        """
+        self.add_handler(f, type='unknown_event')
         return f
 
     def key_click(self, key):
@@ -185,8 +222,8 @@ class BaseRoBot(object):
 
                 def _check_content(message):
                     return message.content == target_content
-            elif (hasattr(target_content, "match") and
-                  callable(target_content.match)):
+            elif hasattr(target_content, "match") \
+                    and callable(target_content.match):
                 # 正则表达式什么的
 
                 def _check_content(message):
@@ -211,13 +248,6 @@ class BaseRoBot(object):
             return f
 
         return wraps
-
-    def view(self, f):
-        """
-        Decorator to add a handler function for ``view event`` messages
-        """
-        self.add_handler(f, type='view')
-        return f
 
     def add_handler(self, func, type='all'):
         """

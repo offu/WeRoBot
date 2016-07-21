@@ -1,6 +1,3 @@
 [submodule "docs/_themes"]
 	path = docs/_themes
-	url = https://github.com/lepture/flask-sphinx-themes.git
-[submodule "travis/terryfy"]
-	path = travis/terryfy
-	url = https://github.com/MacPython/terryfy.git
+	url = https://github.com/pallets/flask-sphinx-themes.git
