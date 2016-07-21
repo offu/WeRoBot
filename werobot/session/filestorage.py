@@ -8,7 +8,7 @@ except ImportError:
     import dbm
 
 from werobot.session import SessionStorage
-from werobot.utils import json_loads, json_dumps
+from werobot.utils import json_loads, json_dumps, to_binary
 
 
 class FileStorage(SessionStorage):
@@ -19,7 +19,11 @@ class FileStorage(SessionStorage):
     """
 
     def __init__(self, filename='werobot_session'):
-        self.db = dbm.open(filename, "c")
+        try:
+            self.db = dbm.open(filename, "c")
+        except TypeError:
+            # dbm in PyPy requires filename to be binary
+            self.db = dbm.open(to_binary(filename), "c")
 
     def get(self, id):
         try:

@@ -1,0 +1,63 @@
+#!/usr/bin/env python
+""" Process .travis.yml and make bash fragments for testing
+
+Dump example vars, install, testing shell scripts to files for local testing
+"""
+from __future__ import print_function
+
+import sys
+import os
+from os.path import join as pjoin, dirname
+import warnings
+
+import argparse # Python 2.6, really?
+
+# pip install pyyaml
+import yaml
+
+sys.path.append(dirname(__file__))
+
+from travisparse import get_envs, TravisError, get_yaml_entry
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='Extract bash fragments from .travis.yml file')
+    parser.add_argument('--out-dir', default='working',
+                        help = 'output directory for fragments')
+    parser.add_argument('--no-vars', action='store_true',
+                        help = 'do not write vars script file')
+    args = parser.parse_args()
+    out_dir = args.out_dir
+    with open('.travis.yml', 'rt') as fobj:
+        travis_dict = yaml.load(fobj)
+    try:
+        os.mkdir(out_dir)
+    except OSError:
+        pass
+    # vars
+    if not args.no_vars:
+        try:
+            var_str = get_envs(travis_dict)
+        except TravisError:
+            warnings.warn('Could not get travis vars from file')
+        else:
+            vars_fname = pjoin(out_dir, '_frag_travis_vars.sh')
+            with open(vars_fname, 'wt') as fobj:
+                fobj.write(var_str)
+            print("Written " + vars_fname)
+    # install
+    install = get_yaml_entry(travis_dict, 'install')
+    install_fname = pjoin(out_dir, '_frag_travis_install.sh')
+    with open(install_fname, 'wt') as fobj:
+        fobj.write('\n'.join(install) + '\n')
+    print('Written ' + install_fname)
+    # test
+    test = get_yaml_entry(travis_dict, 'script')
+    test_fname = pjoin(out_dir, '_frag_travis_test.sh')
+    with open(test_fname, 'wt') as fobj:
+        fobj.write('\n'.join(test) + '\n')
+    print('Written ' + test_fname)
+
+
+if __name__ == '__main__':
+    main()
