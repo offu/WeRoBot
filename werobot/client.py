@@ -310,7 +310,10 @@ class Client(object):
         }
         if first_user_id:
             params["next_openid"] = first_user_id
-        return self.get("https://api.weixin.qq.com/cgi-bin/user/get", params=params)
+        return self.get(
+            "https://api.weixin.qq.com/cgi-bin/user/get",
+            params=params
+        )
 
     def send_text_message(self, user_id, content):
         """

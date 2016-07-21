@@ -1,5 +1,4 @@
 from werobot.parser import parse_user_msg
-from werobot.utils import to_text
 
 
 def test_none_message():
@@ -91,52 +90,6 @@ def test_link_message():
     assert message.id == 1234567890123456
 
 
-def test_event_message():
-    message = parse_user_msg("""
-    <xml>
-        <ToUserName><![CDATA[toUser]]></ToUserName>
-        <FromUserName><![CDATA[fromUser]]></FromUserName>
-        <CreateTime>123456789</CreateTime>
-        <MsgType><![CDATA[event]]></MsgType>
-        <Event><![CDATA[subscribe]]></Event>
-    </xml>
-    """)
-    assert message.target == "toUser"
-    assert message.source == "fromUser"
-    assert message.time == 123456789
-    assert message.type == "subscribe"
-
-    message = parse_user_msg("""
-    <xml>
-        <ToUserName><![CDATA[toUser]]></ToUserName>
-        <FromUserName><![CDATA[fromUser]]></FromUserName>
-        <CreateTime>123456789</CreateTime>
-        <MsgType><![CDATA[event]]></MsgType>
-        <Event><![CDATA[unsubscribe]]></Event>
-    </xml>
-    """)
-    assert message.target == "toUser"
-    assert message.source == "fromUser"
-    assert message.time == 123456789
-    assert message.type == "unsubscribe"
-
-    message = parse_user_msg("""
-    <xml>
-        <ToUserName><![CDATA[toUser]]></ToUserName>
-        <FromUserName><![CDATA[fromUser]]></FromUserName>
-        <CreateTime>123456789</CreateTime>
-        <MsgType><![CDATA[event]]></MsgType>
-        <Event><![CDATA[CLICK]]></Event>
-        <EventKey><![CDATA[EVENTKEY]]></EventKey>
-    </xml>
-    """)
-    assert message.target == "toUser"
-    assert message.source == "fromUser"
-    assert message.time == 123456789
-    assert message.type == "click"
-    assert message.key == "EVENTKEY"
-
-
 def test_voice_message():
     message = parse_user_msg("""
     <xml>
@@ -160,25 +113,6 @@ def test_voice_message():
     assert message.id == 1234567890123456
 
 
-def test_location_event():
-    message = parse_user_msg("""
-    <xml>
-        <ToUserName><![CDATA[toUser]]></ToUserName>
-        <FromUserName><![CDATA[fromUser]]></FromUserName>
-        <CreateTime>123456789</CreateTime>
-        <MsgType><![CDATA[event]]></MsgType>
-        <Event><![CDATA[LOCATION]]></Event>
-        <Latitude>23.137466</Latitude>
-        <Longitude>113.352425</Longitude>
-        <Precision>119.385040</Precision>
-    </xml>
-    """)
-    assert message.type == "location"
-    assert message.latitude == 23.137466
-    assert message.longitude == 113.352425
-    assert message.precision == 119.385040
-
-
 def test_unknown_message():
     xml = """
     <xml>
@@ -197,3 +131,145 @@ def test_unknown_message():
     assert message.target == "toUser"
     assert message.source == "fromUser"
     assert message.time == 1351776360
+
+
+def test_subscribe_event():
+    message = parse_user_msg("""
+    <xml>
+        <ToUserName><![CDATA[toUser]]></ToUserName>
+        <FromUserName><![CDATA[FromUser]]></FromUserName>
+        <CreateTime>123456789</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[subscribe]]></Event>
+    </xml>
+    """)
+    assert message.target == "toUser"
+    assert message.source == "FromUser"
+    assert message.time == 123456789
+    assert message.type == "subscribe_event"
+
+    message = parse_user_msg("""
+    <xml><ToUserName><![CDATA[toUser]]></ToUserName>
+        <FromUserName><![CDATA[FromUser]]></FromUserName>
+        <CreateTime>123456789</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[subscribe]]></Event>
+        <EventKey><![CDATA[qrscene_123123]]></EventKey>
+        <Ticket><![CDATA[TICKET]]></Ticket>
+    </xml>
+    """)
+    assert message.target == "toUser"
+    assert message.source == "FromUser"
+    assert message.time == 123456789
+    assert message.type == "subscribe_event"
+    assert message.key == "qrscene_123123"
+    assert message.ticket == "TICKET"
+
+
+def test_unsubscribe_event():
+    message = parse_user_msg("""
+    <xml>
+        <ToUserName><![CDATA[toUser]]></ToUserName>
+        <FromUserName><![CDATA[fromUser]]></FromUserName>
+        <CreateTime>123456789</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[unsubscribe]]></Event>
+    </xml>
+    """)
+    assert message.target == "toUser"
+    assert message.source == "fromUser"
+    assert message.time == 123456789
+    assert message.type == "unsubscribe_event"
+
+
+def test_scan_event():
+    message = parse_user_msg("""
+    <xml>
+        <ToUserName><![CDATA[toUser]]></ToUserName>
+        <FromUserName><![CDATA[FromUser]]></FromUserName>
+        <CreateTime>123456789</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[SCAN]]></Event>
+        <EventKey><![CDATA[SCENE_VALUE]]></EventKey>
+        <Ticket><![CDATA[TICKET]]></Ticket>
+    </xml>
+    """)
+    assert message.target == "toUser"
+    assert message.source == "FromUser"
+    assert message.time == 123456789
+    assert message.type == "scan_event"
+    assert message.key == "SCENE_VALUE"
+    assert message.ticket == "TICKET"
+
+
+def test_click_event():
+    message = parse_user_msg("""
+    <xml>
+        <ToUserName><![CDATA[toUser]]></ToUserName>
+        <FromUserName><![CDATA[fromUser]]></FromUserName>
+        <CreateTime>123456789</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[CLICK]]></Event>
+        <EventKey><![CDATA[EVENTKEY]]></EventKey>
+    </xml>
+    """)
+    assert message.target == "toUser"
+    assert message.source == "fromUser"
+    assert message.time == 123456789
+    assert message.type == "click_event"
+    assert message.key == "EVENTKEY"
+
+
+def test_view_event():
+    message = parse_user_msg("""
+    <xml>
+        <ToUserName><![CDATA[toUser]]></ToUserName>
+        <FromUserName><![CDATA[FromUser]]></FromUserName>
+        <CreateTime>123456789</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[VIEW]]></Event>
+        <EventKey><![CDATA[www.qq.com]]></EventKey>
+    </xml>""")
+    assert message.target == "toUser"
+    assert message.source == "FromUser"
+    assert message.time == 123456789
+    assert message.type == "view_event"
+    assert message.key == "www.qq.com"
+
+
+def test_location_event():
+    message = parse_user_msg("""
+    <xml>
+        <ToUserName><![CDATA[toUser]]></ToUserName>
+        <FromUserName><![CDATA[fromUser]]></FromUserName>
+        <CreateTime>123456789</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[LOCATION]]></Event>
+        <Latitude>23.137466</Latitude>
+        <Longitude>113.352425</Longitude>
+        <Precision>119.385040</Precision>
+    </xml>
+    """)
+    assert message.target == "toUser"
+    assert message.source == "fromUser"
+    assert message.time == 123456789
+    assert message.type == "location_event"
+    assert message.latitude == 23.137466
+    assert message.longitude == 113.352425
+    assert message.precision == 119.385040
+
+
+def test_unknown_event():
+    message = parse_user_msg("""
+    <xml>
+        <ToUserName><![CDATA[toUser]]></ToUserName>
+        <FromUserName><![CDATA[FromUser]]></FromUserName>
+        <CreateTime>123456789</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[unknown]]></Event>
+    </xml>
+    """)
+    assert message.target == "toUser"
+    assert message.source == "FromUser"
+    assert message.time == 123456789
+    assert message.type == "unknown_event"
