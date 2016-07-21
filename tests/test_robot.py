@@ -3,6 +3,7 @@
 import hashlib
 import time
 import six
+import os
 
 from nose.tools import raises
 from werobot import WeRoBot
@@ -31,7 +32,8 @@ def test_register_handlers():
     robot = WeRoBot()
 
     for type in robot.message_types:
-        assert hasattr(robot, type)
+        assert hasattr(robot, type) or \
+               hasattr(robot, type.replace('_event', ''))
 
     @robot.text
     def text_handler():
@@ -59,24 +61,23 @@ def test_register_handlers():
 
     assert robot._handlers["location"] == [(location_handler, 0)]
 
-
     @robot.link
     def link_handler():
         pass
-    
+
     assert robot._handlers["link"] == [(link_handler, 0)]
 
     @robot.subscribe
     def subscribe_handler():
         pass
 
-    assert robot._handlers["subscribe"] == [(subscribe_handler, 0)]
+    assert robot._handlers["subscribe_event"] == [(subscribe_handler, 0)]
 
     @robot.unsubscribe
     def unsubscribe_handler():
         pass
 
-    assert robot._handlers["unsubscribe"] == [(unsubscribe_handler, 0)]
+    assert robot._handlers["unsubscribe_event"] == [(unsubscribe_handler, 0)]
 
     @robot.voice
     def voice_handler():
@@ -88,13 +89,13 @@ def test_register_handlers():
     def click_handler():
         pass
 
-    assert robot._handlers["click"] == [(click_handler, 0)]
+    assert robot._handlers["click_event"] == [(click_handler, 0)]
 
     @robot.key_click("MENU")
     def menu_handler():
         pass
 
-    assert len(robot._handlers["click"]) == 2
+    assert len(robot._handlers["click_event"]) == 2
 
 
 def test_filter():
@@ -103,20 +104,22 @@ def test_filter():
     robot = WeRoBot()
 
     @robot.filter("喵")
-    def _():
+    def _1():
         return "喵"
 
     assert len(robot._handlers["text"]) == 1
 
     @robot.filter(re.compile(to_text(".*?呵呵.*?")))
-    def _():
+    def _2():
         return "哼"
 
     assert len(robot._handlers["text"]) == 2
 
     @robot.text
-    def _():
+    def _3():
         return "汪"
+
+    assert len(robot._handlers["text"]) == 3
 
     def _make_xml(content):
         return """
@@ -132,10 +135,14 @@ def test_filter():
 
     tester = werobot.testing.WeTest(robot)
 
-    assert tester.send_xml(_make_xml("啊")) == "汪"
-    assert tester.send_xml(_make_xml("啊呵呵")) == "哼"
-    assert tester.send_xml(_make_xml("喵")) == "喵"
+    assert tester.send_xml(_make_xml("啊"))._args['content'] == u"汪"
+    assert tester.send_xml(_make_xml("啊呵呵"))._args['content'] == u"哼"
+    assert tester.send_xml(_make_xml("喵"))._args['content'] == u"喵"
 
+    try:
+        os.remove(os.path.abspath("werobot_session"))
+    except OSError:
+        pass
     robot = WeRoBot()
 
     @robot.filter("帮助", "跪求帮助", re.compile(".*?help.*?"))
@@ -145,15 +152,17 @@ def test_filter():
     assert len(robot._handlers["text"]) == 3
 
     @robot.text
-    def _():
+    def _4():
         return "哦"
+
+    assert len(robot._handlers["text"]) == 4
 
     tester = werobot.testing.WeTest(robot)
 
-    assert tester.send_xml(_make_xml("啊")) == "哦"
-    assert tester.send_xml(_make_xml("帮助")) == "就不帮"
-    assert tester.send_xml(_make_xml("跪求帮助")) == "就不帮"
-    assert tester.send_xml(_make_xml("ooohelp")) == "就不帮"
+    assert tester.send_xml(_make_xml("啊"))._args['content'] == u"哦"
+    assert tester.send_xml(_make_xml("帮助"))._args['content'] == u"就不帮"
+    assert tester.send_xml(_make_xml("跪求帮助"))._args['content'] == u"就不帮"
+    assert tester.send_xml(_make_xml("ooohelp"))._args['content'] == u"就不帮"
 
 
 @raises(ValueError)

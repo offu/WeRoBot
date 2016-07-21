@@ -2,7 +2,7 @@
 
 import time
 from werobot.parser import parse_user_msg
-from werobot.reply import TextReply
+from werobot.replies import TextReply
 
 
 def test_render_text_reply():

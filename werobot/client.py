@@ -27,9 +27,10 @@ class Client(object):
     微信 API 操作类
     通过这个类可以方便的通过微信 API 进行一系列操作，比如主动发送消息、创建自定义菜单等
     """
-    def __init__(self, appid, appsecret):
-        self.appid = appid
-        self.appsecret = appsecret
+    def __init__(self, config):
+        self.config = config
+        self.appid = self.config.get("APP_ID", None)
+        self.appsecret = self.config.get("APP_SECRET", None)
         self._token = None
         self.token_expires_at = None
 
@@ -81,8 +82,7 @@ class Client(object):
             }
         )
 
-    @property
-    def token(self):
+    def get_access_token(self):
         if self._token:
             now = time.time()
             if self.token_expires_at - now > 60:
@@ -91,6 +91,10 @@ class Client(object):
         self._token = json["access_token"]
         self.token_expires_at = int(time.time()) + json["expires_in"]
         return self._token
+
+    @property
+    def token(self):
+        return self.get_access_token()
 
     def create_menu(self, menu_data):
         """
@@ -299,7 +303,10 @@ class Client(object):
         }
         if first_user_id:
             params["next_openid"] = first_user_id
-        return self.get("https://api.weixin.qq.com/cgi-bin/user/get", params=params)
+        return self.get(
+            "https://api.weixin.qq.com/cgi-bin/user/get",
+            params=params
+        )
 
     def send_text_message(self, user_id, content):
         """

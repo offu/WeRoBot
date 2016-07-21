@@ -7,6 +7,7 @@ import logging
 
 try:
     import curses
+
     assert curses
 except ImportError:
     curses = None
@@ -44,14 +45,22 @@ class _LogFormatter(logging.Formatter):
             if (3, 0) < sys.version_info < (3, 2, 3):
                 fg_color = six.text_type(fg_color, "ascii")
             self._colors = {
-                logging.DEBUG: six.text_type(curses.tparm(fg_color, 4),
-                                       "ascii"),  # Blue
-                logging.INFO: six.text_type(curses.tparm(fg_color, 2),
-                                      "ascii"),  # Green
-                logging.WARNING: six.text_type(curses.tparm(fg_color, 3),
-                                         "ascii"),  # Yellow
-                logging.ERROR: six.text_type(curses.tparm(fg_color, 1),
-                                       "ascii"),  # Red
+                logging.DEBUG: six.text_type(
+                    curses.tparm(fg_color, 4),
+                    "ascii"
+                ),  # Blue
+                logging.INFO: six.text_type(
+                    curses.tparm(fg_color, 2),
+                    "ascii"
+                ),  # Green
+                logging.WARNING: six.text_type(
+                    curses.tparm(fg_color, 3),
+                    "ascii"
+                ),  # Yellow
+                logging.ERROR: six.text_type(
+                    curses.tparm(fg_color, 1),
+                    "ascii"
+                ),  # Red
             }
             self._normal = six.text_type(curses.tigetstr("sgr0"), "ascii")
 

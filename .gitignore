@@ -1,4 +1,5 @@
 *.py[cod]
+.python-version
 
 # C extensions
 *.so
@@ -52,6 +53,6 @@ werobot_session.db
 
 .coveralls.yml
 
-werobot_session
+werobot_session*
 pip-selfcheck.json
-
+venv

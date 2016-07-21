@@ -1,20 +1,95 @@
-language: python
-python:
-  - 2.6
-  - 2.7
-  - 3.3
-  - 3.4
-  - pypy
+matrix:
+  include:
+    - os: linux
+      language: python
+      python: 2.6
+      services:
+        - mongodb
+        - redis-server
+    - os: linux
+      language: python
+      python: 2.7
+      services:
+        - mongodb
+        - redis-server
+    - os: linux
+      language: python
+      python: pypy
+      services:
+        - mongodb
+        - redis-server
+    - os: linux
+      language: python
+      python: 3.3
+      services:
+        - mongodb
+        - redis-server
+    - os: linux
+      language: python
+      python: 3.4
+      services:
+        - mongodb
+        - redis-server
+    - os: linux
+      language: python
+      python: 3.5
+      services:
+        - mongodb
+        - redis-server
+    - os: linux
+      language: python
+      python: nightly
+      services:
+        - mongodb
+        - redis-server
+    - os: osx
+      language: objective-c
+      env:
+        - PYTHON_VERSION=2.6
+        - PYTHON_INSTALL_METHOD=macports
+    - os: osx
+      language: objective-c
+      env:
+        - PYTHON_VERSION=2.7
+        - PYTHON_INSTALL_METHOD=macpython
+    - os: osx
+      language: objective-c
+      env:
+        - PYTHON_VERSION=3.3
+        - PYTHON_INSTALL_METHOD=macpython
+    - os: osx
+      language: objective-c
+      env:
+        - PYTHON_VERSION=3.4
+        - PYTHON_INSTALL_METHOD=macpython
+    - os: osx
+      language: objective-c
+      env:
+        - PYTHON_VERSION=3.5
+        - PYTHON_INSTALL_METHOD=macpython
+    - os: osx
+      language: objective-c
+      env:
+        - PYTHON_VERSION=2
+        - PYTHON_INSTALL_METHOD=system
+    - os: osx
+      language: objective-c
+      env:
+        - PYTHON_VERSION=2
+        - PYTHON_INSTALL_METHOD=homebrew
+    - os: osx
+      language: objective-c
+      env:
+        - PYTHON_VERSION=3
+        - PYTHON_INSTALL_METHOD=homebrew
 
-services:
-  - mongodb
-  - redis-server
 
 install:
-  - "python setup.py install"
-  - "pip install -r dev-requirements.txt"
+  - "source travis/install.sh"
 
-script: coverage run --source=werobot setup.py -q nosetests
+script:
+  - flake8 werobot
+  - coverage run --source=werobot setup.py -q nosetests
 
 after_success: coveralls
 

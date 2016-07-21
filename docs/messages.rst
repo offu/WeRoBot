@@ -9,7 +9,7 @@
 ======== ===================================
 name      value
 ======== ===================================
-id        消息id，64位整型 [2]_
+id        消息id，64位整型 [1]_
 target    开发者账号（ OpenID ）
 source    发送方账号（ OpenID ）
 time      信息发送的时间，一个UNIX时间戳。
@@ -19,7 +19,7 @@ raw       信息的原始 XML 格式
 TextMessage
 ------------
 
-TextMessage的属性：
+TextMessage 的属性：
 
 
 ======== ===================================
@@ -32,7 +32,7 @@ content   信息的内容
 ImageMessage
 -------------
 
-ImageMessage的属性：
+ImageMessage 的属性：
 
 ======= ==================================
 name     value
@@ -56,7 +56,7 @@ url              消息链接
 LocationMessage
 ----------------
 
-LocationMessage的属性：
+LocationMessage 的属性：
 
 ========= ===================================
 name       value
@@ -67,25 +67,11 @@ scale      地图缩放大小
 label      地理位置信息
 ========= ===================================
 
-EventMessage
---------------
-
-EventMessage的属性：
-
-=========== ======================================================
-name         value
-=========== ======================================================
-type         'subscribe' 'unsubscribe' 'click' 或 'location' [1]_
-key          事件 key 值。当 type = 'click' 时存在。
-Latitude	 地理位置纬度。当 type = 'location' 时存在。
-Longitude	 地理位置经度。当 type = 'location' 时存在。
-Precision	 地理位置精度。当 type = 'location' 时存在。
-=========== ======================================================
 
 VoiceMessage
 --------------------
 
-VoiceMessage的属性：
+VoiceMessage 的属性：
 
 ============ =====================================
 name          value
@@ -99,7 +85,7 @@ recognition   语音识别结果
 VideoMessage
 --------------------
 
-VideoMessage：
+VideoMessage 的属性：
 
 ================ =====================================
 name              value
@@ -107,12 +93,12 @@ name              value
 type              'video'
 media_id          消息媒体 ID
 thumb_media_id    视频缩略图媒体 ID
-=============== =====================================
+================ =====================================
 
 UnknownMessage
 ---------------
 
-UnknownMessage的属性：
+UnknownMessage 的属性：
 
 ========= =====================================
 name       value
@@ -123,5 +109,4 @@ raw        请求的正文部分。标准的XML格式。
 
 .. note:: 如果你不为 WeRoBot 贡献代码，你完全可以无视掉 UnknownMessage 。在正常的使用中，WeRoBot应该不会收到 `UnknownMessage` ——除非 WeRoBot 停止开发。
 
-.. [1] 当你被用户关注时，会收到 type='subscribe' 的事件； 被取消关注时是 type='unsubscribe' 。当用户点击自定义菜单按钮时 type 为 `click` ，用户上报地理位置的数据包 type 为 `location`
-.. [2] 截至目前（ 2013.03.16 ），微信机器人所收到的消息中都不包含 MsgID.
+.. [1] 截至目前（ 2013.03.16 ），微信机器人所收到的消息中都不包含 MsgID.

@@ -1,21 +1,20 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
 
 import six
-import werobot
 import os
 import inspect
-import hashlib
 import logging
 
-from bottle import Bottle, request, response, abort, template
+import werobot
 
 from werobot.config import Config, ConfigAttribute
-from werobot.parser import parse_user_msg
-from werobot.reply import create_reply
-from werobot.utils import to_binary, to_text
+from werobot.exceptions import ConfigError
+from werobot.parser import parse_xml, process_message
+from werobot.replies import process_function_reply
+from werobot.utils import to_binary, to_text, check_signature
 
 __all__ = ['BaseRoBot', 'WeRoBot']
-
 
 _DEFAULT_CONFIG = dict(
     SERVER="auto",
@@ -25,14 +24,18 @@ _DEFAULT_CONFIG = dict(
 
 
 class BaseRoBot(object):
-    message_types = ['subscribe', 'unsubscribe', 'click',  'view',  # event
-                     'text', 'image', 'link', 'location', 'voice']
+    message_types = ['subscribe_event', 'unsubscribe_event', 'click_event',
+                     'view_event', 'scan_event',
+                     'location_event', 'unknown_event',  # event
+                     'text', 'image', 'link', 'location', 'voice', 'unknown']
 
     token = ConfigAttribute("TOKEN")
     session_storage = ConfigAttribute("SESSION_STORAGE")
 
-    def __init__(self, token=None, logger=None, enable_session=True,
-                 session_storage=None):
+    def __init__(self, token=None, logger=None,
+                 enable_session=True, session_storage=None,
+                 app_id=None, app_secret=None, encoding_aes_key=None,
+                 **kwargs):
         self.config = Config(_DEFAULT_CONFIG)
         self._handlers = dict((k, []) for k in self.message_types)
         self._handlers['all'] = []
@@ -49,8 +52,41 @@ class BaseRoBot(object):
         self.config.update(
             TOKEN=token,
             SESSION_STORAGE=session_storage,
-
+            APP_ID=app_id,
+            APP_SECRET=app_secret,
+            ENCODING_AES_KEY=encoding_aes_key
         )
+
+        self.use_encryption = False
+
+        for k, v in kwargs.items():
+            self.config[k.upper()] = v
+
+    @property
+    def crypto(self):
+        if hasattr(self, "_crypto"):
+            return self._crypto
+        app_id = self.config.get("APP_ID", None)
+        if not app_id:
+            raise ConfigError(
+                "You need to provide app_id to encrypt/decrypt messages"
+            )
+
+        encoding_aes_key = self.config.get("ENCODING_AES_KEY", None)
+        if not encoding_aes_key:
+            raise ConfigError(
+                "You need to provide encoding_aes_key "
+                "to encrypt/decrypt messages"
+            )
+
+        from .crypto import MessageCrypt
+        self._crypto = MessageCrypt(
+            token=self.config["TOKEN"],
+            encoding_aes_key=encoding_aes_key,
+            app_id=app_id
+        )
+        self.use_encryption = True
+        return self._crypto
 
     def handler(self, f):
         """
@@ -94,25 +130,60 @@ class BaseRoBot(object):
         self.add_handler(f, type='voice')
         return f
 
+    def unknown(self, f):
+        """
+        Decorator to add a handler function for ``unknown`` messages
+        """
+        self.add_handler(f, type='unknown')
+        return f
+
     def subscribe(self, f):
         """
-        Decorator to add a handler function for ``subscribe event`` messages
+        Decorator to add a handler function for ``subscribe`` event
         """
-        self.add_handler(f, type='subscribe')
+        self.add_handler(f, type='subscribe_event')
         return f
 
     def unsubscribe(self, f):
         """
-        Decorator to add a handler function for ``unsubscribe event`` messages
+        Decorator to add a handler function for ``unsubscribe`` event
         """
-        self.add_handler(f, type='unsubscribe')
+        self.add_handler(f, type='unsubscribe_event')
         return f
 
     def click(self, f):
         """
-        Decorator to add a handler function for ``click`` messages
+        Decorator to add a handler function for ``click`` event
         """
-        self.add_handler(f, type='click')
+        self.add_handler(f, type='click_event')
+        return f
+
+    def scan(self, f):
+        """
+        Decorator to add a handler function for ``scan`` event
+        """
+        self.add_handler(f, type='scan_event')
+        return f
+
+    def location_event(self, f):
+        """
+        Decorator to add a handler function for ``location`` event
+        """
+        self.add_handler(f, type='location_event')
+        return f
+
+    def view(self, f):
+        """
+        Decorator to add a handler function for ``view`` event
+        """
+        self.add_handler(f, type='view_event')
+        return f
+
+    def unknown_event(self, f):
+        """
+        Decorator to add a handler function for ``unknown`` event
+        """
+        self.add_handler(f, type='unknown_event')
         return f
 
     def key_click(self, key):
@@ -120,6 +191,7 @@ class BaseRoBot(object):
         Shortcut for ``click`` messages
         @key_click('KEYNAME') for special key on click event
         """
+
         def wraps(f):
             argc = len(inspect.getargspec(f).args)
 
@@ -127,6 +199,7 @@ class BaseRoBot(object):
             def onclick(message, session=None):
                 if message.key == key:
                     return f(*[message, session][:argc])
+
             return f
 
         return wraps
@@ -149,13 +222,16 @@ class BaseRoBot(object):
 
                 def _check_content(message):
                     return message.content == target_content
-            elif hasattr(target_content, "match") and callable(target_content.match):
+            elif hasattr(target_content, "match") \
+                    and callable(target_content.match):
                 # 正则表达式什么的
 
                 def _check_content(message):
                     return target_content.match(message.content)
             else:
-                raise TypeError("%s is not a valid target_content" % target_content)
+                raise TypeError(
+                    "%s is not a valid target_content" % target_content
+                )
 
         def wraps(f):
             if content_is_list:
@@ -173,13 +249,6 @@ class BaseRoBot(object):
 
         return wraps
 
-    def view(self, f):
-        """
-        Decorator to add a handler function for ``view event`` messages
-        """
-        self.add_handler(f, type='view')
-        return f
-
     def add_handler(self, func, type='all'):
         """
         Add a handler function for messages of given type.
@@ -190,11 +259,11 @@ class BaseRoBot(object):
         self._handlers[type].append((func, len(inspect.getargspec(func).args)))
 
     def get_handlers(self, type):
-        return self._handlers[type] + self._handlers['all']
+        return self._handlers.get(type, []) + self._handlers['all']
 
     def get_reply(self, message):
         """
-        Return the raw xml reply for the given message.
+        Return the Reply Object for the given message.
         """
         session_storage = self.config["SESSION_STORAGE"]
 
@@ -212,55 +281,61 @@ class BaseRoBot(object):
                 if session_storage and id:
                     session_storage[id] = session
                 if reply:
-                    return reply
+                    return process_function_reply(reply, message=message)
         except:
             self.logger.warning("Catch an exception", exc_info=True)
 
     def check_signature(self, timestamp, nonce, signature):
-        sign = [self.config["TOKEN"], timestamp, nonce]
-        sign.sort()
-        sign = to_binary(''.join(sign))
-        sign = hashlib.sha1(sign).hexdigest()
-        return sign == signature
+        return check_signature(
+            self.config["TOKEN"], timestamp, nonce, signature
+        )
+
+
+ERROR_PAGE_TEMPLATE = """
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf8" />
+        <title>Error: {{e.status}}</title>
+        <style type="text/css">
+        html {background-color: #eee; font-family: sans;}
+        body {background-color: #fff; border: 1px solid #ddd;
+                padding: 15px; margin: 15px;}
+        pre {
+            background-color: #eee;
+            border: 1px solid #ddd;
+            padding: 5px;
+        }
+        </style>
+    </head>
+    <body>
+        <h1>Error: {{e.status}}</h1>
+        <p>微信机器人不可以通过 GET 方式直接进行访问。</p>
+        <p>
+        想要使用本机器人，请在微信后台中将 URL 设置为 <pre>{{request.url}}</pre> 并将 Token 值设置正确。
+        </p>
+
+        <p>如果你仍有疑问，请<a href="http://werobot.readthedocs.org/en/%s/">阅读文档</a>
+    </body>
+</html>
+""" % werobot.__version__
 
 
 class WeRoBot(BaseRoBot):
-
-    ERROR_PAGE_TEMPLATE = """
-    <!DOCTYPE html>
-    <html>
-        <head>
-            <meta charset="utf8" />
-            <title>Error: {{e.status}}</title>
-            <style type="text/css">
-              html {background-color: #eee; font-family: sans;}
-              body {background-color: #fff; border: 1px solid #ddd;
-                    padding: 15px; margin: 15px;}
-              pre {background-color: #eee; border: 1px solid #ddd; padding: 5px;}
-            </style>
-        </head>
-        <body>
-            <h1>Error: {{e.status}}</h1>
-            <p>微信机器人不可以通过 GET 方式直接进行访问。</p>
-            <p>想要使用本机器人，请在微信后台中将 URL 设置为 <pre>{{request.url}}</pre> 并将 Token 值设置正确。</p>
-
-            <p>如果你仍有疑问，请<a href="http://werobot.readthedocs.org/en/%s/">阅读文档</a>
-        </body>
-    </html>
-    """ % werobot.__version__
-
     @property
     def wsgi(self):
         if not self._handlers:
             raise
+        from bottle import Bottle, request, response, abort, template
+
         app = Bottle()
 
         @app.get('<t:path>')
         def echo(t):
             if not self.check_signature(
-                request.query.timestamp,
-                request.query.nonce,
-                request.query.signature
+                    request.query.timestamp,
+                    request.query.nonce,
+                    request.query.signature
             ):
                 return abort(403)
             return request.query.echostr
@@ -268,14 +343,23 @@ class WeRoBot(BaseRoBot):
         @app.post('<t:path>')
         def handle(t):
             if not self.check_signature(
-                request.query.timestamp,
-                request.query.nonce,
-                request.query.signature
+                    request.query.timestamp,
+                    request.query.nonce,
+                    request.query.signature
             ):
                 return abort(403)
 
             body = request.body.read()
-            message = parse_user_msg(body)
+            message_dict = parse_xml(body)
+            if "Encrypt" in message_dict:
+                xml = self.crypto.decrypt_message(
+                    timestamp=request.query.timestamp,
+                    nonce=request.query.nonce,
+                    msg_signature=request.query.msg_signature,
+                    encrypt_msg=message_dict["Encrypt"]
+                )
+                message_dict = parse_xml(xml)
+            message = process_message(message_dict)
             logging.info("Receive message %s" % message)
             reply = self.get_reply(message)
             if not reply:
@@ -283,7 +367,10 @@ class WeRoBot(BaseRoBot):
                                     % message)
                 return ''
             response.content_type = 'application/xml'
-            return create_reply(reply, message=message)
+            if self.use_encryption:
+                return self.crypto.encrypt_message(reply)
+            else:
+                return reply.render()
 
         @app.error(403)
         def error403(error):
