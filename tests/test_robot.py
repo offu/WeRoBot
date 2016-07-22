@@ -13,7 +13,7 @@ from werobot.utils import generate_token, to_text
 def test_signature_checker():
     token = generate_token()
 
-    robot = WeRoBot(token)
+    robot = WeRoBot(token, enable_session=False)
 
     timestamp = str(int(time.time()))
     nonce = '12345678'
@@ -29,7 +29,7 @@ def test_signature_checker():
 
 
 def test_register_handlers():
-    robot = WeRoBot()
+    robot = WeRoBot(enable_session=False)
 
     for type in robot.message_types:
         assert hasattr(robot, type) or \
@@ -101,7 +101,7 @@ def test_register_handlers():
 def test_filter():
     import re
     import werobot.testing
-    robot = WeRoBot()
+    robot = WeRoBot(enable_session=False)
 
     @robot.filter("喵")
     def _1():
@@ -143,7 +143,7 @@ def test_filter():
         os.remove(os.path.abspath("werobot_session"))
     except OSError:
         pass
-    robot = WeRoBot()
+    robot = WeRoBot(enable_session=False)
 
     @robot.filter("帮助", "跪求帮助", re.compile(".*?help.*?"))
     def _():
@@ -167,5 +167,5 @@ def test_filter():
 
 @raises(ValueError)
 def test_register_not_callable_object():
-    robot = WeRoBot()
+    robot = WeRoBot(enable_session=False)
     robot.add_handler("s")

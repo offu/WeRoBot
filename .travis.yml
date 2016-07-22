@@ -91,7 +91,10 @@ script:
   - flake8 werobot
   - coverage run --source=werobot setup.py -q nosetests
 
-after_success: coveralls
+after_success:
+  - pip install scrutinizer-ocular codecov
+  - ocular
+  - codecov
 
 notifications:
   email: false
