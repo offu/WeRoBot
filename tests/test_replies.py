@@ -99,20 +99,20 @@ def test_article():
         img="http",
         url="uuu"
     )
-    assert article.render().strip() == """
+    assert article.render().strip() == to_text("""
     <item>
     <Title><![CDATA[tt]]></Title>
     <Description><![CDATA[附近的萨卡里发生]]></Description>
     <PicUrl><![CDATA[http]]></PicUrl>
     <Url><![CDATA[uuu]]></Url>
     </item>
-    """.strip()
+    """).strip()
 
 
 def test_articles_reply():
     article = Article(
         title="tt",
-        description=to_binary("附近的萨卡里发生"),
+        description="附近的萨卡里发生",
         img="http",
         url="uuu"
     )
