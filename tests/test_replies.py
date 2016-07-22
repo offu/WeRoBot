@@ -2,11 +2,12 @@
 
 import time
 from werobot.parser import parse_user_msg
-from werobot.replies import TextReply, ImageReply, MusicReply
+from werobot.replies import WeChatReply, TextReply, ImageReply, MusicReply
 from werobot.replies import TransferCustomerServiceReply, SuccessReply
+from werobot.utils import to_binary, to_text
 
 
-def test_text_reply():
+def test_wechat_reply():
     message = parse_user_msg("""
         <xml>
         <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -18,8 +19,20 @@ def test_text_reply():
         <MsgId>1234567890123456</MsgId>
         </xml>
     """)
+    s = to_binary("喵fdsjaklfsk")
+    reply = WeChatReply(message=message, s=s)
+    assert reply._args['source'] == 'toUser'
+    assert reply._args['target'] == 'fromUser'
+    assert reply._args['s'] == to_text(s)
+    assert isinstance(reply._args['time'], int)
+
+
+def test_text_reply():
     t = int(time.time())
-    reply = TextReply(message=message, content="aa", time=t)
+    reply = TextReply(
+        target='fromUser', source='toUser',
+        content="aa", time=t
+    )
     reply.render().strip() == """
     <xml>
     <ToUserName><![CDATA[fromUser]]></ToUserName>
@@ -31,19 +44,12 @@ def test_text_reply():
 
 
 def test_image_reply():
-    message = parse_user_msg("""
-        <xml>
-        <ToUserName><![CDATA[toUser]]></ToUserName>
-        <FromUserName><![CDATA[fromUser]]></FromUserName>
-        <CreateTime>1348831860</CreateTime>
-        <MsgType><![CDATA[image]]></MsgType>
-        <PicUrl><![CDATA[this is a url]]></PicUrl>
-        <MediaId><![CDATA[media_id]]></MediaId>
-        <MsgId>1234567890123456</MsgId>
-        </xml>
-    """)
     t = int(time.time())
-    reply = ImageReply(message=message, media_id="fdasfdasfasd", time=t)
+    reply = ImageReply(
+        target='fromUser',
+        source='toUser',
+        media_id="fdasfdasfasd", time=t
+    )
     reply.render().strip() == """
     <xml>
     <ToUserName><![CDATA[fromUser]]></ToUserName>
