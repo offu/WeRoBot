@@ -11,6 +11,7 @@ Version 1.0.0
 + 删去了 Reply 中过时的 flag
 + 修复 :class:`werobot.session.filestorage.FileStorage` 在 PyPy 下的兼容性问题
 + 增加 :class:`werobot.session.sqlitestorage.SQLiteStorage`
++ 将图文消息单个消息的渲染函数放到 :class:`werobot.replies.Article` 内
 
 Version 0.6.1
 ----------------

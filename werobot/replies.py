@@ -5,14 +5,6 @@ from werobot.messages.messages import WeChatMessage
 from werobot.utils import is_string, to_text
 
 
-class Article(object):
-    def __init__(self, title, description, img, url):
-        self.title = title
-        self.description = description
-        self.img = img
-        self.url = url
-
-
 class WeChatReply(object):
     def __init__(self, message=None, **kwargs):
         if "source" not in kwargs and isinstance(message, WeChatMessage):
@@ -62,6 +54,31 @@ class ImageReply(WeChatReply):
     """)
 
 
+class Article(object):
+    TEMPLATE = to_text("""
+    <item>
+    <Title><![CDATA[{title}]]></Title>
+    <Description><![CDATA[{description}]]></Description>
+    <PicUrl><![CDATA[{img}]]></PicUrl>
+    <Url><![CDATA[{url}]]></Url>
+    </item>
+    """)
+
+    def __init__(self, title, description, img, url):
+        self.title = title
+        self.description = description
+        self.img = img
+        self.url = url
+
+    def render(self):
+        return self.TEMPLATE.format(
+            title=to_text(self.title),
+            description=to_text(self.description),
+            img=to_text(self.img),
+            url=to_text(self.url)
+        )
+
+
 class ArticlesReply(WeChatReply):
     TEMPLATE = to_text("""
     <xml>
@@ -75,17 +92,8 @@ class ArticlesReply(WeChatReply):
     </xml>
     """)
 
-    ITEM_TEMPLATE = to_text("""
-    <item>
-    <Title><![CDATA[{title}]]></Title>
-    <Description><![CDATA[{description}]]></Description>
-    <PicUrl><![CDATA[{img}]]></PicUrl>
-    <Url><![CDATA[{url}]]></Url>
-    </item>
-    """)
-
-    def __init__(self, message=None, star=False, **kwargs):
-        super(ArticlesReply, self).__init__(message, star, **kwargs)
+    def __init__(self, message=None, **kwargs):
+        super(ArticlesReply, self).__init__(message, **kwargs)
         self._articles = []
 
     def add_article(self, article):
@@ -98,12 +106,7 @@ class ArticlesReply(WeChatReply):
     def render(self):
         items = []
         for article in self._articles:
-            items.append(ArticlesReply.ITEM_TEMPLATE.format(
-                title=to_text(article.title),
-                description=to_text(article.description),
-                img=to_text(article.img),
-                url=to_text(article.url)
-            ))
+            items.append(article.render())
         self._args["items"] = ''.join(items)
         self._args["count"] = len(items)
         if "content" not in self._args:
