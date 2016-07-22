@@ -16,8 +16,6 @@ class SQLiteStorage(SessionStorage):
         robot = werobot.WeRoBot(token="token", enable_session=True,
                                 session_storage=session_storage)
 
-    你需要安装有 ``sqlite3`` 模块才能使用 SQLiteStorage ,python2.5 以上版本自带了该模块。
-
     :param filename: SQLite数据库的文件名, 默认是 ``werobot_session.sqlite3`` 。
     """
 
