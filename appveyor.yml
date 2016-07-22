@@ -56,12 +56,9 @@ services:
   - mongodb
 
 before_build:
-- choco install redis-64
-- redis-server --service-install
-- redis-server --service-start
-
-build_script:
-  - python setup.py build
+  - choco install redis-64
+  - redis-server --service-install
+  - redis-server --service-start
 
 test_script:
   - python setup.py test
