@@ -4,6 +4,7 @@ import werobot
 import werobot.utils
 import werobot.testing
 from werobot.session import filestorage, mongodbstorage, redisstorage
+from werobot.session import sqlitestorage
 from werobot.session import SessionStorage
 from werobot.utils import to_binary
 
@@ -11,6 +12,11 @@ import pymongo
 import redis
 import os
 from nose.tools import raises
+
+
+def teardown_module():
+    os.remove("werobot_session")
+    os.remove("werobot_session.sqlite3")
 
 
 def remove_session(session):
@@ -62,6 +68,7 @@ def test_session():
         filestorage.FileStorage(),
         mongodbstorage.MongoDBStorage(pymongo.MongoClient().t.t),
         redisstorage.RedisStorage(redis.Redis()),
+        sqlitestorage.SQLiteStorage(),
     ]
 
     for session_storage in session_storages:
@@ -90,3 +97,13 @@ def test_session_storage_set():
 def test_session_storage_delete():
     session = SessionStorage()
     session.delete('s')
+
+
+def test_sqlitestorage():
+    storage = sqlitestorage.SQLiteStorage()
+
+    assert storage.get("喵") == {}
+    storage.set("喵", "喵喵")
+    assert storage.get("喵") == u"喵喵"
+    storage.delete("喵")
+    assert storage.get("喵") == {}
