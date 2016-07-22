@@ -14,3 +14,4 @@ fi
 
 python setup.py install
 pip install -r dev-requirements.txt
+pip install codecov
