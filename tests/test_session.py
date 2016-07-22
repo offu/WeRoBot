@@ -15,8 +15,11 @@ from nose.tools import raises
 
 
 def teardown_module():
-    os.remove("werobot_session")
-    os.remove("werobot_session.sqlite3")
+    try:
+        os.remove("werobot_session")
+        os.remove("werobot_session.sqlite3")
+    except:
+        pass
 
 
 def remove_session(session):
