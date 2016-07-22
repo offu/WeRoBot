@@ -55,6 +55,12 @@ install:
 services:
   - mongodb
 
+before_build:
+- choco install redis-64
+- redis-server --service-install
+- redis-server --service-start
+- nuget restore .\Hangfire.Redis.StackExchange.sln
+
 build_script:
   - python setup.py build
 
