@@ -1,3 +1,5 @@
+build: false
+
 environment:
   matrix:
     - PYTHON: "C:\\Python266"
@@ -42,16 +44,17 @@ environment:
 
 init:
   - "ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%"
+  - ps: "ls C:/Python*"
 install:
-  - python -m pip install -r dev-requirements.txt
+  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+  - pip install --upgrade pip wheel
+  - pip install -r dev-requirements.txt
 services:
   - mongodb
-
 before_build:
   - choco install redis-64
   - redis-server --service-install
   - redis-server --service-start
-
 test_script:
   - python setup.py test
 
