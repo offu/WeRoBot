@@ -51,7 +51,7 @@ environment:
 init:
   - "ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%"
 install:
-  - "pip install -r dev-requirements.txt"
+  - python -m pip install -r dev-requirements.txt
 services:
   - mongodb
 
