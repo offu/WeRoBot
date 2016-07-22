@@ -3,7 +3,6 @@
 from werobot.session import SessionStorage
 from werobot.utils import json_loads, json_dumps
 import sqlite3
-import base64
 
 
 class SQLiteStorage(SessionStorage):
@@ -24,31 +23,31 @@ class SQLiteStorage(SessionStorage):
 
     def __init__(self, filename='werobot_session.sqlite3'):
         self.db = sqlite3.connect(filename)
+        self.db.text_factory = str
         self.db.execute("""CREATE TABLE IF NOT EXISTS WeRoBot
                             (id TEXT PRIMARY KEY NOT NULL ,
                             value TEXT NOT NULL );""")
 
     def get(self, id):
         session_json = self.db.execute(
-            """SELECT value FROM WeRoBot WHERE id=\"%s\" LIMIT 1;""" % id
-        ).fetchall()
-        if len(session_json) == 0:
+            """SELECT value FROM WeRoBot WHERE id=? LIMIT 1;""", (id,)
+        ).fetchone()
+        if session_json is None:
             return {}
-        session_json = base64.b64decode(session_json[0][0])
-        return json_loads(session_json)
+        return json_loads(session_json[0])
 
     def set(self, id, value):
         if self.get(id) != {}:
             self.db.execute(
-                """UPDATE WeRoBot set value=\"%s\" where id=\"%s\";"""
-                % (base64.b64encode(json_dumps(value)), id))
+                """UPDATE WeRoBot SET value=? WHERE id=?;""",
+                (json_dumps(value), id))
             self.db.commit()
             return
         self.db.execute(
-            """INSERT INTO WeRoBot (id, value) VALUES (\"%s\", \"%s\");"""
-            % (id, base64.b64encode(json_dumps(value))))
+            """INSERT INTO WeRoBot (id, value) VALUES (?,?);""",
+            (id, json_dumps(value)))
         self.db.commit()
 
     def delete(self, id):
-        self.db.execute("""DELETE FROM WeRoBot WHERE id=\"%s\";""" % id)
+        self.db.execute("""DELETE FROM WeRoBot WHERE id=?;""", (id,))
         self.db.commit()
