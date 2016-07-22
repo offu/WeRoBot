@@ -1,9 +1,12 @@
 #!/usr/bin/env python
-#coding=utf-8
+# coding=utf-8
 
 import werobot
 
 from setuptools import setup, find_packages
+
+readme = open("README.rst").read().replace("develop", "master")
+readme = readme.replace("latest", werobot.__version__)
 
 setup(
     name='WeRoBot',
@@ -14,7 +17,7 @@ setup(
     packages=find_packages(),
     keywords="wechat weixin werobot",
     description='WeRoBot: writing WeChat Offical Account Robots with fun',
-    long_description=open("README.rst").read().replace("latest", werobot.__version__).replace("develop", "master"),
+    long_description=readme,
     install_requires=open("requirements.txt").readlines(),
     include_package_data=True,
     license='MIT License',
