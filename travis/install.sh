@@ -12,5 +12,5 @@ if [ "$(uname)" == "Darwin" ]; then
   get_python_environment $PYTHON_INSTALL_METHOD $PYTHON_VERSION venv
 fi
 
-python setup.py install
+pip install --upgrade pip wheel
 pip install -r dev-requirements.txt

@@ -1,3 +1,8 @@
+cache:
+  directories:
+    - $HOME/.cache/pip
+    - $HOME/Library/Caches/pip
+
 matrix:
   include:
     - os: linux
