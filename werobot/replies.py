@@ -25,7 +25,7 @@ class WeChatReply(object):
         self._args = args
 
     def render(self):
-        return self.TEMPLATE.format(**self._args)
+        return to_text(self.TEMPLATE.format(**self._args))
 
 
 class TextReply(WeChatReply):
@@ -71,12 +71,12 @@ class Article(object):
         self.url = url
 
     def render(self):
-        return self.TEMPLATE.format(
+        return to_text(self.TEMPLATE.format(
             title=to_text(self.title),
             description=to_text(self.description),
             img=to_text(self.img),
             url=to_text(self.url)
-        )
+        ))
 
 
 class ArticlesReply(WeChatReply):
