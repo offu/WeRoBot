@@ -1,8 +1,12 @@
 # -*- coding:utf-8 -*-
 
 import time
+
+from nose.tools import assert_raises
+
 from werobot.parser import parse_user_msg
 from werobot.replies import WeChatReply, TextReply, ImageReply, MusicReply
+from werobot.replies import Article, ArticlesReply
 from werobot.replies import TransferCustomerServiceReply, SuccessReply
 from werobot.utils import to_binary, to_text
 
@@ -86,6 +90,58 @@ def test_music_reply():
     <HQMusicUrl><![CDATA[u2]]></HQMusicUrl>
     </Music>
     </xml>""".format(time=t).strip()
+
+
+def test_article():
+    article = Article(
+        title="tt",
+        description=to_binary("附近的萨卡里发生"),
+        img="http",
+        url="uuu"
+    )
+    assert article.render().strip() == """
+    <item>
+    <Title><![CDATA[tt]]></Title>
+    <Description><![CDATA[附近的萨卡里发生]]></Description>
+    <PicUrl><![CDATA[http]]></PicUrl>
+    <Url><![CDATA[uuu]]></Url>
+    </item>
+    """.strip()
+
+
+def test_articles_reply():
+    article = Article(
+        title="tt",
+        description=to_binary("附近的萨卡里发生"),
+        img="http",
+        url="uuu"
+    )
+    t = int(time.time())
+    reply = ArticlesReply(
+        target='tg',
+        source='ss',
+        time=t
+    )
+    assert reply.render().strip() == """
+    <xml>
+    <ToUserName><![CDATA[tg]]></ToUserName>
+    <FromUserName><![CDATA[ss]]></FromUserName>
+    <CreateTime>{time}</CreateTime>
+    <MsgType><![CDATA[news]]></MsgType>
+    <Content><![CDATA[]]></Content>
+    <ArticleCount>0</ArticleCount>
+    <Articles></Articles>
+    </xml>""".format(time=t).strip()
+
+    reply._args['content'] = 'wwww'
+    assert '<Content><![CDATA[wwww]]></Content>' in reply.render()
+    reply.add_article(article)
+    assert '<ArticleCount>1</ArticleCount>' in reply.render()
+    assert article.render() in reply.render()
+    for _ in range(9):
+        reply.add_article(article)
+    assert '<ArticleCount>10</ArticleCount>' in reply.render()
+    assert_raises(AttributeError, reply.add_article, article)
 
 
 def test_transfer_customer_service_reply():
