@@ -2,8 +2,8 @@
 
 import time
 from werobot.parser import parse_user_msg
-from werobot.replies import TextReply, ImageReply, SuccessReply
-from werobot.replies import TransferCustomerServiceReply
+from werobot.replies import TextReply, ImageReply, MusicReply
+from werobot.replies import TransferCustomerServiceReply, SuccessReply
 
 
 def test_text_reply():
@@ -53,6 +53,32 @@ def test_image_reply():
     <Image>
     <MediaId><![CDATA[fdasfdasfasd]]></MediaId>
     </Image>
+    </xml>""".format(time=t).strip()
+
+
+def test_music_reply():
+    t = int(time.time())
+    reply = MusicReply(
+        target='tg',
+        source='ss',
+        time=t,
+        title='tt',
+        description='ds',
+        url='u1',
+        hq_url='u2',
+    )
+    assert reply.render().strip() == """
+    <xml>
+    <ToUserName><![CDATA[tg]]></ToUserName>
+    <FromUserName><![CDATA[ss]]></FromUserName>
+    <CreateTime>{time}</CreateTime>
+    <MsgType><![CDATA[music]]></MsgType>
+    <Music>
+    <Title><![CDATA[tt]]></Title>
+    <Description><![CDATA[ds]]></Description>
+    <MusicUrl><![CDATA[u1]]></MusicUrl>
+    <HQMusicUrl><![CDATA[u2]]></HQMusicUrl>
+    </Music>
     </xml>""".format(time=t).strip()
 
 
