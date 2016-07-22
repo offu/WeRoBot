@@ -65,13 +65,13 @@ def test_session():
         <MsgId>1234567890123456</MsgId>
         </xml>
     """
+    robot.session_storage.db.close()
 
     try:
         os.remove(os.path.abspath("werobot_session"))
     except OSError:
         pass
     session_storages = [
-        filestorage.FileStorage(),
         mongodbstorage.MongoDBStorage(pymongo.MongoClient().t.t),
         redisstorage.RedisStorage(redis.Redis()),
         sqlitestorage.SQLiteStorage(),

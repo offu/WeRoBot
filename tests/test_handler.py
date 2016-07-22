@@ -5,7 +5,7 @@ from werobot.parser import parse_user_msg
 from werobot.replies import TextReply
 import os
 
-werobot = WeRoBot()
+werobot = WeRoBot(enable_session=False)
 
 
 def teardown_module(module):

@@ -4,6 +4,8 @@ WeRoBot
 
 .. image:: https://travis-ci.org/whtsky/WeRoBot.svg?branch=develop
     :target: https://travis-ci.org/whtsky/WeRoBot
+.. image:: https://ci.appveyor.com/api/projects/status/gc69rrbmm3qxhnq6/branch/develop?svg=true
+    :target: https://ci.appveyor.com/project/whtsky/WeRoBot
 .. image:: https://codecov.io/gh/whtsky/WeRoBot/branch/develop/graph/badge.svg
   :target: https://codecov.io/gh/whtsky/WeRoBot
 .. image:: https://scrutinizer-ci.com/g/whtsky/WeRoBot/badges/quality-score.png?b=develop
