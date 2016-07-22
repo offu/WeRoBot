@@ -1,5 +1,14 @@
 [run]
-include = werobot/*
-omit =
-  client
-  logger
+source = werobot
+
+[report]
+exclude_lines =
+    pragma: no cover
+
+    def __repr__
+
+    raise AssertionError
+    raise NotImplementedError
+
+    if 0:
+    if __name__ == .__main__.:

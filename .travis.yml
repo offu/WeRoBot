@@ -92,8 +92,9 @@ script:
   - coverage run --source=werobot setup.py -q nosetests
 
 after_success:
+  - pip install scrutinizer-ocular codecov
+  - ocular
   - codecov
-  - coveralls
 
 notifications:
   email: false
