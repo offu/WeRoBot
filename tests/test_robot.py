@@ -139,7 +139,10 @@ def test_filter():
     assert tester.send_xml(_make_xml("啊呵呵"))._args['content'] == u"哼"
     assert tester.send_xml(_make_xml("喵"))._args['content'] == u"喵"
 
-    os.remove(os.path.abspath("werobot_session"))
+    try:
+        os.remove(os.path.abspath("werobot_session"))
+    except OSError:
+        pass
     robot = WeRoBot()
 
     @robot.filter("帮助", "跪求帮助", re.compile(".*?help.*?"))

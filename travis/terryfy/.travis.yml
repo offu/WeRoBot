@@ -1,0 +1,34 @@
+language:
+  - objective-c
+
+env:
+  matrix:
+    - INSTALL_TYPE='macpython' VERSION=2.7.7
+    - INSTALL_TYPE='macpython' VERSION=2.7
+    - INSTALL_TYPE='macpython' VERSION=2.7.7 VENV=venv
+    - INSTALL_TYPE='macpython' VERSION=3.3.5
+    - INSTALL_TYPE='macpython' VERSION=3.3.5 VENV=venv
+    - INSTALL_TYPE='macpython' VERSION=3.4.1
+    - INSTALL_TYPE='macpython' VERSION=3.4.1 VENV=venv
+    - INSTALL_TYPE='macpython' VERSION=3.5
+    - INSTALL_TYPE='macpython' VERSION=3.5.1 VENV=venv
+    - INSTALL_TYPE='macports' VERSION=2.7
+    - INSTALL_TYPE='macports' VERSION=2.7 VENV=venv
+    - INSTALL_TYPE='macports' VERSION=3.4
+    - INSTALL_TYPE='macports' VERSION=3.4 VENV=venv
+    - INSTALL_TYPE='homebrew' VERSION=2
+    - INSTALL_TYPE='homebrew' VERSION=2 VENV=venv
+    - INSTALL_TYPE='homebrew' VERSION=3
+    - INSTALL_TYPE='homebrew' VERSION=3 VENV=venv
+    # Versions for system are placeholders (and for testing)
+    - INSTALL_TYPE='system' VERSION=2.7
+    - INSTALL_TYPE='system' VERSION=2.7 VENV=venv
+
+install:
+  - source ./travis_tools.sh
+  - get_python_environment $INSTALL_TYPE $VERSION $VENV
+
+script:
+  - source test_tools.sh
+  - $PIP_CMD install nose
+  - nosetests test_travisparse.py
