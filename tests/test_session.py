@@ -30,8 +30,10 @@ def remove_session(session):
 
 
 def test_session():
+    storage = filestorage.FileStorage()
     robot = werobot.WeRoBot(token=werobot.utils.generate_token(),
-                            enable_session=True)
+                            enable_session=True,
+                            session_storage=storage)
 
     @robot.text
     def first(message, session):
@@ -65,7 +67,7 @@ def test_session():
         <MsgId>1234567890123456</MsgId>
         </xml>
     """
-    robot.session_storage.db.close()
+    storage.db.close()
 
     try:
         os.remove(os.path.abspath("werobot_session"))
