@@ -6,5 +6,5 @@ __all__ = ["WeRoBot"]
 
 try:
     from werobot.robot import WeRoBot
-except ImportError:
-    pass
+except ImportError:  # pragma: no cover
+    pass  # pragma: no cover
