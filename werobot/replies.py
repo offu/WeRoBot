@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 
+from collections import defaultdict
 from werobot.messages.messages import WeChatMessage
 from werobot.utils import is_string, to_text
 
@@ -16,7 +17,7 @@ class WeChatReply(object):
         if 'time' not in kwargs:
             kwargs["time"] = int(time.time())
 
-        args = dict()
+        args = defaultdict(str)
         for k, v in kwargs.items():
             if is_string(v):
                 v = to_text(v)
@@ -160,8 +161,10 @@ class MusicReply(WeChatReply):
     </xml>
     """)
 
-    def render(self):
-        return MusicReply.TEMPLATE.format(**self._args)
+    def __init__(self, message=None, **kwargs):
+        if 'hq_url' not in kwargs:
+            kwargs['hq_url'] = kwargs['url']
+        super(MusicReply, self).__init__(message, **kwargs)
 
 
 class TransferCustomerServiceReply(WeChatReply):
@@ -173,9 +176,6 @@ class TransferCustomerServiceReply(WeChatReply):
     <MsgType><![CDATA[transfer_customer_service]]></MsgType>
     </xml>
     """)
-
-    def render(self):
-        return TransferCustomerServiceReply.TEMPLATE.format(**self._args)
 
 
 class SuccessReply(WeChatReply):
