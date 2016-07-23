@@ -3,42 +3,36 @@ matrix:
     - os: linux
       language: python
       python: 2.6
-      cache: pip
       services:
         - mongodb
         - redis-server
     - os: linux
       language: python
       python: 2.7
-      cache: pip
       services:
         - mongodb
         - redis-server
     - os: linux
       language: python
       python: pypy
-      cache: pip
       services:
         - mongodb
         - redis-server
     - os: linux
       language: python
       python: 3.3
-      cache: pip
       services:
         - mongodb
         - redis-server
     - os: linux
       language: python
       python: 3.4
-      cache: pip
       services:
         - mongodb
         - redis-server
     - os: linux
       language: python
       python: 3.5
-      cache: pip
       services:
         - mongodb
         - redis-server
@@ -50,65 +44,41 @@ matrix:
         - redis-server
     - os: osx
       language: objective-c
-      cache:
-        directories:
-          - $HOME/Library/Caches/pip
       env:
         - PYTHON_VERSION=2.6
         - PYTHON_INSTALL_METHOD=macports
     - os: osx
       language: objective-c
-      cache:
-        directories:
-          - $HOME/Library/Caches/pip
       env:
         - PYTHON_VERSION=2.7
         - PYTHON_INSTALL_METHOD=macpython
     - os: osx
       language: objective-c
-      cache:
-        directories:
-          - $HOME/Library/Caches/pip
       env:
         - PYTHON_VERSION=3.3
         - PYTHON_INSTALL_METHOD=macpython
     - os: osx
       language: objective-c
-      cache:
-        directories:
-          - $HOME/Library/Caches/pip
       env:
         - PYTHON_VERSION=3.4
         - PYTHON_INSTALL_METHOD=macpython
     - os: osx
       language: objective-c
-      cache:
-        directories:
-          - $HOME/Library/Caches/pip
       env:
         - PYTHON_VERSION=3.5
         - PYTHON_INSTALL_METHOD=macpython
     - os: osx
       language: objective-c
-      cache:
-        directories:
-          - $HOME/Library/Caches/pip
       env:
         - PYTHON_VERSION=2
         - PYTHON_INSTALL_METHOD=system
     - os: osx
       language: objective-c
-      cache:
-        directories:
-          - $HOME/Library/Caches/pip
       env:
         - PYTHON_VERSION=2
         - PYTHON_INSTALL_METHOD=homebrew
     - os: osx
       language: objective-c
-      cache:
-        directories:
-          - $HOME/Library/Caches/pip
       env:
         - PYTHON_VERSION=3
         - PYTHON_INSTALL_METHOD=homebrew
