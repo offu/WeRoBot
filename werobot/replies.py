@@ -68,6 +68,22 @@ class VoiceReply(WeChatReply):
     """)
 
 
+class VideoReply(WeChatReply):
+    TEMPLATE = to_text("""
+    <xml>
+    <ToUserName><![CDATA[{target}]]></ToUserName>
+    <FromUserName><![CDATA[{source}]]></FromUserName>
+    <CreateTime>{time}</CreateTime>
+    <MsgType><![CDATA[video]]></MsgType>
+    <Video>
+    <MediaId><![CDATA[{media_id}]]></MediaId>
+    <Title><![CDATA[{title}]]></Title>
+    <Description><![CDATA[{description}]]></Description>
+    </Video>
+    </xml>
+    """)
+
+
 class Article(object):
     TEMPLATE = to_text("""
     <item>

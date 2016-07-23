@@ -6,7 +6,7 @@ from nose.tools import assert_raises
 
 from werobot.parser import parse_user_msg
 from werobot.replies import WeChatReply, TextReply, ImageReply, MusicReply
-from werobot.replies import VoiceReply
+from werobot.replies import VoiceReply, VideoReply
 from werobot.replies import Article, ArticlesReply
 from werobot.replies import TransferCustomerServiceReply, SuccessReply
 from werobot.utils import to_binary, to_text
@@ -83,6 +83,28 @@ def test_voice_reply():
     <Voice>
     <MediaId><![CDATA[fdasfdasfasd]]></MediaId>
     </Voice>
+    </xml>""".format(time=t).strip()
+
+
+def test_video_reply():
+    t = int(time.time())
+    reply = VideoReply(
+        target='tgu',
+        source='su',
+        media_id="fdasfdasfasd", time=t
+    )
+    reply.render().strip() == """
+    <xml>
+    <ToUserName><![CDATA[tgu]]></ToUserName>
+    <FromUserName><![CDATA[su]]></FromUserName>
+    <CreateTime>{time}</CreateTime>
+    <MsgType><![CDATA[video]]></MsgType>
+    <Video>
+    <MediaId><![CDATA[fdasfdasfasd]]></MediaId>
+    <Title><![CDATA[]]></Title>
+    <Description><![CDATA[]]></Description>
+    </Video>
+    </xml>
     </xml>""".format(time=t).strip()
 
 

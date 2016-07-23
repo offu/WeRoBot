@@ -9,6 +9,7 @@ Version 1.0.0
 + 增加 :class:`werobot.reply.SuccessReply`
 + 增加 :class:`werobot.reply.ImageReply`
 + 增加 :class:`werobot.reply.VoiceReply`
++ 增加 :class:`werobot.reply.VideoReply`
 + 删去了 Reply 中过时的 flag
 + 修复 :class:`werobot.session.filestorage.FileStorage` 在 PyPy 下的兼容性问题
 + 增加 :class:`werobot.session.sqlitestorage.SQLiteStorage`
