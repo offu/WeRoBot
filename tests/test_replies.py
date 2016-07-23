@@ -91,9 +91,9 @@ def test_video_reply():
     reply = VideoReply(
         target='tgu',
         source='su',
-        media_id="fdasfdasfasd", time=t
+        media_id="fdasfdasfasd", time=t,
     )
-    reply.render().strip() == """
+    assert reply.render().strip() == """
     <xml>
     <ToUserName><![CDATA[tgu]]></ToUserName>
     <FromUserName><![CDATA[su]]></FromUserName>
@@ -104,8 +104,57 @@ def test_video_reply():
     <Title><![CDATA[]]></Title>
     <Description><![CDATA[]]></Description>
     </Video>
-    </xml>
     </xml>""".format(time=t).strip()
+
+    reply_2 = VideoReply(
+        target='tgu',
+        source='su',
+        media_id="fdasfdasfasd", time=t,
+        title='meow'
+    )
+
+    assert reply_2.render().strip() == """
+    <xml>
+    <ToUserName><![CDATA[tgu]]></ToUserName>
+    <FromUserName><![CDATA[su]]></FromUserName>
+    <CreateTime>{time}</CreateTime>
+    <MsgType><![CDATA[video]]></MsgType>
+    <Video>
+    <MediaId><![CDATA[fdasfdasfasd]]></MediaId>
+    <Title><![CDATA[meow]]></Title>
+    <Description><![CDATA[]]></Description>
+    </Video>
+    </xml>""".format(time=t).strip()
+
+    reply_3 = VideoReply(
+        target='tgu',
+        source='su',
+        media_id="fdasfdasfasd", time=t,
+        title='meow',
+        description='www'
+    )
+    assert reply_3.render().strip() == """
+    <xml>
+    <ToUserName><![CDATA[tgu]]></ToUserName>
+    <FromUserName><![CDATA[su]]></FromUserName>
+    <CreateTime>{time}</CreateTime>
+    <MsgType><![CDATA[video]]></MsgType>
+    <Video>
+    <MediaId><![CDATA[fdasfdasfasd]]></MediaId>
+    <Title><![CDATA[meow]]></Title>
+    <Description><![CDATA[www]]></Description>
+    </Video>
+    </xml>""".format(time=t).strip()
+
+
+def test_video_reply_process_args():
+    reply = VideoReply(
+        target='tgu',
+        source='su',
+        media_id="fdasfdasfasd",
+    )
+    assert reply._args['title'] == ''
+    assert reply._args['description'] == ''
 
 
 def test_music_reply():
@@ -132,6 +181,27 @@ def test_music_reply():
     <HQMusicUrl><![CDATA[u2]]></HQMusicUrl>
     </Music>
     </xml>""".format(time=t).strip()
+
+
+def test_music_reply_process_args():
+    reply = MusicReply(
+        target='tg',
+        source='ss',
+        title='tt',
+        description='ds',
+        url='u1',
+    )
+    assert reply._args['hq_url'] == 'u1'
+
+    reply_2 = MusicReply(
+        target='tg',
+        source='ss',
+        title='tt',
+        description='ds',
+        url='u1',
+        hq_url='u2'
+    )
+    assert reply_2._args['hq_url'] == 'u2'
 
 
 def test_article():

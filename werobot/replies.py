@@ -7,6 +7,9 @@ from werobot.utils import is_string, to_text
 
 
 class WeChatReply(object):
+    def process_args(self, args):
+        pass
+
     def __init__(self, message=None, **kwargs):
         if "source" not in kwargs and isinstance(message, WeChatMessage):
             kwargs["source"] = message.target
@@ -22,7 +25,7 @@ class WeChatReply(object):
             if is_string(v):
                 v = to_text(v)
             args[k] = v
-
+        self.process_args(args)
         self._args = args
 
     def render(self):
@@ -83,6 +86,10 @@ class VideoReply(WeChatReply):
     </Video>
     </xml>
     """)
+
+    def process_args(self, args):
+        args.setdefault('title', '')
+        args.setdefault('description', '')
 
 
 class Article(object):
@@ -161,10 +168,9 @@ class MusicReply(WeChatReply):
     </xml>
     """)
 
-    def __init__(self, message=None, **kwargs):
-        if 'hq_url' not in kwargs:
-            kwargs['hq_url'] = kwargs['url']
-        super(MusicReply, self).__init__(message, **kwargs)
+    def process_args(self, args):
+        if 'hq_url' not in args:
+            args['hq_url'] = args['url']
 
 
 class TransferCustomerServiceReply(WeChatReply):
