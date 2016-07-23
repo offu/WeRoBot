@@ -54,6 +54,20 @@ class ImageReply(WeChatReply):
     """)
 
 
+class VoiceReply(WeChatReply):
+    TEMPLATE = to_text("""
+    <xml>
+    <ToUserName><![CDATA[{target}]]></ToUserName>
+    <FromUserName><![CDATA[{source}]]></FromUserName>
+    <CreateTime>{time}</CreateTime>
+    <MsgType><![CDATA[voice]]></MsgType>
+    <Voice>
+    <MediaId><![CDATA[{media_id}]]></MediaId>
+    </Voice>
+    </xml>
+    """)
+
+
 class Article(object):
     TEMPLATE = to_text("""
     <item>
