@@ -18,10 +18,14 @@ case $PYTHON_INSTALL_METHOD in
       ;;
 esac
 
+pip install --upgrade pip wheel
+pip install -r dev-requirements.txt
+
 brew install redis
 brew services start redis
 brew install mongodb
 brew services start mongodb
-pip install --upgrade pip wheel
-pip install -r dev-requirements.txt
 python --version
+
+# https://github.com/rvm/rvm/pull/3627
+run rvm get head
