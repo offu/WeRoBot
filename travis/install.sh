@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
+set -ex
 brew update
+
+# https://github.com/rvm/rvm/pull/3627
+run rvm get head
 
 case $PYTHON_INSTALL_METHOD in
     tox)
@@ -26,6 +30,3 @@ brew services start redis
 brew install mongodb
 brew services start mongodb
 python --version
-
-# https://github.com/rvm/rvm/pull/3627
-run rvm get head
