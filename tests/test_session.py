@@ -67,13 +67,9 @@ def test_session():
         <MsgId>1234567890123456</MsgId>
         </xml>
     """
-    storage.db.close()
 
-    try:
-        os.remove(os.path.abspath("werobot_session"))
-    except OSError:
-        pass
     session_storages = [
+        storage,
         mongodbstorage.MongoDBStorage(pymongo.MongoClient().t.t),
         redisstorage.RedisStorage(redis.Redis()),
         sqlitestorage.SQLiteStorage(),
@@ -87,6 +83,7 @@ def test_session():
         reply_2 = tester.send_xml(xml_2)._args['content']
         assert reply_2 == 'ss', (reply_2, session_storage)
         remove_session(session_storage)
+    storage.db.close()
 
 
 def test_session_storage_get():
@@ -103,8 +100,7 @@ def test_session_storage_set():
 
 def test_session_storage_delete():
     session = SessionStorage()
-    with pytest.raises(NotImplementedError):
-        session.delete('s')
+    session.delete('s')
 
 
 def test_sqlitestorage():
