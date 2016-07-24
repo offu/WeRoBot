@@ -19,7 +19,9 @@ install:
 
 test_script:
   - C:\Python35\python -m tox
-
+on_success:
+  - C:\Python35\python -m pip install codecov
+  - C:\Python35\Scripts\codecov
 on_failure:
   - ps: dir "env:"
   - ps: get-content .tox\*\log\*
