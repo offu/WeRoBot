@@ -1,8 +1,12 @@
 os: osx
 language: generic
 osx_image: xcode7.3  # OS X 10.11
+env:
+  - PYTHON_VERSION=system
 matrix:
   include:
+    - env:
+      - PYTHON_VERSION=tox
     - env:
       - PYTHON_VERSION=2.7
       - PYTHON_INSTALL_METHOD=macpython
@@ -17,31 +21,18 @@ matrix:
       - PYTHON_INSTALL_METHOD=macpython
     - env:
       - PYTHON_VERSION=2
-      - PYTHON_INSTALL_METHOD=system
-    - env:
-      - PYTHON_VERSION=2
-      - PYTHON_INSTALL_METHOD=system
-    - env:
-      - PYTHON_VERSION=2
       - PYTHON_INSTALL_METHOD=homebrew
     - env:
       - PYTHON_VERSION=3
       - PYTHON_INSTALL_METHOD=homebrew
     - osx_image: xcode7  # 10.10
-      env:
-        - PYTHON_VERSION=2
-        - PYTHON_INSTALL_METHOD=system
     - osx_image: beta-xcode6.2  # OS X 10.9
-      env:
-        - PYTHON_VERSION=2
-        - PYTHON_INSTALL_METHOD=system
 
 install:
   - "source travis/install.sh"
-  - python --version
 
 script:
-  - coverage run --source werobot -m py.test
+  - "source travis/script.sh"
 
 after_success:
   - pip install codecov
