@@ -8,4 +8,3 @@ Sphinx==1.4.5
 tox
 pycrypto
 pytest
-pytest-cov
