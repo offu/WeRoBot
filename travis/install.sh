@@ -3,6 +3,7 @@ brew update
 
 case $PYTHON_VERSION in
     system)
+      curl https://bootstrap.pypa.io/get-pip.py | python
       pip install virtualenv
       virtualenv venv
       . venv/bin/active
