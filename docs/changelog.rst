@@ -5,9 +5,16 @@ Version 1.0.0
 ----------------
 
 + 增加对消息加解密的支持
-+ 重写 werobot.messages ,完善对 Event 的支持
++ 重写 werobot.messages, 完善对 Event 的支持
++ 增加 :class:`werobot.reply.SuccessReply`
++ 增加 :class:`werobot.reply.ImageReply`
++ 增加 :class:`werobot.reply.VoiceReply`
++ 增加 :class:`werobot.reply.VideoReply`
++ 为 :class:`werobot.reply.WeChatReply` 增加 ``process_args`` 方法
++ 删去了 Reply 中过时的 flag
 + 修复 :class:`werobot.session.filestorage.FileStorage` 在 PyPy 下的兼容性问题
 + 增加 :class:`werobot.session.sqlitestorage.SQLiteStorage`
++ 将图文消息单个消息的渲染函数放到 :class:`werobot.replies.Article` 内
 
 Version 0.6.1
 ----------------
