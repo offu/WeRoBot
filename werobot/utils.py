@@ -111,8 +111,9 @@ def pay_sign_dict(
     _params += [('appid', appid), ('appkey', pay_sign_key)]
     _params.sort()
 
-    sign = sha1('&'.join(["%s=%s" % (str(p[0]), str(p[1]))
-                          for p in _params])).hexdigest()
+    sign = '&'.join(["%s=%s" % (str(p[0]), str(p[1]))
+                     for p in _params]).encode("utf-8")
+    sign = sha1(sign).hexdigest()
     sign_type = 'SHA1'
 
     return dict(params), sign, sign_type
