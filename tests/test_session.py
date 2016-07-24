@@ -109,6 +109,7 @@ def test_session_storage_delete():
 
 def test_storage():
     session_storages = [
+        filestorage.FileStorage(),
         mongodbstorage.MongoDBStorage(pymongo.MongoClient().t.t),
         redisstorage.RedisStorage(redis.Redis()),
         sqlitestorage.SQLiteStorage(),
