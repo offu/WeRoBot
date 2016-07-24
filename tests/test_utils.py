@@ -46,6 +46,6 @@ def test_pay_sign_dict():
                              add_timestamp=False,
                              gadd_appid=False)
 
-    assert "timestamp" in pay_sign[0]
-    assert "noncestr" in pay_sign[0]
+    assert "timestamp" not in pay_sign[0]
+    assert "noncestr" not in pay_sign[0]
     assert "appid" in pay_sign[0]
