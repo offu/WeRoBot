@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # coding=utf-8
 
+import io
 import werobot
 
 from setuptools import setup, find_packages
 
-readme = open("README.rst").read().replace("develop", "master")
+with io.open("README.rst", encoding="utf8") as f:
+    readme = f.read().replace("develop", "master")
 readme = readme.replace("latest", werobot.__version__)
 
 setup(
