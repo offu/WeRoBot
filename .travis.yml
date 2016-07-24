@@ -38,9 +38,5 @@ after_success:
   - pip install codecov
   - codecov
 
-addons:
-    code_climate:
-        repo_token: 060f1934a00d41f8e52fd6b4c5298f2528e5164bfe708bd46614fd05f913f521
-
 notifications:
   email: false

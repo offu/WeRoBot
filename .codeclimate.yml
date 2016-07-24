@@ -16,3 +16,4 @@ ratings:
 exclude_paths:
 - docs/
 - travis/
+- tests/
