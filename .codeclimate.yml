@@ -1,0 +1,19 @@
+engines:
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - python
+  fixme:
+    enabled: true
+  markdownlint:
+    enabled: true
+  pep8:
+    enabled: true
+ratings:
+  paths:
+  - "**.py"
+exclude_paths:
+- docs/
+- travis/
+- tests/
