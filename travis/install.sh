@@ -3,6 +3,9 @@ brew update
 
 case $PYTHON_VERSION in
     system)
+      pip install virtualenv
+      virtualenv venv
+      . venv/bin/active
       ;;
     tox)
       brew install pyenv
