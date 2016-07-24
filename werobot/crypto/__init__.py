@@ -24,6 +24,7 @@ class PrpCrypto(object):
     """
     提供接收和推送给公众平台消息的加解密接口
     """
+
     def __init__(self, key):
         self.cipher = AES.new(key, AES.MODE_CBC, key[:16])
 
@@ -41,7 +42,7 @@ class PrpCrypto(object):
         :return: 加密后的字符串
         """
         text = b"".join([
-            self.get_random_string(),
+            to_binary(self.get_random_string()),
             struct.pack(b"I", socket.htonl(len(text))),
             to_binary(text),
             to_binary(app_id)
@@ -65,8 +66,8 @@ class PrpCrypto(object):
         content = plain_text[16:-padding]
 
         xml_len = socket.ntohl(struct.unpack("I", content[:4])[0])
-        xml_content = content[4:xml_len+4]
-        from_appid = content[xml_len+4:]
+        xml_content = content[4:xml_len + 4]
+        from_appid = content[xml_len + 4:]
 
         if to_text(from_appid) != app_id:
             raise AppIdValidationError(text, app_id)
@@ -75,7 +76,6 @@ class PrpCrypto(object):
 
 
 class MessageCrypt(object):
-
     ENCRYPTED_MESSAGE_XML = """
 <xml>
 <Encrypt><![CDATA[{encrypt}]]></Encrypt>
