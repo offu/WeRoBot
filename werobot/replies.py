@@ -1,21 +1,16 @@
 # -*- coding: utf-8 -*-
 import time
 
+from collections import defaultdict
 from werobot.messages.messages import WeChatMessage
 from werobot.utils import is_string, to_text
 
 
-class Article(object):
-    def __init__(self, title, description, img, url):
-        self.title = title
-        self.description = description
-        self.img = img
-        self.url = url
-
-
 class WeChatReply(object):
+    def process_args(self, args):
+        pass
 
-    def __init__(self, message=None, star=False, **kwargs):
+    def __init__(self, message=None, **kwargs):
         if "source" not in kwargs and isinstance(message, WeChatMessage):
             kwargs["source"] = message.target
 
@@ -24,21 +19,17 @@ class WeChatReply(object):
 
         if 'time' not in kwargs:
             kwargs["time"] = int(time.time())
-        if star:
-            kwargs["flag"] = 1
-        else:
-            kwargs["flag"] = 0
 
-        args = dict()
+        args = defaultdict(str)
         for k, v in kwargs.items():
             if is_string(v):
                 v = to_text(v)
             args[k] = v
-
+        self.process_args(args)
         self._args = args
 
     def render(self):
-        raise NotImplementedError()
+        return to_text(self.TEMPLATE.format(**self._args))
 
 
 class TextReply(WeChatReply):
@@ -49,12 +40,81 @@ class TextReply(WeChatReply):
     <CreateTime>{time}</CreateTime>
     <MsgType><![CDATA[text]]></MsgType>
     <Content><![CDATA[{content}]]></Content>
-    <FuncFlag>{flag}</FuncFlag>
     </xml>
     """)
 
+
+class ImageReply(WeChatReply):
+    TEMPLATE = to_text("""
+    <xml>
+    <ToUserName><![CDATA[{target}]]></ToUserName>
+    <FromUserName><![CDATA[{source}]]></FromUserName>
+    <CreateTime>{time}</CreateTime>
+    <MsgType><![CDATA[image]]></MsgType>
+    <Image>
+    <MediaId><![CDATA[{media_id}]]></MediaId>
+    </Image>
+    </xml>
+    """)
+
+
+class VoiceReply(WeChatReply):
+    TEMPLATE = to_text("""
+    <xml>
+    <ToUserName><![CDATA[{target}]]></ToUserName>
+    <FromUserName><![CDATA[{source}]]></FromUserName>
+    <CreateTime>{time}</CreateTime>
+    <MsgType><![CDATA[voice]]></MsgType>
+    <Voice>
+    <MediaId><![CDATA[{media_id}]]></MediaId>
+    </Voice>
+    </xml>
+    """)
+
+
+class VideoReply(WeChatReply):
+    TEMPLATE = to_text("""
+    <xml>
+    <ToUserName><![CDATA[{target}]]></ToUserName>
+    <FromUserName><![CDATA[{source}]]></FromUserName>
+    <CreateTime>{time}</CreateTime>
+    <MsgType><![CDATA[video]]></MsgType>
+    <Video>
+    <MediaId><![CDATA[{media_id}]]></MediaId>
+    <Title><![CDATA[{title}]]></Title>
+    <Description><![CDATA[{description}]]></Description>
+    </Video>
+    </xml>
+    """)
+
+    def process_args(self, args):
+        args.setdefault('title', '')
+        args.setdefault('description', '')
+
+
+class Article(object):
+    TEMPLATE = to_text("""
+    <item>
+    <Title><![CDATA[{title}]]></Title>
+    <Description><![CDATA[{description}]]></Description>
+    <PicUrl><![CDATA[{img}]]></PicUrl>
+    <Url><![CDATA[{url}]]></Url>
+    </item>
+    """)
+
+    def __init__(self, title, description, img, url):
+        self.title = title
+        self.description = description
+        self.img = img
+        self.url = url
+
     def render(self):
-        return TextReply.TEMPLATE.format(**self._args)
+        return to_text(self.TEMPLATE.format(
+            title=to_text(self.title),
+            description=to_text(self.description),
+            img=to_text(self.img),
+            url=to_text(self.url)
+        ))
 
 
 class ArticlesReply(WeChatReply):
@@ -67,21 +127,11 @@ class ArticlesReply(WeChatReply):
     <Content><![CDATA[{content}]]></Content>
     <ArticleCount>{count}</ArticleCount>
     <Articles>{items}</Articles>
-    <FuncFlag>{flag}</FuncFlag>
     </xml>
     """)
 
-    ITEM_TEMPLATE = to_text("""
-    <item>
-    <Title><![CDATA[{title}]]></Title>
-    <Description><![CDATA[{description}]]></Description>
-    <PicUrl><![CDATA[{img}]]></PicUrl>
-    <Url><![CDATA[{url}]]></Url>
-    </item>
-    """)
-
-    def __init__(self, message=None, star=False, **kwargs):
-        super(ArticlesReply, self).__init__(message, star, **kwargs)
+    def __init__(self, message=None, **kwargs):
+        super(ArticlesReply, self).__init__(message, **kwargs)
         self._articles = []
 
     def add_article(self, article):
@@ -94,12 +144,7 @@ class ArticlesReply(WeChatReply):
     def render(self):
         items = []
         for article in self._articles:
-            items.append(ArticlesReply.ITEM_TEMPLATE.format(
-                title=to_text(article.title),
-                description=to_text(article.description),
-                img=to_text(article.img),
-                url=to_text(article.url)
-            ))
+            items.append(article.render())
         self._args["items"] = ''.join(items)
         self._args["count"] = len(items)
         if "content" not in self._args:
@@ -120,12 +165,12 @@ class MusicReply(WeChatReply):
     <MusicUrl><![CDATA[{url}]]></MusicUrl>
     <HQMusicUrl><![CDATA[{hq_url}]]></HQMusicUrl>
     </Music>
-    <FuncFlag>{flag}</FuncFlag>
     </xml>
     """)
 
-    def render(self):
-        return MusicReply.TEMPLATE.format(**self._args)
+    def process_args(self, args):
+        if 'hq_url' not in args:
+            args['hq_url'] = args['url']
 
 
 class TransferCustomerServiceReply(WeChatReply):
@@ -138,8 +183,10 @@ class TransferCustomerServiceReply(WeChatReply):
     </xml>
     """)
 
+
+class SuccessReply(WeChatReply):
     def render(self):
-        return TransferCustomerServiceReply.TEMPLATE.format(**self._args)
+        return "success"
 
 
 def process_function_reply(reply, message=None):
