@@ -107,11 +107,16 @@ def test_session_storage_delete():
     session.delete('s')
 
 
-def test_sqlitestorage():
-    storage = sqlitestorage.SQLiteStorage()
+def test_storage():
+    session_storages = [
+        mongodbstorage.MongoDBStorage(pymongo.MongoClient().t.t),
+        redisstorage.RedisStorage(redis.Redis()),
+        sqlitestorage.SQLiteStorage(),
+    ]
 
-    assert storage.get("喵") == {}
-    storage.set("喵", "喵喵")
-    assert storage.get("喵") == u"喵喵"
-    storage.delete("喵")
-    assert storage.get("喵") == {}
+    for storage in session_storages:
+        assert storage.get("喵") == {}
+        storage.set("喵", "喵喵")
+        assert storage.get("喵") == u"喵喵"
+        storage.delete("喵")
+        assert storage.get("喵") == {}
