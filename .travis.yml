@@ -89,7 +89,7 @@ install:
 
 script:
   - flake8
-  - coverage run --source=werobot setup.py -q nosetests
+  - coverage run --source werobot -m py.test
 
 after_success:
   - pip install scrutinizer-ocular codecov

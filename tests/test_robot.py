@@ -4,8 +4,8 @@ import hashlib
 import time
 import six
 import os
+import pytest
 
-from nose.tools import raises
 from werobot import WeRoBot
 from werobot.utils import generate_token, to_text
 
@@ -165,7 +165,7 @@ def test_filter():
     assert tester.send_xml(_make_xml("ooohelp"))._args['content'] == u"就不帮"
 
 
-@raises(ValueError)
 def test_register_not_callable_object():
     robot = WeRoBot(enable_session=False)
-    robot.add_handler("s")
+    with pytest.raises(ValueError):
+        robot.add_handler("s")
