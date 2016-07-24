@@ -58,5 +58,3 @@ test_script:
 
 #after_test:
 #  - "%PYTHON%/Scripts/codecov"
-
-

@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
-import werobot
-import werobot.utils
-import werobot.testing
-from werobot.session import filestorage, mongodbstorage, redisstorage
-from werobot.session import sqlitestorage
-from werobot.session import SessionStorage
-from werobot.utils import to_binary
-
+import os
 import pymongo
 import redis
-import os
-from nose.tools import raises
+import pytest
+
+import werobot
+import werobot.testing
+import werobot.utils
+from werobot.session import SessionStorage
+from werobot.session import filestorage, mongodbstorage, redisstorage
+from werobot.session import sqlitestorage
+from werobot.utils import to_binary
 
 
 def teardown_module():
@@ -89,22 +89,22 @@ def test_session():
         remove_session(session_storage)
 
 
-@raises(NotImplementedError)
 def test_session_storage_get():
     session = SessionStorage()
-    session.get('s')
+    with pytest.raises(NotImplementedError):
+        session.get('s')
 
 
-@raises(NotImplementedError)
 def test_session_storage_set():
     session = SessionStorage()
-    session.set('s', {})
+    with pytest.raises(NotImplementedError):
+        session.set('s', {})
 
 
-@raises(NotImplementedError)
 def test_session_storage_delete():
     session = SessionStorage()
-    session.delete('s')
+    with pytest.raises(NotImplementedError):
+        session.delete('s')
 
 
 def test_sqlitestorage():

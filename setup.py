@@ -18,6 +18,9 @@ setup(
     keywords="wechat weixin werobot",
     description='WeRoBot: writing WeChat Offical Account Robots with fun',
     long_description=readme,
+    setup_requires=[
+        'pytest-runner',
+    ],
     install_requires=open("requirements.txt").readlines(),
     include_package_data=True,
     license='MIT License',
@@ -40,6 +43,5 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Utilities',
     ],
-    tests_require=['nose'],
-    test_suite='nose.collector',
+    tests_require=['pytest'],
 )

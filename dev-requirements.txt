@@ -2,9 +2,10 @@
 coverage==4.1
 coveralls==1.1
 flake8==2.6.2
-nose==1.3.7
 pymongo==3.3.0
 redis==2.10.5
 Sphinx==1.4.5
 tox
 pycrypto
+pytest
+pytest-cov
