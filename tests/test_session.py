@@ -100,7 +100,8 @@ def test_session_storage_set():
 
 def test_session_storage_delete():
     session = SessionStorage()
-    session.delete('s')
+    with pytest.raises(NotImplementedError):
+        session.delete('s')
 
 
 def test_sqlitestorage():
