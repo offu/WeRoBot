@@ -2,8 +2,7 @@ os: osx
 language: generic
 osx_image: xcode7.3  # OS X 10.11
 env:
-  - PYTHON_VERSION=2
-  - PYTHON_INSTALL_METHOD=system
+  - PYTHON_VERSION=2 PYTHON_INSTALL_METHOD=system
 matrix:
   include:
     - env:
