@@ -11,12 +11,12 @@ case $PYTHON_VERSION in
     tox)
       brew install pyenv
       eval "$(pyenv init -)"
-      pyenv install 2.6.9
-      pyenv install 2.7.12
-      pyenv install 3.3.6
-      pyenv install 3.4.5
-      pyenv install 3.5.2
-      pyenv install pypy-5.3.1
+      pyenv install 2.6.9 -s
+      pyenv install 2.7.12 -s
+      pyenv install 3.3.6 -s
+      pyenv install 3.4.5 -s
+      pyenv install 3.5.2 -s
+      pyenv install pypy-5.3.1 -s
       pyenv local 2.6.9 2.7.12 3.3.6 3.4.5 3.5.2 pypy-5.3.1
       ;;
     *)

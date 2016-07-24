@@ -27,7 +27,9 @@ matrix:
       - PYTHON_INSTALL_METHOD=homebrew
     - osx_image: xcode7  # 10.10
     - osx_image: beta-xcode6.2  # OS X 10.9
-
+cache:
+  directories:
+  - $HOME/.pyenv
 install:
   - "source travis/install.sh"
 
