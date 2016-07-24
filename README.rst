@@ -2,14 +2,14 @@
 WeRoBot
 ====================================
 
-.. image:: https://travis-ci.org/whtsky/WeRoBot.svg?branch=develop
+.. image:: https://img.shields.io/travis/whtsky/WeRoBot/develop.svg?maxAge=3600&label=macOS
     :target: https://travis-ci.org/whtsky/WeRoBot
-.. image:: https://ci.appveyor.com/api/projects/status/gc69rrbmm3qxhnq6/branch/develop?svg=true
+.. image:: https://img.shields.io/appveyor/ci/whtsky/WeRoBot/develop.svg?maxAge=3600&label=Windows
     :target: https://ci.appveyor.com/project/whtsky/WeRoBot
+.. image:: https://semaphoreci.com/api/v1/whtsky/werobot/branches/develop/shields_badge.svg
+    :target: https://semaphoreci.com/whtsky/werobot
 .. image:: https://codecov.io/gh/whtsky/WeRoBot/branch/develop/graph/badge.svg
   :target: https://codecov.io/gh/whtsky/WeRoBot
-.. image:: https://scrutinizer-ci.com/g/whtsky/WeRoBot/badges/quality-score.png?b=develop
-    :target: https://scrutinizer-ci.com/g/whtsky/WeRoBot/?branch=develop
 
 
 WeRoBot 是一个微信机器人框架，采用MIT协议发布。
