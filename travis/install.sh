@@ -10,6 +10,7 @@ fi
 case $PYTHON_INSTALL_METHOD in
     tox)
       brew install pyenv
+      brew outdated pyenv || brew upgrade pyenv
       eval "$(pyenv init -)"
       for version in $PYTHON_VERSION
       do
