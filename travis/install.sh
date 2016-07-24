@@ -3,7 +3,7 @@ set -ex
 brew update
 
 # https://github.com/rvm/rvm/pull/3627
-run rvm get head
+rvm get head
 
 case $PYTHON_INSTALL_METHOD in
     tox)
