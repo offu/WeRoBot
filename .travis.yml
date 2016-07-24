@@ -1,34 +1,40 @@
 os: osx
 language: generic
-env:
-  matrix:
+osx_image: xcode7.3  # OS X 10.11
 matrix:
   include:
     - env:
-        - PYTHON_VERSION=2.6
-        - PYTHON_INSTALL_METHOD=macports
+      - PYTHON_VERSION=2.7
+      - PYTHON_INSTALL_METHOD=macpython
     - env:
-        - PYTHON_VERSION=2.7
-        - PYTHON_INSTALL_METHOD=macpython
+      - PYTHON_VERSION=3.3
+      - PYTHON_INSTALL_METHOD=macpython
     - env:
-        - PYTHON_VERSION=3.3
-        - PYTHON_INSTALL_METHOD=macpython
+      - PYTHON_VERSION=3.4
+      - PYTHON_INSTALL_METHOD=macpython
     - env:
-        - PYTHON_VERSION=3.4
-        - PYTHON_INSTALL_METHOD=macpython
+      - PYTHON_VERSION=3.5
+      - PYTHON_INSTALL_METHOD=macpython
     - env:
-        - PYTHON_VERSION=3.5
-        - PYTHON_INSTALL_METHOD=macpython
+      - PYTHON_VERSION=2
+      - PYTHON_INSTALL_METHOD=system
     - env:
+      - PYTHON_VERSION=2
+      - PYTHON_INSTALL_METHOD=system
+    - env:
+      - PYTHON_VERSION=2
+      - PYTHON_INSTALL_METHOD=homebrew
+    - env:
+      - PYTHON_VERSION=3
+      - PYTHON_INSTALL_METHOD=homebrew
+    - osx_image: xcode7  # 10.10
+      env:
         - PYTHON_VERSION=2
         - PYTHON_INSTALL_METHOD=system
-    - env:
+    - osx_image: beta-xcode6.2  # OS X 10.9
+      env:
         - PYTHON_VERSION=2
-        - PYTHON_INSTALL_METHOD=homebrew
-    - env:
-        - PYTHON_VERSION=3
-        - PYTHON_INSTALL_METHOD=homebrew
-
+        - PYTHON_INSTALL_METHOD=system
 
 install:
   - "source travis/install.sh"
@@ -40,6 +46,10 @@ script:
 after_success:
   - pip install codecov
   - codecov
+
+addons:
+    code_climate:
+        repo_token: 060f1934a00d41f8e52fd6b4c5298f2528e5164bfe708bd46614fd05f913f521
 
 notifications:
   email: false
