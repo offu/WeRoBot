@@ -19,4 +19,5 @@ WeRoBot 是一个微信机器人框架，采用 MIT 协议发布。
     pay
     deploy
     utils
+    contribution-guide
     changelog
