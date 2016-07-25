@@ -141,6 +141,7 @@ class Client(object):
                         ]
                     }
                 ]})
+
         详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=自定义菜单创建接口
 
         :param menu_data: Python 字典
@@ -176,7 +177,7 @@ class Client(object):
         详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=上传下载多媒体文件
 
         :param media_type: 媒体文件类型，分别有图片（image）、语音（voice）、视频（video）和缩略图（thumb）
-        :param media_file:要上传的文件，一个 File-object
+        :param media_file: 要上传的文件，一个 File-object
 
         :return: 返回的 JSON 数据包
         """

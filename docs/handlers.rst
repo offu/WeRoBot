@@ -119,6 +119,7 @@ robot.key_click —— 回应自定义菜单
     def abort(message):
         if message.key == "abort":
             return "I'm a robot"
+
 两者是等价的。
 
 robot.filter ——  回应有指定文本的消息
