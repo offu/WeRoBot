@@ -10,6 +10,7 @@
 dist
 build
 eggs
+.eggs/
 parts
 bin
 var
@@ -26,6 +27,7 @@ pip-log.txt
 .coverage
 .tox
 nosetests.xml
+.cache/
 cover/
 htmlcov/
 

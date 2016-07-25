@@ -1,8 +1,7 @@
 # -*- coding:utf-8 -*-
 
 import time
-
-from nose.tools import assert_raises
+import pytest
 
 from werobot.parser import parse_user_msg
 from werobot.replies import WeChatReply, TextReply, ImageReply, MusicReply
@@ -38,7 +37,7 @@ def test_text_reply():
         target='fromUser', source='toUser',
         content="aa", time=t
     )
-    reply.render().strip() == """
+    assert reply.render().strip() == """
     <xml>
     <ToUserName><![CDATA[fromUser]]></ToUserName>
     <FromUserName><![CDATA[toUser]]></FromUserName>
@@ -55,7 +54,7 @@ def test_image_reply():
         source='toUser',
         media_id="fdasfdasfasd", time=t
     )
-    reply.render().strip() == """
+    assert reply.render().strip() == """
     <xml>
     <ToUserName><![CDATA[fromUser]]></ToUserName>
     <FromUserName><![CDATA[toUser]]></FromUserName>
@@ -74,7 +73,7 @@ def test_voice_reply():
         source='su',
         media_id="fdasfdasfasd", time=t
     )
-    reply.render().strip() == """
+    assert reply.render().strip() == """
     <xml>
     <ToUserName><![CDATA[tgu]]></ToUserName>
     <FromUserName><![CDATA[su]]></FromUserName>
@@ -253,7 +252,8 @@ def test_articles_reply():
     for _ in range(9):
         reply.add_article(article)
     assert '<ArticleCount>10</ArticleCount>' in reply.render()
-    assert_raises(AttributeError, reply.add_article, article)
+    with pytest.raises(AttributeError):
+        reply.add_article(article)
 
 
 def test_transfer_customer_service_reply():

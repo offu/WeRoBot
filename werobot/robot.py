@@ -374,7 +374,7 @@ class WeRoBot(BaseRoBot):
 
         @app.error(403)
         def error403(error):
-            return template(self.ERROR_PAGE_TEMPLATE,
+            return template(ERROR_PAGE_TEMPLATE,
                             e=error, request=request)
 
         return app
