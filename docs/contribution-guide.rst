@@ -1,8 +1,8 @@
-贡献指南 - Linux & MacOS
+贡献指南
 ===========================
 欢迎所有人为 ``WeRoBot`` 贡献。如果你打算为 ``WeRoBot`` 项目贡献代码, 请仔细阅读这份贡献指南。
 
-贡献流程
+贡献代码
 ----------
 若要贡献代码, 请注意使用 ``GitHub`` 的 workflow 。
 
@@ -11,8 +11,10 @@
 
 如果一切没有问题, 我们将合并你的代码到 ``develop`` 分支, 并最终发布在 ``master`` 分支的稳定版本。
 
+.. note:: 以下的内容是为 Linux / macOS 操作系统而写的。 如果你使用 Windows 进行开发，可能会遇到一些问题。
+
 环境搭建
-----------
+~~~~~~~~~~~
 建议使用 ``virtualenv`` 创建虚拟环境进行开发, 然后安装开发环境需要的 packages。
 关于 Python 版本, 推荐使用 Python 3.5 进行开发。
 
@@ -31,7 +33,7 @@
     pip install -r dev-requirements.txt
 
 代码风格
-----------
+~~~~~~~~~~~
 请遵循 ``PEP8`` 标准进行代码书写。
 
 https://www.python.org/dev/peps/pep-0008/
@@ -50,7 +52,7 @@ https://www.python.org/dev/peps/pep-0008/
     flake8 werobot
 
 测试
-----------
+~~~~~~~~~~~
 在代码提交之前, 请先运行本地的测试。每次提交之后会有在线的 CI 运行更多版本兼容性的测试, 请密切关注测试结果。 ::
 
     # Run tests locally.
@@ -62,5 +64,3 @@ https://www.python.org/dev/peps/pep-0008/
     tox
 
 另外请为自己新添加的模块或者功能编写测试代码, 所有的测试文件都在 tests 文件夹下。
-
-
