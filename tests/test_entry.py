@@ -5,7 +5,7 @@ from werobot.messages.entries import StringEntry, FloatEntry, IntEntry
 from werobot.utils import to_text
 
 
-class TestEntryClass(object):
+class NoNameMessage(object):
     test_int = IntEntry("TestInt")
     test_string_to_int = IntEntry("TestStringToInt")
     test_float_to_int = IntEntry("TestFloatToInt")
@@ -36,7 +36,7 @@ class TestEntryClass(object):
         self.__dict__.update(message)
 
 
-t = TestEntryClass()
+t = NoNameMessage()
 
 
 def test_int_entry():
