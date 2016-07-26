@@ -32,4 +32,5 @@ brew install redis
 brew services start redis
 brew install mongodb
 brew services start mongodb
+brew install openssl
 python --version

@@ -7,9 +7,11 @@ import struct
 import time
 
 try:
-    from Crypto.Cipher import AES
+    from cryptography.hazmat.primitives.ciphers import \
+        Cipher, algorithms, modes
+    from cryptography.hazmat.backends import default_backend
 except ImportError:
-    raise RuntimeError("You need to install PyCrypto.")
+    raise RuntimeError("You need to install Cryptography.")
 
 from . import pkcs7
 from .exceptions import (
@@ -26,7 +28,10 @@ class PrpCrypto(object):
     """
 
     def __init__(self, key):
-        self.cipher = AES.new(key, AES.MODE_CBC, key[:16])
+        key = to_binary(key)
+        self.cipher = Cipher(algorithms.AES(key),
+                             modes.CBC(key[:16]),
+                             backend=default_backend())
 
     def get_random_string(self):
         """
@@ -48,8 +53,8 @@ class PrpCrypto(object):
             to_binary(app_id)
         ])
         text = pkcs7.encode(text)
-
-        ciphertext = to_binary(self.cipher.encrypt(text))
+        encryptor = self.cipher.encryptor()
+        ciphertext = to_binary(encryptor.update(text) + encryptor.finalize())
         return base64.b64encode(ciphertext)
 
     def decrypt(self, text, app_id):
@@ -60,7 +65,9 @@ class PrpCrypto(object):
         :return: 解密后的字符串
         """
         text = to_binary(text)
-        plain_text = self.cipher.decrypt(base64.b64decode(text))
+        decryptor = self.cipher.decryptor()
+        plain_text = decryptor.update(
+            base64.b64decode(text)) + decryptor.finalize()
 
         padding = byte2int(plain_text, -1)
         content = plain_text[16:-padding]
