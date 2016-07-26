@@ -24,9 +24,9 @@ test_script:
   - C:\Python35\python -m tox -e py34
   - C:\Python35\python -m tox -e py35
 on_success:
-  = "SET PATH=C:\\Python35;C:\\Python35\\Scripts;%PATH%"
-  - pip install codecov coverage
-  - codecov
+    - set PATH=C:\\Python35;C:\\Python35\\Scripts;%PATH%a
+    - pip install codecov coverage
+    - codecov
 on_failure:
   - ps: dir "env:"
   - ps: get-content .tox\*\log\*
