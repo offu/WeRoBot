@@ -213,3 +213,4 @@ def process_function_reply(reply, message=None):
             url=url,
             hq_url=hq_url
         )
+    return reply
