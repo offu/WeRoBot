@@ -5,6 +5,11 @@ from werobot.utils import json_loads, json_dumps
 import sqlite3
 
 
+__CREATE_TABLE_SQL__ = """CREATE TABLE IF NOT EXISTS WeRoBot
+                            (id TEXT PRIMARY KEY NOT NULL ,
+                            value TEXT NOT NULL );"""
+
+
 class SQLiteStorage(SessionStorage):
     """
     SQLiteStorge 会把 Session 数据储存在一个 SQLite 数据库文件中 ::
@@ -22,13 +27,11 @@ class SQLiteStorage(SessionStorage):
     def __init__(self, filename='werobot_session.sqlite3'):
         self.db = sqlite3.connect(filename)
         self.db.text_factory = str
-        self.db.execute("""CREATE TABLE IF NOT EXISTS WeRoBot
-                            (id TEXT PRIMARY KEY NOT NULL ,
-                            value TEXT NOT NULL );""")
+        self.db.execute(__CREATE_TABLE_SQL__)
 
     def get(self, id):
         session_json = self.db.execute(
-            """SELECT value FROM WeRoBot WHERE id=? LIMIT 1;""", (id,)
+            "SELECT value FROM WeRoBot WHERE id=? LIMIT 1;", (id,)
         ).fetchone()
         if session_json is None:
             return {}
@@ -37,15 +40,14 @@ class SQLiteStorage(SessionStorage):
     def set(self, id, value):
         if self.get(id) != {}:
             self.db.execute(
-                """UPDATE WeRoBot SET value=? WHERE id=?;""",
+                "UPDATE WeRoBot SET value=? WHERE id=?;",
                 (json_dumps(value), id))
-            self.db.commit()
-            return
-        self.db.execute(
-            """INSERT INTO WeRoBot (id, value) VALUES (?,?);""",
-            (id, json_dumps(value)))
+        else:
+            self.db.execute(
+                "INSERT INTO WeRoBot (id, value) VALUES (?,?);",
+                (id, json_dumps(value)))
         self.db.commit()
 
     def delete(self, id):
-        self.db.execute("""DELETE FROM WeRoBot WHERE id=?;""", (id,))
+        self.db.execute("DELETE FROM WeRoBot WHERE id=?;", (id,))
         self.db.commit()

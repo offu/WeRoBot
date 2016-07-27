@@ -45,10 +45,8 @@ class BaseRoBot(object):
         self.logger = logger
 
         if enable_session and session_storage is None:
-            from .session.filestorage import FileStorage
-            session_storage = FileStorage(
-                filename=os.path.abspath("werobot_session")
-            )
+            from .session.sqlitestorage import SQLiteStorage
+            session_storage = SQLiteStorage()
         self.config.update(
             TOKEN=token,
             SESSION_STORAGE=session_storage,
@@ -390,4 +388,7 @@ class WeRoBot(BaseRoBot):
             host = self.config["HOST"]
         if port is None:
             port = self.config["PORT"]
-        self.wsgi.run(server=server, host=host, port=port)
+        try:
+            self.wsgi.run(server=server, host=host, port=port)
+        except KeyboardInterrupt:
+            exit(0)
