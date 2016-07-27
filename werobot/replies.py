@@ -213,9 +213,3 @@ def process_function_reply(reply, message=None):
             url=url,
             hq_url=hq_url
         )
-
-
-def create_reply(reply, message=None):
-    if not isinstance(reply, WeChatReply):
-        reply = process_function_reply(reply, message=message)
-    return reply.render()
