@@ -38,14 +38,9 @@ class SQLiteStorage(SessionStorage):
         return json_loads(session_json[0])
 
     def set(self, id, value):
-        if self.get(id) != {}:
-            self.db.execute(
-                "UPDATE WeRoBot SET value=? WHERE id=?;",
-                (json_dumps(value), id))
-        else:
-            self.db.execute(
-                "INSERT INTO WeRoBot (id, value) VALUES (?,?);",
-                (id, json_dumps(value)))
+        self.db.execute(
+            "INSERT OR REPLACE INTO WeRoBot (id, value) VALUES (?,?);",
+            (id, json_dumps(value)))
         self.db.commit()
 
     def delete(self, id):
