@@ -9,16 +9,12 @@ from flask import Flask
 
 class WeRoBot(BaseRoBot):
     """
-    给你的 Flask 应用添加 WeRoBot 支持。
-    你可以在实例化 WeRoBot 的时候传入一个 Flask App 添加支持： ::
-        app = Flask(__name__)
-        robot = WeRoBot(app)
-    或者也可以先实例化一个 WeRoBot ，然后通过 ``init_app`` 来给应用添加支持 ::
-        robot = WeRoBot()
-        def create_app():
-            app = Flask(__name__)
-            robot.init_app(app)
-            return app
+    Flask 使用的 WeRoBot 类。
+
+    :param app: 一个标准的 Flask App。
+    :param endpoint: WeRoBot 的 Endpoint。
+    :param rule:
+        WeRoBot 机器人的绑定地址。默认为 Flask App Config 中的 ``WEROBOT_ROLE``
 
     """
 
@@ -45,6 +41,7 @@ class WeRoBot(BaseRoBot):
             如果你想要在同一个应用中绑定多个 WeRoBot 机器人， 请使用不同的 endpoint .
         :param rule:
           WeRoBot 机器人的绑定地址。默认为 Flask App Config 中的 ``WEROBOT_ROLE``
+
         """
         assert isinstance(app, Flask)
         from werobot.utils import check_token

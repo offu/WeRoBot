@@ -33,8 +33,29 @@ WeRoBot 支持 Django 1.7+。
 
 大功告成。
 
+Flask
+----------
+给你的 Flask 应用添加 WeRoBot 支持。
+你可以在实例化 WeRoBot 的时候传入一个 Flask App 添加支持： ::
+
+    app = Flask(__name__)
+    robot = WeRoBot(app)
+
+
+或者也可以先实例化一个 WeRoBot ，然后通过 ``init_app`` 来给应用添加支持 ::
+
+    robot = WeRoBot()
+    def create_app():
+        app = Flask(__name__)
+        robot.init_app(app)
+        return app
+
 API
 ----------
 
 .. module:: werobot.contrib.django
 .. autofunction:: make_view
+
+.. module:: werobot.contrib.flask
+.. autoclass:: WeRoBot
+    :members: init_app
