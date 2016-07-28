@@ -7,7 +7,7 @@ import logging
 from flask import Flask
 
 
-class WeRoBot(BaseRoBot):
+class FlaskWeRoBot(BaseRoBot):
     """
     Flask 使用的 WeRoBot 类。
 
@@ -22,7 +22,7 @@ class WeRoBot(BaseRoBot):
                  app=None,
                  endpoint='werobot',
                  rule=None, *args, **kwargs):
-        super(WeRoBot, self).__init__(*args, **kwargs)
+        super(FlaskWeRoBot, self).__init__(*args, **kwargs)
         if app is not None:
             self.init_app(app, endpoint=endpoint, rule=rule)
         else:

@@ -36,19 +36,48 @@ WeRoBot 支持 Django 1.6+。
 Flask
 ----------
 给你的 Flask 应用添加 WeRoBot 支持。
-你可以在实例化 WeRoBot 的时候传入一个 Flask App 添加支持： ::
+你可以在实例化 FlaskWeRoBot 的时候传入一个 Flask App 添加支持： ::
+
+    from flask import Flask
+    from werobot.contrib.flask import FlaskWeRoBot
 
     app = Flask(__name__)
-    robot = WeRoBot(app)
+    robot = FlaskWeRoBot(app)
 
+或者也可以先实例化一个 FlaskWeRoBot ，然后通过 ``init_app`` 来给应用添加支持 ::
 
-或者也可以先实例化一个 WeRoBot ，然后通过 ``init_app`` 来给应用添加支持 ::
-
-    robot = WeRoBot()
+    from flask import Flask
+    from werobot.contrib.flask import FlaskWeRoBot
+    
+    robot = FlaskWeRoBot()
     def create_app():
         app = Flask(__name__)
         robot.init_app(app)
         return app
+
+Tornado
+----------
+最简单的 Hello World ::
+
+    import tornado.ioloop
+    import tornado.web
+    from werobot import WeRoBot
+    from tornado_werobot import make_handler
+
+    robot = WeRoBot(token='token')
+
+
+    @robot.handler
+    def hello(message):
+        return 'Hello World!'
+
+    application = tornado.web.Application([
+        (r"/", make_handler(robot)),
+    ])
+
+    if __name__ == "__main__":
+        application.listen(8888)
+        tornado.ioloop.IOLoop.instance().start()
 
 API
 ----------
@@ -57,5 +86,8 @@ API
 .. autofunction:: make_view
 
 .. module:: werobot.contrib.flask
-.. autoclass:: WeRoBot
+.. autoclass:: FlaskWeRoBot
     :members: init_app
+
+.. module:: werobot.contrib.tornado
+.. autofunction:: make_handler
