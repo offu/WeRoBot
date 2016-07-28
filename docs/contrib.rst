@@ -1,4 +1,4 @@
-Web 框架
+与其他 Web 框架集成
 ============
 
 WeRoBot 默认使用 Bottle 作为 web 框架, 你也可以使用 werobot.contrib 进行替换。
@@ -23,7 +23,7 @@ WeRoBot 支持 Django 1.7+。
 然后，在你 Django 项目中的 ``urls.py`` 中调用 :func:`make_view` ，将 WeRoBot 集成进 Django ::
 
     from django.conf.urls import patterns, include, url
-    from werobot.contrib.werobot_django import make_view
+    from werobot.contrib.django import make_view
     from robot import robot
 
     urlpatterns = patterns('',
@@ -36,6 +36,6 @@ WeRoBot 支持 Django 1.7+。
 API
 ------------------------------
 
-.. module:: werobot.contrib.werobot_django
+.. module:: werobot.contrib.django
 .. autofunction:: make_view
 
