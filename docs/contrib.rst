@@ -48,7 +48,7 @@ Flask
 
     from flask import Flask
     from werobot.contrib.flask import FlaskWeRoBot
-    
+
     robot = FlaskWeRoBot()
     def create_app():
         app = Flask(__name__)
