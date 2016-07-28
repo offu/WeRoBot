@@ -7,3 +7,4 @@ cryptography
 pytest
 webtest
 flask
+tornado
