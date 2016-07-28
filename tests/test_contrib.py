@@ -60,7 +60,7 @@ def test_django():
 
 def test_flask_and_tornado():
     from webtest import TestApp
-    from werobot.contrib.flask import WeRoBot
+    from werobot.contrib.flask import FlaskWeRoBot
     from flask import Flask
     from werobot.parser import process_message, parse_xml
     from tornado.wsgi import WSGIAdapter
@@ -76,8 +76,8 @@ def test_flask_and_tornado():
     apps = []
 
     app = Flask(__name__)
-    robot = WeRoBot(enable_session=False,
-                    token=token)
+    robot = FlaskWeRoBot(enable_session=False,
+                         token=token)
 
     @robot.text
     def hello():
