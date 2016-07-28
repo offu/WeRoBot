@@ -1,0 +1,29 @@
+{% extends 'basic/layout.html' %}
+
+{% block extrahead %}
+    {{ super() }}
+    {% if theme_touch_icon %}
+        <link rel="apple-touch-icon" href="{{ pathto('_static/' ~ theme_touch_icon, 1) }}">
+    {% endif %}
+    <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+{% endblock %}
+
+{% block relbar2 %}
+    {% if theme_github_fork %}
+        <a href="http://github.com/{{ theme_github_fork }}">
+            <img style="position: fixed; top: 0; right: 0; border: 0;"
+                 src="http://s3.amazonaws.com/github/ribbons/forkme_right_{{ theme_github_ribbon_color }}.png"
+                 alt="Fork me on GitHub">
+        </a>
+    {% endif %}
+{% endblock %}
+
+{% block header %}
+    {{ super() }}
+    {% if pagename == 'index' %}<div class=indexwrapper>{% endif %}
+{% endblock %}
+
+{% block footer %}
+    {{ super() }}
+    {% if pagename == 'index' %}</div>{% endif %}
+{% endblock %}
