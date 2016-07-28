@@ -5,3 +5,5 @@ redis==2.10.5
 Sphinx==1.4.5
 cryptography
 pytest
+webtest
+flask

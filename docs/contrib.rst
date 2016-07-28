@@ -34,7 +34,7 @@ WeRoBot 支持 Django 1.7+。
 大功告成。
 
 API
-----
+----------
 
 .. module:: werobot.contrib.django
 .. autofunction:: make_view

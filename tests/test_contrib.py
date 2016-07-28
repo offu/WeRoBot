@@ -104,5 +104,5 @@ def test_flask():
     response = app.post(url, xml, content_type="text/xml")
 
     assert response.status_code == 200
-    response = process_message(parse_xml(response.content))
+    response = process_message(parse_xml(response.body))
     assert response.content == 'hello'

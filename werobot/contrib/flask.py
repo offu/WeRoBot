@@ -22,7 +22,10 @@ class WeRoBot(BaseRoBot):
 
     """
 
-    def __init__(self, app=None, endpoint='werobot', rule=None, *args, **kwargs):
+    def __init__(self,
+                 app=None,
+                 endpoint='werobot',
+                 rule=None, *args, **kwargs):
         super(WeRoBot, self).__init__(*args, **kwargs)
         if app is not None:
             self.init_app(app, endpoint=endpoint, rule=rule)
