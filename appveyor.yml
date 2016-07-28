@@ -14,9 +14,7 @@ install:
   - redis-server --service-start
 
 test_script:
-  - C:\Python35\python -m tox -e py27
-  - C:\Python35\python -m tox -e py34
-  - C:\Python35\python -m tox -e py35
+  - C:\Python35\python -m tox -c tox-win.ini
 on_success:
   - set PATH=C:\\Python35;C:\\Python35\\Scripts;%PATH%
   - pip install codecov coverage
