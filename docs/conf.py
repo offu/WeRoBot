@@ -100,7 +100,8 @@ html_theme = 'flask'
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {
-  'touch_icon': 'logo.png'
+  'touch_icon': 'logo.png',
+  'github_url': 'whtsky/WeRoBot'
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
@@ -137,9 +138,8 @@ html_static_path = ['_static']
 
 # Custom sidebar templates, maps document names to template names.
 html_sidebars = {
-    'index': ['sourcelink.html', 'sidebarintro.html', 'searchbox.html'],
-    '**': ['localtoc.html', 'relations.html', 'sidebarintro.html',
-           'searchbox.html']
+    'index': ['sidebarintro.html', 'searchbox.html'],
+    '**': ['sidebarintro.html', 'localtoc.html', 'relations.html', 'searchbox.html']
 }
 
 # Additional templates that should be rendered to pages, maps page names to
