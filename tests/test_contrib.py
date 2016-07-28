@@ -56,3 +56,53 @@ def test_django():
     assert response.status_code == 200
     response = process_message(parse_xml(response.content))
     assert response.content == 'hello'
+
+
+def test_flask():
+    from webtest import TestApp
+    from werobot.contrib.flask import WeRoBot
+    from flask import Flask
+    from werobot.parser import process_message, parse_xml
+
+    token = 'TestFlask'
+    timestamp = str(time.time())
+    nonce = str(random.randint(0, 10000))
+    signature = get_signature(token, timestamp, nonce)
+    echostr = generate_token()
+
+    app = Flask(__name__)
+    robot = WeRoBot(enable_session=False,
+                    token=token)
+
+    @robot.text
+    def hello():
+        return 'hello'
+
+    robot.init_app(app)
+
+    app = TestApp(app)
+
+    params = "?timestamp=%s&nonce=%s&signature=%s&echostr=%s" % \
+             (timestamp, nonce, signature, echostr)
+    url = '/robot/' + params
+
+    response = app.get(url)
+
+    assert response.status_code == 200
+    assert response.body.decode('utf-8') == echostr
+
+    xml = """
+        <xml>
+            <ToUserName><![CDATA[toUser]]></ToUserName>
+            <FromUserName><![CDATA[fromUser]]></FromUserName>
+            <CreateTime>1348831860</CreateTime>
+            <MsgType><![CDATA[text]]></MsgType>
+            <Content><![CDATA[this is a test]]></Content>
+            <MsgId>1234567890123456</MsgId>
+        </xml>"""
+
+    response = app.post(url, xml, content_type="text/xml")
+
+    assert response.status_code == 200
+    response = process_message(parse_xml(response.content))
+    assert response.content == 'hello'

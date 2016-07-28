@@ -9,3 +9,5 @@ tox
 cryptography
 pytest
 django
+flask
+webtest
