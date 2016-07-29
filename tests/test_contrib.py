@@ -5,6 +5,7 @@ import time
 import random
 from werobot.utils import generate_token, get_signature
 import sys
+import logging
 
 
 def test_django():
@@ -20,7 +21,10 @@ def test_django():
     from werobot.parser import parse_xml, process_message
     import django
 
-    django.setup()
+    try:
+        django.setup()
+    except AttributeError:
+        logging.warning("Django1.6 doesn't have django.setup().")
 
     c = Client()
 
