@@ -5,7 +5,6 @@ import time
 import random
 from werobot.utils import generate_token, get_signature
 import sys
-import logging
 
 
 def test_django():
@@ -24,7 +23,8 @@ def test_django():
     try:
         django.setup()
     except AttributeError:
-        logging.warning("Django1.6 doesn't have django.setup().")
+        # Django1.6 doesn't have django.setup()
+        pass
 
     c = Client()
 
