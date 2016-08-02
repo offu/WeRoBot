@@ -2,7 +2,6 @@
 import time
 
 from collections import defaultdict
-from werobot.messages.messages import WeChatMessage
 from werobot.utils import is_string, to_text
 
 
