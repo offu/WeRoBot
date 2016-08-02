@@ -11,10 +11,10 @@ class WeChatReply(object):
         pass
 
     def __init__(self, message=None, **kwargs):
-        if "source" not in kwargs and isinstance(message, WeChatMessage):
+        if message and "source" not in kwargs:
             kwargs["source"] = message.target
 
-        if "target" not in kwargs and isinstance(message, WeChatMessage):
+        if message and "target" not in kwargs:
             kwargs["target"] = message.source
 
         if 'time' not in kwargs:
