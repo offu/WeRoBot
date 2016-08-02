@@ -129,7 +129,8 @@ def test_flask_and_tornado():
         try:
             app.post(url, xml, content_type="text/xml")
         except AppError:
-            # WebTest will raise an AppError if the status_code is not >= 200 and < 400.
+            # WebTest will raise an AppError
+            # if the status_code is not >= 200 and < 400.
             pass
 
         url += params
