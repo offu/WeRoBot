@@ -69,7 +69,7 @@ class FlaskWeRoBot(BaseRoBot):
                     nonce,
                     signature,
             ):
-                return 'Invalid Request.'
+                return 'Invalid Request.', 403
             if request.method == 'GET':
                 return request.args['echostr']
 

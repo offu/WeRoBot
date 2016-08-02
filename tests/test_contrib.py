@@ -52,7 +52,14 @@ def test_django():
     </xml>"""
     params = "?timestamp=%s&nonce=%s&signature=%s" % \
              (timestamp, nonce, signature)
-    url = '/robot/' + params
+    url = '/robot/'
+    response = c.post(url,
+                      data=xml,
+                      content_type="text/xml")
+
+    assert response.status_code == 403
+
+    url += params
     response = c.post(url,
                       data=xml,
                       content_type="text/xml")
@@ -64,6 +71,7 @@ def test_django():
 
 def test_flask_and_tornado():
     from webtest import TestApp
+    from webtest.app import AppError
     from werobot.contrib.flask import FlaskWeRoBot
     from flask import Flask
     from werobot.parser import process_message, parse_xml
@@ -100,14 +108,15 @@ def test_flask_and_tornado():
 
     params = "?timestamp=%s&nonce=%s&signature=%s&echostr=%s" % \
              (timestamp, nonce, signature, echostr)
-    url = '/robot/' + params
 
     for app in apps:
+        url = '/robot/' + params
         response = app.get(url)
 
         assert response.status_code == 200
         assert response.body.decode('utf-8') == echostr
 
+        url = '/robot/'
         xml = """
                 <xml>
                     <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -117,7 +126,13 @@ def test_flask_and_tornado():
                     <Content><![CDATA[this is a test]]></Content>
                     <MsgId>1234567890123456</MsgId>
                 </xml>"""
+        try:
+            app.post(url, xml, content_type="text/xml")
+        except AppError:
+            # WebTest will raise an AppError if the status_code is not >= 200 and < 400.
+            pass
 
+        url += params
         response = app.post(url, xml, content_type="text/xml")
 
         assert response.status_code == 200

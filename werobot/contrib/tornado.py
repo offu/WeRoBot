@@ -2,7 +2,7 @@
 from __future__ import absolute_import
 from werobot.robot import BaseRoBot
 from werobot.parser import parse_xml, process_message
-from tornado.web import RequestHandler
+from tornado.web import RequestHandler, HTTPError
 from werobot.replies import process_function_reply
 import logging
 
@@ -28,7 +28,7 @@ def make_handler(robot):
                     nonce=nonce,
                     signature=signature
             ):
-                self.finish('Unvailed request.')
+                raise HTTPError(403, 'Invalid Request.')
 
         def get(self):
             echostr = self.get_argument('echostr', '')
