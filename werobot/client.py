@@ -505,10 +505,10 @@ class Client(object):
         """
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/message/template/send",
-            data = {
+            data={
                "touser": user_id,
                "template_id": template_id,
-               "url": url,        
+               "url": url,
                "data": data
-           }
+            }
         )
