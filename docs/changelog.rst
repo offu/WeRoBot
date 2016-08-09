@@ -17,6 +17,8 @@ Version 1.0.0
 + 增加 :class:`werobot.session.sqlitestorage.SQLiteStorage`
 + 将默认的 SessionBackend 切换为 :class:`werobot.session.sqlitestorage.SQLiteStorage`
 + 将图文消息单个消息的渲染函数放到 :class:`werobot.replies.Article` 内
++ 取消对 Python2.6, Python3.3 的支持
++ 增加与 Django 1.6+, Flask, Tornado 集成的支持
 
 Version 0.6.1
 ----------------
