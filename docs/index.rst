@@ -15,9 +15,9 @@ WeRoBot 是一个微信公众号开发框架。
     events
     replies
     session
+    contrib
     client
     deploy
     utils
-    contrib
     contribution-guide
     changelog

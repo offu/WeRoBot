@@ -70,9 +70,10 @@ def test_django():
 
 
 def test_flask_and_tornado():
+    from werobot import WeRoBot
     from webtest import TestApp
     from webtest.app import AppError
-    from werobot.contrib.flask import FlaskWeRoBot
+    from werobot.contrib.flask import make_view
     from flask import Flask
     from werobot.parser import process_message, parse_xml
     from tornado.wsgi import WSGIAdapter
@@ -88,14 +89,16 @@ def test_flask_and_tornado():
     apps = []
 
     app = Flask(__name__)
-    robot = FlaskWeRoBot(enable_session=False,
-                         token=token)
+    robot = WeRoBot(token=token, enable_session=False)
 
     @robot.text
     def hello():
         return 'hello'
 
-    robot.init_app(app)
+    app.add_url_rule(rule='/robot/',
+                     endpoint='werobot',
+                     view_func=make_view(robot),
+                     methods=['GET', 'POST'])
     app = TestApp(app)
     apps.append(app)
 
