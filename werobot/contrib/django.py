@@ -37,32 +37,14 @@ def make_view(robot):
         if request.method == "GET":
             return HttpResponse(request.GET.get("echostr", ""))
         elif request.method == "POST":
-            body = request.body
-            message_dict = parse_xml(body)
-            # Encrypt support
-            if "Encrypt" in message_dict:
-                xml = robot.crypto.decrypt_message(
-                    timestamp=timestamp,
-                    nonce=nonce,
-                    msg_signature=signature,
-                    encrypt_msg=message_dict["Encrypt"]
-                )
-                message_dict = parse_xml(xml)
-
-            message = process_message(message_dict)
-            logging.info("Receive message %s" % message)
-            reply = robot.get_reply(message)
-            if not reply:
-                robot.logger.warning("No handler responded message %s"
-                                     % message)
-                return ''
-            # Encrypt support
-            if robot.use_encryption:
-                return HttpResponse(
-                    robot.crypto.encrypt_message(reply),
-                    content_type="application/xml;charset=utf-8")
+            message = robot.parse_message(
+                request.body,
+                timestamp=timestamp,
+                nonce=nonce,
+                msg_signature=request.GET.get("msg_signature", "")
+            )
             return HttpResponse(
-                process_function_reply(reply, message=message).render(),
+                robot.get_encrypted_reply(message),
                 content_type="application/xml;charset=utf-8"
             )
         return HttpResponseNotAllowed(['GET', 'POST'])

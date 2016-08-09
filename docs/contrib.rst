@@ -31,11 +31,9 @@ WeRoBot 支持 Django 1.6+。
     )
 
 
-大功告成。
 
 Flask
 ----------
-给你的 Flask 应用添加 WeRoBot 支持。
 首先, 同样在文件中写好你的微信机器人 ::
 
     # Filename: robot.py
@@ -56,12 +54,33 @@ Flask
     from werobot.contrib.flask import make_view
 
     app = Flask(__name__)
-    app.add_url_rule(rule='/robot/', # WeRoBot 的绑定地址
+    app.add_url_rule(rule='/robot/', # WeRoBot 挂载地址
                      endpoint='werobot', # Flask 的 endpoint
                      view_func=make_view(robot),
                      methods=['GET', 'POST'])
 
-这样就完成了。
+
+Bottle
+--------
+在你的 Bottle App 中集成 WeRoBot ::
+    from werobot import WeRoBot
+
+    robot = WeRoBot(token='token')
+
+
+    @robot.handler
+    def hello(message):
+        return 'Hello World!'
+
+    from bottle import Bottle
+    from werobot.contrib.bottle import make_view
+
+    app = Bottle()
+    app.route(
+        '/robot',  # WeRoBot 挂载地址
+        ['GET', 'POST'],
+        make_view(robot)
+    )
 
 Tornado
 ----------
@@ -94,6 +113,9 @@ API
 .. autofunction:: make_view
 
 .. module:: werobot.contrib.flask
+.. autofunction:: make_view
+
+.. module:: werobot.contrib.bottle
 .. autofunction:: make_view
 
 .. module:: werobot.contrib.tornado

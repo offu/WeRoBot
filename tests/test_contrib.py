@@ -12,7 +12,7 @@ def test_django():
         "DJANGO_SETTINGS_MODULE",
         "django_test.settings")
     sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                 '../werobot/tests/contrib/django_test/'))
+                                 'django_test_env'))
 
     from django.test.utils import setup_test_environment
     setup_test_environment()
@@ -69,11 +69,12 @@ def test_django():
     assert response.content == 'hello'
 
 
-def test_flask_and_tornado():
+def test_flask_bottle_and_tornado():
     from werobot import WeRoBot
     from webtest import TestApp
     from webtest.app import AppError
     from werobot.contrib.flask import make_view
+    from werobot.contrib.bottle import make_view
     from flask import Flask
     from werobot.parser import process_message, parse_xml
     from tornado.wsgi import WSGIAdapter
@@ -88,33 +89,42 @@ def test_flask_and_tornado():
 
     apps = []
 
-    app = Flask(__name__)
     robot = WeRoBot(token=token, enable_session=False)
 
     @robot.text
     def hello():
         return 'hello'
 
-    app.add_url_rule(rule='/robot/',
+    flask_app = Flask(__name__)
+    flask_app.debug = True
+    flask_app.add_url_rule(rule='/robot/',
                      endpoint='werobot',
                      view_func=make_view(robot),
                      methods=['GET', 'POST'])
-    app = TestApp(app)
-    apps.append(app)
+    apps.append(flask_app)
 
-    handler = make_handler(robot)
-    application = tornado.web.Application([
-        (r"/robot/", handler),
+    from bottle import Bottle
+    from werobot.contrib.bottle import make_view
+
+    bottle_app = Bottle()
+    bottle_app.route(
+        '/robot/',
+        ['GET', 'POST'],
+        make_view(robot)
+    )
+    apps.append(bottle_app)
+
+    tornado_app = tornado.web.Application([
+        (r"/robot/", make_handler(robot)),
     ])
-    app = TestApp(WSGIAdapter(application))
-    apps.append(app)
+    apps.append(WSGIAdapter(tornado_app))
 
     params = "?timestamp=%s&nonce=%s&signature=%s&echostr=%s" % \
              (timestamp, nonce, signature, echostr)
 
     for app in apps:
         url = '/robot/' + params
-        response = app.get(url)
+        response = TestApp(app).get(url)
 
         assert response.status_code == 200
         assert response.body.decode('utf-8') == echostr

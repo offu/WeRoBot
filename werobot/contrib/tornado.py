@@ -11,6 +11,23 @@ def make_handler(robot):
     """
     为一个 BaseRoBot 生成 Tornado Handler。
 
+    Usage ::
+        import tornado.ioloop
+        import tornado.web
+        from werobot import WeRoBot
+        from tornado_werobot import make_handler
+
+        robot = WeRoBot(token='token')
+
+
+        @robot.handler
+        def hello(message):
+            return 'Hello World!'
+
+        application = tornado.web.Application([
+            (r"/", make_handler(robot)),
+        ])
+
     :param robot: 一个 BaseRoBot 实例。
     :return: 一个标准的 Tornado Handler
     """
@@ -39,33 +56,14 @@ def make_handler(robot):
             nonce = self.get_argument('nonce', '')
             signature = self.get_argument('signature', '')
             body = self.request.body
-            message_dict = parse_xml(body)
-            # Encrypt support
-            if "Encrypt" in message_dict:
-                xml = self.crypto.decrypt_message(
-                    timestamp=timestamp,
-                    nonce=nonce,
-                    msg_signature=signature,
-                    encrypt_msg=message_dict["Encrypt"]
-                )
-                message_dict = parse_xml(xml)
-
-            message = process_message(message_dict)
-            logging.info("Receive message %s" % message)
+            message = robot.parse_message(
+                request.data,
+                timestamp=timestamp,
+                nonce=nonce,
+                signature=signature
+            )
             self.set_header("Content-Type",
                             "application/xml;charset=utf-8")
-
-            reply = robot.get_reply(message)
-            if reply is None:
-                self.write("")
-                return
-            # Encrypt support
-            if robot.use_encryption:
-                reply = robot.crypto.encrypt_message(reply)
-            else:
-                reply = process_function_reply(reply,
-                                               message=message
-                                               ).render()
-            self.write(reply)
+            self.write(self.get_encrypted_reply(message))
 
     return WeRoBotHandler

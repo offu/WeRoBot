@@ -30,10 +30,8 @@ def remove_session(session):
 
 
 def test_session():
-    storage = filestorage.FileStorage()
     robot = werobot.WeRoBot(token=werobot.utils.generate_token(),
-                            enable_session=True,
-                            session_storage=storage)
+                            enable_session=True)
 
     @robot.text
     def first(message, session):
@@ -68,22 +66,10 @@ def test_session():
         </xml>
     """
 
-    session_storages = [
-        storage,
-        mongodbstorage.MongoDBStorage(pymongo.MongoClient().t.t),
-        redisstorage.RedisStorage(redis.Redis()),
-        sqlitestorage.SQLiteStorage(),
-    ]
-
-    for session_storage in session_storages:
-        remove_session(session_storage)
-        robot.session_storage = session_storage
-        reply_1 = tester.send_xml(xml_1)._args['content']
-        assert reply_1 == 'ss', (reply_1, session_storage)
-        reply_2 = tester.send_xml(xml_2)._args['content']
-        assert reply_2 == 'ss', (reply_2, session_storage)
-        remove_session(session_storage)
-    storage.db.close()
+    reply_1 = tester.send_xml(xml_1)._args['content']
+    assert reply_1 == 'ss', (reply_1, session_storage)
+    reply_2 = tester.send_xml(xml_2)._args['content']
+    assert reply_2 == 'ss', (reply_2, session_storage)
 
 
 def test_session_storage_get():

@@ -1,18 +1,38 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
+
+from flask import request, make_response
+
 from werobot.parser import parse_xml, process_message
 from werobot.replies import process_function_reply
-import logging
 
 
 def make_view(robot):
     """
     为一个 BaseRoBot 生成 Flask view。
 
+    Usage ::
+        from werobot import WeRoBot
+
+        robot = WeRoBot(token='token')
+
+
+        @robot.handler
+        def hello(message):
+            return 'Hello World!'
+
+        from flask import Flask
+        from werobot.contrib.flask import make_view
+
+        app = Flask(__name__)
+        app.add_url_rule(rule='/robot/', # WeRoBot 的绑定地址
+                        endpoint='werobot', # Flask 的 endpoint
+                        view_func=make_view(robot),
+                        methods=['GET', 'POST'])
+
     :param robot: 一个 BaseRoBot 实例
     :return: 一个标准的 Flask view
     """
-    from flask import request, make_response
 
     def werobot_view():
         timestamp = request.args.get('timestamp', '')
@@ -27,30 +47,13 @@ def make_view(robot):
         if request.method == 'GET':
             return request.args['echostr']
 
-        body = request.data
-        message_dict = parse_xml(body)
-        # Encrypt support
-        if "Encrypt" in message_dict:
-            xml = robot.crypto.decrypt_message(
-                timestamp=timestamp,
-                nonce=nonce,
-                msg_signature=signature,
-                encrypt_msg=message_dict["Encrypt"]
-            )
-            message_dict = parse_xml(xml)
-
-        message = process_message(message_dict)
-        logging.info("Receive message %s" % message)
-        reply = robot.get_reply(message)
-        if not reply:
-            return ''
-        # Encrypt support
-        if robot.use_encryption:
-            response = make_response(
-                robot.crypto.encrypt_message(reply))
-        else:
-            response = make_response(
-                process_function_reply(reply, message=message).render())
+        message = robot.parse_message(
+            request.data,
+            timestamp=timestamp,
+            nonce=nonce,
+            signature=signature
+        )
+        response = make_response(self.get_encrypted_reply(message))
         response.headers['content_type'] = 'application/xml'
         return response
 

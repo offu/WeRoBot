@@ -258,6 +258,26 @@ class BaseRoBot(object):
     def get_handlers(self, type):
         return self._handlers.get(type, []) + self._handlers['all']
 
+    def parse_message(
+            self, body,
+            timestamp=None, nonce=None, msg_signature=None
+        ):
+        """
+        解析获取到的 Raw XML ，如果需要的话进行解密，返回 WeRoBot Message。
+        :param body: 微信服务器发来的请求中的 Body。
+        :return: WeRoBot Message
+        """
+        message_dict = parse_xml(body)
+        if "Encrypt" in message_dict:
+            xml = robot.crypto.decrypt_message(
+                timestamp=timestamp,
+                nonce=nonce,
+                msg_signature=msg_signature,
+                encrypt_msg=message_dict["Encrypt"]
+            )
+            message_dict = parse_xml(xml)
+        return process_message(message_dict)
+
     def get_reply(self, message):
         """
         Return the Reply Object for the given message.
@@ -281,6 +301,24 @@ class BaseRoBot(object):
                     return process_function_reply(reply, message=message)
         except:
             self.logger.warning("Catch an exception", exc_info=True)
+
+    def get_encrypted_reply(self, message):
+        """
+        对一个指定的 WeRoBot Message ，获取 handlers 处理后得到的 Reply。
+        如果可能，对该 Reply 进行加密。
+        返回 Reply Render 后的文本。
+        :param message: 一个 WeRoBot Message 实例。
+        :return: reply （纯文本）
+        """
+        reply = self.get_reply(message)
+        if not reply:
+            self.logger.warning("No handler responded message %s"
+                                % message)
+            return ''
+        if self.use_encryption:
+            return self.crypto.encrypt_message(reply)
+        else:
+            return reply.render()
 
     def check_signature(self, timestamp, nonce, signature):
         return check_signature(
@@ -323,58 +361,13 @@ class WeRoBot(BaseRoBot):
     def wsgi(self):
         if not self._handlers:
             raise
-        from bottle import Bottle, request, response, abort, template
+        from bottle import Bottle
+        from werobot.crontrib.bottle import make_view
 
         app = Bottle()
+        
 
-        @app.get('<t:path>')
-        def echo(t):
-            if not self.check_signature(
-                    request.query.timestamp,
-                    request.query.nonce,
-                    request.query.signature
-            ):
-                return abort(403)
-            return request.query.echostr
 
-        @app.post('<t:path>')
-        def handle(t):
-            if not self.check_signature(
-                    request.query.timestamp,
-                    request.query.nonce,
-                    request.query.signature
-            ):
-                return abort(403)
-
-            body = request.body.read()
-            message_dict = parse_xml(body)
-            if "Encrypt" in message_dict:
-                xml = self.crypto.decrypt_message(
-                    timestamp=request.query.timestamp,
-                    nonce=request.query.nonce,
-                    msg_signature=request.query.msg_signature,
-                    encrypt_msg=message_dict["Encrypt"]
-                )
-                message_dict = parse_xml(xml)
-            message = process_message(message_dict)
-            logging.info("Receive message %s" % message)
-            reply = self.get_reply(message)
-            if not reply:
-                self.logger.warning("No handler responded message %s"
-                                    % message)
-                return ''
-            response.content_type = 'application/xml'
-            if self.use_encryption:
-                return self.crypto.encrypt_message(reply)
-            else:
-                return reply.render()
-
-        @app.error(403)
-        def error403(error):
-            return template(ERROR_PAGE_TEMPLATE,
-                            e=error, request=request)
-
-        return app
 
     def run(self, server=None, host=None,
             port=None, enable_pretty_logging=True):
