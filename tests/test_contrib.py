@@ -58,6 +58,7 @@ def wsgi_tester():
 def hello_robot():
     from werobot import WeRoBot
     robot = WeRoBot(token='', enable_session=False)
+
     @robot.text
     def hello():
         return 'hello'
