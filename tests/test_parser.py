@@ -259,6 +259,34 @@ def test_location_event():
     assert message.precision == 119.385040
 
 
+def test_template_send_job_finish_event():
+    message = parse_user_msg("""
+    <xml>
+        <ToUserName><![CDATA[gh_7f083739789a]]></ToUserName>
+        <FromUserName><![CDATA[oia2TjuEGTNoeX76QEjQNrcURxG8]]></FromUserName>
+        <CreateTime>1395658920</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[TEMPLATESENDJOBFINISH]]></Event>
+        <MsgID>200163836</MsgID>
+        <Status><![CDATA[success]]></Status>
+    </xml>
+    """)
+    assert message.message_id == 200163836
+    assert message.status == 'success'
+
+    assert parse_user_msg("""
+    <xml>
+        <ToUserName><![CDATA[gh_7f083739789a]]></ToUserName>
+        <FromUserName><![CDATA[oia2TjuEGTNoeX76QEjQNrcURxG8]]></FromUserName>
+        <CreateTime>1395658984</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[TEMPLATESENDJOBFINISH]]></Event>
+        <MsgID>200163840</MsgID>
+        <Status><![CDATA[failed: system failed]]></Status>
+    </xml>
+    """).status == 'failed: system failed'
+
+
 def test_unknown_event():
     message = parse_user_msg("""
     <xml>

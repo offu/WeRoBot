@@ -2,27 +2,16 @@
 
 import six
 from werobot.messages.entries import StringEntry, IntEntry, FloatEntry
+from werobot.messages.base import WeRoBotMetaClass
 
-MESSAGE_TYPES = {}
 
-
-class MessageMetaClass(type):
-    def __new__(mcs, name, bases, attrs):
-        return type.__new__(mcs, name, bases, attrs)
-
-    def __init__(cls, name, bases, attrs):
-        if '__type__' in attrs:
-            if isinstance(attrs['__type__'], list):
-                for _type in attrs['__type__']:
-                    MESSAGE_TYPES[_type] = cls
-            else:
-                MESSAGE_TYPES[attrs['__type__']] = cls
-        type.__init__(cls, name, bases, attrs)
+class MessageMetaClass(WeRoBotMetaClass):
+    pass
 
 
 @six.add_metaclass(MessageMetaClass)
 class WeChatMessage(object):
-    id = IntEntry('MsgId', 0)
+    message_id = IntEntry('MsgId', 0)
     target = StringEntry('ToUserName')
     source = StringEntry('FromUserName')
     time = IntEntry('CreateTime', 0)

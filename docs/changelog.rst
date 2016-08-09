@@ -6,6 +6,7 @@ Version 1.0.0
 
 + 增加对消息加解密的支持
 + 重写 werobot.messages, 完善对 Event 的支持
++ 将微信消息的 `id` 属性重命名为 `message_id`
 + 增加 :class:`werobot.reply.SuccessReply`
 + 增加 :class:`werobot.reply.ImageReply`
 + 增加 :class:`werobot.reply.VoiceReply`
