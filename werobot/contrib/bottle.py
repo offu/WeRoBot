@@ -9,6 +9,7 @@ def make_view(robot):
     为一个 BaseRoBot 生成 Flask view。
 
     Usage ::
+
         from werobot import WeRoBot
 
         robot = WeRoBot(token='token')

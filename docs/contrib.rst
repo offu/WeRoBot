@@ -63,10 +63,10 @@ Flask
 Bottle
 --------
 在你的 Bottle App 中集成 WeRoBot ::
+
     from werobot import WeRoBot
 
     robot = WeRoBot(token='token')
-
 
     @robot.handler
     def hello(message):
@@ -76,11 +76,9 @@ Bottle
     from werobot.contrib.bottle import make_view
 
     app = Bottle()
-    app.route(
-        '/robot',  # WeRoBot 挂载地址
-        ['GET', 'POST'],
-        make_view(robot)
-    )
+    app.route('/robot',  # WeRoBot 挂载地址
+             ['GET', 'POST'],
+             make_view(robot))
 
 Tornado
 ----------

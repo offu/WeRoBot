@@ -8,6 +8,7 @@ def make_handler(robot):
     为一个 BaseRoBot 生成 Tornado Handler。
 
     Usage ::
+
         import tornado.ioloop
         import tornado.web
         from werobot import WeRoBot
