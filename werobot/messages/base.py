@@ -1,5 +1,6 @@
 class WeRoBotMetaClass(type):
     TYPES = {}
+
     def __new__(mcs, name, bases, attrs):
         return type.__new__(mcs, name, bases, attrs)
 
