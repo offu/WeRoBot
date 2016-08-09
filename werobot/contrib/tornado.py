@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
-from werobot.robot import BaseRoBot
-from werobot.parser import parse_xml, process_message
 from tornado.web import RequestHandler, HTTPError
-from werobot.replies import process_function_reply
-import logging
 
 
 def make_handler(robot):
@@ -31,8 +27,6 @@ def make_handler(robot):
     :param robot: 一个 BaseRoBot 实例。
     :return: 一个标准的 Tornado Handler
     """
-    assert isinstance(robot, BaseRoBot), \
-        "RoBot should be an BaseRoBot instance."
 
     class WeRoBotHandler(RequestHandler):
         def prepare(self):
@@ -55,9 +49,8 @@ def make_handler(robot):
             timestamp = self.get_argument('timestamp', '')
             nonce = self.get_argument('nonce', '')
             signature = self.get_argument('signature', '')
-            body = self.request.body
             message = robot.parse_message(
-                request.data,
+                self.request.body,
                 timestamp=timestamp,
                 nonce=nonce,
                 signature=signature

@@ -3,9 +3,6 @@ from __future__ import absolute_import
 
 from flask import request, make_response
 
-from werobot.parser import parse_xml, process_message
-from werobot.replies import process_function_reply
-
 
 def make_view(robot):
     """
@@ -53,7 +50,7 @@ def make_view(robot):
             nonce=nonce,
             signature=signature
         )
-        response = make_response(self.get_encrypted_reply(message))
+        response = make_response(robot.get_encrypted_reply(message))
         response.headers['content_type'] = 'application/xml'
         return response
 

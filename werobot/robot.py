@@ -3,7 +3,6 @@ from __future__ import absolute_import, unicode_literals
 
 import six
 import inspect
-import logging
 
 import werobot
 
@@ -258,10 +257,7 @@ class BaseRoBot(object):
     def get_handlers(self, type):
         return self._handlers.get(type, []) + self._handlers['all']
 
-    def parse_message(
-            self, body,
-            timestamp=None, nonce=None, msg_signature=None
-        ):
+    def parse_message(self, body, timestamp=None, nonce=None, msg_signature=None):
         """
         解析获取到的 Raw XML ，如果需要的话进行解密，返回 WeRoBot Message。
         :param body: 微信服务器发来的请求中的 Body。
@@ -269,7 +265,7 @@ class BaseRoBot(object):
         """
         message_dict = parse_xml(body)
         if "Encrypt" in message_dict:
-            xml = robot.crypto.decrypt_message(
+            xml = self.crypto.decrypt_message(
                 timestamp=timestamp,
                 nonce=nonce,
                 msg_signature=msg_signature,
@@ -365,9 +361,7 @@ class WeRoBot(BaseRoBot):
         from werobot.crontrib.bottle import make_view
 
         app = Bottle()
-        
-
-
+        app.route('<t:path>', ['GET', 'POST'], make_view(self))
 
     def run(self, server=None, host=None,
             port=None, enable_pretty_logging=True):

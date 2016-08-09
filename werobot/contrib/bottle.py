@@ -3,8 +3,6 @@ from __future__ import absolute_import
 
 from bottle import request, abort
 
-from werobot.replies import process_function_reply
-
 
 def make_view(robot):
     """
@@ -41,7 +39,7 @@ def make_view(robot):
             request.query.signature
         ):
             return abort(403)
-        if request.method == 'GET':        
+        if request.method == 'GET':
             return request.query.echostr
         else:
             body = request.body.read()
@@ -51,5 +49,5 @@ def make_view(robot):
                 nonce=request.query.nonce,
                 msg_signature=request.query.msg_signature
             )
-            return self.get_encrypted_reply(message)
+            return robot.get_encrypted_reply(message)
     return werobot_view

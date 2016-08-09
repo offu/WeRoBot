@@ -73,8 +73,8 @@ def test_flask_bottle_and_tornado():
     from werobot import WeRoBot
     from webtest import TestApp
     from webtest.app import AppError
-    from werobot.contrib.flask import make_view
-    from werobot.contrib.bottle import make_view
+    from werobot.contrib.flask import make_view as flask_make_view
+    from werobot.contrib.bottle import make_view as bottle_make_view
     from flask import Flask
     from werobot.parser import process_message, parse_xml
     from tornado.wsgi import WSGIAdapter
@@ -97,20 +97,21 @@ def test_flask_bottle_and_tornado():
 
     flask_app = Flask(__name__)
     flask_app.debug = True
-    flask_app.add_url_rule(rule='/robot/',
-                     endpoint='werobot',
-                     view_func=make_view(robot),
-                     methods=['GET', 'POST'])
+    flask_app.add_url_rule(
+        rule='/robot/',
+        endpoint='werobot',
+        view_func=flask_make_view(robot),
+        methods=['GET', 'POST']
+    )
     apps.append(flask_app)
 
     from bottle import Bottle
-    from werobot.contrib.bottle import make_view
 
     bottle_app = Bottle()
     bottle_app.route(
         '/robot/',
         ['GET', 'POST'],
-        make_view(robot)
+        bottle_make_view(robot)
     )
     apps.append(bottle_app)
 
