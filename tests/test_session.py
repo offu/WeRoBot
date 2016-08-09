@@ -90,17 +90,15 @@ def test_session_storage_delete():
         session.delete('s')
 
 
-def test_storage():
-    session_storages = [
-        filestorage.FileStorage(),
-        mongodbstorage.MongoDBStorage(pymongo.MongoClient().t.t),
-        redisstorage.RedisStorage(redis.Redis()),
-        sqlitestorage.SQLiteStorage(),
-    ]
-
-    for storage in session_storages:
-        assert storage.get("喵") == {}
-        storage.set("喵", "喵喵")
-        assert storage.get("喵") == u"喵喵"
-        storage.delete("喵")
-        assert storage.get("喵") == {}
+@pytest.mark.parametrize("storage", [
+    filestorage.FileStorage(),
+    mongodbstorage.MongoDBStorage(pymongo.MongoClient().t.t),
+    redisstorage.RedisStorage(redis.Redis()),
+    sqlitestorage.SQLiteStorage(),
+])
+def test_storage(storage):
+    assert storage.get("喵") == {}
+    storage.set("喵", "喵喵")
+    assert storage.get("喵") == u"喵喵"
+    storage.delete("喵")
+    assert storage.get("喵") == {}

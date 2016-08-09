@@ -49,7 +49,7 @@ def make_view(robot):
             request.data,
             timestamp=timestamp,
             nonce=nonce,
-            signature=signature
+            msg_signature=request.args.get('msg_signature', '')
         )
         response = make_response(robot.get_encrypted_reply(message))
         response.headers['content_type'] = 'application/xml'

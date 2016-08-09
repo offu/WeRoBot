@@ -49,15 +49,15 @@ def make_handler(robot):
         def post(self):
             timestamp = self.get_argument('timestamp', '')
             nonce = self.get_argument('nonce', '')
-            signature = self.get_argument('signature', '')
+            msg_signature = self.get_argument('msg_signature', '')
             message = robot.parse_message(
                 self.request.body,
                 timestamp=timestamp,
                 nonce=nonce,
-                signature=signature
+                msg_signature=msg_signature
             )
             self.set_header("Content-Type",
                             "application/xml;charset=utf-8")
-            self.write(self.get_encrypted_reply(message))
+            self.write(robot.get_encrypted_reply(message))
 
     return WeRoBotHandler
