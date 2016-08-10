@@ -21,7 +21,7 @@ def test_text_message():
     assert message.time == 1348831860
     assert message.type == "text"
     assert message.content == "this is a test"
-    assert message.id == 1234567890123456
+    assert message.message_id == 1234567890123456
 
 
 def test_image_message():
@@ -40,7 +40,7 @@ def test_image_message():
     assert message.time == 1348831860
     assert message.type == "image"
     assert message.img == "this is a url"
-    assert message.id == 1234567890123456
+    assert message.message_id == 1234567890123456
 
 
 def test_location_message():
@@ -64,7 +64,7 @@ def test_location_message():
     assert message.location == (23.134521, 113.358803)
     assert message.scale == 20
     assert message.label == "Location"
-    assert message.id == 1234567890123456
+    assert message.message_id == 1234567890123456
 
 
 def test_link_message():
@@ -87,7 +87,7 @@ def test_link_message():
     assert message.title == "WeRoBot"
     assert message.description == "Link to WeRoBot"
     assert message.url == "https://github.com/whtsky/WeRoBot"
-    assert message.id == 1234567890123456
+    assert message.message_id == 1234567890123456
 
 
 def test_voice_message():
@@ -110,7 +110,7 @@ def test_voice_message():
     assert message.media_id == "media_id"
     assert message.format == "Format"
     assert message.recognition == "Meow~"
-    assert message.id == 1234567890123456
+    assert message.message_id == 1234567890123456
 
 
 def test_unknown_message():
