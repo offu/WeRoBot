@@ -1,21 +1,33 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
-from werobot.robot import BaseRoBot
-from werobot.parser import parse_xml, process_message
 from tornado.web import RequestHandler, HTTPError
-from werobot.replies import process_function_reply
-import logging
 
 
 def make_handler(robot):
     """
     为一个 BaseRoBot 生成 Tornado Handler。
 
+    Usage ::
+
+        import tornado.ioloop
+        import tornado.web
+        from werobot import WeRoBot
+        from tornado_werobot import make_handler
+
+        robot = WeRoBot(token='token')
+
+
+        @robot.handler
+        def hello(message):
+            return 'Hello World!'
+
+        application = tornado.web.Application([
+            (r"/", make_handler(robot)),
+        ])
+
     :param robot: 一个 BaseRoBot 实例。
     :return: 一个标准的 Tornado Handler
     """
-    assert isinstance(robot, BaseRoBot), \
-        "RoBot should be an BaseRoBot instance."
 
     class WeRoBotHandler(RequestHandler):
         def prepare(self):
@@ -37,35 +49,15 @@ def make_handler(robot):
         def post(self):
             timestamp = self.get_argument('timestamp', '')
             nonce = self.get_argument('nonce', '')
-            signature = self.get_argument('signature', '')
-            body = self.request.body
-            message_dict = parse_xml(body)
-            # Encrypt support
-            if "Encrypt" in message_dict:
-                xml = self.crypto.decrypt_message(
-                    timestamp=timestamp,
-                    nonce=nonce,
-                    msg_signature=signature,
-                    encrypt_msg=message_dict["Encrypt"]
-                )
-                message_dict = parse_xml(xml)
-
-            message = process_message(message_dict)
-            logging.info("Receive message %s" % message)
+            msg_signature = self.get_argument('msg_signature', '')
+            message = robot.parse_message(
+                self.request.body,
+                timestamp=timestamp,
+                nonce=nonce,
+                msg_signature=msg_signature
+            )
             self.set_header("Content-Type",
                             "application/xml;charset=utf-8")
-
-            reply = robot.get_reply(message)
-            if reply is None:
-                self.write("")
-                return
-            # Encrypt support
-            if robot.use_encryption:
-                reply = robot.crypto.encrypt_message(reply)
-            else:
-                reply = process_function_reply(reply,
-                                               message=message
-                                               ).render()
-            self.write(reply)
+            self.write(robot.get_encrypted_reply(message))
 
     return WeRoBotHandler

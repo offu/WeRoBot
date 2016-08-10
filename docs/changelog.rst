@@ -12,13 +12,15 @@ Version 1.0.0
 + 增加 :class:`werobot.reply.VideoReply`
 + 删除 :func:`werobot.reply.create_reply`
 + 为 :class:`werobot.reply.WeChatReply` 增加 ``process_args`` 方法
++ 为 :class:`werobot.robot.BaseRoBot` 增加 ``parse_message`` 方法
++ 为 :class:`werobot.robot.BaseRoBot` 增加 ``get_encrypted_reply`` 方法
 + 删去了 Reply 中过时的 flag
 + 修复 :class:`werobot.session.filestorage.FileStorage` 在 PyPy 下的兼容性问题
 + 增加 :class:`werobot.session.sqlitestorage.SQLiteStorage`
 + 将默认的 SessionBackend 切换为 :class:`werobot.session.sqlitestorage.SQLiteStorage`
 + 将图文消息单个消息的渲染函数放到 :class:`werobot.replies.Article` 内
 + 取消对 Python2.6, Python3.3 的支持
-+ 增加与 Django 1.6+, Flask, Tornado 集成的支持
++ 增加与 Django 1.6+, Flask, Bottle, Tornado 集成的支持
 
 Version 0.6.1
 ----------------
