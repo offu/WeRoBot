@@ -2,22 +2,11 @@
 
 import six
 from werobot.messages.entries import StringEntry, IntEntry, FloatEntry
+from werobot.messages.base import WeRoBotMetaClass
 
-EVENT_TYPES = {}
 
-
-class EventMetaClass(type):
-    def __new__(mcs, name, bases, attrs):
-        return type.__new__(mcs, name, bases, attrs)
-
-    def __init__(cls, name, bases, attrs):
-        if '__type__' in attrs:
-            if isinstance(attrs['__type__'], list):
-                for _type in attrs['__type__']:
-                    EVENT_TYPES[_type] = cls
-            else:
-                EVENT_TYPES[attrs['__type__']] = cls
-        type.__init__(cls, name, bases, attrs)
+class EventMetaClass(WeRoBotMetaClass):
+    pass
 
 
 @six.add_metaclass(EventMetaClass)
@@ -25,6 +14,7 @@ class WeChatEvent(object):
     target = StringEntry('ToUserName')
     source = StringEntry('FromUserName')
     time = IntEntry('CreateTime')
+    message_id = IntEntry('MsgID', 0)
 
     def __init__(self, message):
         self.__dict__.update(message)
@@ -64,6 +54,11 @@ class LocationEvent(WeChatEvent):
     latitude = FloatEntry('Latitude')
     longitude = FloatEntry('Longitude')
     precision = FloatEntry('Precision')
+
+
+class TemplateSendJobFinishEvent(WeChatEvent):
+    __type__ = 'templatesendjobfinish_event'
+    status = StringEntry('Status')
 
 
 class UnknownEvent(WeChatEvent):

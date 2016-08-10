@@ -21,7 +21,7 @@ def test_text_message():
     assert message.time == 1348831860
     assert message.type == "text"
     assert message.content == "this is a test"
-    assert message.id == 1234567890123456
+    assert message.message_id == 1234567890123456
 
 
 def test_image_message():
@@ -40,7 +40,7 @@ def test_image_message():
     assert message.time == 1348831860
     assert message.type == "image"
     assert message.img == "this is a url"
-    assert message.id == 1234567890123456
+    assert message.message_id == 1234567890123456
 
 
 def test_location_message():
@@ -64,7 +64,7 @@ def test_location_message():
     assert message.location == (23.134521, 113.358803)
     assert message.scale == 20
     assert message.label == "Location"
-    assert message.id == 1234567890123456
+    assert message.message_id == 1234567890123456
 
 
 def test_link_message():
@@ -87,7 +87,7 @@ def test_link_message():
     assert message.title == "WeRoBot"
     assert message.description == "Link to WeRoBot"
     assert message.url == "https://github.com/whtsky/WeRoBot"
-    assert message.id == 1234567890123456
+    assert message.message_id == 1234567890123456
 
 
 def test_voice_message():
@@ -110,7 +110,7 @@ def test_voice_message():
     assert message.media_id == "media_id"
     assert message.format == "Format"
     assert message.recognition == "Meow~"
-    assert message.id == 1234567890123456
+    assert message.message_id == 1234567890123456
 
 
 def test_unknown_message():
@@ -257,6 +257,34 @@ def test_location_event():
     assert message.latitude == 23.137466
     assert message.longitude == 113.352425
     assert message.precision == 119.385040
+
+
+def test_template_send_job_finish_event():
+    message = parse_user_msg("""
+    <xml>
+        <ToUserName><![CDATA[gh_7f083739789a]]></ToUserName>
+        <FromUserName><![CDATA[oia2TjuEGTNoeX76QEjQNrcURxG8]]></FromUserName>
+        <CreateTime>1395658920</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[TEMPLATESENDJOBFINISH]]></Event>
+        <MsgID>200163836</MsgID>
+        <Status><![CDATA[success]]></Status>
+    </xml>
+    """)
+    assert message.message_id == 200163836
+    assert message.status == 'success'
+
+    assert parse_user_msg("""
+    <xml>
+        <ToUserName><![CDATA[gh_7f083739789a]]></ToUserName>
+        <FromUserName><![CDATA[oia2TjuEGTNoeX76QEjQNrcURxG8]]></FromUserName>
+        <CreateTime>1395658984</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[TEMPLATESENDJOBFINISH]]></Event>
+        <MsgID>200163840</MsgID>
+        <Status><![CDATA[failed: system failed]]></Status>
+    </xml>
+    """).status == 'failed: system failed'
 
 
 def test_unknown_event():
