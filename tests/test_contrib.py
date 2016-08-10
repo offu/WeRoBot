@@ -1,10 +1,69 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 import time
 import random
+import pytest
+
+from werobot.parser import process_message, parse_xml
 from werobot.utils import generate_token, get_signature
-import sys
+from webtest import TestApp
+from webtest.app import AppError
+
+
+@pytest.fixture
+def wsgi_tester():
+    def tester(app, token, endpoint):
+
+        test_app = TestApp(app)
+
+        timestamp = str(time.time())
+        nonce = str(random.randint(0, 10000))
+        signature = get_signature(token, timestamp, nonce)
+        echostr = generate_token()
+
+        params = "?timestamp=%s&nonce=%s&signature=%s&echostr=%s" % (
+            timestamp, nonce, signature, echostr
+        )
+        response = test_app.get(endpoint + params)
+
+        assert response.status_code == 200
+        assert response.body.decode('utf-8') == echostr
+
+        xml = """
+                <xml>
+                    <ToUserName><![CDATA[toUser]]></ToUserName>
+                    <FromUserName><![CDATA[fromUser]]></FromUserName>
+                    <CreateTime>1348831860</CreateTime>
+                    <MsgType><![CDATA[text]]></MsgType>
+                    <Content><![CDATA[this is a test]]></Content>
+                    <MsgId>1234567890123456</MsgId>
+                </xml>
+                """
+        with pytest.raises(AppError):
+            # WebTest will raise an AppError
+            # if the status_code is not >= 200 and < 400.
+            test_app.post(endpoint, xml, content_type="text/xml")
+
+        response = test_app.post(endpoint + params, xml, content_type="text/xml")
+
+        assert response.status_code == 200
+        response = process_message(parse_xml(response.body))
+        assert response.content == 'hello'
+    return tester
+
+
+@pytest.fixture(scope="module")
+def hello_robot():
+    from werobot import WeRoBot
+    robot = WeRoBot(token='', enable_session=False)
+
+    @robot.text
+    def hello():
+        return 'hello'
+
+    return robot
 
 
 def test_django():
@@ -12,7 +71,7 @@ def test_django():
         "DJANGO_SETTINGS_MODULE",
         "django_test.settings")
     sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                 '../werobot/tests/contrib/django_test/'))
+                                 'django_test_env'))
 
     from django.test.utils import setup_test_environment
     setup_test_environment()
@@ -69,76 +128,56 @@ def test_django():
     assert response.content == 'hello'
 
 
-def test_flask_and_tornado():
-    from werobot import WeRoBot
-    from webtest import TestApp
-    from webtest.app import AppError
-    from werobot.contrib.flask import make_view
+def test_flask(wsgi_tester, hello_robot):
     from flask import Flask
-    from werobot.parser import process_message, parse_xml
+    from werobot.contrib.flask import make_view
+
+    token = generate_token()
+    endpoint = '/werobot_flask'
+
+    hello_robot.token = token
+    flask_app = Flask(__name__)
+    flask_app.debug = True
+
+    flask_app.add_url_rule(
+        rule=endpoint,
+        endpoint='werobot',
+        view_func=make_view(hello_robot),
+        methods=['GET', 'POST']
+    )
+
+    wsgi_tester(flask_app, token=token, endpoint=endpoint)
+
+
+def test_bottle(wsgi_tester, hello_robot):
+    from werobot.contrib.bottle import make_view
+    from bottle import Bottle
+
+    token = generate_token()
+    endpoint = '/werobot_bottle'
+
+    hello_robot.token = token
+
+    bottle_app = Bottle()
+    bottle_app.route(
+        endpoint,
+        ['GET', 'POST'],
+        make_view(hello_robot)
+    )
+
+    wsgi_tester(bottle_app, token=token, endpoint=endpoint)
+
+
+def test_tornado(wsgi_tester, hello_robot):
     from tornado.wsgi import WSGIAdapter
     import tornado.web
     from werobot.contrib.tornado import make_handler
 
-    token = 'TestFlask'
-    timestamp = str(time.time())
-    nonce = str(random.randint(0, 10000))
-    signature = get_signature(token, timestamp, nonce)
-    echostr = generate_token()
+    token = generate_token()
+    endpoint = r'/werobot_tornado'
+    hello_robot.token = token
 
-    apps = []
-
-    app = Flask(__name__)
-    robot = WeRoBot(token=token, enable_session=False)
-
-    @robot.text
-    def hello():
-        return 'hello'
-
-    app.add_url_rule(rule='/robot/',
-                     endpoint='werobot',
-                     view_func=make_view(robot),
-                     methods=['GET', 'POST'])
-    app = TestApp(app)
-    apps.append(app)
-
-    handler = make_handler(robot)
-    application = tornado.web.Application([
-        (r"/robot/", handler),
-    ])
-    app = TestApp(WSGIAdapter(application))
-    apps.append(app)
-
-    params = "?timestamp=%s&nonce=%s&signature=%s&echostr=%s" % \
-             (timestamp, nonce, signature, echostr)
-
-    for app in apps:
-        url = '/robot/' + params
-        response = app.get(url)
-
-        assert response.status_code == 200
-        assert response.body.decode('utf-8') == echostr
-
-        url = '/robot/'
-        xml = """
-                <xml>
-                    <ToUserName><![CDATA[toUser]]></ToUserName>
-                    <FromUserName><![CDATA[fromUser]]></FromUserName>
-                    <CreateTime>1348831860</CreateTime>
-                    <MsgType><![CDATA[text]]></MsgType>
-                    <Content><![CDATA[this is a test]]></Content>
-                    <MsgId>1234567890123456</MsgId>
-                </xml>"""
-        try:
-            app.post(url, xml, content_type="text/xml")
-        except AppError:
-            # WebTest will raise an AppError
-            # if the status_code is not >= 200 and < 400.
-            pass
-
-        url += params
-        response = app.post(url, xml, content_type="text/xml")
-
-        assert response.status_code == 200
-        response = process_message(parse_xml(response.body))
-        assert response.content == 'hello'
+    tornado_app = tornado.web.Application([
+        (endpoint, make_handler(hello_robot)),
+    ], debug=True)
+    wsgi_tester(WSGIAdapter(tornado_app), token=token, endpoint=endpoint)

@@ -60,3 +60,4 @@ pip-selfcheck.json
 venv
 
 *.sqlite3
+/.vscode
