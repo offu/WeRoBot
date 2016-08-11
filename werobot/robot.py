@@ -362,6 +362,7 @@ class WeRoBot(BaseRoBot):
 
         app = Bottle()
         app.route('<t:path>', ['GET', 'POST'], make_view(self))
+        return app
 
     def run(self, server=None, host=None,
             port=None, enable_pretty_logging=True):
