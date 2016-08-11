@@ -22,7 +22,6 @@ matrix:
 cache:
   directories:
   - $HOME/.pyenv
-  - $HOME/Library/Caches/pip
 install:
   - "source travis/install.sh"
 
