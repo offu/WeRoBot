@@ -15,7 +15,6 @@ from webtest.app import AppError
 @pytest.fixture
 def wsgi_tester():
     def tester(app, token, endpoint):
-
         test_app = AppForTest(app)
 
         timestamp = str(time.time())
@@ -51,6 +50,7 @@ def wsgi_tester():
         assert response.status_code == 200
         response = process_message(parse_xml(response.body))
         assert response.content == 'hello'
+
     return tester
 
 
@@ -85,7 +85,7 @@ def test_django():
         # Django1.6 doesn't have django.setup()
         pass
 
-    c = Client()
+    client = Client()
 
     token = 'TestDjango'
     timestamp = str(time.time())
@@ -93,10 +93,10 @@ def test_django():
     signature = get_signature(token, timestamp, nonce)
     echostr = generate_token()
 
-    response = c.get('/robot/', {'signature': signature,
-                                 'timestamp': timestamp,
-                                 'nonce': nonce,
-                                 'echostr': echostr})
+    response = client.get('/robot/', {'signature': signature,
+                                      'timestamp': timestamp,
+                                      'nonce': nonce,
+                                      'echostr': echostr})
     assert response.status_code == 200
     assert response.content.decode('utf-8') == echostr
 
@@ -112,16 +112,16 @@ def test_django():
     params = "?timestamp=%s&nonce=%s&signature=%s" % \
              (timestamp, nonce, signature)
     url = '/robot/'
-    response = c.post(url,
-                      data=xml,
-                      content_type="text/xml")
+    response = client.post(url,
+                           data=xml,
+                           content_type="text/xml")
 
     assert response.status_code == 403
 
     url += params
-    response = c.post(url,
-                      data=xml,
-                      content_type="text/xml")
+    response = client.post(url,
+                           data=xml,
+                           content_type="text/xml")
 
     assert response.status_code == 200
     response = process_message(parse_xml(response.content))
