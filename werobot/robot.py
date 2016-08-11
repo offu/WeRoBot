@@ -358,10 +358,11 @@ class WeRoBot(BaseRoBot):
         if not self._handlers:
             raise
         from bottle import Bottle
-        from werobot.crontrib.bottle import make_view
+        from werobot.contrib.bottle import make_view
 
         app = Bottle()
         app.route('<t:path>', ['GET', 'POST'], make_view(self))
+        return app
 
     def run(self, server=None, host=None,
             port=None, enable_pretty_logging=True):
