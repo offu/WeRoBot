@@ -8,7 +8,7 @@ import pytest
 
 from werobot.parser import process_message, parse_xml
 from werobot.utils import generate_token, get_signature
-from webtest import TestApp
+from webtest import TestApp as AppForTest
 from webtest.app import AppError
 
 
@@ -16,7 +16,7 @@ from webtest.app import AppError
 def wsgi_tester():
     def tester(app, token, endpoint):
 
-        test_app = TestApp(app)
+        test_app = AppForTest(app)
 
         timestamp = str(time.time())
         nonce = str(random.randint(0, 10000))
