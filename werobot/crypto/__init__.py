@@ -125,7 +125,7 @@ class MessageCrypt(object):
         if hasattr(reply, "render"):
             reply = reply.render()
 
-        timestamp = timestamp or to_text(int(time.time()))
+        timestamp = timestamp or str(int(time.time()))
         nonce = nonce or generate_token(5)
         encrypt = to_text(self.prp_crypto.encrypt(reply, self.app_id))
         signature = get_signature(self.token, timestamp, nonce, encrypt)
