@@ -48,7 +48,7 @@ class PrpCrypto(object):
         """
         text = b"".join([
             to_binary(self.get_random_string()),
-            struct.pack(b"I", socket.htonl(len(text))),
+            struct.pack(b"I", socket.htonl(len(to_binary(text)))),
             to_binary(text),
             to_binary(app_id)
         ])
@@ -125,7 +125,7 @@ class MessageCrypt(object):
         if hasattr(reply, "render"):
             reply = reply.render()
 
-        timestamp = timestamp or int(time.time())
+        timestamp = timestamp or to_text(int(time.time()))
         nonce = nonce or generate_token(5)
         encrypt = to_text(self.prp_crypto.encrypt(reply, self.app_id))
         signature = get_signature(self.token, timestamp, nonce, encrypt)
