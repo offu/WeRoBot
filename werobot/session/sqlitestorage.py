@@ -4,7 +4,6 @@ from werobot.session import SessionStorage
 from werobot.utils import json_loads, json_dumps
 import sqlite3
 
-
 __CREATE_TABLE_SQL__ = """CREATE TABLE IF NOT EXISTS WeRoBot
                             (id TEXT PRIMARY KEY NOT NULL ,
                             value TEXT NOT NULL );"""
@@ -25,7 +24,7 @@ class SQLiteStorage(SessionStorage):
     """
 
     def __init__(self, filename='werobot_session.sqlite3'):
-        self.db = sqlite3.connect(filename)
+        self.db = sqlite3.connect(filename, check_same_thread=False)
         self.db.text_factory = str
         self.db.execute(__CREATE_TABLE_SQL__)
 
