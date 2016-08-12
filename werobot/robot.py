@@ -252,7 +252,7 @@ class BaseRoBot(object):
         if not callable(func):
             raise ValueError("{} is not callable".format(func))
 
-        self._handlers[type].append((func, len(inspect.getargspec(func).args)))
+        self._handlers[type].append((func, inspect.getargspec(func).args))
 
     def get_handlers(self, type):
         return self._handlers.get(type, []) + self._handlers['all']
@@ -288,9 +288,13 @@ class BaseRoBot(object):
 
         handlers = self.get_handlers(message.type)
         try:
-            for handler, args_count in handlers:
-                args = [message, session][:args_count]
-                reply = handler(*args)
+            for handler, args in handlers:
+                args_count = len(args)
+                handler_args = [message, session]
+                if 'self' in args:
+                    handler_args = ['self'] + handler_args
+                handler_args = handler_args[:args_count]
+                reply = handler(*handler_args)
                 if session_storage and id:
                     session_storage[id] = session
                 if reply:
