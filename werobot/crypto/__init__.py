@@ -46,12 +46,8 @@ class PrpCrypto(object):
         :param app_id: 微信公众平台的 AppID
         :return: 加密后的字符串
         """
-        text = b"".join([
-            to_binary(self.get_random_string()),
-            struct.pack(b"I", socket.htonl(len(text))),
-            to_binary(text),
-            to_binary(app_id)
-        ])
+        text = to_binary(self.get_random_string()) + struct.pack("I", socket.htonl(len(to_binary(text)))) + to_binary(
+            text) + to_binary(app_id)
         text = pkcs7.encode(text)
         encryptor = self.cipher.encryptor()
         ciphertext = to_binary(encryptor.update(text) + encryptor.finalize())
