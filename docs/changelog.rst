@@ -22,6 +22,7 @@ Version 1.0.0
 + 将图文消息单个消息的渲染函数放到 :class:`werobot.replies.Article` 内
 + 取消对 Python2.6, Python3.3 的支持
 + 增加与 Django 1.6+, Flask, Bottle, Tornado 集成的支持
++ 替换 `inspect.getargspec()` 
 
 Version 0.6.1
 ----------------

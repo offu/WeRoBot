@@ -2,7 +2,6 @@
 from __future__ import absolute_import, unicode_literals
 
 import six
-import inspect
 
 import werobot
 
@@ -11,6 +10,11 @@ from werobot.exceptions import ConfigError
 from werobot.parser import parse_xml, process_message
 from werobot.replies import process_function_reply
 from werobot.utils import to_binary, to_text, check_signature
+
+try:
+    from inspect import signature
+except ImportError:
+    from funcsigs import signature
 
 __all__ = ['BaseRoBot', 'WeRoBot']
 
@@ -189,7 +193,7 @@ class BaseRoBot(object):
         """
 
         def wraps(f):
-            argc = len(inspect.getargspec(f).args)
+            argc = len(signature(f).parameters.keys())
 
             @self.click
             def onclick(message, session=None):
@@ -234,7 +238,7 @@ class BaseRoBot(object):
                 for x in args:
                     self.filter(x)(f)
                 return f
-            argc = len(inspect.getargspec(f).args)
+            argc = len(signature(f).parameters.keys())
 
             @self.text
             def _f(message, session=None):
@@ -252,7 +256,7 @@ class BaseRoBot(object):
         if not callable(func):
             raise ValueError("{} is not callable".format(func))
 
-        self._handlers[type].append((func, len(inspect.getargspec(func).args)))
+        self._handlers[type].append((func, len(signature(func).parameters.keys())))
 
     def get_handlers(self, type):
         return self._handlers.get(type, []) + self._handlers['all']

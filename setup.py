@@ -3,12 +3,18 @@
 
 import io
 import werobot
+import platform
 
 from setuptools import setup, find_packages
 
 with io.open("README.rst", encoding="utf8") as f:
     readme = f.read().replace("develop", "master")
 readme = readme.replace("latest", werobot.__version__)
+
+version = platform.python_version_tuple()
+install_requires = open("requirements.txt").readlines()
+if version < ('3', '3'):
+    install_requires.append('funcsigs')
 
 setup(
     name='WeRoBot',
@@ -23,7 +29,7 @@ setup(
     setup_requires=[
         'pytest-runner',
     ],
-    install_requires=open("requirements.txt").readlines(),
+    install_requires=install_requires,
     include_package_data=True,
     license='MIT License',
     classifiers=[
