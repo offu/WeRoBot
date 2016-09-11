@@ -177,24 +177,16 @@ API
 
 .. module:: werobot.contrib.django
 .. autofunction:: make_view
-
-.. module:: werobot.contrib.django
 .. autofunction:: make_error_view
 
 .. module:: werobot.contrib.flask
 .. autofunction:: make_view
-
-.. module:: werobot.contrib.flask
 .. autofunction:: make_error_view
 
 .. module:: werobot.contrib.bottle
 .. autofunction:: make_view
-
-.. module:: werobot.contrib.bottle
 .. autofunction:: make_error_view
 
 .. module:: werobot.contrib.tornado
 .. autofunction:: make_handler
-
-.. module:: werobot.contrib.tornado
 .. autofunction:: make_error_handler
