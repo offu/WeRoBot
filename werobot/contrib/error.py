@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+def get_error_content():
+    return """
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -55,3 +58,4 @@
     <p>更多信息请与网站所有者联系</p>
 </body>
 </html>
+"""

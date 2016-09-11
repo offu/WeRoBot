@@ -2,6 +2,7 @@
 from __future__ import absolute_import
 
 from flask import request, make_response
+from werobot.contrib.error import get_error_content
 
 
 def make_view(robot):
@@ -56,3 +57,18 @@ def make_view(robot):
         return response
 
     return werobot_view
+
+
+def make_error_view():
+    """
+    生成一个 Flask view 展示错误页面
+
+    :return: 一个标准的 Flask view
+    """
+
+    def error_view():
+        response = make_response(get_error_content())
+        response.headers['content_type'] = "text/html"
+        return response
+
+    return error_view

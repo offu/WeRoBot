@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 from tornado.web import RequestHandler, HTTPError
+from werobot.contrib.error import get_error_content
 
 
 def make_handler(robot):
@@ -61,3 +62,19 @@ def make_handler(robot):
             self.write(robot.get_encrypted_reply(message))
 
     return WeRoBotHandler
+
+
+def make_error_handler():
+    """
+    生成一个 Tornado Handler 展示错误页面
+
+    :return: 一个标准的 Tornado Handler
+    """
+
+    class ErrorHandler(RequestHandler):
+        def get(self, *args, **kwargs):
+            self.set_header("Content-Type",
+                            "text/html")
+            self.write(get_error_content())
+
+    return ErrorHandler

@@ -3,6 +3,7 @@ from __future__ import absolute_import
 
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotAllowed
 from django.views.decorators.csrf import csrf_exempt
+from werobot.contrib.error import get_error_content
 
 
 def make_view(robot):
@@ -42,3 +43,20 @@ def make_view(robot):
         return HttpResponseNotAllowed(['GET', 'POST'])
 
     return werobot_view
+
+
+def make_error_view():
+    """
+    生成一个 Django view 展示错误页面
+
+    :return: 一个标准的 Django view
+    """
+
+    @csrf_exempt
+    def error_view():
+        return HttpResponse(
+            get_error_content(),
+            content_type="text/html"
+        )
+
+    return error_view
