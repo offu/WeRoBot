@@ -37,9 +37,9 @@ def make_view(robot):
 
     def werobot_view(*args, **kwargs):
         if not robot.check_signature(
-                request.query.timestamp,
-                request.query.nonce,
-                request.query.signature
+            request.query.timestamp,
+            request.query.nonce,
+            request.query.signature
         ):
             return abort(403)
         if request.method == 'GET':
