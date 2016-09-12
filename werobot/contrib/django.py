@@ -4,6 +4,7 @@ from __future__ import absolute_import
 from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
 import os
+import io
 
 
 def make_view(robot):
@@ -25,7 +26,7 @@ def make_view(robot):
                 nonce=nonce,
                 signature=signature
         ):
-            with open(
+            with io.open(
                     os.path.join(os.path.dirname(__file__), 'error.html'), 'r', encoding='utf-8'
             ) as error_page:
                 return HttpResponseForbidden(error_page.read())

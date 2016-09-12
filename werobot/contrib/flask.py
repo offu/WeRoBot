@@ -3,6 +3,7 @@ from __future__ import absolute_import
 
 from flask import request, make_response
 import os
+import io
 
 
 def make_view(robot):
@@ -42,7 +43,7 @@ def make_view(robot):
                 nonce,
                 signature,
         ):
-            with open(
+            with io.open(
                     os.path.join(os.path.dirname(__file__), 'error.html'), 'r', encoding='utf-8'
             ) as error_page:
                 return error_page.read(), 403
