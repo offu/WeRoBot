@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseForbid
 from django.views.decorators.csrf import csrf_exempt
 import os
 import io
+import html
 
 
 def make_view(robot):
@@ -29,7 +30,8 @@ def make_view(robot):
             with io.open(
                     os.path.join(os.path.dirname(__file__), 'error.html'), 'r', encoding='utf-8'
             ) as error_page:
-                return HttpResponseForbidden(error_page.read())
+                return HttpResponseForbidden(error_page.read().replace('{url}',
+                                                                       html.escape(request.url)))
 
         if request.method == "GET":
             return HttpResponse(request.GET.get("echostr", ""))
