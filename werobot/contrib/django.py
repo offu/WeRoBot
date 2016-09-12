@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotAllowed
+from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
-from werobot.contrib.error import get_error_content
+import os
 
 
 def make_view(robot):
@@ -25,7 +25,10 @@ def make_view(robot):
                 nonce=nonce,
                 signature=signature
         ):
-            return HttpResponseForbidden()
+            with open(
+                    os.path.join(os.path.dirname(__file__), 'error.html'), 'r', encoding='utf-8'
+            ) as error_page:
+                return HttpResponseForbidden(error_page.read())
 
         if request.method == "GET":
             return HttpResponse(request.GET.get("echostr", ""))
@@ -43,20 +46,3 @@ def make_view(robot):
         return HttpResponseNotAllowed(['GET', 'POST'])
 
     return werobot_view
-
-
-def make_error_view():
-    """
-    生成一个 Django view 展示错误页面
-
-    :return: 一个标准的 Django view
-    """
-
-    @csrf_exempt
-    def error_view():
-        return HttpResponse(
-            get_error_content(),
-            content_type="text/html"
-        )
-
-    return error_view

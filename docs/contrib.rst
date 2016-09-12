@@ -30,17 +30,6 @@ WeRoBot 支持 Django 1.6+。
         url(r'^robot/', make_view(robot)),
     )
 
-如果有必要，你还可以调用 :func:`werobot.contrib.django.make_error_view`，加入一个 error page ::
-
-    from django.conf.urls import patterns, include, url
-    from werobot.contrib.django import make_view, make_error_view
-    from robot import robot
-
-    urlpatterns = patterns('',
-        url(r'^robot/', make_view(robot)),
-        url(r'^/', make_error_view())
-    )
-
 Flask
 ----------
 首先, 同样在文件中写好你的微信机器人 ::
@@ -68,21 +57,6 @@ Flask
                      view_func=make_view(robot),
                      methods=['GET', 'POST'])
 
-如果有必要，你可以调用 :func:`werobot.contrib.flask.make_error_view`，加入一个 error page ::
-
-    from flask import Flask
-    from robot import robot
-    from werobot.contrib.flask import make_view, make_error_view
-
-    app = Flask(__name__)
-    app.add_url_rule(rule='/robot/', # WeRoBot 挂载地址
-                     endpoint='werobot', # Flask 的 endpoint
-                     view_func=make_view(robot),
-                     methods=['GET', 'POST'])
-    app.add_url_rule(rule='/',
-                     view_func=make_error_view,
-                     methods=['GET', 'POST'])
-
 Bottle
 --------
 在你的 Bottle App 中集成 WeRoBot ::
@@ -102,28 +76,6 @@ Bottle
     app.route('/robot',  # WeRoBot 挂载地址
              ['GET', 'POST'],
              make_view(robot))
-
-如果有必要，调用 :func:`werobot.contrib.bottle.make_error_view`，加入一个 error page ::
-
-    from werobot import WeRoBot
-    from werobot.contrib.bottle import make_error_view
-
-    robot = WeRoBot(token='token')
-
-    @robot.handler
-    def hello(message):
-        return 'Hello World!'
-
-    from bottle import Bottle
-    from werobot.contrib.bottle import make_view
-
-    app = Bottle()
-    app.route('/robot',  # WeRoBot 挂载地址
-             ['GET', 'POST'],
-             make_view(robot))
-    app.route('/',
-             ['GET', 'POST'],
-             make_error_view())
 
 Tornado
 ----------
@@ -149,44 +101,17 @@ Tornado
         application.listen(8888)
         tornado.ioloop.IOLoop.instance().start()
 
-如果有必要，调用 :func:`werobot.contrib.tornado.make_error_handler`，加入一个 error page ::
-
-    import tornado.ioloop
-    import tornado.web
-    from werobot import WeRoBot
-    from werobot.contrib.tornado import make_handler, make_error_handler
-
-    robot = WeRoBot(token='token')
-
-
-    @robot.handler
-    def hello(message):
-        return 'Hello World!'
-
-    application = tornado.web.Application([
-        (r"/robot", make_handler(robot)),
-        (r"/", make_error_handler())
-    ])
-
-    if __name__ == "__main__":
-        application.listen(8888)
-        tornado.ioloop.IOLoop.instance().start()
-
 API
 ----------
 
 .. module:: werobot.contrib.django
 .. autofunction:: make_view
-.. autofunction:: make_error_view
 
 .. module:: werobot.contrib.flask
 .. autofunction:: make_view
-.. autofunction:: make_error_view
 
 .. module:: werobot.contrib.bottle
 .. autofunction:: make_view
-.. autofunction:: make_error_view
 
 .. module:: werobot.contrib.tornado
 .. autofunction:: make_handler
-.. autofunction:: make_error_handler

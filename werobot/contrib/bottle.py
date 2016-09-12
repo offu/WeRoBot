@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
-from bottle import request, abort, response
-from werobot.contrib.error import get_error_content
+from bottle import request, response
+import os
 
 
 def make_view(robot):
@@ -37,11 +37,15 @@ def make_view(robot):
 
     def werobot_view(*args, **kwargs):
         if not robot.check_signature(
-            request.query.timestamp,
-            request.query.nonce,
-            request.query.signature
+                request.query.timestamp,
+                request.query.nonce,
+                request.query.signature
         ):
-            return abort(403)
+            with open(
+                    os.path.join(os.path.dirname(__file__), 'error.html'), 'r', encoding='utf-8'
+            ) as error_page:
+                response.status_code = 403
+                return error_page.read()
         if request.method == 'GET':
             return request.query.echostr
         else:
@@ -55,17 +59,3 @@ def make_view(robot):
             return robot.get_encrypted_reply(message)
 
     return werobot_view
-
-
-def make_error_view():
-    """
-    生成一个 Bottle view 展示错误页面
-
-    :return: 一个标准的 Bottle view
-    """
-
-    def error_view():
-        response.content_type = "text/html"
-        return get_error_content()
-
-    return error_view

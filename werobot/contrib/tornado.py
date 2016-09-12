@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
-from tornado.web import RequestHandler, HTTPError
-from werobot.contrib.error import get_error_content
+from tornado.web import RequestHandler
+import os
 
 
 def make_handler(robot):
@@ -41,7 +41,10 @@ def make_handler(robot):
                     nonce=nonce,
                     signature=signature
             ):
-                raise HTTPError(403, 'Invalid Request.')
+                with open(
+                        os.path.join(os.path.dirname(__file__), 'error.html'), 'r', encoding='utf-8'
+                ) as error_page:
+                    self.write_error(error_page.read(), status_code=403)
 
         def get(self):
             echostr = self.get_argument('echostr', '')
@@ -62,19 +65,3 @@ def make_handler(robot):
             self.write(robot.get_encrypted_reply(message))
 
     return WeRoBotHandler
-
-
-def make_error_handler():
-    """
-    生成一个 Tornado Handler 展示错误页面
-
-    :return: 一个标准的 Tornado Handler
-    """
-
-    class ErrorHandler(RequestHandler):
-        def get(self, *args, **kwargs):
-            self.set_header("Content-Type",
-                            "text/html")
-            self.write(get_error_content())
-
-    return ErrorHandler
