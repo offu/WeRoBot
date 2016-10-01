@@ -50,4 +50,7 @@ setup(
         'Topic :: Utilities',
     ],
     tests_require=['pytest'],
+    extras_require={
+        'crypto': ["cryptography"]
+    }
 )
