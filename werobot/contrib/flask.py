@@ -4,7 +4,11 @@ from __future__ import absolute_import
 from flask import request, make_response
 import os
 import io
-import html
+
+try:
+    import html
+except ImportError:
+    import cgi as html
 
 
 def make_view(robot):

@@ -3,7 +3,11 @@ from __future__ import absolute_import
 from tornado.web import RequestHandler
 import os
 import io
-import html
+
+try:
+    import html
+except ImportError:
+    import cgi as html
 
 
 def make_handler(robot):
@@ -33,17 +37,6 @@ def make_handler(robot):
     """
 
     class WeRoBotHandler(RequestHandler):
-        def write_error(self, status_code, **kwargs):
-            if status_code == 403:
-                with io.open(
-                        os.path.join(os.path.dirname(__file__), 'error.html'), 'r', encoding='utf-8'
-                ) as error_page:
-                    self.write(error_page.read().replace('{url}', html.escape(
-                        self.request.protocol + "://" + self.request.host + self.request.uri
-                    )))
-            else:
-                RequestHandler.write_error(status_code, **kwargs)
-
         def prepare(self):
             timestamp = self.get_argument('timestamp', '')
             nonce = self.get_argument('nonce', '')
@@ -54,7 +47,14 @@ def make_handler(robot):
                     nonce=nonce,
                     signature=signature
             ):
-                self.write_error(403)
+                self.set_status(403)
+                with io.open(
+                        os.path.join(os.path.dirname(__file__), 'error.html'), 'r', encoding='utf-8'
+                ) as error_page:
+                    self.write(error_page.read().replace('{url}', html.escape(
+                        self.request.protocol + "://" + self.request.host + self.request.uri
+                    )))
+                    return
 
         def get(self):
             echostr = self.get_argument('echostr', '')

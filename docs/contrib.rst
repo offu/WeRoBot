@@ -84,7 +84,7 @@ Tornado
     import tornado.ioloop
     import tornado.web
     from werobot import WeRoBot
-    from tornado_werobot import make_handler
+    from werobot.contrib.tornado import make_handler
 
     robot = WeRoBot(token='token')
 
@@ -94,7 +94,7 @@ Tornado
         return 'Hello World!'
 
     application = tornado.web.Application([
-        (r"/", make_handler(robot)),
+        (r"/robot/", make_handler(robot)),
     ])
 
     if __name__ == "__main__":

@@ -4,7 +4,11 @@ from __future__ import absolute_import
 from bottle import request, HTTPResponse
 import os
 import io
-import html
+
+try:
+    import html
+except ImportError:
+    import cgi as html
 
 
 def make_view(robot):
@@ -39,9 +43,9 @@ def make_view(robot):
 
     def werobot_view(*args, **kwargs):
         if not robot.check_signature(
-                request.query.timestamp,
-                request.query.nonce,
-                request.query.signature
+            request.query.timestamp,
+            request.query.nonce,
+            request.query.signature
         ):
             with io.open(
                     os.path.join(os.path.dirname(__file__), 'error.html'), 'r', encoding='utf-8'
