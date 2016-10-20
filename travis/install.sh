@@ -35,7 +35,7 @@ if [ $MAJOR_MAC_VERSION == "10.9" ]; then
     curl -O https://fastdl.mongodb.org/osx/mongodb-osx-x86_64-3.2.10.tgz
     tar -zxvf mongodb-osx-x86_64-3.2.10.tgz
     sudo mkdir -p /data/db
-    ./mongodb-osx-x86_64-3.2.10/bin/mongod &
+    sudo ./mongodb-osx-x86_64-3.2.10/bin/mongod &
 else
     brew install mongodb
     brew services start mongodb
