@@ -37,7 +37,7 @@ if [ $MAJOR_MAC_VERSION == "10.9" ]; then
     mkdir -p mongodb
     cp -R -n mongodb-osx-x86_64-3.2.10/ mongodb
     export PATH="$(pwd)/mongodb:$PATH"
-    sudo mkdir -p /data/db
+    mkdir -p /data/db
     mongod &
 else
     brew install mongodb
