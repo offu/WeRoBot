@@ -2,6 +2,7 @@
 brew update
 
 MAJOR_MAC_VERSION=$(sw_vers -productVersion | awk -F '.' '{print $1 "." $2}')
+echo $MAJOR_MAC_VERSION
 if [ $MAJOR_MAC_VERSION == "10.11" ]; then
   # https://github.com/rvm/rvm/pull/3627
   rvm get head
@@ -30,7 +31,17 @@ pip install -r dev-requirements.txt
 
 brew install redis
 brew services start redis
-brew install mongodb
-brew services start mongodb
+if [ $MAJOR_MAC_VERSION == "10.9" ]; then
+    curl -O https://fastdl.mongodb.org/osx/mongodb-osx-x86_64-3.2.10.tgz
+    tar -zxvf mongodb-osx-x86_64-3.2.10.tgz
+    mkdir -p mongodb
+    cp -R -n mongodb-osx-x86_64-3.2.10/ mongodb
+    export PATH="$(pwd)/mongodb:$PATH"
+    sudo mkdir -p /data/db
+    mongod &
+else
+    brew install mongodb
+    brew services start mongodb
+fi
 brew install openssl
 python --version
