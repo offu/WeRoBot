@@ -2,8 +2,6 @@
 from __future__ import absolute_import
 
 from bottle import request, HTTPResponse
-import os
-import io
 
 try:
     import html
@@ -47,12 +45,10 @@ def make_view(robot):
             request.query.nonce,
             request.query.signature
         ):
-            with io.open(
-                    os.path.join(os.path.dirname(__file__), 'error.html'), 'r', encoding='utf-8'
-            ) as error_page:
-                return HTTPResponse(status=403,
-                                    body=error_page.read().replace('{url}',
-                                                                   html.escape(request.url)))
+            return HTTPResponse(
+                status=403,
+                body=robot.make_error_page(html.escape(request.url))
+            )
         if request.method == 'GET':
             return request.query.echostr
         else:

@@ -1,6 +1,6 @@
 os: osx
 language: generic
-osx_image: xcode7.1  # MacOS 10.10
+osx_image: xcode7.1  # OS X 10.10
 env:
   - PYTHON_VERSION=2 PYTHON_INSTALL_METHOD=system
 matrix:
@@ -17,8 +17,8 @@ matrix:
     - env:
       - PYTHON_VERSION=3.5
       - PYTHON_INSTALL_METHOD=macpython
-    - osx_image: xcode8  # MacOS 10.11
-    - osx_image: beta-xcode6.2  # MacOS 10.9
+    - osx_image: xcode8  # OS X 10.11
+    - osx_image: beta-xcode6.2  # OS X 10.9
 cache:
   directories:
   - $HOME/.pyenv

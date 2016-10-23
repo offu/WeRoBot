@@ -2,8 +2,6 @@
 from __future__ import absolute_import
 
 from flask import request, make_response
-import os
-import io
 
 try:
     import html
@@ -48,10 +46,7 @@ def make_view(robot):
                 nonce,
                 signature,
         ):
-            with io.open(
-                    os.path.join(os.path.dirname(__file__), 'error.html'), 'r', encoding='utf-8'
-            ) as error_page:
-                return error_page.read().replace('{url}', html.escape(request.url)), 403
+            return robot.make_error_page(html.escape(request.url)), 403
         if request.method == 'GET':
             return request.args['echostr']
 

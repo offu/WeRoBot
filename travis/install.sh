@@ -2,7 +2,6 @@
 brew update
 
 MAJOR_MAC_VERSION=$(sw_vers -productVersion | awk -F '.' '{print $1 "." $2}')
-echo $MAJOR_MAC_VERSION
 if [ $MAJOR_MAC_VERSION == "10.11" ]; then
   # https://github.com/rvm/rvm/pull/3627
   rvm get head

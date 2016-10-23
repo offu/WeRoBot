@@ -3,8 +3,6 @@ from __future__ import absolute_import
 
 from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
-import os
-import io
 
 try:
     import html
@@ -31,13 +29,9 @@ def make_view(robot):
                 nonce=nonce,
                 signature=signature
         ):
-            with io.open(
-                    os.path.join(os.path.dirname(__file__), 'error.html'), 'r', encoding='utf-8'
-            ) as error_page:
-                return HttpResponseForbidden(
-                    error_page.read().replace('{url}',
-                                              html.escape(request.build_absolute_uri())))
-
+            return HttpResponseForbidden(
+                robot.make_error_page(html.escape(request.build_absolute_uri()))
+            )
         if request.method == "GET":
             return HttpResponse(request.GET.get("echostr", ""))
         elif request.method == "POST":

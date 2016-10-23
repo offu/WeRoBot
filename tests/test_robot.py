@@ -169,3 +169,13 @@ def test_register_not_callable_object():
     robot = WeRoBot(enable_session=False)
     with pytest.raises(ValueError):
         robot.add_handler("s")
+
+
+def test_error_page():
+    robot = WeRoBot()
+
+    @robot.error_page
+    def make_error_page(url):
+        return url
+
+    assert robot.make_error_page('喵') == '喵'

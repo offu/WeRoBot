@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """django_test URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -28,6 +29,11 @@ robot = WeRoBot(enable_session=False,
 @robot.text
 def text_handler():
     return 'hello'
+
+
+@robot.error_page
+def make_error_page(url):
+    return '喵'
 
 
 urlpatterns = [

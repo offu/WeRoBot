@@ -9,7 +9,7 @@ from werobot.config import Config, ConfigAttribute
 from werobot.exceptions import ConfigError
 from werobot.parser import parse_xml, process_message
 from werobot.replies import process_function_reply
-from werobot.utils import to_binary, to_text, check_signature
+from werobot.utils import to_binary, to_text, check_signature, make_error_page
 
 try:
     from inspect import signature
@@ -41,6 +41,7 @@ class BaseRoBot(object):
         self.config = Config(_DEFAULT_CONFIG)
         self._handlers = dict((k, []) for k in self.message_types)
         self._handlers['all'] = []
+        self.make_error_page = make_error_page
         if logger is None:
             import werobot.logger
             logger = werobot.logger.logger
@@ -324,6 +325,17 @@ class BaseRoBot(object):
         return check_signature(
             self.config["TOKEN"], timestamp, nonce, signature
         )
+
+    def error_page(self, f):
+        """
+        为 robot 指定 Signature 验证不通过时显示的错误页面。
+        Usage ::
+            @robot.error_page
+            def make_error_page(url):
+                return "<h1>喵喵喵 %s 不是给麻瓜访问的快走开</h1>" % url
+        """
+        self.make_error_page = f
+        return f
 
 
 ERROR_PAGE_TEMPLATE = """
