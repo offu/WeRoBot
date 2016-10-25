@@ -30,6 +30,11 @@ def wsgi_tester():
         assert response.status_code == 200
         assert response.body.decode('utf-8') == echostr
 
+        response = test_app.get(endpoint, expect_errors=True)
+
+        assert response.status_code == 403
+        assert response.body.decode('utf-8') == u'喵'
+
         xml = """
                 <xml>
                     <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -62,6 +67,10 @@ def hello_robot():
     @robot.text
     def hello():
         return 'hello'
+
+    @robot.error_page
+    def make_error_page(url):
+        return '喵'
 
     return robot
 
@@ -117,6 +126,7 @@ def test_django():
                            content_type="text/xml")
 
     assert response.status_code == 403
+    assert response.content.decode('utf-8') == u'喵'
 
     url += params
     response = client.post(url,

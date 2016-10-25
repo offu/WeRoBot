@@ -52,5 +52,6 @@ setup(
     tests_require=['pytest'],
     extras_require={
         'crypto': ["cryptography"]
-    }
+    },
+    package_data={'werobot': ['contrib/*.html']}
 )

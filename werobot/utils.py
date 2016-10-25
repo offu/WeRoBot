@@ -7,6 +7,8 @@ import random
 import json
 import six
 import time
+import io
+import os
 
 from hashlib import sha1
 
@@ -117,3 +119,10 @@ def pay_sign_dict(
     sign_type = 'SHA1'
 
     return dict(params), sign, sign_type
+
+
+def make_error_page(url):
+    with io.open(
+            os.path.join(os.path.dirname(__file__), 'contrib/error.html'), 'r', encoding='utf-8'
+    ) as error_page:
+        return error_page.read().replace('{url}', url)
