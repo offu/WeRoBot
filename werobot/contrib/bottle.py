@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
-from bottle import request, abort
+from bottle import request, HTTPResponse
+
+try:
+    import html
+except ImportError:
+    import cgi as html
 
 
 def make_view(robot):
     """
-    为一个 BaseRoBot 生成 Flask view。
+    为一个 BaseRoBot 生成 Bottle view。
 
     Usage ::
 
@@ -31,15 +36,19 @@ def make_view(robot):
 
 
     :param robot: 一个 BaseRoBot 实例
-    :return: 一个标准的 Flask view
+    :return: 一个标准的 Bottle view
     """
+
     def werobot_view(*args, **kwargs):
         if not robot.check_signature(
             request.query.timestamp,
             request.query.nonce,
             request.query.signature
         ):
-            return abort(403)
+            return HTTPResponse(
+                status=403,
+                body=robot.make_error_page(html.escape(request.url))
+            )
         if request.method == 'GET':
             return request.query.echostr
         else:
@@ -51,4 +60,5 @@ def make_view(robot):
                 msg_signature=request.query.msg_signature
             )
             return robot.get_encrypted_reply(message)
+
     return werobot_view

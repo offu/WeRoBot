@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotAllowed
+from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
+
+try:
+    import html
+except ImportError:
+    import cgi as html
 
 
 def make_view(robot):
@@ -24,8 +29,9 @@ def make_view(robot):
                 nonce=nonce,
                 signature=signature
         ):
-            return HttpResponseForbidden()
-
+            return HttpResponseForbidden(
+                robot.make_error_page(html.escape(request.build_absolute_uri()))
+            )
         if request.method == "GET":
             return HttpResponse(request.GET.get("echostr", ""))
         elif request.method == "POST":

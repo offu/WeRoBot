@@ -30,8 +30,6 @@ WeRoBot 支持 Django 1.6+。
         url(r'^robot/', make_view(robot)),
     )
 
-
-
 Flask
 ----------
 首先, 同样在文件中写好你的微信机器人 ::
@@ -58,7 +56,6 @@ Flask
                      endpoint='werobot', # Flask 的 endpoint
                      view_func=make_view(robot),
                      methods=['GET', 'POST'])
-
 
 Bottle
 --------
@@ -87,7 +84,7 @@ Tornado
     import tornado.ioloop
     import tornado.web
     from werobot import WeRoBot
-    from tornado_werobot import make_handler
+    from werobot.contrib.tornado import make_handler
 
     robot = WeRoBot(token='token')
 
@@ -97,7 +94,7 @@ Tornado
         return 'Hello World!'
 
     application = tornado.web.Application([
-        (r"/", make_handler(robot)),
+        (r"/robot/", make_handler(robot)),
     ])
 
     if __name__ == "__main__":

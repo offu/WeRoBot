@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
-from tornado.web import RequestHandler, HTTPError
+from tornado.web import RequestHandler
+
+try:
+    import html
+except ImportError:
+    import cgi as html
 
 
 def make_handler(robot):
@@ -40,7 +45,11 @@ def make_handler(robot):
                     nonce=nonce,
                     signature=signature
             ):
-                raise HTTPError(403, 'Invalid Request.')
+                self.set_status(403)
+                self.write(robot.make_error_page(html.escape(
+                    self.request.protocol + "://" + self.request.host + self.request.uri
+                )))
+                return
 
         def get(self):
             echostr = self.get_argument('echostr', '')
