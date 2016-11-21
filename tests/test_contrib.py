@@ -191,3 +191,14 @@ def test_tornado(wsgi_tester, hello_robot):
         (endpoint, make_handler(hello_robot)),
     ], debug=True)
     wsgi_tester(WSGIAdapter(tornado_app), token=token, endpoint=endpoint)
+
+
+def test_werobot_wsgi(wsgi_tester, hello_robot):
+    from werobot.contrib.tornado import make_handler
+
+    token = generate_token()
+    endpoint = r'/rand'
+    hello_robot.token = token
+
+    wsgi_tester(hello_robot.wsgi, token=token, endpoint=endpoint)
+
