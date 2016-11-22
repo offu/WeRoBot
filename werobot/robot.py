@@ -19,9 +19,14 @@ except ImportError:
 __all__ = ['BaseRoBot', 'WeRoBot']
 
 _DEFAULT_CONFIG = dict(
+    TOKEN=None,
     SERVER="auto",
     HOST="127.0.0.1",
-    PORT="8888"
+    PORT="8888",
+    SESSION_STORAGE=None,
+    APP_ID=None,
+    APP_SECRET=None,
+    ENCODING_AES_KEY=None
 )
 
 
