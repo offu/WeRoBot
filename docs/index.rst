@@ -15,6 +15,7 @@ WeRoBot 是一个微信公众号开发框架。
     events
     replies
     session
+    config
     contrib
     error-page
     client
