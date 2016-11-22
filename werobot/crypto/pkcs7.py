@@ -13,10 +13,3 @@ def encode(text):
     # 获得补位所用的字符
     pad = chr(amount_to_pad)
     return text + to_binary(pad * amount_to_pad)
-
-
-def decode(decrypted):
-    pad = ord(decrypted[-1])
-    if pad < 1 or pad > 32:
-        pad = 0
-    return decrypted[:-pad]
