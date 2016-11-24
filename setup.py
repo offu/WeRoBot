@@ -1,9 +1,20 @@
 #!/usr/bin/env python
-#coding=utf-8
+# coding=utf-8
 
+import io
 import werobot
+import platform
 
 from setuptools import setup, find_packages
+
+with io.open("README.rst", encoding="utf8") as f:
+    readme = f.read().replace("develop", "master")
+readme = readme.replace("latest", werobot.__version__)
+
+version = platform.python_version_tuple()
+install_requires = open("requirements.txt").readlines()
+if version < ('3', '3'):
+    install_requires.append('funcsigs')
 
 setup(
     name='WeRoBot',
@@ -14,8 +25,11 @@ setup(
     packages=find_packages(),
     keywords="wechat weixin werobot",
     description='WeRoBot: writing WeChat Offical Account Robots with fun',
-    long_description=open("README.rst").read().replace("latest", werobot.__version__).replace("develop", "master"),
-    install_requires=open("requirements.txt").readlines(),
+    long_description=readme,
+    setup_requires=[
+        'pytest-runner',
+    ],
+    install_requires=install_requires,
     include_package_data=True,
     license='MIT License',
     classifiers=[
@@ -25,11 +39,9 @@ setup(
         'Operating System :: POSIX',
         'Operating System :: POSIX :: Linux',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Intended Audience :: Developers',
@@ -37,6 +49,9 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Utilities',
     ],
-    tests_require=['nose'],
-    test_suite='nose.collector',
+    tests_require=['pytest'],
+    extras_require={
+        'crypto': ["cryptography"]
+    },
+    package_data={'werobot': ['contrib/*.html']}
 )

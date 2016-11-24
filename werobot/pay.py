@@ -14,6 +14,7 @@ class WeixinPayClient(Client):
     """
     简化微信支付API操作
     """
+
     def __init__(self, appid, pay_sign_key, pay_partner_id, pay_partner_key):
         self.pay_sign_key = pay_sign_key
         self.pay_partner_id = pay_partner_id
@@ -31,7 +32,7 @@ class WeixinPayClient(Client):
         :param package: 需要签名的的参数
         :return: 可以使用的packagestr
         """
-        assert self.pay_partner_id,  "PAY_PARTNER_ID IS EMPTY"
+        assert self.pay_partner_id, "PAY_PARTNER_ID IS EMPTY"
         assert self.pay_partner_key, "PAY_PARTNER_KEY IS EMPTY"
 
         package.update({
@@ -46,7 +47,9 @@ class WeixinPayClient(Client):
         params.sort()
 
         sign = md5('&'.join(
-            ["%s=%s" % (str(p[0]), str(p[1])) for p in params + [('key', self.pay_partner_key)]])).hexdigest().upper()
+            ["%s=%s" % (str(p[0]), str(p[1]))
+             for p in params + [('key', self.pay_partner_key)]]
+        )).hexdigest().upper()
 
         return urlencode(params + [('sign', sign)])
 
@@ -66,7 +69,9 @@ class WeixinPayClient(Client):
         :param package: 需要签名的的参数
         :return: 支付需要的对象
         """
-        pay_param, sign, sign_type = self._pay_sign_dict(package=self.create_js_pay_package(**package))
+        pay_param, sign, sign_type = self._pay_sign_dict(
+            package=self.create_js_pay_package(**package)
+        )
         pay_param['paySign'] = sign
         pay_param['signType'] = sign_type
 
@@ -92,11 +97,12 @@ class WeixinPayClient(Client):
         """
         params.update({
             'appId': self.appid,
-            'nonceStr':  generate_token(8),
+            'nonceStr': generate_token(8),
             'timeStamp': int(time.time())
         })
 
-        _params = [(k.lower(), str(v)) for k, v in params.items()] + [('accesstoken', accesstoken)]
+        _params = [(k.lower(), str(v)) for k, v in params.items()]
+        _params += [('accesstoken', accesstoken)]
         _params.sort()
 
         string1 = '&'.join(["%s=%s" % (p[0], p[1]) for p in _params])
@@ -142,7 +148,9 @@ class WeixinPayClient(Client):
         :param 需要签名的的参数
         :return: 支付需要的对象
         """
-        params, sign, _ = self._pay_sign_dict(add_noncestr=False, add_timestamp=False, **deliver_info)
+        params, sign, _ = self._pay_sign_dict(
+            add_noncestr=False, add_timestamp=False, **deliver_info
+        )
 
         params['app_signature'] = sign
         params['sign_method'] = 'sha1'
@@ -169,12 +177,15 @@ class WeixinPayClient(Client):
         _package = package.items()
         _package.sort()
 
-        s = '&'.join(["%s=%s" % (p[0], str(p[1])) for p in _package + [('key', self.pay_partner_key)]])
+        s = '&'.join(["%s=%s" % (p[0], str(p[1]))
+                      for p in (_package + [('key', self.pay_partner_key)])])
         package['sign'] = md5(s).hexdigest().upper()
 
         package = '&'.join(["%s=%s" % (p[0], p[1]) for p in package.items()])
 
-        params, sign, _ = self._pay_sign_dict(add_noncestr=False, package=package)
+        params, sign, _ = self._pay_sign_dict(
+            add_noncestr=False, package=package
+        )
 
         params['app_signature'] = sign
         params['sign_method'] = 'sha1'

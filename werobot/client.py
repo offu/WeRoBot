@@ -27,9 +27,10 @@ class Client(object):
     微信 API 操作类
     通过这个类可以方便的通过微信 API 进行一系列操作，比如主动发送消息、创建自定义菜单等
     """
-    def __init__(self, appid, appsecret):
-        self.appid = appid
-        self.appsecret = appsecret
+    def __init__(self, config):
+        self.config = config
+        self.appid = self.config.get("APP_ID", None)
+        self.appsecret = self.config.get("APP_SECRET", None)
         self._token = None
         self.token_expires_at = None
 
@@ -81,8 +82,14 @@ class Client(object):
             }
         )
 
-    @property
-    def token(self):
+    def get_access_token(self):
+        """
+        判断现有的token是否过期。
+        用户需要多进程或者多机部署可以手动重写这个函数
+        来自定义token的存储，刷新策略。
+
+        :return:返回token
+        """
         if self._token:
             now = time.time()
             if self.token_expires_at - now > 60:
@@ -91,6 +98,10 @@ class Client(object):
         self._token = json["access_token"]
         self.token_expires_at = int(time.time()) + json["expires_in"]
         return self._token
+
+    @property
+    def token(self):
+        return self.get_access_token()
 
     def create_menu(self, menu_data):
         """
@@ -130,6 +141,7 @@ class Client(object):
                         ]
                     }
                 ]})
+
         详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=自定义菜单创建接口
 
         :param menu_data: Python 字典
@@ -165,7 +177,7 @@ class Client(object):
         详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=上传下载多媒体文件
 
         :param media_type: 媒体文件类型，分别有图片（image）、语音（voice）、视频（video）和缩略图（thumb）
-        :param media_file:要上传的文件，一个 File-object
+        :param media_file: 要上传的文件，一个 File-object
 
         :return: 返回的 JSON 数据包
         """
@@ -299,7 +311,10 @@ class Client(object):
         }
         if first_user_id:
             params["next_openid"] = first_user_id
-        return self.get("https://api.weixin.qq.com/cgi-bin/user/get", params=params)
+        return self.get(
+            "https://api.weixin.qq.com/cgi-bin/user/get",
+            params=params
+        )
 
     def send_text_message(self, user_id, content):
         """
@@ -474,5 +489,26 @@ class Client(object):
             url="https://mp.weixin.qq.com/cgi-bin/showqrcode",
             params={
                 "ticket": ticket
+            }
+        )
+
+    def send_template_message(self, user_id, template_id, data, url=''):
+        """
+        发送模板消息
+        详情请参考 http://mp.weixin.qq.com/wiki/17/304c1885ea66dbedf7dc170d84999a9d.html
+
+        :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
+        :param template_id: 模板 ID。
+        :param data: 用于渲染模板的数据。
+        :param url: 模板消息的可选链接。
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/message/template/send",
+            data={
+               "touser": user_id,
+               "template_id": template_id,
+               "url": url,
+               "data": data
             }
         )

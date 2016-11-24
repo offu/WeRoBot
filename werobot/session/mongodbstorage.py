@@ -23,9 +23,6 @@ class MongoDBStorage(SessionStorage):
     :param collection: 一个 MongoDB Collection。
     """
     def __init__(self, collection):
-        import pymongo
-        assert isinstance(collection,
-                          pymongo.collection.Collection)
         self.collection = collection
         collection.create_index("wechat_id")
 
@@ -40,18 +37,15 @@ class MongoDBStorage(SessionStorage):
         return {}
 
     def set(self, id, value):
-        document = self._get_document(id)
         session = json_dumps(value)
-        if document:
-            document["session"] = session
-            self.collection.save(document)
-        else:
-            self.collection.insert({
-                "wechat_id": id,
-                "session": session
-            })
+        self.collection.replace_one({
+            "wechat_id": id
+        }, {
+            "wechat_id": id,
+            "session": session
+        }, upsert=True)
 
     def delete(self, id):
-        document = self._get_document(id)
-        if document:
-            self.collection.remove(document["_id"])
+        self.collection.delete_one({
+            "wechat_id": id
+        })

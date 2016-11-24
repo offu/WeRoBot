@@ -1,4 +1,5 @@
 *.py[cod]
+.python-version
 
 # C extensions
 *.so
@@ -9,6 +10,7 @@
 dist
 build
 eggs
+.eggs/
 parts
 bin
 var
@@ -25,6 +27,7 @@ pip-log.txt
 .coverage
 .tox
 nosetests.xml
+.cache/
 cover/
 htmlcov/
 
@@ -52,6 +55,9 @@ werobot_session.db
 
 .coveralls.yml
 
-werobot_session
+werobot_session*
 pip-selfcheck.json
+venv
 
+*.sqlite3
+/.vscode

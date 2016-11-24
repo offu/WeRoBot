@@ -2,15 +2,17 @@
 WeRoBot
 ====================================
 
-.. image:: https://api.travis-ci.org/whtsky/WeRoBot.png?branch=master
-    :target: http://travis-ci.org/whtsky/WeRoBot
-.. image:: https://coveralls.io/repos/whtsky/WeRoBot/badge.png?branch=master
-    :target: https://coveralls.io/r/whtsky/WeRoBot
-.. image:: https://scrutinizer-ci.com/g/whtsky/WeRoBot/badges/quality-score.png?b=master
-   :target: https://scrutinizer-ci.com/g/whtsky/WeRoBot/?branch=master
+.. image:: https://img.shields.io/travis/whtsky/WeRoBot/master.svg?maxAge=3600&label=macOS
+    :target: https://travis-ci.org/whtsky/WeRoBot
+.. image:: https://img.shields.io/appveyor/ci/whtsky/WeRoBot/master.svg?maxAge=3600&label=Windows
+    :target: https://ci.appveyor.com/project/whtsky/WeRoBot
+.. image:: https://semaphoreci.com/api/v1/whtsky/werobot/branches/master/shields_badge.svg
+    :target: https://semaphoreci.com/whtsky/werobot
+.. image:: https://codecov.io/gh/whtsky/WeRoBot/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/whtsky/WeRoBot
 
 
-WeRoBot 是一个微信机器人框架，采用MIT协议发布。
+WeRoBot 是一个微信公众号开发框架，采用MIT协议发布。
 
 文档在这里： https://werobot.readthedocs.org/en/latest/
 
@@ -31,7 +33,7 @@ WeRoBot 是一个微信机器人框架，采用MIT协议发布。
 Hello World
 =============
 
-一个非常简单的 Hello World 微信机器人，会对收到的所有文本消息回复 Hello World ::
+一个非常简单的 Hello World 微信公众号，会对收到的所有文本消息回复 Hello World ::
 
     import werobot
 
@@ -50,7 +52,7 @@ WeRoBot 在 0.4.0 版本中开始支持 Session ， Session 可以用来方便�
 
     import werobot
 
-    robot = werobot.WeRoBot(token='tokenhere', enable_session=True)
+    robot = werobot.WeRoBot(token='tokenhere')
 
     @robot.text
     def session(message, session):

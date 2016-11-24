@@ -1,22 +1,38 @@
-language: python
-python:
-  - 2.6
-  - 2.7
-  - 3.3
-  - 3.4
-  - pypy
-
-services:
-  - mongodb
-  - redis-server
-
+os: osx
+language: generic
+osx_image: xcode8  # OS X 10.10
+env:
+  - PYTHON_VERSION=2 PYTHON_INSTALL_METHOD=system
+matrix:
+  include:
+    - env:
+      - PYTHON_VERSION="2.7.12 3.4.5 3.5.2 pypy-5.0.0"
+      - PYTHON_INSTALL_METHOD=tox
+    - env:
+      - PYTHON_VERSION=2.7
+      - PYTHON_INSTALL_METHOD=macpython
+    - env:
+      - PYTHON_VERSION=3.4
+      - PYTHON_INSTALL_METHOD=macpython
+    - env:
+      - PYTHON_VERSION=3.5
+      - PYTHON_INSTALL_METHOD=macpython
+    - osx_image: xcode7.3  # OS X 10.11
+    - osx_image: xcode8.2 # macOS 10.12
+  allow_failures:
+    - osx_image: xcode8.2
+cache:
+  directories:
+  - $HOME/.pyenv
 install:
-  - "python setup.py install"
-  - "pip install -r dev-requirements.txt"
+  - "source travis/install.sh"
 
-script: coverage run --source=werobot setup.py -q nosetests
+script:
+  - "source travis/script.sh"
 
-after_success: coveralls
+after_success:
+  - pip install codecov
+  - codecov
 
 notifications:
   email: false

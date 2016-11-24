@@ -1,0 +1,10 @@
+-r requirements.txt
+coverage==4.1
+pymongo==3.3.0
+redis==2.10.5
+Sphinx==1.4.5
+cryptography
+pytest
+webtest
+flask
+tornado
