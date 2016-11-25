@@ -26,7 +26,6 @@ case $PYTHON_INSTALL_METHOD in
 esac
 
 pip install --upgrade pip wheel
-pip install -r dev-requirements.txt
 
 brew install redis
 brew services start redis
@@ -35,3 +34,4 @@ brew services start mongodb
 
 brew install openssl
 python --version
+pip install -r dev-requirements.txt
