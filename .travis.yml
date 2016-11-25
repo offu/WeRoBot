@@ -6,8 +6,13 @@ env:
 matrix:
   include:
     - env:
+      - PYTHON_VERSION="2.7.12 3.4.5"
+      - PYTHON_INSTALL_METHOD=tox
+      - TEST_NUMBER=1
+    - env:
       - PYTHON_VERSION="2.7.12 3.4.5 3.5.2 pypy-5.0.0"
       - PYTHON_INSTALL_METHOD=tox
+      - TEST_NUMBER=2
     - env:
       - PYTHON_VERSION=2.7
       - PYTHON_INSTALL_METHOD=macpython
