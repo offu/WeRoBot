@@ -13,9 +13,9 @@ case $PYTHON_INSTALL_METHOD in
       brew outdated pyenv || brew upgrade pyenv
       eval "$(pyenv init -)"
       if [ $PYTHON_VERSION == "2" ]; then
-        export PYTHON_VERSION = "pypy-5.0.0 2.7.12"
+        export PYTHON_VERSION="pypy-5.0.0 2.7.12"
       else
-        export PYTHON_VERSION = "3.5.2 3.4.5"
+        export PYTHON_VERSION="3.5.2 3.4.5"
       fi
       for version in $PYTHON_VERSION
       do
