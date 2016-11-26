@@ -6,7 +6,10 @@ env:
 matrix:
   include:
     - env:
-      - PYTHON_VERSION="2.7.12 3.4.5 3.5.2 pypy-5.0.0"
+      - PYTHON_VERSION="2"
+      - PYTHON_INSTALL_METHOD=tox
+    - env:
+      - PYTHON_VERSION="3"
       - PYTHON_INSTALL_METHOD=tox
     - env:
       - PYTHON_VERSION=2.7
