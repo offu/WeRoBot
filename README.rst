@@ -14,7 +14,7 @@ WeRoBot
 
 WeRoBot 是一个微信公众号开发框架，采用MIT协议发布。
 
-文档在这里： https://werobot.readthedocs.org/en/latest/
+文档在这里： https://werobot.readthedocs.org/zh_CN/latest/
 
 安装
 ========
