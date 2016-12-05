@@ -72,7 +72,7 @@ class PrpCrypto(object):
         padding = byte2int(plain_text, -1)
         content = plain_text[16:-padding]
 
-        xml_len = socket.ntohl(struct.unpack("I", content[:4])[0])
+        xml_len = socket.ntohl(struct.unpack(b"I", content[:4])[0])
         xml_content = content[4:xml_len + 4]
         from_appid = content[xml_len + 4:]
 
