@@ -191,7 +191,7 @@ class SuccessReply(WeChatReply):
 def process_function_reply(reply, message=None):
     if is_string(reply):
         return TextReply(message=message, content=reply)
-    elif isinstance(reply, list) and all([len(x) == 4 for x in reply]):
+    elif isinstance(reply, list) and all( len(x) == 4 for x in reply):
         if len(reply) > 10:
             raise AttributeError("Can't add more than 10 articles"
                                  " in an ArticlesReply")
