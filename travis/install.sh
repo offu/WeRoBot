@@ -15,7 +15,7 @@ case $PYTHON_INSTALL_METHOD in
       if [ $PYTHON_VERSION == "2" ]; then
         export PYTHON_VERSION="pypy-5.0.0 2.7.12"
       else
-        export PYTHON_VERSION="3.5.2 3.4.5"
+        export PYTHON_VERSION="3.6.0 3.5.2 3.4.5"
       fi
       for version in $PYTHON_VERSION
       do
