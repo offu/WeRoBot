@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-
-__author__ = 'Jachin Lin'
-
 from __future__ import absolute_import
+
 from odoo.http import request
 
 
@@ -35,9 +33,6 @@ def make_view(robot):
             @http.route('/wechat', type='http', auth="none", methods=['GET', 'POST'], csrf=False)
             def wechat(self, *args, **kwargs):
                 return make_view(robot)()
-
-                from flask import Flask
-                from werobot.contrib.flask import make_view
 
     :param robot: 一个 BaseRoBot 实例
     :return: 一个标准的 Odoo view
