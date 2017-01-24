@@ -6,6 +6,7 @@ import six
 import werobot
 
 from werobot.config import Config, ConfigAttribute
+from werobot.client import Client
 from werobot.exceptions import ConfigError
 from werobot.parser import parse_xml, process_message
 from werobot.replies import process_function_reply
@@ -93,6 +94,13 @@ class BaseRoBot(object):
         )
         self.use_encryption = True
         return self._crypto
+
+    @property
+    def client(self):
+        if hasattr(self, "_client"):
+            return self._client
+        self._client = Client(self.config)
+        return self._client
 
     def handler(self, f):
         """
