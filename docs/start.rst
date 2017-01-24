@@ -18,9 +18,9 @@ Hello World
 
 消息处理
 --------------
-WeRoBot 会解析微信服务器发来的消息， 并将消息转换成成 :ref:`Message <messages>` 或者是 :ref:`Event <events>` 。
-Message 表示用户发来的消息，如文本消息、图片消息； Event 则表示用户触发的事件， 如关注事件、扫描二维码事件。
-在消息解析、转换完成后， WeRoBot 会讲消息转交给 :ref:`Handler <handlers>` 进行处理，并将 Handler 的返回值返回给微信服务器。
+WeRoBot 会解析微信服务器发来的消息， 并将消息转换成成 :ref:`Message` 或者是 :ref:`Event` 。
+:ref:`Message` 表示用户发来的消息，如文本消息、图片消息； :ref:`Event` 则表示用户触发的事件， 如关注事件、扫描二维码事件。
+在消息解析、转换完成后， WeRoBot 会讲消息转交给 :ref:`Handler` 进行处理，并将 :ref:`Handler` 的返回值返回给微信服务器。
 
 在刚才的 Hello World 中， 我们编写的 ::
 
@@ -28,8 +28,8 @@ Message 表示用户发来的消息，如文本消息、图片消息； Event �
     def hello(message):
         return 'Hello World!'
 
-就是一个简单的 Handler ， `@robot.handler` 意味着 `robot` 会将所有接收到的消息（ 包括 :ref:`Message <messages>` 和 :ref:`Event <events>` ） 都转交给这个 Handler 来处理。
-当然， 你也可以编写一些只能处理特定消息的 Handler ::
+就是一个简单的 :ref:`Handler` ， `@robot.handler` 意味着 `robot` 会将所有接收到的消息（ 包括 :ref:`Message` 和 :ref:`Event` ） 都转交给这个 :ref:`Handler` 来处理。
+当然， 你也可以编写一些只能处理特定消息的 :ref:`Handler` ::
 
     # @robot.text 修饰的 Handler 只处理文本消息
     @robot.text
