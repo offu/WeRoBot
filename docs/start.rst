@@ -11,10 +11,36 @@ Hello World
     robot = werobot.WeRoBot(token='tokenhere')
 
     @robot.handler
-    def echo(message):
+    def hello(message):
         return 'Hello World!'
 
     robot.run()
+
+消息处理
+--------------
+WeRoBot 会解析微信服务器发来的消息， 并将消息转换成成 :ref:`Message <messages>` 或者是 :ref:`Event <events>` 。
+Message 表示用户发来的消息，如文本消息、图片消息； Event 则表示用户触发的事件， 如关注事件、扫描二维码事件。
+在消息解析、转换完成后， WeRoBot 会讲消息转交给 :ref:`Handler <handlers>` 进行处理，并将 Handler 的返回值返回给微信服务器。
+
+在刚才的 Hello World 中， 我们编写的 ::
+
+    @robot.handler
+    def hello(message):
+        return 'Hello World!'
+
+就是一个简单的 Handler ， `@robot.handler` 意味着 `robot` 会将所有接收到的消息（ 包括 :ref:`Message <messages>` 和 :ref:`Event <events>` ） 都转交给这个 Handler 来处理。
+当然， 你也可以编写一些只能处理特定消息的 Handler ::
+
+    # @robot.text 修饰的 Handler 只处理文本消息
+    @robot.text
+    def echo(message):
+        return message.content
+
+    # @robot.image 修饰的 Handler 只处理图片消息
+    @robot.image
+    def img(message):
+        return message.img
+
 
 消息加密
 --------------

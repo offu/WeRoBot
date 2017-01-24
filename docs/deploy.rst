@@ -85,7 +85,30 @@ server 支持以下几种：
 
 在SAE上部署
 -----------------
+> 新浪云上的 Python 应用的入口为 index.wsgi:application ，也就是 index.wsgi 这个文件中名为 application 的 callable object。
 
-参考： `示例仓库 <https://github.com/whtsky/WeRoBot-SAE-demo>`_
+所以，假设你在 `robot.py` 中使用了 WeRoBot ::
 
-如果你需要使用 Session ，最好使用 :class:`werobot.session.saekvstorage` 。
+    # filename: robot.py
+    import werobot
+
+    robot = werobot.WeRoBot(token='tokenhere')
+
+
+    @robot.handler
+    def echo(message):
+        return 'Hello World!'
+
+你需要再创建一个 `index.wsgi` 文件， 里面写 ::
+
+    import sae
+    from robot import robot
+
+
+    application = sae.create_wsgi_app(robot.wsgi)
+
+然后按照 SAE 的要求编写好`config.yaml`文件就可以了。
+可以参考 `示例仓库 <https://github.com/whtsky/WeRoBot-SAE-demo>`_
+
+如果你希望使用 SAE 提供的 KVDB 存储 Session 数据， 可以选择 :class:`werobot.session.saekvstorage` 作为你的 Session Storage.:w
+
