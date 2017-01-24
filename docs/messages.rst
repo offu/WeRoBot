@@ -1,8 +1,8 @@
 Message
 ==========
 
-公共属性
---------------
+Message 公共属性
+----------------
 
 除了 UnknownMessage， 每一种 Message 都包括以下属性：
 

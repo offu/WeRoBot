@@ -30,6 +30,9 @@ WeRoBot 支持 Django 1.6+。
         url(r'^robot/', make_view(robot)),
     )
 
+.. module:: werobot.contrib.django
+.. autofunction:: make_view
+
 Flask
 ----------
 首先, 同样在文件中写好你的微信机器人 ::
@@ -57,6 +60,10 @@ Flask
                      view_func=make_view(robot),
                      methods=['GET', 'POST'])
 
+.. module:: werobot.contrib.flask
+.. autofunction:: make_view
+
+
 Bottle
 --------
 在你的 Bottle App 中集成 WeRoBot ::
@@ -76,6 +83,9 @@ Bottle
     app.route('/robot',  # WeRoBot 挂载地址
              ['GET', 'POST'],
              make_view(robot))
+
+.. module:: werobot.contrib.bottle
+.. autofunction:: make_view
 
 Tornado
 ----------
@@ -100,18 +110,6 @@ Tornado
     if __name__ == "__main__":
         application.listen(8888)
         tornado.ioloop.IOLoop.instance().start()
-
-API
-----------
-
-.. module:: werobot.contrib.django
-.. autofunction:: make_view
-
-.. module:: werobot.contrib.flask
-.. autofunction:: make_view
-
-.. module:: werobot.contrib.bottle
-.. autofunction:: make_view
 
 .. module:: werobot.contrib.tornado
 .. autofunction:: make_handler
