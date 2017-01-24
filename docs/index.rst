@@ -11,15 +11,15 @@ WeRoBot 是一个微信公众号开发框架。
 
     start
     handlers
+    session
+    client
+    deploy
     messages
     events
     replies
-    session
     config
     contrib
     error-page
-    client
-    deploy
     utils
     contribution-guide
     changelog
