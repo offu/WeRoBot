@@ -17,6 +17,7 @@ def test_id_and_secret():
     assert client.appid == "123"
     assert client.appsecret == "321"
 
+
 def test_robot_client():
     robot = WeRoBot()
     assert robot.client.config == robot.config

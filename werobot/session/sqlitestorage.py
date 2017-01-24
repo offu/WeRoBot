@@ -20,7 +20,7 @@ class SQLiteStorage(SessionStorage):
         robot = werobot.WeRoBot(token="token", enable_session=True,
                                 session_storage=session_storage)
 
-    :param filename: SQLite数据库的文件名, 默认是 ``werobot_session.sqlite3`` 。
+    :param filename: SQLite数据库的文件名, 默认是 ``werobot_session.sqlite3``
     """
 
     def __init__(self, filename='werobot_session.sqlite3'):
