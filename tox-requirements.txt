@@ -8,3 +8,4 @@ pytest
 webtest
 flask
 tornado
+responses
