@@ -252,3 +252,24 @@ def test_client_group():
 
     r = client.delete_group("test")
     assert r == {"errcode": 0, "errmsg": "ok"}
+
+
+@responses.activate
+def test_client_remark():
+    REMARK_URL = "https://api.weixin.qq.com/cgi-bin/user/info/updateremark"
+
+    responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
+    config = Config()
+    config.from_pyfile(os.path.join(basedir, "client_config.py"))
+    client = Client(config)
+
+    def remark_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "openid" in body.keys()
+        assert "remark" in body.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.POST, REMARK_URL, callback=remark_callback)
+
+    r = client.remark_user("test", "test")
+    assert r == {"errcode": 0, "errmsg": "ok"}

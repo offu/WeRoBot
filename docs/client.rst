@@ -16,3 +16,9 @@
 .. automethod:: Client.move_user
 .. automethod:: Client.move_users
 .. automethod:: Client.delete_group
+
+设置备注名
+------------
+详细请参考 http://mp.weixin.qq.com/wiki/16/528098c4a6a87b05120a7665c8db0460.html
+
+.. automethod:: Client.remark_user

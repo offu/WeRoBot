@@ -307,6 +307,22 @@ class Client(object):
             }
         )
 
+    def remark_user(self, user_id, remark):
+        """
+        设置备注名
+
+        :param user_id: 设置备注名的用户 ID
+        :param remark: 新的备注名，长度必须小于30字符
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/user/info/updateremark",
+            data={
+                "openid": user_id,
+                "remark": remark
+            }
+        )
+
     def get_user_info(self, user_id, lang="zh_CN"):
         """
         获取用户基本信息
