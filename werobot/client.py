@@ -279,7 +279,7 @@ class Client(object):
         """
         批量移动用户分组。
 
-        :param user_id_list: 用户唯一标识符 openid 的列表（长度不能超过50）
+        :param user_id_list: 用户 ID 的列表（长度不能超过50）
         :param group_id: 分组 ID
         :return: 返回的 JSON 数据包
         """
@@ -326,7 +326,6 @@ class Client(object):
     def get_user_info(self, user_id, lang="zh_CN"):
         """
         获取用户基本信息
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=获取用户基本信息
 
         :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
         :param lang: 返回国家地区语言版本，zh_CN 简体，zh_TW 繁体，en 英语
@@ -338,6 +337,24 @@ class Client(object):
                 "access_token": self.token,
                 "openid": user_id,
                 "lang": lang
+            }
+        )
+
+    def get_users_info(self, user_id_list, lang="zh_CN"):
+        """
+        批量获取用户基本信息
+
+        :param user_id_list: 用户 ID 的列表
+        :param lang: 返回国家地区语言版本，zh_CN 简体，zh_TW 繁体，en 英语
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/user/info/batchget",
+            data={
+                "user_list": [
+                    {"openid": user_id,
+                     "lang": lang} for user_id in user_id_list
+                    ]
             }
         )
 

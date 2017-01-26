@@ -7,6 +7,11 @@ from werobot import WeRoBot
 from werobot.config import Config
 from werobot.client import Client, check_error, ClientException
 
+try:
+    import urlparse
+except ImportError:
+    import urllib.parse as urlparse
+
 basedir = os.path.dirname(os.path.abspath(__file__))
 
 TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token"
@@ -112,7 +117,8 @@ def test_client_request():
     DATA_EXISTS_URL = "http://data-exists.werobot.com/"
 
     def empty_params_callback(request):
-        assert request.url[request.url.rfind("=") + 1:] == client.token
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert params["access_token"][0] == client.token
         return 200, json_header, json.dumps({"test": "test"})
 
     def data_exists_url(request):
@@ -272,4 +278,40 @@ def test_client_remark():
     responses.add_callback(responses.POST, REMARK_URL, callback=remark_callback)
 
     r = client.remark_user("test", "test")
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+
+@responses.activate
+def test_client_user_info():
+    SINGLE_USER_URL = "https://api.weixin.qq.com/cgi-bin/user/info"
+    MULTI_USER_URL = "https://api.weixin.qq.com/cgi-bin/user/info/batchget"
+
+    responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
+    config = Config()
+    config.from_pyfile(os.path.join(basedir, "client_config.py"))
+    client = Client(config)
+
+    def single_user_callback(request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        assert "openid" in params.keys()
+        assert "lang" in params.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.GET, SINGLE_USER_URL, callback=single_user_callback)
+
+    r = client.get_user_info("test")
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+    def multi_user_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "user_list" in body.keys()
+        for user in body["user_list"]:
+            assert "openid" in user.keys()
+            assert "lang" in user.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.POST, MULTI_USER_URL, callback=multi_user_callback)
+
+    r = client.get_users_info(["test1", "test2"])
     assert r == {"errcode": 0, "errmsg": "ok"}
