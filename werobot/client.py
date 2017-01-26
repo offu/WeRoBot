@@ -142,10 +142,7 @@ class Client(object):
                     }
                 ]})
 
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=自定义菜单创建接口
-
         :param menu_data: Python 字典
-
         :return: 返回的 JSON 数据包
         """
         return self.post(
@@ -155,8 +152,7 @@ class Client(object):
 
     def get_menu(self):
         """
-        查询自定义菜单。
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=自定义菜单查询接口
+        查询自定义菜单
 
         :return: 返回的 JSON 数据包
         """
@@ -164,8 +160,7 @@ class Client(object):
 
     def delete_menu(self):
         """
-        删除自定义菜单。
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=自定义菜单删除接口
+        删除自定义菜单
 
         :return: 返回的 JSON 数据包
         """

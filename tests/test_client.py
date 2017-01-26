@@ -141,8 +141,10 @@ def test_client_request():
 
 
 @responses.activate
-def test_client_create_menu():
+def test_client_menu():
     CREATE_URL = "https://api.weixin.qq.com/cgi-bin/menu/create"
+    GET_URL = "https://api.weixin.qq.com/cgi-bin/menu/get"
+    DELETE_URL = "https://api.weixin.qq.com/cgi-bin/menu/delete"
     responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
     config = Config()
     config.from_pyfile(os.path.join(basedir, "client_config.py"))
@@ -169,6 +171,22 @@ def test_client_create_menu():
         client.create_menu({"error": "error"})
     except ClientException as e:
         assert str(e) == "1: error"
+
+    def get_menu_callback(request):
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.GET, GET_URL, callback=get_menu_callback)
+
+    r = client.get_menu()
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+    def delete_menu_callback(request):
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.GET, DELETE_URL, callback=delete_menu_callback)
+
+    r = client.delete_menu()
+    assert r == {"errcode": 0, "errmsg": "ok"}
 
 
 @responses.activate

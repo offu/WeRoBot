@@ -3,6 +3,27 @@
 
 .. module:: werobot.client
 
+自定义菜单
+------------
+
+自定义菜单创建接口
+``````````````````````````````
+详细请参考 http://mp.weixin.qq.com/wiki/10/0234e39a2025342c17a7d23595c6b40a.html
+
+.. automethod:: Client.create_menu
+
+自定义菜单查询接口
+``````````````````````````````
+详细请参考 http://mp.weixin.qq.com/wiki/5/f287d1a5b78a35a8884326312ac3e4ed.html
+
+.. automethod:: Client.get_menu
+
+自定义菜单删除接口
+``````````````````````````````
+详细请参考 http://mp.weixin.qq.com/wiki/3/de21624f2d0d3dafde085dafaa226743.html
+
+.. automethod:: Client.delete_menu
+
 用户管理
 ------------
 
