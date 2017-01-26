@@ -41,6 +41,50 @@ WeRoBot 会解析微信服务器发来的消息， 并将消息转换成成 :ref
     def img(message):
         return message.img
 
+使用 Session 记录用户状态
+-------------------------
+
+WeRoBot 提供了 :ref:`Session` 功能， 可以让你方便的记录用户状态。
+比如， 这个 Handler 可以判断发消息的用户之前有没有发送过消息 ::
+
+    @robot.text
+    def first(message, session):
+        if 'first' in session:
+            return '你之前给我发过消息'
+        session['first'] = True
+        return '你之前没给我发过消息'
+
+要使用 Session 功能， 请阅读 :ref:`开启 Session`
+
+创建自定义菜单
+--------------
+
+自定义菜单能够帮助公众号丰富界面，让用户更好更快地理解公众号的功能。 :class:`werobot.client.Client` 封装了微信的部分 API 接口，我们可以使用 :func:`werobot.client.Client.create_menu` 来创建自定义菜单。
+在使用 Client 之前， 我们需要先提供微信公众平台内的 AppID 和 AppSecret ::
+
+    from werobot import WeRoBot
+    robot = WeRoBot()
+    robot.config["APP_ID"] = "你的 AppID"
+    robot.config["APP_SECRET"] = "你的 AppSecret"
+
+    client = robot.client
+
+然后， 我们就可以创建自定义菜单了 ::
+
+    client.create_menu({
+        "button":[{	
+             "type": "click",
+             "name": "今日歌曲",
+             "key": "music"
+        }]
+    })
+
+注意以上代码只需要运行一次就可以了。在创建完自定义菜单之后， 我们还需要写一个 :ref:`handler` 来响应菜单的点击操作 ::
+
+    @robot.key_click("music")
+    def music(message):
+        return '你点击了“今日歌曲”按钮'
+
 
 消息加密
 --------------
