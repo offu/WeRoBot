@@ -1,8 +1,6 @@
 ``WeRoBot.Client`` —— 微信 API 操作类
 =====================================
 
-Client API
-------------
 .. module:: werobot.client
 
 用户管理
@@ -32,3 +30,9 @@ Client API
 
 .. automethod:: Client.get_user_info
 .. automethod:: Client.get_users_info
+
+获取用户列表
+``````````````````````````````
+详细请参考 http://mp.weixin.qq.com/wiki/12/54773ff6da7b8bdc95b7d2667d84b1d4.html
+
+.. automethod:: Client.get_followers

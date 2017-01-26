@@ -315,3 +315,24 @@ def test_client_user_info():
 
     r = client.get_users_info(["test1", "test2"])
     assert r == {"errcode": 0, "errmsg": "ok"}
+
+
+@responses.activate
+def test_client_get_followers():
+    FOLLOWER_URL = "https://api.weixin.qq.com/cgi-bin/user/get"
+
+    responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
+    config = Config()
+    config.from_pyfile(os.path.join(basedir, "client_config.py"))
+    client = Client(config)
+
+    def get_followers_callback(request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        assert "next_openid" in params.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.GET, FOLLOWER_URL, callback=get_followers_callback)
+
+    r = client.get_followers("test")
+    assert r == {"errcode": 0, "errmsg": "ok"}
