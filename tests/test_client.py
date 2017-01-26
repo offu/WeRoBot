@@ -156,10 +156,99 @@ def test_client_create_menu():
 
     responses.add_callback(responses.POST, CREATE_URL, callback=create_menu_callback)
 
-    r = client.create_menu()
+    r = client.create_menu(menu_data)
     assert r == {"errcode": 0, "errmsg": "ok"}
 
     try:
         client.create_menu({"error": "error"})
     except ClientException as e:
         assert str(e) == "1: error"
+
+
+@responses.activate
+def test_client_group():
+    CREATE_URL = "https://api.weixin.qq.com/cgi-bin/groups/create"
+    GET_URL = "https://api.weixin.qq.com/cgi-bin/groups/get"
+    GET_WITH_ID_URL = "https://api.weixin.qq.com/cgi-bin/groups/getid"
+    UPDATE_URL = "https://api.weixin.qq.com/cgi-bin/groups/update"
+    MOVE_URL = "https://api.weixin.qq.com/cgi-bin/groups/members/update"
+    MOVE_USERS_URL = "https://api.weixin.qq.com/cgi-bin/groups/members/batchupdate"
+    DELETE_URL = "https://api.weixin.qq.com/cgi-bin/groups/delete"
+    responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
+    config = Config()
+    config.from_pyfile(os.path.join(basedir, "client_config.py"))
+    client = Client(config)
+
+    def create_group_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "group" in body.keys()
+        assert "name" in body["group"].keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.POST, CREATE_URL, callback=create_group_callback)
+
+    r = client.create_group("test")
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+    def get_group_callback(request):
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.GET, GET_URL, callback=get_group_callback)
+
+    r = client.get_groups()
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+    def get_groups_with_id_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "openid" in body.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.POST, GET_WITH_ID_URL, callback=get_groups_with_id_callback)
+
+    r = client.get_group_by_id("test")
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+    def update_group_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "group" in body.keys()
+        assert "id" in body["group"].keys()
+        assert "name" in body["group"].keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.POST, UPDATE_URL, callback=update_group_callback)
+
+    r = client.update_group("0", "test")
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+    def move_user_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "openid" in body.keys()
+        assert "to_groupid" in body.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.POST, MOVE_URL, callback=move_user_callback)
+
+    r = client.move_user("test", "0")
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+    def move_users_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "openid_list" in body.keys()
+        assert "to_groupid" in body.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.POST, MOVE_USERS_URL, callback=move_users_callback)
+
+    r = client.move_users("test", "test")
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+    def delete_group_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "group" in body.keys()
+        assert "id" in body["group"].keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.POST, DELETE_URL, callback=delete_group_callback)
+
+    r = client.delete_group("test")
+    assert r == {"errcode": 0, "errmsg": "ok"}
