@@ -1,7 +1,7 @@
 Session
 ==========
 
-WeRoBot 0.4.0 中增加了功能强大的 Session 系统，你可以通过 Session 轻松实现用户状态的记录，享受如同 Web 开发般的便捷。
+你可以通过 Session 实现用户状态的记录。
 
 一个简单的使用 Session 的 Demo ::
 
@@ -23,7 +23,7 @@ WeRoBot 0.4.0 中增加了功能强大的 Session 系统，你可以通过 Sessi
 想要开启 Session ，在实例化 :class:`WeRoBot` 的时候需要传入 ``enable_session`` 和 ``session_storage`` 两个参数：
 
 + ``enable_session`` ： 必须为 True （打开 Session ）
-+ ``session_storage`` ： 可选，一个 Session Storage 实例。默认是 :class:`werobot.session.filestorage.FileStorage` 。
++ ``session_storage`` ： 可选，一个 Session Storage 实例。默认是 :class:`werobot.session.sqlitestorage.SQLiteStorage` 。
 
 修改 Handler 以使用 Session
 --------------------------------
