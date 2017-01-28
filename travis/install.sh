@@ -1,22 +1,11 @@
 #!/usr/bin/env bash
 brew update
 
-MAJOR_MAC_VERSION=$(sw_vers -productVersion | awk -F '.' '{print $1 "." $2}')
-if [ $MAJOR_MAC_VERSION != "10.10" ]; then
-  # https://github.com/rvm/rvm/pull/3627
-  rvm get head
-fi
-
 case $PYTHON_INSTALL_METHOD in
     tox)
       brew install pyenv
       brew outdated pyenv || brew upgrade pyenv
       eval "$(pyenv init -)"
-      if [ $PYTHON_VERSION == "2" ]; then
-        export PYTHON_VERSION="pypy-5.0.0 2.7.12"
-      else
-        export PYTHON_VERSION="3.6.0 3.5.2 3.4.5"
-      fi
       for version in $PYTHON_VERSION
       do
           pyenv install $version -s
