@@ -27,11 +27,16 @@ matrix:
 cache:
   directories:
   - $HOME/.pyenv
+
+after_script: set +e
+
 install:
   - "source travis/install.sh"
 
 script:
   - "source travis/script.sh"
+
+after_script: set +e
 
 after_success:
   - pip install codecov
