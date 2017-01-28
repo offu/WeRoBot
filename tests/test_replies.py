@@ -327,7 +327,7 @@ def test_process_articles_function_reply():
     assert article_1.img == "img", article_2.img == "im2g"
     assert article_1.url == "url", article_2.url == "u2rl"
 
-    process_function_reply([[1, 2, 3, 4] * 9])
+    process_function_reply([[1, 2, 3, 4]] * 10)
 
     with pytest.raises(AttributeError):
-        process_function_reply([[1, 2, 3, 4] * 10])
+        process_function_reply([[1, 2, 3, 4]] * 11)
