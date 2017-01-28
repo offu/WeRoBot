@@ -1,9 +1,4 @@
 -r tox-requirements.txt
 flake8==2.6.2
 tox
-cryptography
-pytest
 django
-flask
-tornado
-webtest
