@@ -246,6 +246,16 @@ class Client(object):
             }
         )
 
+    def get_custom_menu_config(self):
+        """
+        获取自定义菜单配置接口
+
+        :return: 返回的 JSON 数据包
+        """
+        return self.get(
+            url="https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info"
+        )
+
     def upload_media(self, media_type, media_file):
         """
         上传多媒体文件。

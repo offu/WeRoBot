@@ -32,6 +32,12 @@
 .. automethod:: Client.delete_custom_menu
 .. automethod:: Client.match_custom_menu
 
+获取自定义菜单配置接口
+``````````````````````````````
+详细请参考 http://mp.weixin.qq.com/wiki/14/293d0cb8de95e916d1216a33fcb81fd6.html
+
+.. automethod:: Client.get_custom_menu_config
+
 用户管理
 ------------
 
