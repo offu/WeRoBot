@@ -21,3 +21,9 @@ def test_id_and_secret():
 def test_robot_client():
     robot = WeRoBot()
     assert robot.client.config == robot.config
+
+
+def test_robot_reuse_client():
+    client_1 = robot.client
+    client_2 = robot.client
+    assert client_1 is client_2
