@@ -1,41 +1,41 @@
 os: osx
 language: generic
-osx_image: xcode8  # OS X 10.10
+osx_image: xcode8.2
 env:
-  - PYTHON_VERSION=2 PYTHON_INSTALL_METHOD=system
+- PYTHON_VERSION=2 PYTHON_INSTALL_METHOD=system
 matrix:
   include:
-    - env:
-      - PYTHON_VERSION="2"
-      - PYTHON_INSTALL_METHOD=tox
-    - env:
-      - PYTHON_VERSION="3"
-      - PYTHON_INSTALL_METHOD=tox
-    - env:
-      - PYTHON_VERSION=2.7
-      - PYTHON_INSTALL_METHOD=macpython
-    - env:
-      - PYTHON_VERSION=3.4
-      - PYTHON_INSTALL_METHOD=macpython
-    - env:
-      - PYTHON_VERSION=3.5
-      - PYTHON_INSTALL_METHOD=macpython
-    - osx_image: xcode7.3  # OS X 10.11
-    - osx_image: xcode8.2 # macOS 10.12
-  allow_failures:
-    - osx_image: xcode8.2
+  - env:
+    - PYTHON_MAJOR=2
+    - PYTHON_VERSION="pypy-5.0.0 2.7.12"
+    - PYTHON_INSTALL_METHOD=tox
+  - env:
+    - PYTHON_MAJOR=3
+    - PYTHON_VERSION="3.6.0 3.5.2 3.4.5"
+    - PYTHON_INSTALL_METHOD=tox
+  - env:
+    - PYTHON_VERSION=2.7
+    - PYTHON_INSTALL_METHOD=macpython
+  - env:
+    - PYTHON_VERSION=3.4
+    - PYTHON_INSTALL_METHOD=macpython
+  - env:
+    - PYTHON_VERSION=3.5
+    - PYTHON_INSTALL_METHOD=macpython
+  - osx_image: xcode8
+  - osx_image: xcode6.4
 cache:
   directories:
   - $HOME/.pyenv
+after_script: set +e
 install:
-  - "source travis/install.sh"
-
+- source travis/install.sh
 script:
-  - "source travis/script.sh"
-
+- source travis/script.sh
 after_success:
-  - pip install codecov
-  - codecov
-
+- pip install codecov
+- codecov
 notifications:
   email: false
+  slack:
+    secure: A2AVwYqUoh2hza7eQ2yl5CNWEI6ozLZGolyh1U1Iez4t/lKD9+Y1FrcmsEjYoTYy0B2Q55RHxNZoSq5tVGb5Ap1f/bRakAWOmiedja5obYzIUqI+lJPXZBvxdlobOzuYUxRZOFCMndkN6UAzdJx2gaVdtj4iH/DxoVL6wK2wlfA=
