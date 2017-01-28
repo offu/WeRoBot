@@ -24,6 +24,14 @@
 
 .. automethod:: Client.delete_menu
 
+个性化菜单接口
+``````````````````````````````
+详细请参考 http://mp.weixin.qq.com/wiki/0/c48ccd12b69ae023159b4bfaa7c39c20.html
+
+.. automethod:: Client.create_custom_menu
+.. automethod:: Client.delete_custom_menu
+.. automethod:: Client.match_custom_menu
+
 用户管理
 ------------
 

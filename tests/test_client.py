@@ -2,6 +2,7 @@
 import os
 import responses
 import json
+import pytest
 
 from werobot import WeRoBot
 from werobot.config import Config
@@ -50,6 +51,42 @@ menu_data = {
         }
     ]}
 
+custom_data = {
+    "menu_data": [
+        {
+            "type": "click",
+            "name": u"今日歌曲",
+            "key": "V1001_TODAY_MUSIC"
+        },
+        {
+            "name": u"菜单",
+            "sub_button": [
+                {
+                    "type": "view",
+                    "name": u"搜索",
+                    "url": "http://www.soso.com/"
+                },
+                {
+                    "type": "view",
+                    "name": u"视频",
+                    "url": "http://v.qq.com/"
+                },
+                {
+                    "type": "click",
+                    "name": u"赞一下我们",
+                    "key": "V1001_GOOD"
+                }]
+        }],
+    "matchrule": {
+        "group_id": "2",
+        "sex": "1",
+        "country": u"中国",
+        "province": u"广东",
+        "city": u"广州",
+        "client_platform_type": "2",
+        "language": "zh_CN"
+    }}
+
 
 # callbacks
 def token_callback(request):
@@ -73,10 +110,16 @@ def check_menu_data(item):
 
 
 # test case
-def test_id_and_secret():
+
+@pytest.fixture(scope="module")
+def client():
     config = Config()
     config.from_pyfile(os.path.join(basedir, "client_config.py"))
     client = Client(config)
+    return client
+
+
+def test_id_and_secret(client):
     assert client.appid == "123"
     assert client.appsecret == "321"
 
@@ -101,18 +144,14 @@ def test_check_error():
 
 
 @responses.activate
-def test_grant_token():
+def test_grant_token(client):
     responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
-    config = Config()
-    config.from_pyfile(os.path.join(basedir, "client_config.py"))
-    client = Client(config)
-
     client.grant_token()
     assert client.token == "ACCESS_TOKEN"
 
 
 @responses.activate
-def test_client_request():
+def test_client_request(client):
     EMPTY_PARAMS_URL = "http://empty-params.werobot.com/"
     DATA_EXISTS_URL = "http://data-exists.werobot.com/"
 
@@ -129,10 +168,6 @@ def test_client_request():
     responses.add_callback(responses.GET, EMPTY_PARAMS_URL, callback=empty_params_callback)
     responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
 
-    config = Config()
-    config.from_pyfile(os.path.join(basedir, "client_config.py"))
-    client = Client(config)
-
     r = client.get(url=EMPTY_PARAMS_URL)
     assert r == {"test": "test"}
 
@@ -141,14 +176,11 @@ def test_client_request():
 
 
 @responses.activate
-def test_client_menu():
+def test_client_menu(client):
     CREATE_URL = "https://api.weixin.qq.com/cgi-bin/menu/create"
     GET_URL = "https://api.weixin.qq.com/cgi-bin/menu/get"
     DELETE_URL = "https://api.weixin.qq.com/cgi-bin/menu/delete"
     responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
-    config = Config()
-    config.from_pyfile(os.path.join(basedir, "client_config.py"))
-    client = Client(config)
 
     def create_menu_callback(request):
         try:
@@ -190,7 +222,7 @@ def test_client_menu():
 
 
 @responses.activate
-def test_client_group():
+def test_client_group(client):
     CREATE_URL = "https://api.weixin.qq.com/cgi-bin/groups/create"
     GET_URL = "https://api.weixin.qq.com/cgi-bin/groups/get"
     GET_WITH_ID_URL = "https://api.weixin.qq.com/cgi-bin/groups/getid"
@@ -199,9 +231,6 @@ def test_client_group():
     MOVE_USERS_URL = "https://api.weixin.qq.com/cgi-bin/groups/members/batchupdate"
     DELETE_URL = "https://api.weixin.qq.com/cgi-bin/groups/delete"
     responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
-    config = Config()
-    config.from_pyfile(os.path.join(basedir, "client_config.py"))
-    client = Client(config)
 
     def create_group_callback(request):
         body = json.loads(request.body.decode("utf-8"))
@@ -279,13 +308,10 @@ def test_client_group():
 
 
 @responses.activate
-def test_client_remark():
+def test_client_remark(client):
     REMARK_URL = "https://api.weixin.qq.com/cgi-bin/user/info/updateremark"
 
     responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
-    config = Config()
-    config.from_pyfile(os.path.join(basedir, "client_config.py"))
-    client = Client(config)
 
     def remark_callback(request):
         body = json.loads(request.body.decode("utf-8"))
@@ -300,14 +326,11 @@ def test_client_remark():
 
 
 @responses.activate
-def test_client_user_info():
+def test_client_user_info(client):
     SINGLE_USER_URL = "https://api.weixin.qq.com/cgi-bin/user/info"
     MULTI_USER_URL = "https://api.weixin.qq.com/cgi-bin/user/info/batchget"
 
     responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
-    config = Config()
-    config.from_pyfile(os.path.join(basedir, "client_config.py"))
-    client = Client(config)
 
     def single_user_callback(request):
         params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
@@ -336,13 +359,10 @@ def test_client_user_info():
 
 
 @responses.activate
-def test_client_get_followers():
+def test_client_get_followers(client):
     FOLLOWER_URL = "https://api.weixin.qq.com/cgi-bin/user/get"
 
     responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
-    config = Config()
-    config.from_pyfile(os.path.join(basedir, "client_config.py"))
-    client = Client(config)
 
     def get_followers_callback(request):
         params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
@@ -353,4 +373,44 @@ def test_client_get_followers():
     responses.add_callback(responses.GET, FOLLOWER_URL, callback=get_followers_callback)
 
     r = client.get_followers("test")
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+
+@responses.activate
+def test_client_custom_menu(client):
+    CREATE_URL = "https://api.weixin.qq.com/cgi-bin/menu/addconditional"
+    DELETE_URL = "https://api.weixin.qq.com/cgi-bin/menu/delconditional"
+    MATCH_URL = "https://api.weixin.qq.com/cgi-bin/menu/trymatch"
+
+    responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
+
+    def create_custom_menu_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "button" in body.keys()
+        assert "matchrule" in body.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.POST, CREATE_URL, callback=create_custom_menu_callback)
+
+    r = client.create_custom_menu(**custom_data)
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+    def delete_custom_menu_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "menuid" in body.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.POST, DELETE_URL, callback=delete_custom_menu_callback)
+
+    r = client.delete_custom_menu("test")
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+    def match_custom_menu(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "user_id" in body.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.POST, MATCH_URL, callback=match_custom_menu)
+
+    r = client.match_custom_menu("test")
     assert r == {"errcode": 0, "errmsg": "ok"}

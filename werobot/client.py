@@ -166,6 +166,86 @@ class Client(object):
         """
         return self.get("https://api.weixin.qq.com/cgi-bin/menu/delete")
 
+    def create_custom_menu(self, menu_data, matchrule):
+        """
+        创建个性化菜单::
+
+            button = [
+                {
+                    "type":"click",
+                    "name":"今日歌曲",
+                    "key":"V1001_TODAY_MUSIC"
+                },
+                {
+                    "name":"菜单",
+                    "sub_button":[
+                    {
+                        "type":"view",
+                        "name":"搜索",
+                        "url":"http://www.soso.com/"
+                    },
+                    {
+                        "type":"view",
+                        "name":"视频",
+                        "url":"http://v.qq.com/"
+                    },
+                    {
+                        "type":"click",
+                        "name":"赞一下我们",
+                        "key":"V1001_GOOD"
+                    }]
+             }]
+             matchrule = {
+                "group_id":"2",
+                "sex":"1",
+                "country":"中国",
+                "province":"广东",
+                "city":"广州",
+                "client_platform_type":"2",
+                "language":"zh_CN"
+            }
+            client.create_custom_menu(button, matchrule)
+
+        :param menu_data: 如上所示的 Python 字典
+        :param matchrule: 如上所示的匹配规则
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/menu/addconditional",
+            data={
+                "button": menu_data,
+                "matchrule": matchrule
+            }
+        )
+
+    def delete_custom_menu(self, menu_id):
+        """
+        删除个性化菜单
+
+        :param menu_id: 菜单的 ID
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/menu/delconditional",
+            data={
+                "menuid": menu_id
+            }
+        )
+
+    def match_custom_menu(self, user_id):
+        """
+        测试个性化菜单匹配结果
+
+        :param user_id: 要测试匹配的用户 ID
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/menu/trymatch",
+            data={
+                "user_id": user_id
+            }
+        )
+
     def upload_media(self, media_type, media_file):
         """
         上传多媒体文件。
