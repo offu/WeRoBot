@@ -4,7 +4,7 @@ Changelog
 Version 1.1.0
 ----------------
 
-+ 增加 :class:`werobot.robot.BaseRoBot` 增加 ``client`` property
++ 为 :class:`werobot.robot.BaseRoBot` 增加 ``client`` property
 
 Version 1.0.0
 ----------------
