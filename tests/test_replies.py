@@ -277,6 +277,7 @@ def test_transfer_customer_service_reply():
 def test_success_reply():
     assert SuccessReply().render() == "success"
 
+
 def test_process_unknown_function_reply():
     reply = SuccessReply()
     assert process_function_reply(reply) == reply
@@ -315,7 +316,7 @@ def test_process_music_function_reply():
 def test_process_articles_function_reply():
     reply = process_function_reply([
         ["tt1", 'ds1', 'img', 'url'],
-        ["tt2", 'ds2', 'im2g', 'u2rl'] 
+        ["tt2", 'ds2', 'im2g', 'u2rl']
     ])
     assert isinstance(reply, ArticlesReply)
     assert len(reply._articles) == 2
@@ -326,7 +327,7 @@ def test_process_articles_function_reply():
     assert article_1.img == "img", article_2.img == "im2g"
     assert article_1.url == "url", article_2.url == "u2rl"
 
-    process_function_reply([[1,2,3,4] * 9])
+    process_function_reply([[1, 2, 3, 4] * 9])
 
     with pytest.raises(AttributeError):
-        process_function_reply([[1,2,3,4] * 10])
+        process_function_reply([[1, 2, 3, 4] * 10])

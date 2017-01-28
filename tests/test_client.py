@@ -24,6 +24,7 @@ def test_robot_client():
 
 
 def test_robot_reuse_client():
+    robot = WeRoBot()
     client_1 = robot.client
     client_2 = robot.client
     assert client_1 is client_2

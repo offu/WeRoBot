@@ -11,7 +11,7 @@ try:
         Cipher, algorithms, modes
     from cryptography.hazmat.backends import default_backend
 except ImportError:  # pragma: no cover
-    raise RuntimeError("You need to install Cryptography.")  # pragma: no cover 
+    raise RuntimeError("You need to install Cryptography.")  # pragma: no cover
 
 from . import pkcs7
 from .exceptions import (

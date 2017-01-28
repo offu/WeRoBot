@@ -50,6 +50,7 @@ def test_pay_sign_dict():
     assert "noncestr" not in pay_sign[0]
     assert "appid" in pay_sign[0]
 
+
 def test_make_error_page():
     rand_string = generate_token()
     content = make_error_page(rand_string)
