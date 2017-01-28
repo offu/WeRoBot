@@ -22,8 +22,6 @@ matrix:
       - PYTHON_INSTALL_METHOD=macpython
     - osx_image: xcode8  # OS X 10.11
     - osx_image: xcode6.4 # OS X 10.10
-  # allow_failures:
-    # - osx_image: xcode8.2
 cache:
   directories:
   - $HOME/.pyenv
