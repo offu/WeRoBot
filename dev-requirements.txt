@@ -1,7 +1,7 @@
 -r tox-requirements.txt
 flake8==2.6.2
 tox
-cryptography
+cryptography==1.7.1
 pytest
 django
 flask

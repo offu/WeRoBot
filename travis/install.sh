@@ -7,8 +7,6 @@ if [ $MAJOR_MAC_VERSION != "10.10" ]; then
   rvm get head
 fi
 
-brew install openssl
-
 case $PYTHON_INSTALL_METHOD in
     tox)
       brew install pyenv
