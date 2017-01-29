@@ -98,6 +98,20 @@ add_news_data = [{
     "content_source_url": "test"
 }]
 
+update_data = {
+    "media_id": "test",
+    "index": "test",
+    "articles": {
+        "title": "test",
+        "thumb_media_id": "test",
+        "author": "test",
+        "digest": "test",
+        "show_cover_pic": 1,
+        "content": "test",
+        "content_source_url": "test"
+    }
+}
+
 
 # callbacks
 def token_callback(request):
@@ -434,6 +448,9 @@ def test_resource(client):
     ADD_NEWS_URL = "https://api.weixin.qq.com/cgi-bin/material/add_news"
     UPLOAD_PICTURE_URL = "https://api.weixin.qq.com/cgi-bin/media/uploadimg"
     UPLOAD_P_URL = "https://api.weixin.qq.com/cgi-bin/material/add_material"
+    DOWNLOAD_P_URL = "https://api.weixin.qq.com/cgi-bin/material/get_material"
+    DELETE_P_URL = "https://api.weixin.qq.com/cgi-bin/material/del_material"
+    UPDATE_NEWS_URL = "https://api.weixin.qq.com/cgi-bin/material/update_news"
 
     responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
 
@@ -494,6 +511,48 @@ def test_resource(client):
     responses.add_callback(responses.POST, UPLOAD_P_URL, callback=upload_p_media_callback)
 
     r = client.upload_permanent_media("test", "test")
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+    def download_p_media_callback(request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        body = json.loads(request.body.decode("utf-8"))
+        assert "media_id" in body.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.POST, DOWNLOAD_P_URL, callback=download_p_media_callback)
+
+    r = client.download_permanent_media("test")
+    assert type(r) == requests.Response
+
+    def delete_p_media_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "media_id" in body.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.POST, DELETE_P_URL, callback=delete_p_media_callback)
+
+    r = client.delete_permanent_media("test")
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+    def update_news_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "media_id" in body.keys()
+        assert "index" in body.keys()
+        assert "articles" in body.keys()
+        articles = body["articles"]
+        assert "title" in articles.keys()
+        assert "thumb_media_id" in articles.keys()
+        assert "author" in articles.keys()
+        assert "digest" in articles.keys()
+        assert "show_cover_pic" in articles.keys()
+        assert "content" in articles.keys()
+        assert "content_source_url" in articles.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.POST, UPDATE_NEWS_URL, callback=update_news_callback)
+
+    r = client.update_news(update_data)
     assert r == {"errcode": 0, "errmsg": "ok"}
 
 

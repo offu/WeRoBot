@@ -379,6 +379,64 @@ class Client(object):
             }
         )
 
+    def download_permanent_media(self, media_id):
+        """
+        获取永久素材。
+
+        :param media_id: 媒体文件 ID
+        :return: requests 的 Response 实例
+        """
+        return requests.post(
+            url="https://api.weixin.qq.com/cgi-bin/material/get_material",
+            params={
+                "access_token": self.token
+            },
+            data=_json.dumps({
+                "media_id": media_id
+            }, ensure_ascii=False).encode("utf-8")
+        )
+
+    def delete_permanent_media(self, media_id):
+        """
+        删除永久素材。
+
+        :param media_id: 媒体文件 ID
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/material/del_material",
+            data={
+                "media_id": media_id
+            }
+        )
+
+    def update_news(self, update_data):
+        """
+        修改永久图文素材。::
+
+            update_data = {
+                "media_id":MEDIA_ID,
+                "index":INDEX,
+                "articles": {
+                    "title": TITLE,
+                    "thumb_media_id": THUMB_MEDIA_ID,
+                    "author": AUTHOR,
+                    "digest": DIGEST,
+                    "show_cover_pic": SHOW_COVER_PIC(0 / 1),
+                    "content": CONTENT,
+                    "content_source_url": CONTENT_SOURCE_URL
+                }
+            }
+            client.update_news(update_data)
+
+        :param update_data: 更新的数据，要包含 media_id（图文素材的 ID），index（要更新的文章在图文消息中的位置），articles（新的图文素材数据）
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/material/update_news",
+            data=update_data
+        )
+
     def create_group(self, name):
         """
         创建分组。

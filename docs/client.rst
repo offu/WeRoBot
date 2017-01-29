@@ -95,3 +95,21 @@
 .. automethod:: Client.upload_news_picture
 .. automethod:: Client.upload_permanent_media
 .. automethod:: Client.upload_permanent_video
+
+获取永久素材
+``````````````````````````````
+详细请参考 http://mp.weixin.qq.com/wiki/12/3c12fac7c14cb4d0e0d4fe2fbc87b638.html
+
+.. automethod:: Client.download_permanent_media
+
+删除永久素材
+``````````````````````````````
+详细请参考 http://mp.weixin.qq.com/wiki/7/2212203f4e17253b9aef77dc788f5337.html
+
+.. automethod:: Client.delete_permanent_media
+
+修改永久图文素材
+``````````````````````````````
+详细请参考 http://mp.weixin.qq.com/wiki/10/c7bad9a463db20ff8ccefeedeef51f9e.html
+
+.. automethod:: Client.update_news
