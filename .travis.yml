@@ -6,16 +6,16 @@ env:
 matrix:
   include:
   - env:
+    - PYTHON_MAJOR=py3
+    - PYTHON_VERSION="3.6.0 3.5.2 3.4.5"
+    - PYTHON_INSTALL_METHOD=tox
+  - env:
     - PYTHON_MAJOR=py2
     - PYTHON_VERSION="2.7.12"
     - PYTHON_INSTALL_METHOD=tox
   - env:
     - PYTHON_MAJOR=pypy
     - PYTHON_VERSION="pypy-5.0.0"
-    - PYTHON_INSTALL_METHOD=tox
-  - env:
-    - PYTHON_MAJOR=py3
-    - PYTHON_VERSION="3.6.0 3.5.2 3.4.5"
     - PYTHON_INSTALL_METHOD=tox
   - env:
     - PYTHON_VERSION=2.7
