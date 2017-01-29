@@ -572,3 +572,39 @@ def test_upload_video(client):
 
     r = client.upload_permanent_video("test", "test", "test")
     assert type(r) == requests.Response
+
+
+@responses.activate
+def test_get_media_count(client):
+    GET_URL = "https://api.weixin.qq.com/cgi-bin/material/get_materialcount"
+
+    responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
+
+    def get_media_callback(request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.GET, GET_URL, callback=get_media_callback)
+
+    r = client.get_media_count()
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+
+@responses.activate
+def test_get_media_list(client):
+    GET_URL = "https://api.weixin.qq.com/cgi-bin/material/batchget_material"
+
+    responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
+
+    def get_media_list_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "media" in body.keys()
+        assert "offset" in body.keys()
+        assert "count" in body.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.POST, GET_URL, callback=get_media_list_callback)
+
+    r = client.get_media_list("test", "test", "test")
+    assert r == {"errcode": 0, "errmsg": "ok"}

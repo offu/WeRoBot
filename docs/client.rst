@@ -113,3 +113,15 @@
 详细请参考 http://mp.weixin.qq.com/wiki/10/c7bad9a463db20ff8ccefeedeef51f9e.html
 
 .. automethod:: Client.update_news
+
+获取素材总数
+``````````````````````````````
+详细请参考 http://mp.weixin.qq.com/wiki/5/a641fd7b5db7a6a946ebebe2ac166885.html
+
+.. automethod:: Client.get_media_count
+
+获取素材列表
+``````````````````````````````
+详细请参考 http://mp.weixin.qq.com/wiki/15/8386c11b7bc4cdd1499c572bfe2e95b3.html
+
+.. automethod:: Client.get_media_list
