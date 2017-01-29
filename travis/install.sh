@@ -26,6 +26,5 @@ brew services start redis
 brew install mongodb
 brew services start mongodb
 
-brew install openssl
 python --version
-env LDFLAGS="-L$(brew --prefix openssl)/lib" CFLAGS="-I$(brew --prefix openssl)/include" pip install -r dev-requirements.txt
+pip install -r dev-requirements.txt
