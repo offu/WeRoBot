@@ -3,6 +3,7 @@ import os
 import responses
 import json
 import pytest
+import requests
 
 from werobot import WeRoBot
 from werobot.config import Config
@@ -86,6 +87,16 @@ custom_data = {
         "client_platform_type": "2",
         "language": "zh_CN"
     }}
+
+add_news_data = [{
+    "title": "test_title",
+    "thumb_media_id": "test",
+    "author": "test",
+    "digest": "test",
+    "show_cover_pic": 1,
+    "content": "test",
+    "content_source_url": "test"
+}]
 
 
 # callbacks
@@ -414,3 +425,91 @@ def test_client_custom_menu(client):
 
     r = client.match_custom_menu("test")
     assert r == {"errcode": 0, "errmsg": "ok"}
+
+
+@responses.activate
+def test_resource(client):
+    UPLOAD_URL = "https://api.weixin.qq.com/cgi-bin/media/upload"
+    DOWNLOAD_URL = "https://api.weixin.qq.com/cgi-bin/media/get"
+    ADD_NEWS_URL = "https://api.weixin.qq.com/cgi-bin/material/add_news"
+    UPLOAD_PICTURE_URL = "https://api.weixin.qq.com/cgi-bin/media/uploadimg"
+    UPLOAD_P_URL = "https://api.weixin.qq.com/cgi-bin/material/add_material"
+
+    responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
+
+    def upload_callback(request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "type" in params.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.POST, UPLOAD_URL, callback=upload_callback)
+
+    r = client.upload_media("test", "test")
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+    def download_callback(request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "media_id" in params.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.GET, DOWNLOAD_URL, callback=download_callback)
+
+    r = client.download_media("test")
+    assert type(r) == requests.Response
+
+    def add_news_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "articles" in body.keys()
+        for article in body["articles"]:
+            assert "title" in article.keys()
+            assert "thumb_media_id" in article.keys()
+            assert "author" in article.keys()
+            assert "digest" in article.keys()
+            assert "show_cover_pic" in article.keys()
+            assert "content" in article.keys()
+            assert "content_source_url" in article.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.POST, ADD_NEWS_URL, callback=add_news_callback)
+
+    r = client.add_news(add_news_data)
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+    def upload_picture_callback(request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.POST, UPLOAD_PICTURE_URL, callback=upload_picture_callback)
+
+    r = client.upload_news_picture("test")
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+    def upload_p_media_callback(request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        assert "type" in params.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.POST, UPLOAD_P_URL, callback=upload_p_media_callback)
+
+    r = client.upload_permanent_media("test", "test")
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+
+@responses.activate
+def test_upload_video(client):
+    UPLOAD_VIDEO_URL = "https://api.weixin.qq.com/cgi-bin/material/add_material"
+
+    responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
+
+    def upload_video_callback(request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "type" in params.keys()
+        assert params["type"][0] == "video"
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.POST, UPLOAD_VIDEO_URL, callback=upload_video_callback)
+
+    r = client.upload_permanent_video("test", "test", "test")
+    assert type(r) == requests.Response

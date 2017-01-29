@@ -71,3 +71,27 @@
 详细请参考 http://mp.weixin.qq.com/wiki/12/54773ff6da7b8bdc95b7d2667d84b1d4.html
 
 .. automethod:: Client.get_followers
+
+素材管理
+------------
+
+新增临时素材
+``````````````````````````````
+详细请参考 http://mp.weixin.qq.com/wiki/15/2d353966323806a202cd2deaafe8e557.html
+
+.. automethod:: Client.upload_media
+
+获取临时素材
+``````````````````````````````
+详细请参考 http://mp.weixin.qq.com/wiki/9/677a85e3f3849af35de54bb5516c2521.html
+
+.. automethod:: Client.download_media
+
+新增永久素材
+``````````````````````````````
+详细请参考 http://mp.weixin.qq.com/wiki/10/10ea5a44870f53d79449290dfd43d006.html
+
+.. automethod:: Client.add_news
+.. automethod:: Client.upload_news_picture
+.. automethod:: Client.upload_permanent_media
+.. automethod:: Client.upload_permanent_video

@@ -105,7 +105,7 @@ class Client(object):
 
     def create_menu(self, menu_data):
         """
-        创建自定义菜单 ::
+        创建自定义菜单。::
 
             client = Client("id", "secret")
             client.create_menu({
@@ -152,7 +152,7 @@ class Client(object):
 
     def get_menu(self):
         """
-        查询自定义菜单
+        查询自定义菜单。
 
         :return: 返回的 JSON 数据包
         """
@@ -160,7 +160,7 @@ class Client(object):
 
     def delete_menu(self):
         """
-        删除自定义菜单
+        删除自定义菜单。
 
         :return: 返回的 JSON 数据包
         """
@@ -168,7 +168,7 @@ class Client(object):
 
     def create_custom_menu(self, menu_data, matchrule):
         """
-        创建个性化菜单::
+        创建个性化菜单。::
 
             button = [
                 {
@@ -220,7 +220,7 @@ class Client(object):
 
     def delete_custom_menu(self, menu_id):
         """
-        删除个性化菜单
+        删除个性化菜单。
 
         :param menu_id: 菜单的 ID
         :return: 返回的 JSON 数据包
@@ -234,7 +234,7 @@ class Client(object):
 
     def match_custom_menu(self, user_id):
         """
-        测试个性化菜单匹配结果
+        测试个性化菜单匹配结果。
 
         :param user_id: 要测试匹配的用户 ID
         :return: 返回的 JSON 数据包
@@ -248,7 +248,7 @@ class Client(object):
 
     def get_custom_menu_config(self):
         """
-        获取自定义菜单配置接口
+        获取自定义菜单配置接口。
 
         :return: 返回的 JSON 数据包
         """
@@ -258,16 +258,14 @@ class Client(object):
 
     def upload_media(self, media_type, media_file):
         """
-        上传多媒体文件。
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=上传下载多媒体文件
+        上传临时多媒体文件。
 
         :param media_type: 媒体文件类型，分别有图片（image）、语音（voice）、视频（video）和缩略图（thumb）
         :param media_file: 要上传的文件，一个 File-object
-
         :return: 返回的 JSON 数据包
         """
         return self.post(
-            url="http://file.api.weixin.qq.com/cgi-bin/media/upload",
+            url="https://api.weixin.qq.com/cgi-bin/media/upload",
             params={
                 "access_token": self.token,
                 "type": media_type
@@ -279,18 +277,105 @@ class Client(object):
 
     def download_media(self, media_id):
         """
-        下载多媒体文件。
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=上传下载多媒体文件
+        下载临时多媒体文件。
 
         :param media_id: 媒体文件 ID
-
         :return: requests 的 Response 实例
         """
         return requests.get(
-            "http://file.api.weixin.qq.com/cgi-bin/media/get",
+            url="https://api.weixin.qq.com/cgi-bin/media/get",
             params={
                 "access_token": self.token,
                 "media_id": media_id
+            }
+        )
+
+    def add_news(self, articles):
+        """
+        新增永久图文素材。::
+
+            articles = [{
+               "title": TITLE,
+               "thumb_media_id": THUMB_MEDIA_ID,
+               "author": AUTHOR,
+               "digest": DIGEST,
+               "show_cover_pic": SHOW_COVER_PIC(0 / 1),
+               "content": CONTENT,
+               "content_source_url": CONTENT_SOURCE_URL
+            }
+            # 若新增的是多图文素材，则此处应有几段articles结构，最多8段
+            ]
+            client.add_news(articles)
+
+        :param articles: 如示例中的数组
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/material/add_news",
+            data={
+                "articles": articles
+            }
+        )
+
+    def upload_news_picture(self, file):
+        """
+        上传图文消息内的图片。
+
+        :param file: 要上传的文件，一个 File-object
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/media/uploadimg",
+            params={
+                "access_token": self.token
+            },
+            files={
+                "media": file
+            }
+        )
+
+    def upload_permanent_media(self, media_type, media_file):
+        """
+        上传其他类型永久素材。
+
+        :param media_type: 媒体文件类型，分别有图片（image）、语音（voice）和缩略图（thumb）
+        :param media_file: 要上传的文件，一个 File-object
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/material/add_material",
+            params={
+                "access_token": self.token,
+                "type": media_type
+            },
+            files={
+                "media": media_file
+            }
+        )
+
+    def upload_permanent_video(self, title, introduction, video):
+        """
+        上传永久视频。
+
+        :param title: 视频素材的标题
+        :param introduction: 视频素材的描述
+        :param video: 要上传的视频，一个 File-object
+        :return: requests 的 Response 实例
+        """
+        return requests.post(
+            url="https://api.weixin.qq.com/cgi-bin/material/add_material",
+            params={
+                "access_token": self.token,
+                "type": "video"
+            },
+            data={
+                "description": _json.dumps({
+                    "title": title,
+                    "introduction": introduction
+                }, ensure_ascii=False).encode("utf-8")
+            },
+            files={
+                "media": video
             }
         )
 
@@ -394,7 +479,7 @@ class Client(object):
 
     def remark_user(self, user_id, remark):
         """
-        设置备注名
+        设置备注名。
 
         :param user_id: 设置备注名的用户 ID
         :param remark: 新的备注名，长度必须小于30字符
@@ -410,7 +495,7 @@ class Client(object):
 
     def get_user_info(self, user_id, lang="zh_CN"):
         """
-        获取用户基本信息
+        获取用户基本信息。
 
         :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
         :param lang: 返回国家地区语言版本，zh_CN 简体，zh_TW 繁体，en 英语
@@ -427,7 +512,7 @@ class Client(object):
 
     def get_users_info(self, user_id_list, lang="zh_CN"):
         """
-        批量获取用户基本信息
+        批量获取用户基本信息。
 
         :param user_id_list: 用户 ID 的列表
         :param lang: 返回国家地区语言版本，zh_CN 简体，zh_TW 繁体，en 英语
