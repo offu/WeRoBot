@@ -68,8 +68,7 @@ class Client(object):
 
     def grant_token(self):
         """
-        获取 Access Token 。
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=通用接口文档
+        获取 Access Token。
 
         :return: 返回的 JSON 数据包
         """
@@ -102,6 +101,16 @@ class Client(object):
     @property
     def token(self):
         return self.get_access_token()
+
+    def get_ip_list(self):
+        """
+        获取微信服务器IP地址。
+
+        :return: 返回的 JSON 数据包
+        """
+        return self.get(
+            url="https://api.weixin.qq.com/cgi-bin/getcallbackip"
+        )
 
     def create_menu(self, menu_data):
         """

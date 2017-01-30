@@ -608,3 +608,20 @@ def test_get_media_list(client):
 
     r = client.get_media_list("test", "test", "test")
     assert r == {"errcode": 0, "errmsg": "ok"}
+
+
+@responses.activate
+def test_get_ip_list(client):
+    GET_URL = "https://api.weixin.qq.com/cgi-bin/getcallbackip"
+
+    responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
+
+    def get_ip_list_callback(request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.GET, GET_URL, callback=get_ip_list_callback)
+
+    r = client.get_ip_list()
+    assert r == {"errcode": 0, "errmsg": "ok"}

@@ -3,6 +3,22 @@
 
 .. module:: werobot.client
 
+开始开发
+------------
+
+获取access token
+``````````````````````````````
+详细请参考 http://mp.weixin.qq.com/wiki/14/9f9c82c1af308e3b14ba9b973f99a8ba.html
+
+.. automethod:: Client.grant_token
+.. automethod:: Client.get_access_token
+
+获取微信服务器IP地址
+``````````````````````````````
+详细请参考 http://mp.weixin.qq.com/wiki/4/41ef0843d6e108cf6b5649480207561c.html
+
+.. automethod:: Client.get_ip_list
+
 自定义菜单
 ------------
 
