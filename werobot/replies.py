@@ -1,8 +1,29 @@
 # -*- coding: utf-8 -*-
 import time
 
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 from werobot.utils import is_string, to_text
+
+
+def renderable_named_tuple(typename, field_names, tempalte):
+    class TMP(namedtuple(typename=typename, field_names=field_names)):
+        __TEMPLATE__ = tempalte
+
+        def process_args(self, kwargs):
+            args = defaultdict(str)
+            for k, v in kwargs.items():
+                if is_string(v):
+                    v = to_text(v)
+                args[k] = v
+            return args
+
+        def render(self):
+            return to_text(
+                self.__TEMPLATE__.format(**self.process_args(self._asdict()))
+            )
+
+    TMP.__name__ = typename
+    return TMP
 
 
 class WeChatReply(object):
@@ -91,8 +112,10 @@ class VideoReply(WeChatReply):
         args.setdefault('description', '')
 
 
-class Article(object):
-    TEMPLATE = to_text("""
+Article = renderable_named_tuple(
+    typename="Article",
+    field_names=("title", "description", "img", "url"),
+    tempalte=to_text("""
     <item>
     <Title><![CDATA[{title}]]></Title>
     <Description><![CDATA[{description}]]></Description>
@@ -100,20 +123,7 @@ class Article(object):
     <Url><![CDATA[{url}]]></Url>
     </item>
     """)
-
-    def __init__(self, title, description, img, url):
-        self.title = title
-        self.description = description
-        self.img = img
-        self.url = url
-
-    def render(self):
-        return to_text(self.TEMPLATE.format(
-            title=to_text(self.title),
-            description=to_text(self.description),
-            img=to_text(self.img),
-            url=to_text(self.url)
-        ))
+)
 
 
 class ArticlesReply(WeChatReply):
