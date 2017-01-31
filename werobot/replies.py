@@ -9,6 +9,11 @@ def renderable_named_tuple(typename, field_names, tempalte):
     class TMP(namedtuple(typename=typename, field_names=field_names)):
         __TEMPLATE__ = tempalte
 
+        @property
+        def args(self):
+            # https://bugs.python.org/issue24931
+            return dict(zip(self._fields, self))
+
         def process_args(self, kwargs):
             args = defaultdict(str)
             for k, v in kwargs.items():
@@ -19,7 +24,7 @@ def renderable_named_tuple(typename, field_names, tempalte):
 
         def render(self):
             return to_text(
-                self.__TEMPLATE__.format(**self.process_args(self._asdict()))
+                self.__TEMPLATE__.format(**self.process_args(self.args))
             )
 
     TMP.__name__ = typename
