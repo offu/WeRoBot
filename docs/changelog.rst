@@ -5,7 +5,7 @@ Version 1.1.0
 ----------------
 
 + 增加 :class:`werobot.robot.BaseRoBot` 增加 ``client`` property
-+ 增加 :class:`werobot.client.Client` 增加缺少的 `API`
++ 增加 :doc:`client` 增加缺少的 `API`
 
 Version 1.0.0
 ----------------

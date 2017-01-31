@@ -625,3 +625,54 @@ def test_get_ip_list(client):
 
     r = client.get_ip_list()
     assert r == {"errcode": 0, "errmsg": "ok"}
+
+
+@responses.activate
+def test_custom_service(client):
+    ADD_URL = "https://api.weixin.qq.com/customservice/kfaccount/add"
+    UPDATE_URL = "https://api.weixin.qq.com/customservice/kfaccount/update"
+    DELETE_URL = "https://api.weixin.qq.com/customservice/kfaccount/del"
+    UPLOAD_URL = "http://api.weixin.qq.com/customservice/kfaccount/uploadheadimg"
+    GET_URL = "https://api.weixin.qq.com/cgi-bin/customservice/getkflist"
+
+    responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
+
+    def add_update_delete_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "kf_account" in body.keys()
+        assert "nickname" in body.keys()
+        assert "password" in body.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.POST, ADD_URL, callback=add_update_delete_callback)
+    responses.add_callback(responses.POST, UPDATE_URL, callback=add_update_delete_callback)
+    responses.add_callback(responses.POST, DELETE_URL, callback=add_update_delete_callback)
+
+    r = client.add_custom_service_account("test", "test", "test")
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+    r = client.update_custom_service_account("test", "test", "test")
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+    r = client.delete_custom_service_account("test", "test", "test")
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+    def upload_callback(request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.POST, UPLOAD_URL, callback=upload_callback)
+
+    r = client.upload_custom_service_account_avatar("test", "test")
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+    def get_callback(request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.GET, GET_URL, callback=get_callback)
+
+    r = client.get_custom_service_account_list()
+    assert r == {"errcode": 0, "errmsg": "ok"}

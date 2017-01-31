@@ -114,7 +114,7 @@ class Client(object):
 
     def create_menu(self, menu_data):
         """
-        创建自定义菜单。::
+        创建自定义菜单::
 
             client = Client("id", "secret")
             client.create_menu({
@@ -177,7 +177,7 @@ class Client(object):
 
     def create_custom_menu(self, menu_data, matchrule):
         """
-        创建个性化菜单。::
+        创建个性化菜单::
 
             button = [
                 {
@@ -265,6 +265,89 @@ class Client(object):
             url="https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info"
         )
 
+    def add_custom_service_account(self, account, nickname, password):
+        """
+        添加客服帐号。
+
+        :param account: 客服账号的用户名
+        :param nickname: 客服账号的昵称
+        :param password: 客服账号的密码
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/customservice/kfaccount/add",
+            data={
+                "kf_account": account,
+                "nickname": nickname,
+                "password": password
+            }
+        )
+
+    def update_custom_service_account(self, account, nickname, password):
+        """
+        修改客服帐号。
+
+        :param account: 客服账号的用户名
+        :param nickname: 客服账号的昵称
+        :param password: 客服账号的密码
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/customservice/kfaccount/update",
+            data={
+                "kf_account": account,
+                "nickname": nickname,
+                "password": password
+            }
+        )
+
+    def delete_custom_service_account(self, account, nickname, password):
+        """
+        删除客服帐号。
+
+        :param account: 客服账号的用户名
+        :param nickname: 客服账号的昵称
+        :param password: 客服账号的密码
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/customservice/kfaccount/del",
+            data={
+                "kf_account": account,
+                "nickname": nickname,
+                "password": password
+            }
+        )
+
+    def upload_custom_service_account_avatar(self, account, avatar):
+        """
+        设置客服帐号的头像。
+
+        :param account: 客服账号的用户名
+        :param avatar: 头像文件，必须是 jpg 格式
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="http://api.weixin.qq.com/customservice/kfaccount/uploadheadimg",
+            params={
+                "access_token": self.token,
+                "kf_account": account
+            },
+            files={
+                "media": avatar
+            }
+        )
+
+    def get_custom_service_account_list(self):
+        """
+        获取所有客服账号。
+
+        :return: 返回的 JSON 数据包
+        """
+        return self.get(
+            url="https://api.weixin.qq.com/cgi-bin/customservice/getkflist"
+        )
+
     def upload_media(self, media_type, media_file):
         """
         上传临时多媒体文件。
@@ -301,7 +384,7 @@ class Client(object):
 
     def add_news(self, articles):
         """
-        新增永久图文素材。::
+        新增永久图文素材::
 
             articles = [{
                "title": TITLE,
@@ -421,7 +504,7 @@ class Client(object):
 
     def update_news(self, update_data):
         """
-        修改永久图文素材。::
+        修改永久图文素材::
 
             update_data = {
                 "media_id":MEDIA_ID,
@@ -643,8 +726,7 @@ class Client(object):
 
     def send_text_message(self, user_id, content):
         """
-        发送文本消息
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=发送客服消息
+        发送文本消息。
 
         :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
         :param content: 消息正文
@@ -661,8 +743,7 @@ class Client(object):
 
     def send_image_message(self, user_id, media_id):
         """
-        发送图片消息
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=发送客服消息
+        发送图片消息。
 
         :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
         :param media_id: 图片的媒体ID。 可以通过 :func:`upload_media` 上传。
@@ -681,8 +762,7 @@ class Client(object):
 
     def send_voice_message(self, user_id, media_id):
         """
-        发送语音消息
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=发送客服消息
+        发送语音消息。
 
         :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
         :param media_id: 发送的语音的媒体ID。 可以通过 :func:`upload_media` 上传。
@@ -702,8 +782,7 @@ class Client(object):
     def send_video_message(self, user_id, media_id,
                            title=None, description=None):
         """
-        发送视频消息
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=发送客服消息
+        发送视频消息。
 
         :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
         :param media_id: 发送的视频的媒体ID。 可以通过 :func:`upload_media` 上传。
@@ -731,8 +810,7 @@ class Client(object):
     def send_music_message(self, user_id, url, hq_url, thumb_media_id,
                            title=None, description=None):
         """
-        发送音乐消息
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=发送客服消息
+        发送音乐消息。
 
         :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
         :param url: 音乐链接
@@ -763,28 +841,54 @@ class Client(object):
 
     def send_article_message(self, user_id, articles):
         """
-        发送图文消息
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=发送客服消息
+        发送图文消息::
+
+            articles = [
+                {
+                    "title":"Happy Day",
+                    "description":"Is Really A Happy Day",
+                    "url":"URL",
+                    "picurl":"PIC_URL"
+                },
+                {
+                    "title":"Happy Day",
+                    "description":"Is Really A Happy Day",
+                    "url":"URL",
+                    "picurl":"PIC_URL"
+                }
+            ]
+            client.send_acticle_message("user_id", acticles)
 
         :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
-        :param articles: 一个包含至多10个 :class:`Article` 实例的数组
+        :param articles: 一个包含至多8个 article 字典的数组
         :return: 返回的 JSON 数据包
         """
-        articles_data = []
-        for article in articles:
-            articles_data.append({
-                "title": article.title,
-                "description": article.description,
-                "url": article.url,
-                "picurl": article.img
-            })
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/message/custom/send",
             data={
                 "touser": user_id,
                 "msgtype": "news",
                 "news": {
-                    "articles": articles_data
+                    "articles": articles
+                }
+            }
+        )
+
+    def send_news_message(self, user_id, media_id):
+        """
+        发送永久素材中的图文消息。
+
+        :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
+        :param media_id: 媒体文件 ID
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/message/custom/send",
+            data={
+                "touser": user_id,
+                "msgtype": "mpnews",
+                "mpnews": {
+                    "media_id": media_id
                 }
             }
         )

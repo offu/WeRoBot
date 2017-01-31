@@ -54,6 +54,26 @@
 
 .. automethod:: Client.get_custom_menu_config
 
+消息管理
+------------
+
+客服接口
+``````````````````````````````
+详细请参考 http://mp.weixin.qq.com/wiki/11/c88c270ae8935291626538f9c64bd123.html
+
+.. automethod:: Client.add_custom_service_account
+.. automethod:: Client.update_custom_service_account
+.. automethod:: Client.delete_custom_service_account
+.. automethod:: Client.upload_custom_service_account_avatar
+.. automethod:: Client.get_custom_service_account_list
+.. automethod:: Client.send_text_message
+.. automethod:: Client.send_image_message
+.. automethod:: Client.send_voice_message
+.. automethod:: Client.send_video_message
+.. automethod:: Client.send_music_message
+.. automethod:: Client.send_article_message
+.. automethod:: Client.send_news_message
+
 用户管理
 ------------
 
