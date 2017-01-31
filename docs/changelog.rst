@@ -5,6 +5,7 @@ Version 1.1.0
 ----------------
 
 + 为 :class:`werobot.robot.BaseRoBot` 增加 ``client`` property
++ 允许使用 ``reply.time`` 的方式快速读取 Reply 属性
 
 Version 1.0.0
 ----------------

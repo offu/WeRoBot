@@ -51,6 +51,10 @@ class WeChatReply(object):
     def render(self):
         return to_text(self.TEMPLATE.format(**self._args))
 
+    def __getattr__(self, item):
+        if item in self._args:
+            return self._args[item]
+
 
 class TextReply(WeChatReply):
     TEMPLATE = to_text("""
