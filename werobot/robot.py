@@ -323,7 +323,7 @@ class BaseRoBot(object):
         """
         Return the Reply Object for the given message.
         """
-        session_storage = self.config["SESSION_STORAGE"]
+        session_storage = self.session_storage
 
         id = None
         session = None
