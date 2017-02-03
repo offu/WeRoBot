@@ -54,7 +54,7 @@ WeRoBot 提供了 :ref:`Session` 功能， 可以让你方便的记录用户状�
         session['first'] = True
         return '你之前没给我发过消息'
 
-要使用 Session 功能， 请阅读 :ref:`开启 Session`
+Session 功能默认开启， 并使用 SQLite 存储 Session 数据。 详情请参考 :doc:`session` 文档
 
 创建自定义菜单
 --------------
