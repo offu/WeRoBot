@@ -4,8 +4,6 @@ from __future__ import absolute_import, unicode_literals
 import six
 import warnings
 
-import werobot
-
 from werobot.config import Config, ConfigAttribute
 from werobot.client import Client
 from werobot.exceptions import ConfigError
