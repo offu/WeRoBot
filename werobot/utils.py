@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-import hashlib
 
 import re
 import random
@@ -11,6 +10,7 @@ import io
 import os
 
 from hashlib import sha1
+from functools import wraps
 
 string_types = (six.string_types, six.text_type, six.binary_type)
 
@@ -19,7 +19,7 @@ def get_signature(token, timestamp, nonce, *args):
     sign = [token, timestamp, nonce] + list(args)
     sign.sort()
     sign = to_binary(''.join(sign))
-    return hashlib.sha1(sign).hexdigest()
+    return sha1(sign).hexdigest()
 
 
 def check_signature(token, timestamp, nonce, signature):
@@ -29,6 +29,18 @@ def check_signature(token, timestamp, nonce, signature):
 
 def check_token(token):
     return re.match('^[A-Za-z0-9]{3,32}$', token)
+
+
+def cached_property(method):
+    prop_name = '_{}'.format(method.__name__)
+
+    @wraps(method)
+    def wrapped_func(self, *args, **kwargs):
+        if not hasattr(self, prop_name):
+            setattr(self, prop_name, method(self, *args, **kwargs))
+        return getattr(self, prop_name)
+
+    return property(wrapped_func)
 
 
 def to_text(value, encoding="utf-8"):

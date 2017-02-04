@@ -137,6 +137,9 @@ def test_django():
     response = process_message(parse_xml(response.content))
     assert response.content == 'hello'
 
+    response = client.options(url)
+    assert response.status_code == 405
+
 
 def test_flask(wsgi_tester, hello_robot):
     from flask import Flask

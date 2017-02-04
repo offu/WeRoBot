@@ -3,7 +3,7 @@
 import six
 
 from werobot.utils import generate_token, check_token, to_text, to_binary
-from werobot.utils import pay_sign_dict
+from werobot.utils import pay_sign_dict, make_error_page
 
 
 def test_token_generator():
@@ -49,3 +49,9 @@ def test_pay_sign_dict():
     assert "timestamp" not in pay_sign[0]
     assert "noncestr" not in pay_sign[0]
     assert "appid" in pay_sign[0]
+
+
+def test_make_error_page():
+    rand_string = generate_token()
+    content = make_error_page(rand_string)
+    assert rand_string in content

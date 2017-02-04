@@ -14,8 +14,8 @@ WeRoBot
     :target: https://jq.qq.com/?_wv=1027&k=449sXsV
 
 
-.. image:: https://werobot-slack.herokuapp.com/badge.svg
-    :target: https://werobot-slack.herokuapp.com/
+.. image:: http://werobot-slack.whtsky.com/badge.svg
+    :target: http://werobot-slack.whtsky.com
 
 WeRoBot 是一个微信公众号开发框架，采用MIT协议发布。
 

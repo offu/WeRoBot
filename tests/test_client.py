@@ -154,6 +154,13 @@ def test_robot_client():
     assert robot.client.config == robot.config
 
 
+def test_robot_reuse_client():
+    robot = WeRoBot()
+    client_1 = robot.client
+    client_2 = robot.client
+    assert client_1 is client_2
+
+
 def test_check_error():
     error_json = dict(
         error_code=0
