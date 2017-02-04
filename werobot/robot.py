@@ -52,7 +52,6 @@ class BaseRoBot(object):
             logger = werobot.logger.logger
         self.logger = logger
 
-        # config
         self.config = Config(_DEFAULT_CONFIG)
         self.config.update(
             TOKEN=token,
