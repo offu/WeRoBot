@@ -2,15 +2,14 @@
 from __future__ import absolute_import, unicode_literals
 
 import six
-
-import werobot
+import warnings
 
 from werobot.config import Config, ConfigAttribute
 from werobot.client import Client
 from werobot.exceptions import ConfigError
 from werobot.parser import parse_xml, process_message
 from werobot.replies import process_function_reply
-from werobot.utils import to_binary, to_text, check_signature, make_error_page
+from werobot.utils import to_binary, to_text, check_signature, make_error_page, cached_property
 
 try:
     from inspect import signature
@@ -41,38 +40,45 @@ class BaseRoBot(object):
     session_storage = ConfigAttribute("SESSION_STORAGE")
 
     def __init__(self, token=None, logger=None,
-                 enable_session=True, session_storage=None,
+                 enable_session=None, session_storage=None,
                  app_id=None, app_secret=None, encoding_aes_key=None,
                  **kwargs):
-        self.config = Config(_DEFAULT_CONFIG)
         self._handlers = dict((k, []) for k in self.message_types)
         self._handlers['all'] = []
         self.make_error_page = make_error_page
+
         if logger is None:
             import werobot.logger
             logger = werobot.logger.logger
         self.logger = logger
 
-        if enable_session and session_storage is None:
-            from .session.sqlitestorage import SQLiteStorage
-            session_storage = SQLiteStorage()
+        self.config = Config(_DEFAULT_CONFIG)
         self.config.update(
             TOKEN=token,
-            SESSION_STORAGE=session_storage,
             APP_ID=app_id,
             APP_SECRET=app_secret,
             ENCODING_AES_KEY=encoding_aes_key
         )
-
-        self.use_encryption = False
-
         for k, v in kwargs.items():
             self.config[k.upper()] = v
 
-    @property
+        if enable_session is not None:
+            warnings.warn(
+                "enable_session is deprecated."
+                "set SESSION_STORAGE to False if you want to disable Session",
+                DeprecationWarning,
+                stacklevel=2
+            )
+            if not enable_session:
+                self.config["SESSION_STORAGE"] = False
+
+        if session_storage:
+            self.config["SESSION_STORAGE"] = session_storage
+
+        self.use_encryption = False
+
+    @cached_property
     def crypto(self):
-        if hasattr(self, "_crypto"):
-            return self._crypto
         app_id = self.config.get("APP_ID", None)
         if not app_id:
             raise ConfigError(
@@ -85,22 +91,36 @@ class BaseRoBot(object):
                 "You need to provide encoding_aes_key "
                 "to encrypt/decrypt messages"
             )
+        self.use_encryption = True
 
         from .crypto import MessageCrypt
-        self._crypto = MessageCrypt(
+        return MessageCrypt(
             token=self.config["TOKEN"],
             encoding_aes_key=encoding_aes_key,
             app_id=app_id
         )
-        self.use_encryption = True
-        return self._crypto
 
-    @property
+    @cached_property
     def client(self):
-        if hasattr(self, "_client"):
-            return self._client
-        self._client = Client(self.config)
-        return self._client
+        return Client(self.config)
+
+    @cached_property
+    def session_storage(self):
+        if self.config["SESSION_STORAGE"] is False:
+            return None
+        if not self.config["SESSION_STORAGE"]:
+            from .session.sqlitestorage import SQLiteStorage
+            self.config["SESSION_STORAGE"] = SQLiteStorage()
+        return self.config["SESSION_STORAGE"]
+
+    @session_storage.setter
+    def session_storage(self, value):
+        warnings.warn(
+            "You should set session storage in config",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        self.config["SESSION_STORAGE"] = value
 
     def handler(self, f):
         """
@@ -296,7 +316,7 @@ class BaseRoBot(object):
         """
         Return the Reply Object for the given message.
         """
-        session_storage = self.config["SESSION_STORAGE"]
+        session_storage = self.session_storage
 
         id = None
         session = None
@@ -351,38 +371,8 @@ class BaseRoBot(object):
         return f
 
 
-ERROR_PAGE_TEMPLATE = """
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf8" />
-        <title>Error: {{e.status}}</title>
-        <style type="text/css">
-        html {background-color: #eee; font-family: sans;}
-        body {background-color: #fff; border: 1px solid #ddd;
-                padding: 15px; margin: 15px;}
-        pre {
-            background-color: #eee;
-            border: 1px solid #ddd;
-            padding: 5px;
-        }
-        </style>
-    </head>
-    <body>
-        <h1>Error: {{e.status}}</h1>
-        <p>微信机器人不可以通过 GET 方式直接进行访问。</p>
-        <p>
-        想要使用本机器人，请在微信后台中将 URL 设置为 <pre>{{request.url}}</pre> 并将 Token 值设置正确。
-        </p>
-
-        <p>如果你仍有疑问，请<a href="http://werobot.readthedocs.org/en/%s/">阅读文档</a>
-    </body>
-</html>
-""" % werobot.__version__
-
-
 class WeRoBot(BaseRoBot):
-    @property
+    @cached_property
     def wsgi(self):
         if not self._handlers:
             raise
