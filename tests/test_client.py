@@ -676,3 +676,31 @@ def test_custom_service(client):
 
     r = client.get_custom_service_account_list()
     assert r == {"errcode": 0, "errmsg": "ok"}
+
+
+@responses.activate
+def test_qrcode(client):
+    CREATE_URL = "https://api.weixin.qq.com/cgi-bin/qrcode/create"
+    SHOW_URL = "https://mp.weixin.qq.com/cgi-bin/showqrcode"
+
+    responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
+
+    def create_callback(request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.POST, CREATE_URL, callback=create_callback)
+
+    r = client.create_qrcode("test")
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+    def show_callback(request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "ticket" in params.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.GET, SHOW_URL, callback=show_callback)
+
+    r = client.show_qrcode("test")
+    assert type(r) == requests.Response

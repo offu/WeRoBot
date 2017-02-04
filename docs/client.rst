@@ -1,5 +1,6 @@
 ``WeRoBot.Client`` —— 微信 API 操作类
 =====================================
+有部分接口暂未实现，可自行调用微信接口。
 
 .. module:: werobot.client
 
@@ -60,6 +61,7 @@
 客服接口
 ``````````````````````````````
 详细请参考 http://mp.weixin.qq.com/wiki/11/c88c270ae8935291626538f9c64bd123.html
+发送卡券接口暂时未支持。可自行实现。
 
 .. automethod:: Client.add_custom_service_account
 .. automethod:: Client.update_custom_service_account
@@ -101,6 +103,17 @@
 
 .. automethod:: Client.get_user_info
 .. automethod:: Client.get_users_info
+
+账户管理
+------------
+长链接转短链接接口和微信认证事件推送暂未添加，可自行实现。
+
+生成带参数的二维码
+``````````````````````````````
+详细请参考 http://mp.weixin.qq.com/wiki/18/167e7d94df85d8389df6c94a7a8f78ba.html
+
+.. automethod:: Client.create_qrcode
+.. automethod:: Client.show_qrcode
 
 获取用户列表
 ``````````````````````````````
