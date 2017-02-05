@@ -179,3 +179,15 @@ def test_error_page():
         return url
 
     assert robot.make_error_page('喵') == '喵'
+
+
+def test_config_ignore():
+    from werobot.config import Config
+    config = Config(
+        TOKEN="token from config"
+    )
+    robot = WeRoBot(
+        config=config,
+        token="token2333"
+    )
+    assert robot.token == "token from config"

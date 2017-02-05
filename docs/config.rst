@@ -13,6 +13,17 @@ WeRoBot 使用 ``WeRoBot.Config`` 类来存储配置信息。  ``WeRoBot`` 类�
         PORT=80
     )
 
+当然， 你也可以现行创建一个 Config ，然后在初始化 ``WeRobot`` 的时候传入自己的 Config ::
+
+    from werobot.config import Config
+    config = Config(
+        TOKEN="token from config!"
+    )
+    robot = WeRoBot(config=config, token="token from init")
+    assert robot.token == "token from config!"
+
+.. note:: 如果你在初始化 ``WeRoBot`` 时传入了 ``config`` 参数， ``WeRoBot`` 会忽略除 ``logger`` 外其他所有的初始化参数。 如果你需要对 ``WeRoBot`` 进行一些配置操作， 请修改 Config 。
+
 与普通 `dict` 不同的是， 你可以先把配置文件保存在一个对象或是文件中， 然后在 :class:`WeRoBot.config.Config` 中导入配置 ::
 
     from werobot import WeRoBot
@@ -24,6 +35,7 @@ WeRoBot 使用 ``WeRoBot.Config`` 类来存储配置信息。  ``WeRoBot`` 类�
 
     robot.config.from_object(MyConfig)
     robot.config.from_pyfile("config.py")
+
 
 
 默认配置

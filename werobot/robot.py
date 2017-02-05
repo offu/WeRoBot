@@ -42,7 +42,7 @@ class BaseRoBot(object):
     def __init__(self, token=None, logger=None,
                  enable_session=None, session_storage=None,
                  app_id=None, app_secret=None, encoding_aes_key=None,
-                 **kwargs):
+                 config=None, **kwargs):
         self._handlers = dict((k, []) for k in self.message_types)
         self._handlers['all'] = []
         self.make_error_page = make_error_page
@@ -52,28 +52,31 @@ class BaseRoBot(object):
             logger = werobot.logger.logger
         self.logger = logger
 
-        self.config = Config(_DEFAULT_CONFIG)
-        self.config.update(
-            TOKEN=token,
-            APP_ID=app_id,
-            APP_SECRET=app_secret,
-            ENCODING_AES_KEY=encoding_aes_key
-        )
-        for k, v in kwargs.items():
-            self.config[k.upper()] = v
-
-        if enable_session is not None:
-            warnings.warn(
-                "enable_session is deprecated."
-                "set SESSION_STORAGE to False if you want to disable Session",
-                DeprecationWarning,
-                stacklevel=2
+        if config is None:
+            self.config = Config(_DEFAULT_CONFIG)
+            self.config.update(
+                TOKEN=token,
+                APP_ID=app_id,
+                APP_SECRET=app_secret,
+                ENCODING_AES_KEY=encoding_aes_key
             )
-            if not enable_session:
-                self.config["SESSION_STORAGE"] = False
+            for k, v in kwargs.items():
+                self.config[k.upper()] = v
 
-        if session_storage:
-            self.config["SESSION_STORAGE"] = session_storage
+            if enable_session is not None:
+                warnings.warn(
+                    "enable_session is deprecated."
+                    "set SESSION_STORAGE to False if you want to disable Session",
+                    DeprecationWarning,
+                    stacklevel=2
+                )
+                if not enable_session:
+                    self.config["SESSION_STORAGE"] = False
+
+            if session_storage:
+                self.config["SESSION_STORAGE"] = session_storage
+        else:
+            self.config = config
 
         self.use_encryption = False
 
