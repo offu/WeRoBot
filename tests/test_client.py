@@ -83,8 +83,8 @@ class TestClientBaseClass(BaseTestClass):
         assert error_json == check_error(error_json)
 
         error_json = dict(
-            error_code=1,
-            error_message="test"
+            errcode=1,
+            errmsg="test"
         )
         with pytest.raises(ClientException) as err:
             check_error(error_json)
@@ -857,6 +857,7 @@ class TestSendArticleMessagesClass(BaseTestClass):
             assert "description" in article.keys()
             assert "url" in article.keys()
             assert "picurl" in article.keys()
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @responses.activate
     @add_token_response
