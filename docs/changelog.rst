@@ -5,7 +5,7 @@ Version 1.1.0
 ----------------
 
 + 为 :class:`werobot.robot.BaseRoBot` 增加 ``client`` property
-+ 允许在初始化 :class:`werobot.robot.BaseRoBot` 时传入 :doc:`config` 。注意如果传入了 config ， BaseRoBot 会忽略其他所有的参数。
++ 允许在初始化 :class:`werobot.robot.BaseRoBot` 时传入 :doc:`config` 。注意如果传入了 config ， BaseRoBot 会忽略除 ``config`` 与 ``logger`` 外的其他所有的参数。
 + deprecate :class:`werobot.robot.BaseRoBot` 的 ``enable_session`` 参数
 + Session Storage 现在是惰性加载的了； 如果希望关闭 Session ， 请将 :doc:`config` 中的 ``SESSION_STORAGE`` 设为 ``False`` (`#189 <https://github.com/whtsky/WeRoBot/issues/189>`_)
 + 修复了打包时 `error.html` 被忽略导致的默认错误页面错误的问题 (`#194 <https://github.com/whtsky/WeRoBot/issues/194>`_)
