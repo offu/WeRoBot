@@ -8,7 +8,7 @@ Version 1.1.0
 + deprecate :class:`werobot.robot.BaseRoBot` 的 ``enable_session`` 参数
 + Session Storage 现在是惰性加载的了； 如果希望关闭 Session ， 请将 :doc:`config` 中的 ``SESSION_STORAGE`` 设为 ``False`` (`#189 <https://github.com/whtsky/WeRoBot/issues/189>`_)
 + 允许使用 ``reply.time`` 的方式快速读取 Reply 属性
-+ 增加 :doc:`client` 增加缺少的 `API`
++ 完善 :doc:`client` 中自定义菜单、消息管理、素材管理、用户管理、账户管理、素材管理部分的 `API`
 
 Version 1.0.0
 ----------------

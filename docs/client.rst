@@ -7,12 +7,14 @@
 开始开发
 ------------
 
-获取access token
+获取 access token
 ``````````````````````````````
 详细请参考 http://mp.weixin.qq.com/wiki/14/9f9c82c1af308e3b14ba9b973f99a8ba.html
 
 .. automethod:: Client.grant_token
 .. automethod:: Client.get_access_token
+
+.. note:: Client 的操作都会自动进行 `access token` 的获取和过期刷新操作，如果有特殊需求（如多进程部署）可重写 ``get_access_token``。
 
 获取微信服务器IP地址
 ``````````````````````````````
