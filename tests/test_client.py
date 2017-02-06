@@ -596,7 +596,7 @@ class TestClientResourceClass(BaseTestClass):
     def test_download_media(self):
         responses.add_callback(responses.GET, self.DOWNLOAD_URL, callback=self.download_callback)
         r = self.client.download_media("test")
-        assert type(r) == requests.Response
+        assert isinstance(r, requests.Response)
 
     @responses.activate
     @add_token_response
@@ -635,7 +635,7 @@ class TestClientResourceClass(BaseTestClass):
             callback=self.download_p_media_callback
         )
         r = self.client.download_permanent_media("test")
-        assert type(r) == requests.Response
+        assert isinstance(r, requests.Response)
 
     @responses.activate
     @add_token_response
@@ -679,7 +679,7 @@ class TestUploadVideoClass(BaseTestClass):
             callback=self.upload_video_callback
         )
         r = self.client.upload_permanent_video("test", "test", "test")
-        assert type(r) == requests.Response
+        assert isinstance(r, requests.Response)
 
 
 class TestMediaClass(BaseTestClass):
@@ -839,7 +839,7 @@ class TestQrcodeClass(BaseTestClass):
     def test_show_qrcode(self):
         responses.add_callback(responses.GET, self.SHOW_URL, callback=self.show_callback)
         r = self.client.show_qrcode("test")
-        assert type(r) == requests.Response
+        assert isinstance(r, requests.Response)
 
 
 class TestSendArticleMessagesClass(BaseTestClass):
@@ -866,14 +866,14 @@ class TestSendArticleMessagesClass(BaseTestClass):
 
         from werobot.replies import Article
         articles = []
-        for i in range(0, 8):
+        for _ in range(0, 8):
             articles.append(Article(*["test_title", "test_description", "test_img", "test_url"]))
 
         r = self.client.send_article_message("test_id", articles)
         assert r == {"errcode": 0, "errmsg": "ok"}
 
         articles = []
-        for i in range(0, 8):
+        for _ in range(0, 8):
             articles.append({
                 "title": "test_title",
                 "description": "test_description",

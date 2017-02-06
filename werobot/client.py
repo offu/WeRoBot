@@ -870,7 +870,7 @@ class Client(object):
         :param articles: 一个包含至多8个 article 字典或 Article 对象的数组
         :return: 返回的 JSON 数据包
         """
-        if type(articles[0]) == Article:
+        if isinstance(articles[0], Article):
             formatted_articles = []
             for article in articles:
                 result = article.args
