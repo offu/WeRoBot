@@ -13,7 +13,7 @@ WeRoBot 使用 ``WeRoBot.Config`` 类来存储配置信息。  ``WeRoBot`` 类�
         PORT=80
     )
 
-当然， 你也可以现行创建一个 Config ，然后在初始化 ``WeRobot`` 的时候传入自己的 Config ::
+当然， 你也可以先创建一个 Config ，然后在初始化 ``WeRobot`` 的时候传入自己的 Config ::
 
     from werobot.config import Config
     config = Config(
