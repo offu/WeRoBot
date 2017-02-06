@@ -5,6 +5,7 @@ import requests
 
 from requests.compat import json as _json
 from werobot.utils import to_text
+from werobot.replies import Article
 
 
 class ClientException(Exception):
@@ -29,10 +30,16 @@ class Client(object):
 
     def __init__(self, config):
         self.config = config
-        self.appid = self.config.get("APP_ID", None)
-        self.appsecret = self.config.get("APP_SECRET", None)
         self._token = None
         self.token_expires_at = None
+
+    @property
+    def appid(self):
+        return self.config.get("APP_ID", None)
+
+    @property
+    def appsecret(self):
+        return self.config.get("APP_SECRET", None)
 
     def request(self, method, url, **kwargs):
         if "params" not in kwargs:
@@ -860,16 +867,24 @@ class Client(object):
             client.send_acticle_message("user_id", acticles)
 
         :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
-        :param articles: 一个包含至多8个 article 字典的数组
+        :param articles: 一个包含至多8个 article 字典或 Article 对象的数组
         :return: 返回的 JSON 数据包
         """
+        if type(articles[0]) == Article:
+            formatted_articles = []
+            for article in articles:
+                result = article.args
+                result["picurl"] = result.pop("img")
+                formatted_articles.append(result)
+        else:
+            formatted_articles = articles
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/message/custom/send",
             data={
                 "touser": user_id,
                 "msgtype": "news",
                 "news": {
-                    "articles": articles
+                    "articles": formatted_articles
                 }
             }
         )

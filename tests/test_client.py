@@ -10,9 +10,9 @@ from werobot.config import Config
 from werobot.client import Client, check_error, ClientException
 
 try:
-    import urlparse
-except ImportError:
     import urllib.parse as urlparse
+except ImportError:
+    import urlparse
 
 basedir = os.path.dirname(os.path.abspath(__file__))
 
@@ -167,12 +167,11 @@ def test_check_error():
     )
     assert error_json == check_error(error_json)
 
-    error_json["error_code"] = 1
-    error_json["error_message"] = "test"
-    try:
+    error_json["errcode"] = 1
+    error_json["errmsg"] = "test"
+    with pytest.raises(ClientException) as err:
         check_error(error_json)
-    except ClientException as e:
-        assert str(e) == "1: test"
+    assert err.value.args[0] == "1: test"
 
 
 @responses.activate
@@ -711,3 +710,46 @@ def test_qrcode(client):
 
     r = client.show_qrcode("test")
     assert type(r) == requests.Response
+
+
+@responses.activate
+def test_send_article_messages(client):
+    URL = "https://api.weixin.qq.com/cgi-bin/message/custom/send"
+
+    responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
+
+    def article_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "touser" in body.keys()
+        assert "msgtype" in body.keys()
+        assert body["msgtype"] == "news"
+        assert "news" in body.keys()
+        for article in body["news"]["articles"]:
+            assert "title" in article.keys()
+            assert "description" in article.keys()
+            assert "url" in article.keys()
+            assert "picurl" in article.keys()
+
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    responses.add_callback(responses.POST, URL, callback=article_callback)
+
+    from werobot.replies import Article
+    articles = []
+    for i in range(0, 8):
+        articles.append(Article(*["test_title", "test_description", "test_img", "test_url"]))
+
+    r = client.send_article_message("test_id", articles)
+    assert r == {"errcode": 0, "errmsg": "ok"}
+
+    articles = []
+    for i in range(0, 8):
+        articles.append({
+            "title": "test_title",
+            "description": "test_description",
+            "url": "test_url",
+            "picurl": "test_pic_url"
+        })
+
+    r = client.send_article_message("test_id", articles)
+    assert r == {"errcode": 0, "errmsg": "ok"}
