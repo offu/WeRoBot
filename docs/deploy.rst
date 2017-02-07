@@ -72,8 +72,8 @@ server 支持以下几种：
 
 所以，只要你安装了相应的服务器软件，就可以使用 ``werobot.run`` 直接跑在生产环境下。
 
-.. note:: server 的默认值为 ``auto``。
-.. attention:: `WSGIRef <http://docs.python.org/library/wsgiref.html#module-wsgiref.simple_server>_` 的性能非常差， 仅能用于开发环境。 如果你要在生产环境下部署 WeRoBot ， 请确保你在使用其他 server 。
+.. note:: server 的默认值为 ``auto`` 。
+.. attention::  `WSGIRef <http://docs.python.org/library/wsgiref.html#module-wsgiref.simple_server>`_ 的性能非常差， 仅能用于开发环境。 如果你要在生产环境下部署 WeRoBot ， 请确保你在使用其他 server 。
 
 通过 WSGI HTTP Server 运行 WeRoBot
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -85,7 +85,11 @@ server 支持以下几种：
     from werobot import WeRoBot
     robot = WeRoBot()
 
-那么你只需要运行 `gunicorn robot:robot.wsgi` 就可以了。
+那么你只需要在 Shell 下运行 ::
+
+    gunicorn robot:robot.wsgi
+
+就可以了。
 
 使用 Supervisor 管理守护进程
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
