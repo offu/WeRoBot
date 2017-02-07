@@ -25,22 +25,6 @@ def token_callback(request):
     return 200, json_header, json.dumps({"access_token": "ACCESS_TOKEN", "expires_in": 7200})
 
 
-def check_menu_data(item):
-    keys = item.keys()
-    assert "name" in keys
-    if "sub_button" in keys:
-        for button in item["sub_button"]:
-            check_menu_data(button)
-        return
-    assert "type" in keys
-    if "type" == "click":
-        assert "key" in keys
-    elif "type" == "view":
-        assert "url" in keys
-    elif "type" == "media_id" or "type" == "view_limited":
-        assert "media_id" in keys
-
-
 def add_token_response(method):
     def wrapped_func(self, *args, **kwargs):
         responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
@@ -164,6 +148,21 @@ class TestClientMenuClass(BaseTestClass):
 
     @staticmethod
     def create_menu_callback(request):
+        def check_menu_data(item):
+            keys = item.keys()
+            assert "name" in keys
+            if "sub_button" in keys:
+                for button in item["sub_button"]:
+                    check_menu_data(button)
+                return
+            assert "type" in keys
+            if "type" == "click":
+                assert "key" in keys
+            elif "type" == "view":
+                assert "url" in keys
+            elif "type" == "media_id" or "type" == "view_limited":
+                assert "media_id" in keys
+
         try:
             body = json.loads(request.body.decode("utf-8"))["button"]
         except KeyError:
@@ -432,7 +431,8 @@ class TestClientCustomMenuClass(BaseTestClass):
             "city": u"广州",
             "client_platform_type": "2",
             "language": "zh_CN"
-        }}
+        }
+    }
 
     @staticmethod
     def create_custom_menu_callback(request):
