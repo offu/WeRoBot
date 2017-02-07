@@ -17,6 +17,9 @@ def wsgi_tester():
     def tester(app, token, endpoint):
         test_app = webtest.TestApp(app)
 
+        response = test_app.get(endpoint, expect_errors=True)
+        assert response.status_code == 403
+
         timestamp = str(time.time())
         nonce = str(random.randint(0, 10000))
         signature = get_signature(token, timestamp, nonce)

@@ -11,6 +11,7 @@ Version 1.1.0
 + 修复了打包时 `error.html` 被忽略导致的默认错误页面错误的问题 (`#194 <https://github.com/whtsky/WeRoBot/issues/194>`_)
 + 允许使用 ``reply.time`` 的方式快速读取 Reply 属性
 + 完善 :doc:`client` 中自定义菜单、消息管理、素材管理、用户管理、账户管理、素材管理部分的 `API`
++ 修复了直接 GET 访问 Robot 主页返回 500 的问题
 
 Version 1.0.0
 ----------------

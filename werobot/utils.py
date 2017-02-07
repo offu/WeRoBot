@@ -23,6 +23,8 @@ def get_signature(token, timestamp, nonce, *args):
 
 
 def check_signature(token, timestamp, nonce, signature):
+    if not (token and timestamp and nonce and signature):
+        return False
     sign = get_signature(token, timestamp, nonce)
     return sign == signature
 
