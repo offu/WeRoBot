@@ -9,7 +9,7 @@ from setuptools import setup, find_packages
 
 with io.open("README.rst", encoding="utf8") as f:
     readme = f.read().replace("develop", "master")
-readme = readme.replace("latest", werobot.__version__)
+readme = readme.replace("latest", "v" + werobot.__version__)
 
 version = platform.python_version_tuple()
 install_requires = open("requirements.txt").readlines()
@@ -42,6 +42,7 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Intended Audience :: Developers',

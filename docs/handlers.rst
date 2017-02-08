@@ -1,5 +1,5 @@
-Handlers
-==========
+Handler
+=========
 
 
 WeRoBot会将合法的请求发送给 handlers 依次执行。

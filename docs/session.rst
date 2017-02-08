@@ -1,12 +1,12 @@
 Session
 ==========
 
-WeRoBot 0.4.0 中增加了功能强大的 Session 系统，你可以通过 Session 轻松实现用户状态的记录，享受如同 Web 开发般的便捷。
+你可以通过 Session 实现用户状态的记录。
 
 一个简单的使用 Session 的 Demo ::
 
-    robot = werobot.WeRoBot(token=werobot.utils.generate_token(),
-                            enable_session=True)
+    from werobot import WeRoBot
+    robot = WeRoBot(token=werobot.utils.generate_token())
 
     @robot.text
     def first(message, session):
@@ -17,13 +17,22 @@ WeRoBot 0.4.0 中增加了功能强大的 Session 系统，你可以通过 Sessi
 
     robot.run()
 
-开启 Session
-----------------
+开启/关闭 Session
+-----------------
 
-想要开启 Session ，在实例化 :class:`WeRoBot` 的时候需要传入 ``enable_session`` 和 ``session_storage`` 两个参数：
+Session 在 WeRoBot 中默认开启， 并使用 :class:`werobot.session.sqlitestorage.SQLiteStorage` 作为存储后端。 如果想要更换存储后端， 可以修改 :doc:`config` 中的 ``SESSION_STORAGE`` ::
 
-+ ``enable_session`` ： 必须为 True （打开 Session ）
-+ ``session_storage`` ： 可选，一个 Session Storage 实例。默认是 :class:`werobot.session.filestorage.FileStorage` 。
+    from werobot import WeRoBot
+    from werobot.session.filestorage import FileStorage
+    robot = WeRoBot(token="token")
+    robot.config['SESSION_STORAGE'] = FileStorage()
+
+
+如果想要关闭 Session 功能， 只需把 ``SESSION_STORAGE`` 设为 False 即可 ::
+
+    from werobot import WeRoBot
+    robot = WeRoBot(token="token")
+    robot.config['SESSION_STORAGE'] = False
 
 修改 Handler 以使用 Session
 --------------------------------
@@ -34,7 +43,11 @@ WeRoBot 0.4.0 中增加了功能强大的 Session 系统，你可以通过 Sessi
     def hello(message):
         return "Hello!"
 
-而在打开 Session 之后， 这个 Handler 需要修改为接受第二个参数： ``session`` ::
+而在打开 Session 之后， 如果你的 handler 不需要使用 Session ，可以保持不变； 如果需要使用 Session ，则这个 Handler 需要修改为接受第二个参数： ``session`` ::
+
+    @robot.subscribe_event
+    def intro(message):
+        return "Hello!"
 
     @robot.text
     def hello(message, session):
@@ -44,14 +57,13 @@ WeRoBot 0.4.0 中增加了功能强大的 Session 系统，你可以通过 Sessi
 
 传入的 ``session`` 参数是一个标准的 Python 字典。
 
-在修改完 Handler 之后， 你的微信机器人就拥有 Session 系统了 :)
-
 可用的 Session Storage
 -----------------------
 
-.. module:: werobot.session.filestorage
 
-.. autoclass:: FileStorage
+.. module:: werobot.session.sqlitestorage
+
+.. autoclass:: SQLiteStorage
 
 .. module:: werobot.session.mongodbstorage
 
@@ -65,6 +77,6 @@ WeRoBot 0.4.0 中增加了功能强大的 Session 系统，你可以通过 Sessi
 
 .. autoclass:: SaeKVDBStorage
 
-.. module:: werobot.session.sqlitestorage
+.. module:: werobot.session.filestorage
 
-.. autoclass:: SQLiteStorage
+.. autoclass:: FileStorage

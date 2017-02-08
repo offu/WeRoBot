@@ -3,9 +3,9 @@
 import time
 import requests
 
-
 from requests.compat import json as _json
 from werobot.utils import to_text
+from werobot.replies import Article
 
 
 class ClientException(Exception):
@@ -27,12 +27,19 @@ class Client(object):
     微信 API 操作类
     通过这个类可以方便的通过微信 API 进行一系列操作，比如主动发送消息、创建自定义菜单等
     """
+
     def __init__(self, config):
         self.config = config
-        self.appid = self.config.get("APP_ID", None)
-        self.appsecret = self.config.get("APP_SECRET", None)
         self._token = None
         self.token_expires_at = None
+
+    @property
+    def appid(self):
+        return self.config.get("APP_ID", None)
+
+    @property
+    def appsecret(self):
+        return self.config.get("APP_SECRET", None)
 
     def request(self, method, url, **kwargs):
         if "params" not in kwargs:
@@ -68,8 +75,7 @@ class Client(object):
 
     def grant_token(self):
         """
-        获取 Access Token 。
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=通用接口文档
+        获取 Access Token。
 
         :return: 返回的 JSON 数据包
         """
@@ -88,7 +94,7 @@ class Client(object):
         用户需要多进程或者多机部署可以手动重写这个函数
         来自定义token的存储，刷新策略。
 
-        :return:返回token
+        :return: 返回token
         """
         if self._token:
             now = time.time()
@@ -103,9 +109,19 @@ class Client(object):
     def token(self):
         return self.get_access_token()
 
+    def get_ip_list(self):
+        """
+        获取微信服务器IP地址。
+
+        :return: 返回的 JSON 数据包
+        """
+        return self.get(
+            url="https://api.weixin.qq.com/cgi-bin/getcallbackip"
+        )
+
     def create_menu(self, menu_data):
         """
-        创建自定义菜单 ::
+        创建自定义菜单::
 
             client = Client("id", "secret")
             client.create_menu({
@@ -142,10 +158,7 @@ class Client(object):
                     }
                 ]})
 
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=自定义菜单创建接口
-
         :param menu_data: Python 字典
-
         :return: 返回的 JSON 数据包
         """
         return self.post(
@@ -156,7 +169,6 @@ class Client(object):
     def get_menu(self):
         """
         查询自定义菜单。
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=自定义菜单查询接口
 
         :return: 返回的 JSON 数据包
         """
@@ -165,24 +177,194 @@ class Client(object):
     def delete_menu(self):
         """
         删除自定义菜单。
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=自定义菜单删除接口
 
         :return: 返回的 JSON 数据包
         """
         return self.get("https://api.weixin.qq.com/cgi-bin/menu/delete")
 
-    def upload_media(self, media_type, media_file):
+    def create_custom_menu(self, menu_data, matchrule):
         """
-        上传多媒体文件。
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=上传下载多媒体文件
+        创建个性化菜单::
 
-        :param media_type: 媒体文件类型，分别有图片（image）、语音（voice）、视频（video）和缩略图（thumb）
-        :param media_file: 要上传的文件，一个 File-object
+            button = [
+                {
+                    "type":"click",
+                    "name":"今日歌曲",
+                    "key":"V1001_TODAY_MUSIC"
+                },
+                {
+                    "name":"菜单",
+                    "sub_button":[
+                    {
+                        "type":"view",
+                        "name":"搜索",
+                        "url":"http://www.soso.com/"
+                    },
+                    {
+                        "type":"view",
+                        "name":"视频",
+                        "url":"http://v.qq.com/"
+                    },
+                    {
+                        "type":"click",
+                        "name":"赞一下我们",
+                        "key":"V1001_GOOD"
+                    }]
+             }]
+             matchrule = {
+                "group_id":"2",
+                "sex":"1",
+                "country":"中国",
+                "province":"广东",
+                "city":"广州",
+                "client_platform_type":"2",
+                "language":"zh_CN"
+            }
+            client.create_custom_menu(button, matchrule)
 
+        :param menu_data: 如上所示的 Python 字典
+        :param matchrule: 如上所示的匹配规则
         :return: 返回的 JSON 数据包
         """
         return self.post(
-            url="http://file.api.weixin.qq.com/cgi-bin/media/upload",
+            url="https://api.weixin.qq.com/cgi-bin/menu/addconditional",
+            data={
+                "button": menu_data,
+                "matchrule": matchrule
+            }
+        )
+
+    def delete_custom_menu(self, menu_id):
+        """
+        删除个性化菜单。
+
+        :param menu_id: 菜单的 ID
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/menu/delconditional",
+            data={
+                "menuid": menu_id
+            }
+        )
+
+    def match_custom_menu(self, user_id):
+        """
+        测试个性化菜单匹配结果。
+
+        :param user_id: 要测试匹配的用户 ID
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/menu/trymatch",
+            data={
+                "user_id": user_id
+            }
+        )
+
+    def get_custom_menu_config(self):
+        """
+        获取自定义菜单配置接口。
+
+        :return: 返回的 JSON 数据包
+        """
+        return self.get(
+            url="https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info"
+        )
+
+    def add_custom_service_account(self, account, nickname, password):
+        """
+        添加客服帐号。
+
+        :param account: 客服账号的用户名
+        :param nickname: 客服账号的昵称
+        :param password: 客服账号的密码
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/customservice/kfaccount/add",
+            data={
+                "kf_account": account,
+                "nickname": nickname,
+                "password": password
+            }
+        )
+
+    def update_custom_service_account(self, account, nickname, password):
+        """
+        修改客服帐号。
+
+        :param account: 客服账号的用户名
+        :param nickname: 客服账号的昵称
+        :param password: 客服账号的密码
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/customservice/kfaccount/update",
+            data={
+                "kf_account": account,
+                "nickname": nickname,
+                "password": password
+            }
+        )
+
+    def delete_custom_service_account(self, account, nickname, password):
+        """
+        删除客服帐号。
+
+        :param account: 客服账号的用户名
+        :param nickname: 客服账号的昵称
+        :param password: 客服账号的密码
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/customservice/kfaccount/del",
+            data={
+                "kf_account": account,
+                "nickname": nickname,
+                "password": password
+            }
+        )
+
+    def upload_custom_service_account_avatar(self, account, avatar):
+        """
+        设置客服帐号的头像。
+
+        :param account: 客服账号的用户名
+        :param avatar: 头像文件，必须是 jpg 格式
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="http://api.weixin.qq.com/customservice/kfaccount/uploadheadimg",
+            params={
+                "access_token": self.token,
+                "kf_account": account
+            },
+            files={
+                "media": avatar
+            }
+        )
+
+    def get_custom_service_account_list(self):
+        """
+        获取所有客服账号。
+
+        :return: 返回的 JSON 数据包
+        """
+        return self.get(
+            url="https://api.weixin.qq.com/cgi-bin/customservice/getkflist"
+        )
+
+    def upload_media(self, media_type, media_file):
+        """
+        上传临时多媒体文件。
+
+        :param media_type: 媒体文件类型，分别有图片（image）、语音（voice）、视频（video）和缩略图（thumb）
+        :param media_file: 要上传的文件，一个 File-object
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/media/upload",
             params={
                 "access_token": self.token,
                 "type": media_type
@@ -194,25 +376,197 @@ class Client(object):
 
     def download_media(self, media_id):
         """
-        下载多媒体文件。
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=上传下载多媒体文件
+        下载临时多媒体文件。
 
         :param media_id: 媒体文件 ID
-
         :return: requests 的 Response 实例
         """
         return requests.get(
-            "http://file.api.weixin.qq.com/cgi-bin/media/get",
+            url="https://api.weixin.qq.com/cgi-bin/media/get",
             params={
                 "access_token": self.token,
                 "media_id": media_id
             }
         )
 
+    def add_news(self, articles):
+        """
+        新增永久图文素材::
+
+            articles = [{
+               "title": TITLE,
+               "thumb_media_id": THUMB_MEDIA_ID,
+               "author": AUTHOR,
+               "digest": DIGEST,
+               "show_cover_pic": SHOW_COVER_PIC(0 / 1),
+               "content": CONTENT,
+               "content_source_url": CONTENT_SOURCE_URL
+            }
+            # 若新增的是多图文素材，则此处应有几段articles结构，最多8段
+            ]
+            client.add_news(articles)
+
+        :param articles: 如示例中的数组
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/material/add_news",
+            data={
+                "articles": articles
+            }
+        )
+
+    def upload_news_picture(self, file):
+        """
+        上传图文消息内的图片。
+
+        :param file: 要上传的文件，一个 File-object
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/media/uploadimg",
+            params={
+                "access_token": self.token
+            },
+            files={
+                "media": file
+            }
+        )
+
+    def upload_permanent_media(self, media_type, media_file):
+        """
+        上传其他类型永久素材。
+
+        :param media_type: 媒体文件类型，分别有图片（image）、语音（voice）和缩略图（thumb）
+        :param media_file: 要上传的文件，一个 File-object
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/material/add_material",
+            params={
+                "access_token": self.token,
+                "type": media_type
+            },
+            files={
+                "media": media_file
+            }
+        )
+
+    def upload_permanent_video(self, title, introduction, video):
+        """
+        上传永久视频。
+
+        :param title: 视频素材的标题
+        :param introduction: 视频素材的描述
+        :param video: 要上传的视频，一个 File-object
+        :return: requests 的 Response 实例
+        """
+        return requests.post(
+            url="https://api.weixin.qq.com/cgi-bin/material/add_material",
+            params={
+                "access_token": self.token,
+                "type": "video"
+            },
+            data={
+                "description": _json.dumps({
+                    "title": title,
+                    "introduction": introduction
+                }, ensure_ascii=False).encode("utf-8")
+            },
+            files={
+                "media": video
+            }
+        )
+
+    def download_permanent_media(self, media_id):
+        """
+        获取永久素材。
+
+        :param media_id: 媒体文件 ID
+        :return: requests 的 Response 实例
+        """
+        return requests.post(
+            url="https://api.weixin.qq.com/cgi-bin/material/get_material",
+            params={
+                "access_token": self.token
+            },
+            data=_json.dumps({
+                "media_id": media_id
+            }, ensure_ascii=False).encode("utf-8")
+        )
+
+    def delete_permanent_media(self, media_id):
+        """
+        删除永久素材。
+
+        :param media_id: 媒体文件 ID
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/material/del_material",
+            data={
+                "media_id": media_id
+            }
+        )
+
+    def update_news(self, update_data):
+        """
+        修改永久图文素材::
+
+            update_data = {
+                "media_id":MEDIA_ID,
+                "index":INDEX,
+                "articles": {
+                    "title": TITLE,
+                    "thumb_media_id": THUMB_MEDIA_ID,
+                    "author": AUTHOR,
+                    "digest": DIGEST,
+                    "show_cover_pic": SHOW_COVER_PIC(0 / 1),
+                    "content": CONTENT,
+                    "content_source_url": CONTENT_SOURCE_URL
+                }
+            }
+            client.update_news(update_data)
+
+        :param update_data: 更新的数据，要包含 media_id（图文素材的 ID），index（要更新的文章在图文消息中的位置），articles（新的图文素材数据）
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/material/update_news",
+            data=update_data
+        )
+
+    def get_media_count(self):
+        """
+        获取素材总数。
+
+        :return: 返回的 JSON 数据包
+        """
+        return self.get(
+            url="https://api.weixin.qq.com/cgi-bin/material/get_materialcount"
+        )
+
+    def get_media_list(self, media_type, offset, count):
+        """
+        获取素材列表。
+
+        :param media_type: 素材的类型，图片（image）、视频（video）、语音 （voice）、图文（news）
+        :param offset: 从全部素材的该偏移位置开始返回，0表示从第一个素材返回
+        :param count: 返回素材的数量，取值在1到20之间
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/material/batchget_material",
+            data={
+                "media": media_type,
+                "offset": offset,
+                "count": count
+            }
+        )
+
     def create_group(self, name):
         """
-        创建分组
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=分组管理接口
+        创建分组。
 
         :param name: 分组名字（30个字符以内）
         :return: 返回的 JSON 数据包
@@ -226,8 +580,7 @@ class Client(object):
 
     def get_groups(self):
         """
-        查询所有分组
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=分组管理接口
+        查询所有分组。
 
         :return: 返回的 JSON 数据包
         """
@@ -235,8 +588,7 @@ class Client(object):
 
     def get_group_by_id(self, openid):
         """
-        查询用户所在分组
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=分组管理接口
+        查询用户所在分组。
 
         :param openid: 用户的OpenID
         :return: 返回的 JSON 数据包
@@ -248,10 +600,9 @@ class Client(object):
 
     def update_group(self, group_id, name):
         """
-        修改分组名
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=分组管理接口
+        修改分组名。
 
-        :param group_id: 分组id，由微信分配
+        :param group_id: 分组 ID，由微信分配
         :param name: 分组名字（30个字符以内）
         :return: 返回的 JSON 数据包
         """
@@ -265,10 +616,9 @@ class Client(object):
 
     def move_user(self, user_id, group_id):
         """
-        移动用户分组
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=分组管理接口
+        移动用户分组。
 
-        :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
+        :param user_id: 用户 ID，即收到的 `Message` 的 source
         :param group_id: 分组 ID
         :return: 返回的 JSON 数据包
         """
@@ -280,10 +630,57 @@ class Client(object):
             }
         )
 
+    def move_users(self, user_id_list, group_id):
+        """
+        批量移动用户分组。
+
+        :param user_id_list: 用户 ID 的列表（长度不能超过50）
+        :param group_id: 分组 ID
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/groups/members/batchupdate",
+            data={
+                "openid_list": user_id_list,
+                "to_groupid": group_id
+            }
+        )
+
+    def delete_group(self, group_id):
+        """
+        删除分组。
+
+        :param group_id: 要删除的分组的 ID
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/groups/delete",
+            data={
+                "group": {
+                    "id": group_id
+                }
+            }
+        )
+
+    def remark_user(self, user_id, remark):
+        """
+        设置备注名。
+
+        :param user_id: 设置备注名的用户 ID
+        :param remark: 新的备注名，长度必须小于30字符
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/user/info/updateremark",
+            data={
+                "openid": user_id,
+                "remark": remark
+            }
+        )
+
     def get_user_info(self, user_id, lang="zh_CN"):
         """
-        获取用户基本信息
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=获取用户基本信息
+        获取用户基本信息。
 
         :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
         :param lang: 返回国家地区语言版本，zh_CN 简体，zh_TW 繁体，en 英语
@@ -295,6 +692,24 @@ class Client(object):
                 "access_token": self.token,
                 "openid": user_id,
                 "lang": lang
+            }
+        )
+
+    def get_users_info(self, user_id_list, lang="zh_CN"):
+        """
+        批量获取用户基本信息。
+
+        :param user_id_list: 用户 ID 的列表
+        :param lang: 返回国家地区语言版本，zh_CN 简体，zh_TW 繁体，en 英语
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/user/info/batchget",
+            data={
+                "user_list": [
+                    {"openid": user_id,
+                     "lang": lang} for user_id in user_id_list
+                    ]
             }
         )
 
@@ -318,8 +733,7 @@ class Client(object):
 
     def send_text_message(self, user_id, content):
         """
-        发送文本消息
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=发送客服消息
+        发送文本消息。
 
         :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
         :param content: 消息正文
@@ -336,8 +750,7 @@ class Client(object):
 
     def send_image_message(self, user_id, media_id):
         """
-        发送图片消息
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=发送客服消息
+        发送图片消息。
 
         :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
         :param media_id: 图片的媒体ID。 可以通过 :func:`upload_media` 上传。
@@ -356,8 +769,7 @@ class Client(object):
 
     def send_voice_message(self, user_id, media_id):
         """
-        发送语音消息
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=发送客服消息
+        发送语音消息。
 
         :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
         :param media_id: 发送的语音的媒体ID。 可以通过 :func:`upload_media` 上传。
@@ -377,8 +789,7 @@ class Client(object):
     def send_video_message(self, user_id, media_id,
                            title=None, description=None):
         """
-        发送视频消息
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=发送客服消息
+        发送视频消息。
 
         :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
         :param media_id: 发送的视频的媒体ID。 可以通过 :func:`upload_media` 上传。
@@ -406,8 +817,7 @@ class Client(object):
     def send_music_message(self, user_id, url, hq_url, thumb_media_id,
                            title=None, description=None):
         """
-        发送音乐消息
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=发送客服消息
+        发送音乐消息。
 
         :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
         :param url: 音乐链接
@@ -438,36 +848,69 @@ class Client(object):
 
     def send_article_message(self, user_id, articles):
         """
-        发送图文消息
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=发送客服消息
+        发送图文消息::
+
+            articles = [
+                {
+                    "title":"Happy Day",
+                    "description":"Is Really A Happy Day",
+                    "url":"URL",
+                    "picurl":"PIC_URL"
+                },
+                {
+                    "title":"Happy Day",
+                    "description":"Is Really A Happy Day",
+                    "url":"URL",
+                    "picurl":"PIC_URL"
+                }
+            ]
+            client.send_acticle_message("user_id", acticles)
 
         :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
-        :param articles: 一个包含至多10个 :class:`Article` 实例的数组
+        :param articles: 一个包含至多8个 article 字典或 Article 对象的数组
         :return: 返回的 JSON 数据包
         """
-        articles_data = []
-        for article in articles:
-            articles_data.append({
-                "title": article.title,
-                "description": article.description,
-                "url": article.url,
-                "picurl": article.img
-            })
+        if isinstance(articles[0], Article):
+            formatted_articles = []
+            for article in articles:
+                result = article.args
+                result["picurl"] = result.pop("img")
+                formatted_articles.append(result)
+        else:
+            formatted_articles = articles
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/message/custom/send",
             data={
                 "touser": user_id,
                 "msgtype": "news",
                 "news": {
-                    "articles": articles_data
+                    "articles": formatted_articles
                 }
             }
         )
 
-    def create_qrcode(self, **data):
+    def send_news_message(self, user_id, media_id):
         """
-        创建二维码
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=生成带参数的二维码
+        发送永久素材中的图文消息。
+
+        :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
+        :param media_id: 媒体文件 ID
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/message/custom/send",
+            data={
+                "touser": user_id,
+                "msgtype": "mpnews",
+                "mpnews": {
+                    "media_id": media_id
+                }
+            }
+        )
+
+    def create_qrcode(self, data):
+        """
+        创建二维码。
 
         :param data: 你要发送的参数 dict
         :return: 返回的 JSON 数据包
@@ -479,8 +922,7 @@ class Client(object):
 
     def show_qrcode(self, ticket):
         """
-        通过ticket换取二维码
-        详情请参考 http://mp.weixin.qq.com/wiki/index.php?title=生成带参数的二维码
+        通过ticket换取二维码。
 
         :param ticket: 二维码 ticket 。可以通过 :func:`create_qrcode` 获取到
         :return: 返回的 Request 对象
@@ -506,9 +948,9 @@ class Client(object):
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/message/template/send",
             data={
-               "touser": user_id,
-               "template_id": template_id,
-               "url": url,
-               "data": data
+                "touser": user_id,
+                "template_id": template_id,
+                "url": url,
+                "data": data
             }
         )

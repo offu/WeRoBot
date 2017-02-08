@@ -1,7 +1,14 @@
 {% if theme_github_url %}
-    <h3>{{ project }}</h3>
+    <h3><a href="index.html">{{ project }}</a></h3>
     <a href="http://github.com/{{ theme_github_url }}" class="sidebar-github-link">
         <img src="https://img.shields.io/github/stars/{{ theme_github_url }}.svg?style=social&label=Star&maxAge=2592000" />
         <img src="https://img.shields.io/github/forks/{{ theme_github_url }}.svg?style=social&label=Fork&maxAge=2592000" />
     </a>
+
+    <h3>遇到问题了？</h3>
+    <p>
+        如果你遇到了问题，请去 <a href="https://github.com/whtsky/WeRoBot/issues/new">发 Issue</a>。
+    </p>
+    QQ群： 283206829 <br>
+    <img src="{{ pathto('_static/qq.png', 1) }}" />
 {% endif %}

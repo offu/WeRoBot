@@ -1,6 +1,7 @@
 include requirements.txt
 include README.rst
 include LICENSE
+include werobot/contrib/error.html
 recursive-include tests *
 recursive-exclude tests *.pyc
 recursive-exclude tests *.pyo

@@ -17,6 +17,9 @@ def wsgi_tester():
     def tester(app, token, endpoint):
         test_app = webtest.TestApp(app)
 
+        response = test_app.get(endpoint, expect_errors=True)
+        assert response.status_code == 403
+
         timestamp = str(time.time())
         nonce = str(random.randint(0, 10000))
         signature = get_signature(token, timestamp, nonce)
@@ -136,6 +139,9 @@ def test_django():
     assert response.status_code == 200
     response = process_message(parse_xml(response.content))
     assert response.content == 'hello'
+
+    response = client.options(url)
+    assert response.status_code == 405
 
 
 def test_flask(wsgi_tester, hello_robot):

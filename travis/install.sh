@@ -1,12 +1,6 @@
 #!/usr/bin/env bash
 brew update
 
-MAJOR_MAC_VERSION=$(sw_vers -productVersion | awk -F '.' '{print $1 "." $2}')
-if [ $MAJOR_MAC_VERSION != "10.10" ]; then
-  # https://github.com/rvm/rvm/pull/3627
-  rvm get head
-fi
-
 case $PYTHON_INSTALL_METHOD in
     tox)
       brew install pyenv
@@ -26,7 +20,6 @@ case $PYTHON_INSTALL_METHOD in
 esac
 
 pip install --upgrade pip wheel
-pip install -r dev-requirements.txt
 
 brew install redis
 brew services start redis
@@ -35,3 +28,4 @@ brew services start mongodb
 
 brew install openssl
 python --version
+env LDFLAGS="-L$(brew --prefix openssl)/lib" CFLAGS="-I$(brew --prefix openssl)/include" pip install -r dev-requirements.txt
