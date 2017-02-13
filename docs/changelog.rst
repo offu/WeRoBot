@@ -1,6 +1,12 @@
 Changelog
 =============
 
+Version 1.1.1
+----------------
+
++ 修复 :func:`werobot.client.Client.create_menu` 文档中的错误
++ 在 :func:`werobot.client.Client.send_music_message` 的文档中提示了可能的缩略图不显示的问题
+
 Version 1.1.0
 ----------------
 

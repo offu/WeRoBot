@@ -123,7 +123,6 @@ class Client(object):
         """
         创建自定义菜单::
 
-            client = Client("id", "secret")
             client.create_menu({
                 "button":[
                     {
