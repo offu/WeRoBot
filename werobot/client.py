@@ -123,7 +123,6 @@ class Client(object):
         """
         创建自定义菜单::
 
-            client = Client("id", "secret")
             client.create_menu({
                 "button":[
                     {
@@ -818,6 +817,8 @@ class Client(object):
                            title=None, description=None):
         """
         发送音乐消息。
+        注意如果你遇到了缩略图不能正常显示的问题， 不要慌张； 目前来看是微信服务器端的问题。
+        对此我们也无能为力 ( `#197 <https://github.com/whtsky/WeRoBot/issues/197>`_ )
 
         :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
         :param url: 音乐链接
