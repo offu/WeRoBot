@@ -1,6 +1,10 @@
 Changelog
 =============
 
+Version 1.2.0
+----------------
++ 增加 :func:`werobot.robot.BaseRoBot.add_filter`
+
 Version 1.1.1
 ----------------
 

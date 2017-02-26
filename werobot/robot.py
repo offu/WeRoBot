@@ -257,7 +257,11 @@ class BaseRoBot(object):
 
     def add_handler(self, func, type='all'):
         """
-        Add a handler function for messages of given type.
+        为 BaseRoBot 实例添加一个 handler。
+
+        :param func: 要作为 handler 的方法。
+        :param type: handler 的种类。
+        :return: None
         """
         if not callable(func):
             raise ValueError("{} is not callable".format(func))
@@ -270,6 +274,7 @@ class BaseRoBot(object):
     def add_filter(self, func, *args):
         """
         为 BaseRoBot 实例添加一个 filter。
+
         :param func: 要作为 filter 的方法。
         :param args: 要匹配的字符串或者正则表达式。
         :return: None
