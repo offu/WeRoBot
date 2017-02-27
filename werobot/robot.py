@@ -298,7 +298,7 @@ class BaseRoBot(object):
                     return target_content.match(message.content)
             else:
                 raise TypeError(
-                    "%s is not a valid target_content" % target_content
+                    "%s is not a valid rule" % target_content
                 )
             argc = len(signature(func).parameters.keys())
 

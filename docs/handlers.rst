@@ -167,7 +167,7 @@ robot.filter ——  回应有指定文本的消息
     def say_hello():
         return "hello!"
 
-    robot.add_filter(say_hello, "hello", "hi", re.compile(".*?hello.*?"))
+    robot.add_filter(func=say_hello, rules=["hello", "hi", re.compile(".*?hello.*?")])
 
 Handler API
 ------------
