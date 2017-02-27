@@ -250,7 +250,7 @@ class BaseRoBot(object):
         """
 
         def wraps(f):
-            self.add_filter(f, *args)
+            self.add_filter(func=f, rules=list(args))
             return f
 
         return wraps
@@ -271,39 +271,41 @@ class BaseRoBot(object):
     def get_handlers(self, type):
         return self._handlers.get(type, []) + self._handlers['all']
 
-    def add_filter(self, func, *args):
+    def add_filter(self, func, rules):
         """
-        为 BaseRoBot 实例添加一个 filter。
+        为 BaseRoBot 添加一个 ``filter handler``。
 
-        :param func: 要作为 filter 的方法。
-        :param args: 要匹配的字符串或者正则表达式。
+        :param func: 如果 rules 通过，则处理该消息的 handler。
+        :param rules: 一个 list，包含要匹配的字符串或者正则表达式。
         :return: None
         """
         if not callable(func):
             raise ValueError("{} is not callable".format(func))
-        if len(args) > 1:
-            for x in args:
-                self.add_filter(func, x)
-            return
-        target_content = args[0]
-        if isinstance(target_content, six.string_types):
-            target_content = to_text(target_content)
-
-            def _check_content(message):
-                return message.content == target_content
-        elif is_regex(target_content):
-            def _check_content(message):
-                return target_content.match(message.content)
+        if not isinstance(rules, list):
+            raise ValueError("{} is not list".format(rules))
+        if len(rules) > 1:
+            for x in rules:
+                self.add_filter(func, [x])
         else:
-            raise TypeError(
-                "%s is not a valid target_content" % target_content
-            )
-        argc = len(signature(func).parameters.keys())
+            target_content = rules[0]
+            if isinstance(target_content, six.string_types):
+                target_content = to_text(target_content)
 
-        @self.text
-        def _f(message, session=None):
-            if _check_content(message):
-                return func(*[message, session][:argc])
+                def _check_content(message):
+                    return message.content == target_content
+            elif is_regex(target_content):
+                def _check_content(message):
+                    return target_content.match(message.content)
+            else:
+                raise TypeError(
+                    "%s is not a valid target_content" % target_content
+                )
+            argc = len(signature(func).parameters.keys())
+
+            @self.text
+            def _f(message, session=None):
+                if _check_content(message):
+                    return func(*[message, session][:argc])
 
     def parse_message(self, body, timestamp=None, nonce=None, msg_signature=None):
         """

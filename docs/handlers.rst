@@ -169,8 +169,7 @@ robot.filter ——  回应有指定文本的消息
 
     robot.add_filter(say_hello, "hello", "hi", re.compile(".*?hello.*?"))
 
-
-API
+Handler API
 ------------
 .. module:: werobot.robot
 .. automethod:: BaseRoBot.add_filter
