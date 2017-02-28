@@ -740,11 +740,11 @@ class Client(object):
         """
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/message/custom/send",
-            data={
-                "touser": user_id,
+            data='''{
+                "touser": "%s",
                 "msgtype": "text",
-                "text": {"content": content}
-            }
+                "text": {"content": "%s"}
+            }'''%(user_id, content)
         )
 
     def send_image_message(self, user_id, media_id):
