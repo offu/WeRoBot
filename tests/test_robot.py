@@ -10,6 +10,19 @@ from werobot import WeRoBot
 from werobot.utils import generate_token, to_text
 
 
+def _make_xml(content):
+    return """
+        <xml>
+        <ToUserName><![CDATA[toUser]]></ToUserName>
+        <FromUserName><![CDATA[fromUser]]></FromUserName>
+        <CreateTime>1348831860</CreateTime>
+        <MsgType><![CDATA[text]]></MsgType>
+        <Content><![CDATA[%s]]></Content>
+        <MsgId>1234567890123456</MsgId>
+        </xml>
+    """ % content
+
+
 def test_signature_checker():
     token = generate_token()
 
@@ -121,18 +134,6 @@ def test_filter():
 
     assert len(robot._handlers["text"]) == 3
 
-    def _make_xml(content):
-        return """
-            <xml>
-            <ToUserName><![CDATA[toUser]]></ToUserName>
-            <FromUserName><![CDATA[fromUser]]></FromUserName>
-            <CreateTime>1348831860</CreateTime>
-            <MsgType><![CDATA[text]]></MsgType>
-            <Content><![CDATA[%s]]></Content>
-            <MsgId>1234567890123456</MsgId>
-            </xml>
-        """ % content
-
     tester = werobot.testing.WeTest(robot)
 
     assert tester.send_xml(_make_xml("啊"))._args['content'] == u"汪"
@@ -191,3 +192,32 @@ def test_config_ignore():
         token="token2333"
     )
     assert robot.token == "token from config"
+
+
+def test_add_filter():
+    import werobot.testing
+    import re
+
+    robot = WeRoBot()
+
+    def test_register():
+        return "test"
+
+    robot.add_filter(test_register, ["test", re.compile(r".*?啦.*?")])
+
+    tester = werobot.testing.WeTest(robot)
+
+    assert tester.send_xml(_make_xml("test"))._args["content"] == "test"
+    assert tester.send_xml(_make_xml("我要测试啦"))._args["content"] == "test"
+
+    with pytest.raises(ValueError) as e:
+        robot.add_filter("test", ["test"])
+    assert e.value.args[0] == "test is not callable"
+
+    with pytest.raises(ValueError) as e:
+        robot.add_filter(test_register, "test")
+    assert e.value.args[0] == "test is not list"
+
+    with pytest.raises(TypeError) as e:
+        robot.add_filter(test_register, [["bazinga"]])
+    assert e.value.args[0] == "[\'bazinga\'] is not a valid rule"

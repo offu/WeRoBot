@@ -9,8 +9,11 @@ from werobot.client import Client
 from werobot.exceptions import ConfigError
 from werobot.parser import parse_xml, process_message
 from werobot.replies import process_function_reply
-from werobot.utils import to_binary, to_text, check_signature, make_error_page, cached_property, \
+from werobot.utils import (
+    to_binary, to_text,
+    check_signature, make_error_page, cached_property,
     is_regex
+)
 
 try:
     from inspect import signature
