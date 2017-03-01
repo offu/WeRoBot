@@ -203,12 +203,12 @@ def test_add_filter():
     def test_register():
         return "test"
 
-    robot.add_filter(test_register, ["test", re.compile(r".*?啦.*?")])
+    robot.add_filter(test_register, ["test", re.compile(u".*?啦.*?")])
 
     tester = werobot.testing.WeTest(robot)
 
     assert tester.send_xml(_make_xml("test"))._args["content"] == "test"
-    assert tester.send_xml(_make_xml("我要测试啦"))._args["content"] == "test"
+    assert tester.send_xml(_make_xml(u"我要测试啦"))._args["content"] == "test"
 
     with pytest.raises(ValueError) as e:
         robot.add_filter("test", ["test"])
