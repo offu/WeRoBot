@@ -209,6 +209,7 @@ def test_add_filter():
 
     assert tester.send_xml(_make_xml("test"))._args["content"] == "test"
     assert tester.send_xml(_make_xml(u"我要测试啦"))._args["content"] == "test"
+    assert tester.send_xml(_make_xml(u"我要测试")) is None
 
     with pytest.raises(ValueError) as e:
         robot.add_filter("test", ["test"])
