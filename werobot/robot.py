@@ -9,7 +9,11 @@ from werobot.client import Client
 from werobot.exceptions import ConfigError
 from werobot.parser import parse_xml, process_message
 from werobot.replies import process_function_reply
-from werobot.utils import to_binary, to_text, check_signature, make_error_page, cached_property
+from werobot.utils import (
+    to_binary, to_text,
+    check_signature, make_error_page, cached_property,
+    is_regex
+)
 
 try:
     from inspect import signature
@@ -248,47 +252,19 @@ class BaseRoBot(object):
         or ``@filter("xxx", "xxx2")`` to handle message with special content
         """
 
-        content_is_list = False
-
-        if len(args) > 1:
-            content_is_list = True
-        else:
-            target_content = args[0]
-            if isinstance(target_content, six.string_types):
-                target_content = to_text(target_content)
-
-                def _check_content(message):
-                    return message.content == target_content
-            elif hasattr(target_content, "match") \
-                    and callable(target_content.match):
-                # 正则表达式什么的
-
-                def _check_content(message):
-                    return target_content.match(message.content)
-            else:
-                raise TypeError(
-                    "%s is not a valid target_content" % target_content
-                )
-
         def wraps(f):
-            if content_is_list:
-                for x in args:
-                    self.filter(x)(f)
-                return f
-            argc = len(signature(f).parameters.keys())
-
-            @self.text
-            def _f(message, session=None):
-                if _check_content(message):
-                    return f(*[message, session][:argc])
-
+            self.add_filter(func=f, rules=list(args))
             return f
 
         return wraps
 
     def add_handler(self, func, type='all'):
         """
-        Add a handler function for messages of given type.
+        为 BaseRoBot 实例添加一个 handler。
+
+        :param func: 要作为 handler 的方法。
+        :param type: handler 的种类。
+        :return: None
         """
         if not callable(func):
             raise ValueError("{} is not callable".format(func))
@@ -297,6 +273,42 @@ class BaseRoBot(object):
 
     def get_handlers(self, type):
         return self._handlers.get(type, []) + self._handlers['all']
+
+    def add_filter(self, func, rules):
+        """
+        为 BaseRoBot 添加一个 ``filter handler``。
+
+        :param func: 如果 rules 通过，则处理该消息的 handler。
+        :param rules: 一个 list，包含要匹配的字符串或者正则表达式。
+        :return: None
+        """
+        if not callable(func):
+            raise ValueError("{} is not callable".format(func))
+        if not isinstance(rules, list):
+            raise ValueError("{} is not list".format(rules))
+        if len(rules) > 1:
+            for x in rules:
+                self.add_filter(func, [x])
+        else:
+            target_content = rules[0]
+            if isinstance(target_content, six.string_types):
+                target_content = to_text(target_content)
+
+                def _check_content(message):
+                    return message.content == target_content
+            elif is_regex(target_content):
+                def _check_content(message):
+                    return target_content.match(message.content)
+            else:
+                raise TypeError(
+                    "%s is not a valid rule" % target_content
+                )
+            argc = len(signature(func).parameters.keys())
+
+            @self.text
+            def _f(message, session=None):
+                if _check_content(message):
+                    return func(*[message, session][:argc])
 
     def parse_message(self, body, timestamp=None, nonce=None, msg_signature=None):
         """

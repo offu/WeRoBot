@@ -6,7 +6,7 @@ WeRoBot会将合法的请求发送给 handlers 依次执行。
 
 如果某一个 Handler 返回了非空值， WeRoBot 就会根据这个值创建回复，后面的 handlers 将不会被执行。
 
-你可以通过两种方式添加 handler ::
+你可以通过修饰符或 :func:`werobot.robot.BaseRoBot.add_handler` 添加 handler ::
 
     import werobot
 
@@ -21,7 +21,6 @@ WeRoBot会将合法的请求发送给 handlers 依次执行。
     def echo(message):
         return 'Hello World!'
     robot.add_handler(echo)
-
 
 类型过滤
 ------------
@@ -162,3 +161,16 @@ robot.filter ——  回应有指定文本的消息
     def c():
         if re.compile(".*?c.*?").match(message.content) or message.content == "d":
             return "正文中含有 c 或正文为 d"
+
+如果你想通过修饰符以外的方法添加 filter，可以使用 :func:`werobot.robot.BaseRoBot.add_filter` 方法 ::
+
+    def say_hello():
+        return "hello!"
+
+    robot.add_filter(func=say_hello, rules=["hello", "hi", re.compile(".*?hello.*?")])
+
+Handler API
+------------
+.. module:: werobot.robot
+.. automethod:: BaseRoBot.add_filter
+.. automethod:: BaseRoBot.add_handler

@@ -14,6 +14,8 @@ from functools import wraps
 
 string_types = (six.string_types, six.text_type, six.binary_type)
 
+re_type = type(re.compile("regex_test"))
+
 
 def get_signature(token, timestamp, nonce, *args):
     sign = [token, timestamp, nonce] + list(args)
@@ -140,3 +142,7 @@ def make_error_page(url):
             os.path.join(os.path.dirname(__file__), 'contrib/error.html'), 'r', encoding='utf-8'
     ) as error_page:
         return error_page.read().replace('{url}', url)
+
+
+def is_regex(value):
+    return isinstance(value, re_type)
