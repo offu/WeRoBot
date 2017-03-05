@@ -4,6 +4,7 @@ Changelog
 Version 1.2.0
 ----------------
 + 增加 :func:`werobot.robot.BaseRoBot.add_filter`
++ :func:`werobot.utils.generate_token` 在 Python 3.6+ 下优先使用 ``secrets.choice`` 来随机生成 token
 
 Version 1.1.1
 ----------------

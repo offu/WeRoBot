@@ -12,6 +12,11 @@ import os
 from hashlib import sha1
 from functools import wraps
 
+try:
+    from secrets import choice
+except ImportError:
+    from random import choice
+
 string_types = (six.string_types, six.text_type, six.binary_type)
 
 re_type = type(re.compile("regex_test"))
@@ -85,13 +90,10 @@ def generate_token(length=''):
         length = random.randint(3, 32)
     length = int(length)
     assert 3 <= length <= 32
-    token = []
     letters = 'abcdefghijklmnopqrstuvwxyz' \
               'ABCDEFGHIJKLMNOPQRSTUVWXYZ' \
               '0123456789'
-    for _ in range(length):
-        token.append(random.choice(letters))
-    return ''.join(token)
+    return ''.join(choice(letters) for _ in range(length))
 
 
 def json_loads(s):

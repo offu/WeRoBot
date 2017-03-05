@@ -10,6 +10,7 @@ from werobot.utils import pay_sign_dict, make_error_page, is_regex
 def test_token_generator():
     assert not check_token('AA C')
     assert check_token(generate_token())
+    assert 3 <= len(generate_token()) <= 32
 
 
 def test_to_text():
