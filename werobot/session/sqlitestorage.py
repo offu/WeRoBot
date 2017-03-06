@@ -4,9 +4,11 @@ from werobot.session import SessionStorage
 from werobot.utils import json_loads, json_dumps
 import sqlite3
 
-__CREATE_TABLE_SQL__ = """CREATE TABLE IF NOT EXISTS WeRoBot
-                            (id TEXT PRIMARY KEY NOT NULL ,
-                            value TEXT NOT NULL );"""
+__CREATE_TABLE_SQL__ = """
+CREATE TABLE IF NOT EXISTS WeRoBot
+(id TEXT PRIMARY KEY NOT NULL ,
+value TEXT NOT NULL );
+"""
 
 
 class SQLiteStorage(SessionStorage):
