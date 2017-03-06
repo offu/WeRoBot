@@ -176,3 +176,10 @@
 详细请参考 http://mp.weixin.qq.com/wiki/15/8386c11b7bc4cdd1499c572bfe2e95b3.html
 
 .. automethod:: Client.get_media_list
+
+
+48001 -- API Unauthorized
+---------------------------
+
+如果你遇到了这个错误，请检查你的微信公众号是否有调用该接口的权限。
+可以在公众平台官网-开发者中心页中查看接口权限。
