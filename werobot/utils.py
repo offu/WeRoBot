@@ -1,16 +1,22 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 
-import re
-import random
-import json
-import six
-import time
 import io
+import json
 import os
-
-from hashlib import sha1
+import random
+import re
+import string
+import time
 from functools import wraps
+from hashlib import sha1
+
+import six
+
+try:
+    from secrets import choice
+except ImportError:
+    from random import choice
 
 string_types = (six.string_types, six.text_type, six.binary_type)
 
@@ -85,13 +91,8 @@ def generate_token(length=''):
         length = random.randint(3, 32)
     length = int(length)
     assert 3 <= length <= 32
-    token = []
-    letters = 'abcdefghijklmnopqrstuvwxyz' \
-              'ABCDEFGHIJKLMNOPQRSTUVWXYZ' \
-              '0123456789'
-    for _ in range(length):
-        token.append(random.choice(letters))
-    return ''.join(token)
+    letters = string.ascii_letters + string.digits
+    return ''.join(choice(letters) for _ in range(length))
 
 
 def json_loads(s):
