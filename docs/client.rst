@@ -178,8 +178,13 @@
 .. automethod:: Client.get_media_list
 
 
+返回码都是什么意思？
+--------------------------
+
+参考 https://mp.weixin.qq.com/wiki/10/6380dc743053a91c544ffd2b7c959166.html
+
 48001 -- API Unauthorized
 ---------------------------
 
 如果你遇到了这个错误，请检查你的微信公众号是否有调用该接口的权限。
-可以在公众平台官网-开发者中心页中查看接口权限。
+参考： https://mp.weixin.qq.com/wiki/13/8d4957b72037e3308a0ca1b21f25ae8d.html
