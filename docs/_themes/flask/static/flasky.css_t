@@ -311,6 +311,10 @@ table.field-list th {
     padding: 0 0.8em 0 0;
 }
 
+table.field-list th.field-name {
+    width: 3rem;
+}
+
 table.field-list td {
     padding: 0;
 }
