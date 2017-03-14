@@ -101,7 +101,7 @@ url           点击图片后跳转链接
 
 在构造完一个 `Article` 后， 你需要通过 `ArticlesReply` 的 `add_article` 参数把它添加进去。就像这样： ::
 
-    from werobot.reply import ArticlesReply, Article
+    from werobot.replies import ArticlesReply, Article
     reply = ArticlesReply(message=message)
     article = Article(
         title="WeRoBot",
