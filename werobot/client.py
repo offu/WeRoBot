@@ -557,7 +557,7 @@ class Client(object):
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/material/batchget_material",
             data={
-                "media": media_type,
+                "type": media_type,
                 "offset": offset,
                 "count": count
             }

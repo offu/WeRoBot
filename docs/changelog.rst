@@ -5,6 +5,7 @@ Version 1.2.0
 ----------------
 + 增加 :func:`werobot.robot.BaseRoBot.add_filter`
 + :func:`werobot.utils.generate_token` 在 Python 3.6+ 下优先使用 ``secrets.choice`` 来随机生成 token
++ 修复 :func:`werobot.client.Client.get_media_list` 的调用参数错误 (`#208 <https://github.com/whtsky/WeRoBot/issues/208>`_)
 
 Version 1.1.1
 ----------------

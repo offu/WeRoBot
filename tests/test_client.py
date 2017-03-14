@@ -695,7 +695,7 @@ class TestMediaClass(BaseTestClass):
     @staticmethod
     def get_media_list_callback(request):
         body = json.loads(request.body.decode("utf-8"))
-        assert "media" in body.keys()
+        assert "type" in body.keys()
         assert "offset" in body.keys()
         assert "count" in body.keys()
         return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
