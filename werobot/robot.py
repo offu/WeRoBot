@@ -36,8 +36,9 @@ _DEFAULT_CONFIG = dict(
 
 class BaseRoBot(object):
     message_types = ['subscribe_event', 'unsubscribe_event', 'click_event',
-                     'view_event', 'scan_event',
-                     'location_event', 'unknown_event',  # event
+                     'view_event', 'scancode_waitmsg_event',
+                     'scancode_push_event','location_event', 'unknown_event',
+                    # event
                      'text', 'image', 'link', 'location', 'voice', 'unknown']
 
     token = ConfigAttribute("TOKEN")
@@ -199,11 +200,19 @@ class BaseRoBot(object):
         self.add_handler(f, type='click_event')
         return f
 
-    def scan(self, f):
+    def scan_push(self, f):
         """
-        Decorator to add a handler function for ``scan`` event
+        Decorator to add a handler function for ``scancode_push_event`` event
         """
-        self.add_handler(f, type='scan_event')
+        self.add_handler(f, type='scancode_push_event')
+        return f
+
+
+    def scan_waitmsg(self, f):
+        """
+        Decorator to add a handler function for ``scancode_waitmsg_event`` event
+        """
+        self.add_handler(f, type='scancode_waitmsg_event')
         return f
 
     def location_event(self, f):
