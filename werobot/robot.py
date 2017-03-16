@@ -37,8 +37,7 @@ _DEFAULT_CONFIG = dict(
 class BaseRoBot(object):
     message_types = ['subscribe_event', 'unsubscribe_event', 'click_event',
                      'view_event', 'scancode_waitmsg_event',
-                     'scancode_push_event','location_event', 'unknown_event',
-                    # event
+                     'scancode_push_event', 'location_event', 'unknown_event',  # event
                      'text', 'image', 'link', 'location', 'voice', 'unknown']
 
     token = ConfigAttribute("TOKEN")
@@ -206,7 +205,6 @@ class BaseRoBot(object):
         """
         self.add_handler(f, type='scancode_push_event')
         return f
-
 
     def scan_waitmsg(self, f):
         """

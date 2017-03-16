@@ -32,11 +32,14 @@ class SubscribeEvent(TicketEvent):
 class UnSubscribeEvent(WeChatEvent):
     __type__ = 'unsubscribe_event'
 
+
 class ScanEvent(TicketEvent):
     codeinfo = DictEntry('ScanCodeInfo')
 
+
 class ScanCodePushEvent(ScanEvent):
     __type__ = 'scancode_push_event'
+
 
 class ScanCodeWaitMsgEvent(ScanEvent):
     __type__ = 'scancode_waitmsg_event'

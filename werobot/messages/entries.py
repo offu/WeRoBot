@@ -33,6 +33,7 @@ class StringEntry(BaseEntry):
             return to_text(v)
         return v
 
+
 class DictEntry(BaseEntry):
     def __get__(self, instance, owner):
         v = instance.__dict__.get(self.entry, self.default)
