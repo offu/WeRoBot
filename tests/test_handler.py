@@ -82,6 +82,7 @@ def test_scan_push_handler():
     assert isinstance(reply, TextReply)
     assert reply._args['content'] == u'扫描推送'
 
+
 def test_scan_waitmsg_handler():
     @werobot.scancode_waitmsg
     def scancode_waitmsg(message):

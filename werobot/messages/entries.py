@@ -37,6 +37,4 @@ class StringEntry(BaseEntry):
 class DictEntry(BaseEntry):
     def __get__(self, instance, owner):
         v = instance.__dict__.get(self.entry, self.default)
-        if v is not None:
-            return v
         return v
