@@ -57,10 +57,10 @@ def test_unsubscribe_handler():
     assert reply._args['content'] == u'取消关注'
 
 
-def test_scan_handler():
-    @werobot.scan
-    def scan(message):
-        return '扫描'
+def test_scan_push_handler():
+    @werobot.scancode_push
+    def scancode_push(message):
+        return '扫描推送'
 
     message = parse_user_msg("""
         <xml>
@@ -68,16 +68,44 @@ def test_scan_handler():
             <FromUserName><![CDATA[FromUser]]></FromUserName>
             <CreateTime>123456789</CreateTime>
             <MsgType><![CDATA[event]]></MsgType>
-            <Event><![CDATA[SCAN]]></Event>
-            <EventKey><![CDATA[SCENE_VALUE]]></EventKey>
-            <Ticket><![CDATA[TICKET]]></Ticket>
+            <Event><![CDATA[scancode_push]]></Event>
+            <EventKey><![CDATA[EVENTKEY]]></EventKey>
+            <ScanCodeInfo>
+                <ScanType><![CDATA[qrcode]]></ScanType>
+                <ScanResult><![CDATA[http://www.qq.com]]></ScanResult>
+            </ScanCodeInfo>
         </xml>
         """)
 
     reply = werobot.get_reply(message)
 
     assert isinstance(reply, TextReply)
-    assert reply._args['content'] == u'扫描'
+    assert reply._args['content'] == u'扫描推送'
+
+def test_scan_waitmsg_handler():
+    @werobot.scancode_waitmsg
+    def scancode_waitmsg(message):
+        return '扫描弹消息'
+
+    message = parse_user_msg("""
+        <xml>
+            <ToUserName><![CDATA[toUser]]></ToUserName>
+            <FromUserName><![CDATA[FromUser]]></FromUserName>
+            <CreateTime>123456789</CreateTime>
+            <MsgType><![CDATA[event]]></MsgType>
+            <Event><![CDATA[scancode_waitmsg]]></Event>
+            <EventKey><![CDATA[EVENTKEY]]></EventKey>
+            <ScanCodeInfo>
+                <ScanType><![CDATA[qrcode]]></ScanType>
+                <ScanResult><![CDATA[http://www.qq.com]]></ScanResult>
+            </ScanCodeInfo>
+        </xml>
+        """)
+
+    reply = werobot.get_reply(message)
+
+    assert isinstance(reply, TextReply)
+    assert reply._args['content'] == u'扫描弹消息'
 
 
 def test_click_handler():

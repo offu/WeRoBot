@@ -199,14 +199,14 @@ class BaseRoBot(object):
         self.add_handler(f, type='click_event')
         return f
 
-    def scan_push(self, f):
+    def scancode_push(self, f):
         """
         Decorator to add a handler function for ``scancode_push_event`` event
         """
         self.add_handler(f, type='scancode_push_event')
         return f
 
-    def scan_waitmsg(self, f):
+    def scancode_waitmsg(self, f):
         """
         Decorator to add a handler function for ``scancode_waitmsg_event`` event
         """
