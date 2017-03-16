@@ -40,15 +40,30 @@ name      value
 type      'unsubscribe'
 ======== ===================================
 
-ScanEvent
+ScanCodePushEvent
 ---------
 
-ScanEvent 的属性:
+ScanCodePushEvent 的属性:
 
 ======== ===================================
 name      value
 ======== ===================================
-type      'scan'
+type      'scancode_push_event'
+key		  事件key值
+codeinfo  扫码返回信息:包含ScanType和ScanResult
+======== ===================================
+
+ScanCodeWaitMsgEvent
+---------
+
+ScanCodeWaitMsgEvent 的属性:
+
+======== ===================================
+name      value
+======== ===================================
+type      'scancode_waitmsg'
+key		  事件key值
+codeinfo  扫码返回信息:包含ScanType和ScanResult
 ======== ===================================
 
 ClickEvent
