@@ -41,7 +41,7 @@ type      'unsubscribe'
 ======== ===================================
 
 ScanCodePushEvent
----------
+-----------------
 
 ScanCodePushEvent 的属性:
 
@@ -54,7 +54,7 @@ codeinfo  扫码返回信息:包含ScanType和ScanResult
 ======== ===================================
 
 ScanCodeWaitMsgEvent
----------
+--------------------
 
 ScanCodeWaitMsgEvent 的属性:
 
