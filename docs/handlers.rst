@@ -53,9 +53,9 @@ WeRoBot会将合法的请求发送给 handlers 依次执行。
 
 在 WeRobot 中我们把请求分成了 Message 和 Event 两种类型,针对两种类型的请求分别有不同的 Handler。
 
-=====================  =================
+======================  =================
 修饰符                   类型
-=====================  =================
+======================  =================
 robot.text              文本 (Message)
 robot.image             图像 (Message)
 robot.location          位置 (Message)
@@ -70,7 +70,7 @@ robot.scancode_push     扫描推送 (Event)
 robot.scancode_waitmsg  扫描弹消息 (Event)
 robot.location_event    上报位置 (Event)
 robot.unknown_event     未知类型 (Event)
-=====================  =================
+======================  =================
 
 额，这个 handler 想处理文本信息和地理位置信息？ ::
 
