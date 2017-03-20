@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import six
-from werobot.messages.entries import StringEntry, IntEntry, FloatEntry
+from werobot.messages.entries import StringEntry, IntEntry, FloatEntry, DictEntry
 from werobot.messages.base import WeRoBotMetaClass
 
 
@@ -34,7 +34,15 @@ class UnSubscribeEvent(WeChatEvent):
 
 
 class ScanEvent(TicketEvent):
-    __type__ = 'scan_event'
+    codeinfo = DictEntry('ScanCodeInfo')
+
+
+class ScanCodePushEvent(ScanEvent):
+    __type__ = 'scancode_push_event'
+
+
+class ScanCodeWaitMsgEvent(ScanEvent):
+    __type__ = 'scancode_waitmsg_event'
 
 
 class SimpleEvent(WeChatEvent):

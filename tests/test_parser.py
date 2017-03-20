@@ -182,24 +182,52 @@ def test_unsubscribe_event():
     assert message.type == "unsubscribe_event"
 
 
-def test_scan_event():
+def test_scan_push_event():
     message = parse_user_msg("""
     <xml>
         <ToUserName><![CDATA[toUser]]></ToUserName>
         <FromUserName><![CDATA[FromUser]]></FromUserName>
         <CreateTime>123456789</CreateTime>
         <MsgType><![CDATA[event]]></MsgType>
-        <Event><![CDATA[SCAN]]></Event>
-        <EventKey><![CDATA[SCENE_VALUE]]></EventKey>
-        <Ticket><![CDATA[TICKET]]></Ticket>
+        <Event><![CDATA[scancode_push]]></Event>
+        <EventKey><![CDATA[EVENTKEY]]></EventKey>
+        <ScanCodeInfo>
+            <ScanType><![CDATA[qrcode]]></ScanType>
+            <ScanResult><![CDATA[www.qq.com]]></ScanResult>
+        </ScanCodeInfo>
     </xml>
     """)
     assert message.target == "toUser"
     assert message.source == "FromUser"
     assert message.time == 123456789
-    assert message.type == "scan_event"
-    assert message.key == "SCENE_VALUE"
-    assert message.ticket == "TICKET"
+    assert message.type == "scancode_push_event"
+    assert message.key == "EVENTKEY"
+    assert message.codeinfo.get('ScanType') == "qrcode"
+    assert message.codeinfo.get('ScanResult') == "www.qq.com"
+
+
+def test_scan_waitmsg_event():
+    message = parse_user_msg("""
+    <xml>
+        <ToUserName><![CDATA[toUser]]></ToUserName>
+        <FromUserName><![CDATA[FromUser]]></FromUserName>
+        <CreateTime>123456789</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[scancode_waitmsg]]></Event>
+        <EventKey><![CDATA[EVENTKEY]]></EventKey>
+        <ScanCodeInfo>
+            <ScanType><![CDATA[qrcode]]></ScanType>
+            <ScanResult><![CDATA[www.qq.com]]></ScanResult>
+        </ScanCodeInfo>
+    </xml>
+    """)
+    assert message.target == "toUser"
+    assert message.source == "FromUser"
+    assert message.time == 123456789
+    assert message.type == "scancode_waitmsg_event"
+    assert message.key == "EVENTKEY"
+    assert message.codeinfo.get('ScanType') == "qrcode"
+    assert message.codeinfo.get('ScanResult') == "www.qq.com"
 
 
 def test_click_event():
