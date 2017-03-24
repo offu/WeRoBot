@@ -47,7 +47,7 @@ class BaseRoBot(object):
                  enable_session=None, session_storage=None,
                  app_id=None, app_secret=None, encoding_aes_key=None,
                  config=None, **kwargs):
-        self._handlers = dict((k, []) for k in self.message_types)
+        self._handlers = {k: [] for k in self.message_types}
         self._handlers['all'] = []
         self.make_error_page = make_error_page
 
