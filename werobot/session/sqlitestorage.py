@@ -34,15 +34,15 @@ class SQLiteStorage(SessionStorage):
         session_json = self.db.execute(
             "SELECT id FROM WeRoBot;"
         )
-        for id in session_json:
-            yield id[0]
+        for _id in session_json:
+            yield _id[0]
 
     def items(self):
         session_json = self.db.execute(
             "SELECT id,value FROM WeRoBot;"
         )
-        for id, value in session_json:
-            yield id, json_loads(value)
+        for _id, value in session_json:
+            yield _id, json_loads(value)
 
     def get(self, id):
         session_json = self.db.execute(
