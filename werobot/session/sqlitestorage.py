@@ -30,6 +30,20 @@ class SQLiteStorage(SessionStorage):
         self.db.text_factory = str
         self.db.execute(__CREATE_TABLE_SQL__)
 
+    def __iter__(self):
+        session_json = self.db.execute(
+            "SELECT id FROM WeRoBot;"
+        )
+        for id in session_json:
+            yield id[0]
+
+    def items(self):
+        session_json = self.db.execute(
+            "SELECT id,value FROM WeRoBot;"
+        )
+        for id, value in session_json:
+            yield id, json_loads(value)
+
     def get(self, id):
         session_json = self.db.execute(
             "SELECT value FROM WeRoBot WHERE id=? LIMIT 1;", (id,)
