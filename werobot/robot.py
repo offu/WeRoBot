@@ -41,7 +41,7 @@ class BaseRoBot(object):
     :param token: 微信公众号设置的 token
     :param logger: 用来输出 log 的 logger，如果是 ``None``，将使用 werobot.logger
     :param enable_session: 是否开启 session
-    :param session_storage: 用来储存 session 的对象，如果为 ``None``，
+    :param session_storage: 用来储存 session 的对象，如果为 ``None``，\
     将使用 werobot.session.sqlitestorage.SQLiteStorage
     :param app_id: 微信公众号设置的 app id
     :param app_secret: 微信公众号设置的 app secret
@@ -418,6 +418,7 @@ class BaseRoBot(object):
             @robot.error_page
             def make_error_page(url):
                 return "<h1>喵喵喵 %s 不是给麻瓜访问的快走开</h1>" % url
+
         """
         self.make_error_page = f
         return f
