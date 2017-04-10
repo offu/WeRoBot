@@ -35,6 +35,19 @@ _DEFAULT_CONFIG = dict(
 
 
 class BaseRoBot(object):
+    """
+    BaseRoBot 是整个应用的核心对象，负责提供 handler 的维护，消息和事件的处理等核心功能。
+
+    :param token: 微信公众号设置的 token
+    :param logger: 用来输出 log 的 logger，如果是 ``None``，将使用 werobot.logger
+    :param enable_session: 是否开启 session
+    :param session_storage: 用来储存 session 的对象，如果为 ``None``，
+    将使用 werobot.session.sqlitestorage.SQLiteStorage
+    :param app_id: 微信公众号设置的 app id
+    :param app_secret: 微信公众号设置的 app secret
+    :param encoding_aes_key: 用来加解密消息的 aes key
+    :param config: 用来设置的 **WeRobot.config.Config** 对象
+    """
     message_types = ['subscribe_event', 'unsubscribe_event', 'click_event',
                      'view_event', 'scancode_waitmsg_event',
                      'scancode_push_event', 'location_event', 'unknown_event',  # event
@@ -47,6 +60,7 @@ class BaseRoBot(object):
                  enable_session=None, session_storage=None,
                  app_id=None, app_secret=None, encoding_aes_key=None,
                  config=None, **kwargs):
+
         self._handlers = {k: [] for k in self.message_types}
         self._handlers['all'] = []
         self.make_error_page = make_error_page
@@ -131,113 +145,114 @@ class BaseRoBot(object):
 
     def handler(self, f):
         """
-        Decorator to add a handler function for every messages
+        为每一条消息或事件添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='all')
         return f
 
     def text(self, f):
         """
-        Decorator to add a handler function for ``text`` messages
+        为文本 ``(text)`` 消息添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='text')
         return f
 
     def image(self, f):
         """
-        Decorator to add a handler function for ``image`` messages
+        为图像 ``(image)`` 消息添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='image')
         return f
 
     def location(self, f):
         """
-        Decorator to add a handler function for ``location`` messages
+        为位置 ``(location)`` 消息添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='location')
         return f
 
     def link(self, f):
         """
-        Decorator to add a handler function for ``link`` messages
+        为链接 ``(link)`` 消息添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='link')
         return f
 
     def voice(self, f):
         """
-        Decorator to add a handler function for ``voice`` messages
+        为语音 ``(voice)`` 消息添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='voice')
         return f
 
     def unknown(self, f):
         """
-        Decorator to add a handler function for ``unknown`` messages
+        为未知类型 ``(unknown)`` 消息添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='unknown')
         return f
 
     def subscribe(self, f):
         """
-        Decorator to add a handler function for ``subscribe`` event
+        为被关注 ``(subscribe)`` 事件添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='subscribe_event')
         return f
 
     def unsubscribe(self, f):
         """
-        Decorator to add a handler function for ``unsubscribe`` event
+        为被取消关注 ``(unsubscribe)`` 事件添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='unsubscribe_event')
         return f
 
     def click(self, f):
         """
-        Decorator to add a handler function for ``click`` event
+        为自定义菜单事件 ``(click)`` 事件添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='click_event')
         return f
 
     def scancode_push(self, f):
         """
-        Decorator to add a handler function for ``scancode_push_event`` event
+        为扫描推送 ``(scancode_push)`` 事件添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='scancode_push_event')
         return f
 
     def scancode_waitmsg(self, f):
         """
-        Decorator to add a handler function for ``scancode_waitmsg_event`` event
+        为扫描弹消息 ``(scancode_waitmsg)`` 事件添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='scancode_waitmsg_event')
         return f
 
     def location_event(self, f):
         """
-        Decorator to add a handler function for ``location`` event
+        为上报位置 ``(location_event)`` 事件添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='location_event')
         return f
 
     def view(self, f):
         """
-        Decorator to add a handler function for ``view`` event
+        为链接 ``(view)`` 事件添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='view_event')
         return f
 
     def unknown_event(self, f):
         """
-        Decorator to add a handler function for ``unknown`` event
+        为未知类型 ``(unknown_event)`` 事件添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='unknown_event')
         return f
 
     def key_click(self, key):
         """
-        Shortcut for ``click`` messages
-        @key_click('KEYNAME') for special key on click event
+        为自定义菜单 ``(click)`` 事件添加 handler 的简便方法。
+
+        **@key_click('KEYNAME')** 用来为特定 key 的点击事件添加 handler 方法。
         """
 
         def wraps(f):
@@ -254,9 +269,10 @@ class BaseRoBot(object):
 
     def filter(self, *args):
         """
-        Shortcut for ``text`` messages
-        ``@filter("xxx")``, ``@filter(re.compile("xxx"))``
-        or ``@filter("xxx", "xxx2")`` to handle message with special content
+        为文本 ``(text)`` 消息添加 handler 的简便方法。
+
+        使用 ``@filter("xxx")``, ``@filter(re.compile("xxx"))``
+        或 ``@filter("xxx", "xxx2")`` 的形式为特定内容添加 handler。
         """
 
         def wraps(f):
@@ -336,7 +352,10 @@ class BaseRoBot(object):
 
     def get_reply(self, message):
         """
-        Return the Reply Object for the given message.
+        根据 message 的内容获取 Reply 对象。
+
+        :param message: 要处理的 message
+        :return: 获取的 Reply 对象
         """
         session_storage = self.session_storage
 
@@ -363,6 +382,7 @@ class BaseRoBot(object):
         对一个指定的 WeRoBot Message ，获取 handlers 处理后得到的 Reply。
         如果可能，对该 Reply 进行加密。
         返回 Reply Render 后的文本。
+
         :param message: 一个 WeRoBot Message 实例。
         :return: reply （纯文本）
         """
@@ -377,6 +397,14 @@ class BaseRoBot(object):
             return reply.render()
 
     def check_signature(self, timestamp, nonce, signature):
+        """
+        根据时间戳和生成签名的字符串 (nonce) 检查签名。
+
+        :param timestamp: 时间戳
+        :param nonce: 生成签名的随机字符串
+        :param signature: 要检查的签名
+        :return: 如果签名合法将返回 ``True``，不合法将返回 ``False``
+        """
         return check_signature(
             self.config["TOKEN"], timestamp, nonce, signature
         )
@@ -384,7 +412,9 @@ class BaseRoBot(object):
     def error_page(self, f):
         """
         为 robot 指定 Signature 验证不通过时显示的错误页面。
-        Usage ::
+
+        Usage::
+
             @robot.error_page
             def make_error_page(url):
                 return "<h1>喵喵喵 %s 不是给麻瓜访问的快走开</h1>" % url
