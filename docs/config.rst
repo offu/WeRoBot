@@ -53,11 +53,3 @@ WeRoBot 使用 ``WeRoBot.Config`` 类来存储配置信息。  ``WeRoBot`` 类�
         APP_SECRET=None,
         ENCODING_AES_KEY=None
     )
-
-
-API
-----------
-
-.. module:: werobot.config
-.. autoclass:: Config
-    :members:
