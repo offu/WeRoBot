@@ -9,3 +9,5 @@ API
 .. module:: werobot.robot
 .. autoclass:: BaseRoBot
     :members:
+.. autoclass:: WeRoBot
+    :members:

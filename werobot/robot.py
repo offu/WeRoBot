@@ -425,6 +425,10 @@ class BaseRoBot(object):
 
 
 class WeRoBot(BaseRoBot):
+    """
+    WeRoBot 是一个继承自 BaseRoBot 的对象，在 BaseRoBot 的基础上加入了 bottle 框架，
+    提供接收微信服务器发来的请求的功能。
+    """
     @cached_property
     def wsgi(self):
         if not self._handlers:
@@ -438,6 +442,15 @@ class WeRoBot(BaseRoBot):
 
     def run(self, server=None, host=None,
             port=None, enable_pretty_logging=True):
+        """
+        运行 WeRoBot。
+
+        :param server: 传递给 Bottle 框架 run 方法的参数，详情见\
+        `bottle 文档 <https://bottlepy.org/docs/dev/deployment.html#switching-the-server-backend>`_
+        :param host: 运行时绑定的主机地址
+        :param port: 运行时绑定的主机端口
+        :param enable_pretty_logging: 是否开启 log 的输出格式优化
+        """
         if enable_pretty_logging:
             from werobot.logger import enable_pretty_logging
             enable_pretty_logging(self.logger)
