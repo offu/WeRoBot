@@ -19,6 +19,26 @@ API
 .. autoclass:: Config
     :members:
 
+.. _session-object:
+
+Session 对象
+------------
+.. module:: werobot.session.sqlitestorage
+.. autoclass:: SQLiteStorage
+    :members:
+.. module:: werobot.session.filestorage
+.. autoclass:: FileStorage
+    :members:
+.. module:: werobot.session.mongodbstorage
+.. autoclass:: MongoDBStorage
+    :members:
+.. module:: werobot.session.redisstorage
+.. autoclass:: RedisStorage
+    :members:
+.. module:: werobot.session.saekvstorage
+.. autoclass:: SaeKVDBStorage
+    :members:
+
 log
 ------------
 .. module:: werobot.logger

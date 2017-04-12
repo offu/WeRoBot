@@ -26,6 +26,12 @@ class FileStorage(SessionStorage):
             self.db = dbm.open(to_binary(filename), "c")
 
     def get(self, id):
+        """
+        根据 id 获取数据。
+
+        :param id: 要获取的数据的 id
+        :return: 返回一个 ``dict`` 对象
+        """
         try:
             session_json = self.db[id]
         except KeyError:
@@ -33,7 +39,18 @@ class FileStorage(SessionStorage):
         return json_loads(session_json)
 
     def set(self, id, value):
+        """
+        根据 id 写入数据。
+
+        :param id: 要写入的 id
+        :param value: 要写入的数据，一个 ``dict`` 对象
+        """
         self.db[id] = json_dumps(value)
 
     def delete(self, id):
+        """
+        根据 id 删除数据。
+
+        :param id: 要删除的数据的 id
+        """
         del self.db[id]

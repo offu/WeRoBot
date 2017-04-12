@@ -59,24 +59,4 @@ Session 在 WeRoBot 中默认开启， 并使用 :class:`werobot.session.sqlites
 
 可用的 Session Storage
 -----------------------
-
-
-.. module:: werobot.session.sqlitestorage
-
-.. autoclass:: SQLiteStorage
-
-.. module:: werobot.session.mongodbstorage
-
-.. autoclass:: MongoDBStorage
-
-.. module:: werobot.session.redisstorage
-
-.. autoclass:: RedisStorage
-
-.. module:: werobot.session.saekvstorage
-
-.. autoclass:: SaeKVDBStorage
-
-.. module:: werobot.session.filestorage
-
-.. autoclass:: FileStorage
+详情见 :ref:`session-object`。
