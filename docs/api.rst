@@ -11,3 +11,10 @@ API
     :members:
 .. autoclass:: WeRoBot
     :members:
+
+配置对象
+------------
+
+.. module:: werobot.config
+.. autoclass:: Config
+    :members:
