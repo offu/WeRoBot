@@ -18,3 +18,8 @@ API
 .. module:: werobot.config
 .. autoclass:: Config
     :members:
+
+log
+------------
+.. module:: werobot.logger
+.. autofunction:: enable_pretty_logging
