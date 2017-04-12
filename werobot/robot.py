@@ -42,7 +42,7 @@ class BaseRoBot(object):
     :param logger: 用来输出 log 的 logger，如果是 ``None``，将使用 werobot.logger
     :param enable_session: 是否开启 session
     :param session_storage: 用来储存 session 的对象，如果为 ``None``，\
-    将使用 werobot.session.sqlitestorage.SQLiteStorage
+    将使用 werobot.session.sqlitestorage.SQLiteStorage **(deprecated)**
     :param app_id: 微信公众号设置的 app id
     :param app_secret: 微信公众号设置的 app secret
     :param encoding_aes_key: 用来加解密消息的 aes key
