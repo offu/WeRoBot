@@ -27,7 +27,7 @@ class Config(dict):
         在一个 Python 文件中读取配置。
 
         :param filename: 配置文件的文件名
-        :return: 如果读取成功，返回 ``True``
+        :return: 如果读取成功，返回 ``True``，如果失败，会抛出错误异常
         """
         d = imp.new_module('config')
         d.__file__ = filename

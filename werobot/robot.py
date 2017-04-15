@@ -38,15 +38,19 @@ class BaseRoBot(object):
     """
     BaseRoBot 是整个应用的核心对象，负责提供 handler 的维护，消息和事件的处理等核心功能。
 
-    :param token: 微信公众号设置的 token
     :param logger: 用来输出 log 的 logger，如果是 ``None``，将使用 werobot.logger
-    :param enable_session: 是否开启 session
+    :param config: 用来设置的 :class:`werobot.config.Config` 对象 \\
+
+    .. note:: 对于下面的参数推荐使用 :class:`~werobot.config.Config` 进行设置，\
+    并且以下参数均已 **deprecated**。
+
+    :param token: 微信公众号设置的 token **(deprecated)**
+    :param enable_session: 是否开启 session **(deprecated)**
     :param session_storage: 用来储存 session 的对象，如果为 ``None``，\
     将使用 werobot.session.sqlitestorage.SQLiteStorage **(deprecated)**
-    :param app_id: 微信公众号设置的 app id
-    :param app_secret: 微信公众号设置的 app secret
-    :param encoding_aes_key: 用来加解密消息的 aes key
-    :param config: 用来设置的 **WeRobot.config.Config** 对象
+    :param app_id: 微信公众号设置的 app id **(deprecated)**
+    :param app_secret: 微信公众号设置的 app secret **(deprecated)**
+    :param encoding_aes_key: 用来加解密消息的 aes key **(deprecated)**
     """
     message_types = ['subscribe_event', 'unsubscribe_event', 'click_event',
                      'view_event', 'scancode_waitmsg_event',
