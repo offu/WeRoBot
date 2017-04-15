@@ -57,4 +57,4 @@ Session 在 WeRoBot 中默认开启， 并使用 :class:`werobot.session.sqlites
 
 传入的 ``session`` 参数是一个标准的 Python 字典。
 
-更多可用的 Session Storage 详见 :ref:`session-object`。
+更多可用的 Session Storage 详见 :ref:`Session 对象`。
