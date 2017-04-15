@@ -430,7 +430,7 @@ class BaseRoBot(object):
 
 class WeRoBot(BaseRoBot):
     """
-    WeRoBot 是一个继承自 BaseRoBot 的对象，在 BaseRoBot 的基础上加入了 bottle 框架，
+    WeRoBot 是一个继承自 BaseRoBot 的对象，在 BaseRoBot 的基础上使用了 bottle 框架，
     提供接收微信服务器发来的请求的功能。
     """
     @cached_property
