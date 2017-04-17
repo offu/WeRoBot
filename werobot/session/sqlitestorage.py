@@ -31,6 +31,12 @@ class SQLiteStorage(SessionStorage):
         self.db.execute(__CREATE_TABLE_SQL__)
 
     def get(self, id):
+        """
+        根据 id 获取数据。
+
+        :param id: 要获取的数据的 id
+        :return: 返回一个 ``dict`` 对象
+        """
         session_json = self.db.execute(
             "SELECT value FROM WeRoBot WHERE id=? LIMIT 1;", (id,)
         ).fetchone()
@@ -39,11 +45,22 @@ class SQLiteStorage(SessionStorage):
         return json_loads(session_json[0])
 
     def set(self, id, value):
+        """
+        根据 id 写入数据。
+
+        :param id: 要写入的 id
+        :param value: 要写入的数据，一个 ``dict`` 对象
+        """
         self.db.execute(
             "INSERT OR REPLACE INTO WeRoBot (id, value) VALUES (?,?);",
             (id, json_dumps(value)))
         self.db.commit()
 
     def delete(self, id):
+        """
+        根据 id 删除数据。
+
+        :param id: 要删除的数据的 id
+        """
         self.db.execute("DELETE FROM WeRoBot WHERE id=?;", (id,))
         self.db.commit()

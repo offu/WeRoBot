@@ -21,4 +21,5 @@ WeRoBot 是一个微信公众号开发框架。
     error-page
     utils
     contribution-guide
+    api
     changelog
