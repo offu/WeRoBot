@@ -30,6 +30,20 @@ class SQLiteStorage(SessionStorage):
         self.db.text_factory = str
         self.db.execute(__CREATE_TABLE_SQL__)
 
+    def __iter__(self):
+        session_json = self.db.execute(
+            "SELECT id FROM WeRoBot;"
+        )
+        for _id in session_json:
+            yield _id[0]
+
+    def items(self):
+        session_json = self.db.execute(
+            "SELECT id,value FROM WeRoBot;"
+        )
+        for _id, value in session_json:
+            yield _id, json_loads(value)
+
     def get(self, id):
         """
         根据 id 获取数据。
