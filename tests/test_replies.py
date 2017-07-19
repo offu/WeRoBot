@@ -262,7 +262,8 @@ def test_transfer_customer_service_reply():
     reply = TransferCustomerServiceReply(
         source='aaa',
         target='bbb',
-        time=t
+        time=t,
+        account="test1@test"
     )
     assert reply.render().strip() == """
     <xml>
@@ -270,6 +271,9 @@ def test_transfer_customer_service_reply():
     <FromUserName><![CDATA[aaa]]></FromUserName>
     <CreateTime>{time}</CreateTime>
     <MsgType><![CDATA[transfer_customer_service]]></MsgType>
+    <TransInfo>
+         <KfAccount><![CDATA[test1@test]]></KfAccount>
+     </TransInfo>
     </xml>
     """.format(time=t).strip()
 
