@@ -198,6 +198,9 @@ class TransferCustomerServiceReply(WeChatReply):
     <FromUserName><![CDATA[{source}]]></FromUserName>
     <CreateTime>{time}</CreateTime>
     <MsgType><![CDATA[transfer_customer_service]]></MsgType>
+    <TransInfo>
+         <KfAccount><![CDATA[{account}]]></KfAccount>
+     </TransInfo>
     </xml>
     """)
 
