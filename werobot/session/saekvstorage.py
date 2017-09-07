@@ -18,6 +18,7 @@ class SaeKVDBStorage(SessionStorage):
 
     :param prefix: KVDB 中 Session 数据 key 的 prefix 。默认为 ``ws_``
     """
+
     def __init__(self, prefix='ws_'):
         try:
             import sae.kvdb
@@ -30,10 +31,27 @@ class SaeKVDBStorage(SessionStorage):
         return '{prefix}{s}'.format(prefix=self.prefix, s=s)
 
     def get(self, id):
+        """
+        根据 id 获取数据。
+
+        :param id: 要获取的数据的 id
+        :return: 返回一个 ``dict`` 对象
+        """
         return self.kv.get(self.key_name(id)) or {}
 
     def set(self, id, value):
+        """
+        根据 id 写入数据。
+
+        :param id: 要写入的 id
+        :param value: 要写入的数据，一个 ``dict`` 对象
+        """
         return self.kv.set(self.key_name(id), value)
 
     def delete(self, id):
+        """
+        根据 id 删除数据。
+
+        :param id: 要删除的数据的 id
+        """
         return self.kv.delete(self.key_name(id))

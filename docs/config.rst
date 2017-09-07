@@ -1,9 +1,9 @@
 Config
 =====================
 
-WeRoBot 使用 ``WeRoBot.Config`` 类来存储配置信息。  ``WeRoBot`` 类实例的 ``config`` 属性是一个 :class:`WeRobot.config.Config` 实例。
+WeRoBot 使用 ``WeRoBot.Config`` 类来存储配置信息。  ``WeRoBot`` 类实例的 ``config`` 属性是一个 :class:`werobot.config.Config` 实例。
 
-:class:`WeRobot.config.Config` 继承自 `dict` 。因此， 你可以像使用普通 dict 一样使用它 ::
+:class:`~werobot.config.Config` 继承自 `dict` 。因此， 你可以像使用普通 dict 一样使用它 ::
 
     from werobot import WeRoBot
     robot = WeRoBot(token='2333')
@@ -24,7 +24,7 @@ WeRoBot 使用 ``WeRoBot.Config`` 类来存储配置信息。  ``WeRoBot`` 类�
 
 .. note:: 如果你在初始化 ``WeRoBot`` 时传入了 ``config`` 参数， ``WeRoBot`` 会忽略除 ``logger`` 外其他所有的初始化参数。 如果你需要对 ``WeRoBot`` 进行一些配置操作， 请修改 Config 。
 
-与普通 `dict` 不同的是， 你可以先把配置文件保存在一个对象或是文件中， 然后在 :class:`WeRoBot.config.Config` 中导入配置 ::
+与普通 `dict` 不同的是， 你可以先把配置文件保存在一个对象或是文件中， 然后在 :class:`~werobot.config.Config` 中导入配置 ::
 
     from werobot import WeRoBot
     robot = WeRoBot(token='2333')
@@ -53,11 +53,3 @@ WeRoBot 使用 ``WeRoBot.Config`` 类来存储配置信息。  ``WeRoBot`` 类�
         APP_SECRET=None,
         ENCODING_AES_KEY=None
     )
-
-
-API
-----------
-
-.. module:: werobot.config
-.. autoclass:: Config
-    :members:
