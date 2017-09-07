@@ -22,6 +22,7 @@ class MongoDBStorage(SessionStorage):
 
     :param collection: 一个 MongoDB Collection。
     """
+
     def __init__(self, collection):
         self.collection = collection
         collection.create_index("wechat_id")
@@ -30,6 +31,12 @@ class MongoDBStorage(SessionStorage):
         return self.collection.find_one({"wechat_id": id})
 
     def get(self, id):
+        """
+        根据 id 获取数据。
+
+        :param id: 要获取的数据的 id
+        :return: 返回一个 ``dict`` 对象
+        """
         document = self._get_document(id)
         if document:
             session_json = document["session"]
@@ -37,6 +44,12 @@ class MongoDBStorage(SessionStorage):
         return {}
 
     def set(self, id, value):
+        """
+        根据 id 写入数据。
+
+        :param id: 要写入的 id
+        :param value: 要写入的数据，一个 ``dict`` 对象
+                """
         session = json_dumps(value)
         self.collection.replace_one({
             "wechat_id": id
@@ -46,6 +59,11 @@ class MongoDBStorage(SessionStorage):
         }, upsert=True)
 
     def delete(self, id):
+        """
+        根据 id 删除数据。
+
+        :param id: 要删除的数据的 id
+        """
         self.collection.delete_one({
             "wechat_id": id
         })
