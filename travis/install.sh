@@ -25,7 +25,8 @@ brew install redis
 brew services start redis
 brew install mongodb
 brew services start mongodb
-
+brew install memcached
+brew services start memcached
 brew install openssl
 python --version
 env LDFLAGS="-L$(brew --prefix openssl)/lib" CFLAGS="-I$(brew --prefix openssl)/include" pip install -r dev-requirements.txt
