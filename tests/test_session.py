@@ -3,13 +3,14 @@
 import os
 import pymongo
 import redis
+import memcache
 import pytest
 
 import werobot
 import werobot.testing
 import werobot.utils
 from werobot.session import SessionStorage
-from werobot.session import filestorage, mongodbstorage, redisstorage
+from werobot.session import filestorage, mongodbstorage, redisstorage, memcachestorage
 from werobot.session import sqlitestorage
 from werobot.utils import to_binary
 
@@ -95,6 +96,7 @@ def test_session_storage_delete():
     mongodbstorage.MongoDBStorage(pymongo.MongoClient().t.t),
     redisstorage.RedisStorage(redis.Redis()),
     sqlitestorage.SQLiteStorage(),
+    memcachestorage.MemcacheStorage(memcache.Client())
 ])
 def test_storage(storage):
     assert storage.get("喵") == {}
