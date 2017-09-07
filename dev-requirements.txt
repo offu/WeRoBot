@@ -2,3 +2,4 @@
 flake8==2.6.2
 tox
 django
+python-memcached
