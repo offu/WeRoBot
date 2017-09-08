@@ -41,7 +41,7 @@ def test_signature_checker():
     assert robot.check_signature(timestamp, nonce, sign)
 
 
-def test_register_handlers():
+def test_register_handlers():  # noqa: C901
     robot = WeRoBot(enable_session=False)
 
     for type in robot.message_types:

@@ -319,7 +319,7 @@ def test_video():
     def video():
         return '请收下这一段榴莲的视频'
 
-    message = parse_user_msg("""   
+    message = parse_user_msg("""
         <xml>
             <ToUserName><![CDATA[toUser]]></ToUserName>
             <FromUserName><![CDATA[fromUser]]></FromUserName>
