@@ -68,6 +68,20 @@ def test_register_handlers():
 
     assert robot.get_handlers("text") == [(text_handler, 0), (handler, 2)]
 
+    @robot.video
+    def video_handler():
+        pass
+
+    assert robot._handlers["video"] == [(video_handler, 0)]
+    assert robot.get_handlers("video") == [(video_handler, 0), (handler, 2)]
+
+    @robot.shortvideo
+    def shortvideo_handler():
+        pass
+
+    assert robot._handlers["shortvideo"] == [(shortvideo_handler, 0)]
+    assert robot.get_handlers("shortvideo") == [(shortvideo_handler, 0), (handler, 2)]
+
     @robot.location
     def location_handler():
         pass
