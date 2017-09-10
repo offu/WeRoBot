@@ -314,6 +314,51 @@ def test_voice():
     assert reply._args['content'] == u'声音喵'
 
 
+def test_video():
+    @werobot.video
+    def video():
+        return '请收下这一段榴莲的视频'
+
+    message = parse_user_msg("""
+        <xml>
+            <ToUserName><![CDATA[toUser]]></ToUserName>
+            <FromUserName><![CDATA[fromUser]]></FromUserName>
+            <CreateTime>1357290913</CreateTime>
+            <MsgType><![CDATA[video]]></MsgType>
+            <MediaId><![CDATA[media_id]]></MediaId>
+            <ThumbMediaId><![CDATA[thumb_media_id]]></ThumbMediaId>
+            <MsgId>1234567890123456</MsgId>
+            </xml>""")
+
+    reply = werobot.get_reply(message)
+
+    assert isinstance(reply, TextReply)
+    assert reply._args['content'] == u'请收下这一段榴莲的视频'
+
+
+def test_shortvideo():
+    @werobot.shortvideo
+    def shortvideo():
+        return '请收下这一段榴莲的小视频'
+
+    message = parse_user_msg("""
+        <xml>
+            <ToUserName><![CDATA[toUser]]></ToUserName>
+            <FromUserName><![CDATA[fromUser]]></FromUserName>
+            <CreateTime>1357290913</CreateTime>
+            <MsgType><![CDATA[shortvideo]]></MsgType>
+            <MediaId><![CDATA[media_id]]></MediaId>
+            <ThumbMediaId><![CDATA[thumb_media_id]]></ThumbMediaId>
+            <MsgId>1234567890123456</MsgId>
+        </xml>
+    """)
+
+    reply = werobot.get_reply(message)
+
+    assert isinstance(reply, TextReply)
+    assert reply._args['content'] == u'请收下这一段榴莲的小视频'
+
+
 def test_unknown():
     @werobot.unknown
     def unknown(message):

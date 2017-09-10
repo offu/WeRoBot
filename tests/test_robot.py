@@ -41,7 +41,7 @@ def test_signature_checker():
     assert robot.check_signature(timestamp, nonce, sign)
 
 
-def test_register_handlers():
+def test_register_handlers():  # noqa: C901
     robot = WeRoBot(enable_session=False)
 
     for type in robot.message_types:
@@ -67,6 +67,20 @@ def test_register_handlers():
         pass
 
     assert robot.get_handlers("text") == [(text_handler, 0), (handler, 2)]
+
+    @robot.video
+    def video_handler():
+        pass
+
+    assert robot._handlers["video"] == [(video_handler, 0)]
+    assert robot.get_handlers("video") == [(video_handler, 0), (handler, 2)]
+
+    @robot.shortvideo
+    def shortvideo_handler():
+        pass
+
+    assert robot._handlers["shortvideo"] == [(shortvideo_handler, 0)]
+    assert robot.get_handlers("shortvideo") == [(shortvideo_handler, 0), (handler, 2)]
 
     @robot.location
     def location_handler():

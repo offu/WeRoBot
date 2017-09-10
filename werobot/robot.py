@@ -55,7 +55,8 @@ class BaseRoBot(object):
     message_types = ['subscribe_event', 'unsubscribe_event', 'click_event',
                      'view_event', 'scancode_waitmsg_event',
                      'scancode_push_event', 'location_event', 'unknown_event',  # event
-                     'text', 'image', 'link', 'location', 'voice', 'unknown']
+                     'text', 'image', 'link', 'location', 'voice', 'unknown',
+                     'video', 'shortvideo']
 
     token = ConfigAttribute("TOKEN")
     session_storage = ConfigAttribute("SESSION_STORAGE")
@@ -187,6 +188,20 @@ class BaseRoBot(object):
         为语音 ``(voice)`` 消息添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='voice')
+        return f
+
+    def video(self, f):
+        """
+        为视频 ``(video)`` 消息添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='video')
+        return f
+
+    def shortvideo(self, f):
+        """
+        为小视频 ``(shortvideo)`` 消息添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='shortvideo')
         return f
 
     def unknown(self, f):
@@ -433,6 +448,7 @@ class WeRoBot(BaseRoBot):
     WeRoBot 是一个继承自 BaseRoBot 的对象，在 BaseRoBot 的基础上使用了 bottle 框架，
     提供接收微信服务器发来的请求的功能。
     """
+
     @cached_property
     def wsgi(self):
         if not self._handlers:
