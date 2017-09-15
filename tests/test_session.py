@@ -76,18 +76,25 @@ def test_session_storage_get():
     session = SessionStorage()
     with pytest.raises(NotImplementedError):
         session.get('s')
+    with pytest.raises(NotImplementedError):
+        session['s']
 
 
 def test_session_storage_set():
     session = SessionStorage()
     with pytest.raises(NotImplementedError):
         session.set('s', {})
+    with pytest.raises(NotImplementedError):
+        session['s'] = {}
 
 
 def test_session_storage_delete():
     session = SessionStorage()
     with pytest.raises(NotImplementedError):
         session.delete('s')
+
+    with pytest.raises(NotImplementedError):
+        del session['s']
 
 
 @pytest.mark.parametrize("storage", [
@@ -102,3 +109,9 @@ def test_storage(storage):
     assert storage.get("喵") == u"喵喵"
     storage.delete("喵")
     assert storage.get("喵") == {}
+
+    assert storage["榴莲"] == {}
+    storage["榴莲"] = "榴莲"
+    assert storage["榴莲"] == u"榴莲"
+    del storage["榴莲"]
+    assert storage["榴莲"] == {}
