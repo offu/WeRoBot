@@ -12,20 +12,7 @@ import werobot.utils
 from werobot.session import SessionStorage
 from werobot.session import filestorage, mongodbstorage, redisstorage, saekvstorage
 from werobot.session import sqlitestorage
-from werobot.utils import to_binary, to_text
-
-
-class FakeSaeKVDBStorage(saekvstorage.SaeKVDBStorage):
-    def __init__(self, prefix='ws_'):
-        try:
-            saekvstorage.SaeKVDBStorage.__init__(self, prefix)
-        except RuntimeError:
-            import os
-            import sys
-            sys.path.append(os.path.dirname(__file__))
-            import fake_sae as kvdb
-            self.kv = kvdb.KVClient()
-            self.prefix = prefix
+from werobot.utils import to_binary
 
 
 def teardown_module():
@@ -115,24 +102,51 @@ def test_session_storage_delete():
     filestorage.FileStorage(),
     mongodbstorage.MongoDBStorage(pymongo.MongoClient().t.t),
     redisstorage.RedisStorage(redis.Redis()),
-    sqlitestorage.SQLiteStorage(),
-    FakeSaeKVDBStorage()
+    sqlitestorage.SQLiteStorage()
 ])
 def test_storage(storage):
     assert storage.get("喵") == {}
     storage.set("喵", "喵喵")
-    if six.PY3:
-        assert storage.get("喵") == u"喵喵"
-    else:
-        assert to_text(storage.get("喵")) == u"喵喵"
+    assert storage.get("喵") == u"喵喵"
     storage.delete("喵")
     assert storage.get("喵") == {}
 
     assert storage["榴莲"] == {}
     storage["榴莲"] = "榴莲"
-    if six.PY3:
-        assert storage["榴莲"] == u"榴莲"
-    else:
-        assert to_text(storage["榴莲"]) == u"榴莲"
+    assert storage["榴莲"] == u"榴莲"
+    del storage["榴莲"]
+    assert storage["榴莲"] == {}
+
+
+def test_saeskvtorage():
+    """
+    Run this test with PY2 only.
+    """
+    if not six.PY2:
+        return
+
+    class FakeSaeKVDBStorage(saekvstorage.SaeKVDBStorage):
+        def __init__(self, prefix='ws_'):
+            try:
+                saekvstorage.SaeKVDBStorage.__init__(self, prefix)
+            except RuntimeError:
+                import os
+                import sys
+                sys.path.append(os.path.dirname(__file__))
+                import fake_sae as kvdb
+                self.kv = kvdb.KVClient()
+                self.prefix = prefix
+
+    storage = FakeSaeKVDBStorage()
+
+    assert storage.get("喵") == {}
+    storage.set("喵", "喵喵")
+    assert storage.get("喵").decode('utf-8') == u"喵喵"
+    storage.delete("喵")
+    assert storage.get("喵") == {}
+
+    assert storage["榴莲"] == {}
+    storage["榴莲"] = "榴莲"
+    assert storage["榴莲"].decode('utf-8') == u"榴莲"
     del storage["榴莲"]
     assert storage["榴莲"] == {}
