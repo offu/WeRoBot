@@ -4,6 +4,7 @@ import os
 import pymongo
 import redis
 import pytest
+import six
 
 import werobot
 import werobot.testing
@@ -11,7 +12,7 @@ import werobot.utils
 from werobot.session import SessionStorage
 from werobot.session import filestorage, mongodbstorage, redisstorage, saekvstorage
 from werobot.session import sqlitestorage
-from werobot.utils import to_binary
+from werobot.utils import to_binary, to_text
 
 
 class FakeSaeKVDBStorage(saekvstorage.SaeKVDBStorage):
@@ -120,12 +121,18 @@ def test_session_storage_delete():
 def test_storage(storage):
     assert storage.get("喵") == {}
     storage.set("喵", "喵喵")
-    assert storage.get("喵") == u"喵喵"
+    if six.PY3:
+        assert storage.get("喵") == u"喵喵"
+    else:
+        assert to_text(storage.get("喵")) == u"喵喵"
     storage.delete("喵")
     assert storage.get("喵") == {}
 
     assert storage["榴莲"] == {}
     storage["榴莲"] = "榴莲"
-    assert storage["榴莲"] == u"榴莲"
+    if six.PY3:
+        assert storage["榴莲"] == u"榴莲"
+    else:
+        assert to_text(storage["榴莲"]) == u"榴莲"
     del storage["榴莲"]
     assert storage["榴莲"] == {}

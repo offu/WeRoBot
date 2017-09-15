@@ -462,14 +462,14 @@ if __name__ == "__main__":
 
         def test_setget(key, val):
             global failures
-            print("Testing set/get {'%s': %s} ..." % (to_s(key), to_s(val)), end=' ')
+            print("Testing set/get {'%s': %s} ..." % (to_s(key), to_s(val)))
             mc.set(key, val)
             newval = mc.get(key)
             if newval == val:
                 print("OK")
                 return 1
             else:
-                print("FAIL");
+                print("FAIL")
                 failures = failures + 1
                 return 0
 
@@ -490,19 +490,19 @@ if __name__ == "__main__":
         test_setget("a_string", "some random string")
         test_setget("an_integer", 42)
         if test_setget("long", int(1 << 30)):
-            print("Testing delete ...", end=' ')
+            print("Testing delete ...")
             if mc.delete("long"):
                 print("OK")
             else:
-                print("FAIL");
+                print("FAIL")
                 failures = failures + 1
             print("Checking results of delete ...")
             if mc.get("long") == None:
                 print("OK")
             else:
-                print("FAIL");
+                print("FAIL")
                 failures = failures + 1
-        print("Testing get_multi ...", end=' ')
+        print("Testing get_multi ...")
         print(mc.get_multi(["a_string", "an_integer"]))
 
         #  removed from the protocol
@@ -518,7 +518,7 @@ if __name__ == "__main__":
         #    else:
         #        print "FAIL"; failures = failures + 1
 
-        print("Testing get(unknown value) ...", end=' ')
+        print("Testing get(unknown value) ...")
         print(to_s(mc.get("unknown_value")))
 
         f = FooStruct()
@@ -540,7 +540,7 @@ if __name__ == "__main__":
         sys.stdout.flush()
 
         # sanity tests
-        print("Testing sending spaces...", end=' ')
+        print("Testing sending spaces...")
         sys.stdout.flush()
         try:
             x = mc.set("this has spaces", 1)
@@ -550,7 +550,7 @@ if __name__ == "__main__":
             print("FAIL");
             failures = failures + 1
 
-        print("Testing sending control characters...", end=' ')
+        print("Testing sending control characters...")
         try:
             x = mc.set("this\x10has\x11control characters\x02", 1)
         except Client.MemcachedKeyCharacterError as msg:
@@ -559,7 +559,7 @@ if __name__ == "__main__":
             print("FAIL");
             failures = failures + 1
 
-        print("Testing using insanely long key...", end=' ')
+        print("Testing using insanely long key...")
         try:
             x = mc.set('a' * SERVER_MAX_KEY_LENGTH, 1)
         except Client.MemcachedKeyLengthError as msg:
