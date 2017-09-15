@@ -6,4 +6,5 @@ exclude =
     __pycache__,
     docs,
     travis,
-    venv
+    venv,
+    tests/fake_sae.py
