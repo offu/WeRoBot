@@ -27,7 +27,6 @@ matrix:
     - PYTHON_VERSION=3.5
     - PYTHON_INSTALL_METHOD=macpython
   - osx_image: xcode8
-  - osx_image: xcode6.4
 cache:
   directories:
   - $HOME/.pyenv
