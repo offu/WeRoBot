@@ -2,7 +2,7 @@ os: osx
 language: generic
 osx_image: xcode8.2
 env:
-- PYTHON_VERSION=2 PYTHON_INSTALL_METHOD=system
+- PYTHON_VERSION="pypy-5.0.0" PYTHON_MAJOR=pypy PYTHON_INSTALL_METHOD=tox
 matrix:
   include:
   - env:
@@ -13,20 +13,6 @@ matrix:
     - PYTHON_MAJOR=py2
     - PYTHON_VERSION="2.7.12"
     - PYTHON_INSTALL_METHOD=tox
-  - env:
-    - PYTHON_MAJOR=pypy
-    - PYTHON_VERSION="pypy-5.0.0"
-    - PYTHON_INSTALL_METHOD=tox
-  - env:
-    - PYTHON_VERSION=2.7
-    - PYTHON_INSTALL_METHOD=macpython
-  - env:
-    - PYTHON_VERSION=3.4
-    - PYTHON_INSTALL_METHOD=macpython
-  - env:
-    - PYTHON_VERSION=3.5
-    - PYTHON_INSTALL_METHOD=macpython
-  - osx_image: xcode8
 cache:
   directories:
   - $HOME/.pyenv
