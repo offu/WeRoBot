@@ -8,7 +8,7 @@ matrix:
     - PYTHON_VERSION="3.5.2 3.4.5"
   - env:
     - PYTHON_MAJOR="py36"
-    - PYTHON_VERSION="3.6.0"
+    - PYTHON_VERSION="3.6.2"
   - env:
     - PYTHON_MAJOR=py2
     - PYTHON_VERSION="2.7.12"
