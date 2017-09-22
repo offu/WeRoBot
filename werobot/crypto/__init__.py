@@ -7,8 +7,9 @@ import struct
 import time
 
 try:
-    from cryptography.hazmat.primitives.ciphers import \
+    from cryptography.hazmat.primitives.ciphers import (
         Cipher, algorithms, modes
+    )
     from cryptography.hazmat.backends import default_backend
 except ImportError:  # pragma: no cover
     raise RuntimeError("You need to install Cryptography.")  # pragma: no cover
