@@ -7,7 +7,7 @@ WeRoBot 支持对消息的加解密，即微信公众号的安全模式。
 
     pip install cryptography
 
-之后， 你只需要将开发者ID( `AppID` ) 和微信公众平台后台设置的 `EncodingAESKey` 加到 WeRoBot 的 :ref:`Config` 里面就可以了 ::
+之后， 你只需要将开发者 ID(`AppID`) 和微信公众平台后台设置的 `EncodingAESKey` 加到 WeRoBot 的 :ref:`Config` 里面就可以了 ::
 
     from werobot import WeRoBot
     robot = WeRoBot()
