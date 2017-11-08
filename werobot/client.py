@@ -55,6 +55,7 @@ class Client(object):
             **kwargs
         )
         r.raise_for_status()
+        r.encoding = "utf-8"
         json = r.json()
         if check_error(json):
             return json

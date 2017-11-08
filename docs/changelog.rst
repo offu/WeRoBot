@@ -6,6 +6,7 @@ Version 1.2.0
 + 增加 :func:`werobot.robot.BaseRoBot.add_filter`
 + :func:`werobot.utils.generate_token` 在 Python 3.6+ 下优先使用 ``secrets.choice`` 来随机生成 token
 + 修复 :func:`werobot.client.Client.get_media_list` 的调用参数错误 (`#208 <https://github.com/whtsky/WeRoBot/issues/208>`_)
++ 修复了某些情况下 Client 中文编码不正确的问题 (`#250 <https://github.com/whtsky/WeRoBot/issues/250>`_)
 + 在文档中增加了独立的 :doc:`api` 部分
 + 添加了 ``video`` 和 ``shortvideo`` 的修饰器
 + 增加了 :class:`werobot.session.saekvstorage.SaeKVDBStorage` 的测试
