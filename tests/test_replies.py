@@ -295,21 +295,22 @@ def test_process_text_function_reply():
 
 def test_process_music_function_reply():
     reply = process_function_reply([
-       "title",
-       "desc",
-       "url"
+        "title",
+        "desc",
+        "url"
     ])
     assert isinstance(reply, MusicReply)
     assert reply.title == "title"
     assert reply.description == "desc"
     assert reply.url == reply.hq_url == "url"
 
-    reply = process_function_reply([
-       "title",
-       "desc",
-       "url",
-       "hq"
-    ])
+    reply = process_function_reply(
+        [
+            "title",
+            "desc",
+            "url",
+            "hq"
+        ])
     assert isinstance(reply, MusicReply)
     assert reply.title == "title"
     assert reply.description == "desc"

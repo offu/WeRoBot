@@ -709,7 +709,7 @@ class Client(object):
                 "user_list": [
                     {"openid": user_id,
                      "lang": lang} for user_id in user_id_list
-                    ]
+                ]
             }
         )
 
