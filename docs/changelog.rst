@@ -11,6 +11,7 @@ Version 1.2.0
 + 在文档中增加了独立的 :doc:`api` 部分
 + 添加了 ``video`` 和 ``shortvideo`` 的修饰器
 + 增加了 :class:`werobot.session.saekvstorage.SaeKVDBStorage` 的测试
++ 抛弃对 Django < 1.8 的支持
 
 Version 1.1.1
 ----------------

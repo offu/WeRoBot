@@ -5,7 +5,7 @@ WeRoBot 可以作为独立服务运行，也可以集成在其他 Web 框架中�
 
 Django
 --------
-WeRoBot 支持 Django 1.6+。
+WeRoBot 支持 Django 1.8+。
 
 首先，在一个文件中写好你的微信机器人 ::
 
