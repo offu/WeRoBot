@@ -32,7 +32,7 @@ def enable_pretty_logging(logger, level='info'):
                 curses.setupterm()
                 if curses.tigetnum("colors") > 0:
                     color = True
-            except:
+            finally:
                 pass
         channel = logging.StreamHandler()
         channel.setFormatter(_LogFormatter(color=color))

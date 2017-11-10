@@ -394,7 +394,7 @@ class BaseRoBot(object):
                 if reply:
                     return process_function_reply(reply, message=message)
         except:
-            self.logger.warning("Catch an exception", exc_info=True)
+            self.logger.exception("Catch an exception")
 
     def get_encrypted_reply(self, message):
         """
