@@ -24,6 +24,9 @@ class TextMessage(WeChatMessage):
     __type__ = 'text'
     content = StringEntry('Content')
 
+    def __str__(self):
+        return self.content
+
 
 class ImageMessage(WeChatMessage):
     __type__ = 'image'
