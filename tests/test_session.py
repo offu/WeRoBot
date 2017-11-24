@@ -5,6 +5,7 @@ import pymongo
 import redis
 import pytest
 import six
+import MySQLdb
 
 import werobot
 import werobot.testing
@@ -12,6 +13,7 @@ import werobot.utils
 from werobot.session import SessionStorage
 from werobot.session import filestorage, mongodbstorage, redisstorage, saekvstorage
 from werobot.session import sqlitestorage
+from werobot.session import mysqlstorage
 from werobot.utils import to_binary
 
 
@@ -103,6 +105,7 @@ def test_session_storage_delete():
     mongodbstorage.MongoDBStorage(pymongo.MongoClient().t.t),
     redisstorage.RedisStorage(redis.Redis()),
     sqlitestorage.SQLiteStorage()
+    mysqlstorage.MySQLStorage(conn=MySQLdb.connect(user='root', db='backend', passwd='root1234', host='127.0.0.1', charset='utf8'))
 ])
 def test_storage(storage):
     assert storage.get("喵") == {}
@@ -150,3 +153,4 @@ def test_saeskvtorage():
     assert storage["榴莲"].decode('utf-8') == u"榴莲"
     del storage["榴莲"]
     assert storage["榴莲"] == {}
+
