@@ -9,4 +9,3 @@ webtest
 flask
 tornado
 responses
-mysqlclient

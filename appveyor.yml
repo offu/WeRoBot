@@ -4,6 +4,7 @@ cache:
   - '%LOCALAPPDATA%\pip\Cache'
 services:
   - mongodb
+  - mysql
 init:
   - "ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%"
   - ps: "ls C:/Python*"
@@ -12,6 +13,24 @@ install:
   - choco install redis-64
   - redis-server --service-install
   - redis-server --service-start
+  - set DATABASE_MYSQL_USERNAME=root
+  - set DATABASE_MYSQL_PASSWORD=Password12!
+before_test:
+  - ps: $source = "https://github.com/helloqiu/mysqlclient-python/releases/download/1.3.12-whl/mysqlclient-1.3.12-cp27-cp27m-win32.whl"
+  - ps: $destination = "c:\mysqlclient-1.3.12-cp27-cp27m-win32.whl"
+  - ps: Invoke-WebRequest $source -OutFile $destination
+  - ps: $source = "https://github.com/helloqiu/mysqlclient-python/releases/download/1.3.12-whl/mysqlclient-1.3.12-cp34-cp34m-win32.whl"
+  - ps: $destination = "c:\mysqlclient-1.3.12-cp34-cp34m-win32.whl"
+  - ps: Invoke-WebRequest $source -OutFile $destination
+  - ps: $source = "https://github.com/helloqiu/mysqlclient-python/releases/download/1.3.12-whl/mysqlclient-1.3.12-cp35-cp35m-win32.whl"
+  - ps: $destination = "c:\mysqlclient-1.3.12-cp35-cp35m-win32.whl"
+  - ps: Invoke-WebRequest $source -OutFile $destination
+  - ps: $source = "https://github.com/helloqiu/mysqlclient-python/releases/download/1.3.12-whl/mysqlclient-1.3.12-cp36-cp36m-win32.whl"
+  - ps: $destination = "c:\mysqlclient-1.3.12-cp36-cp36m-win32.whl"
+  - ps: Invoke-WebRequest $source -OutFile $destination
+  - ps: $env:MYSQL_PWD="Password12!"
+  - ps: $cmd = '"C:\Program Files\MySQL\MySQL Server 5.7\bin\mysql" -e "create database werobot;" --user=root'
+  - ps: iex "& $cmd"
 test_script:
   - C:\Python35\python -m tox -c tox-win.ini
 on_success:
