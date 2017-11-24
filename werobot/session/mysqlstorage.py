@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
-import re
 
 from werobot.session import SessionStorage
-from werobot.utils import json_loads, json_dumps
-
 
 __CREATE_TABLE_SQL__ = """
 CREATE TABLE IF NOT EXISTS WeRoBot(
@@ -50,18 +47,13 @@ class MySQLStorage(SessionStorage):
         """
         session_tuple = None
         cur = self.conn.cursor()
-        try:
-            cur.execute("SELECT value FROM WeRoBot WHERE id='%s' LIMIT 1" % (id,))  # execute返回select的数目
-            session_tuple = cur.fetchone()  # 返回单个的元组，也就是一条记录(row)，如果没有结果 则返回 None
-        except:
-            self.conn.rollback()  # 发生错误时回滚
+        cur.execute("SELECT value FROM WeRoBot WHERE id='%s' LIMIT 1" % (id,))
+        session_tuple = cur.fetchone()
 
         if session_tuple is None:
             return {}
-#        session_dict = {id: session_tuple[0]}  #构建返回的 ``dict`` 对象
-        session_dict = session_tuple[0]  # assert storage.get("喵") == u"喵喵" 这测试不是 dict 啊，大哥
-#        session_dict = re.sub("'", "\"", str(session_dict))  # 将字符串里的单引号替换成双引号，否则json.loads报错
-#        return json_loads(session_dict)  # 测试不通过
+
+        session_dict = session_tuple[0]
         return session_dict
 
     def set(self, id, value):
@@ -71,15 +63,11 @@ class MySQLStorage(SessionStorage):
         :param id: 要写入的 id
         :param value: 要写入的数据，一个 ``dict`` 对象
         """
-        sql = "INSERT INTO WeRoBot (id, value) VALUES ('%s','%s') ON DUPLICATE KEY UPDATE value='%s'" % (id, value, value)
-        try:
-            # 执行sql语句
-            self.conn.cursor().execute(sql)
-            # 提交到数据库执行
-            self.conn.commit()
-        except:
-            # 发生错误时回滚
-            self.conn.rollback()
+        sql = "INSERT INTO WeRoBot (id, value) VALUES ('%s','%s') \
+                ON DUPLICATE KEY UPDATE value='%s'" % (id, value, value)
+
+        self.conn.cursor().execute(sql)
+        self.conn.commit()
 
     def delete(self, id):
         """
@@ -87,10 +75,5 @@ class MySQLStorage(SessionStorage):
 
         :param id: 要删除的数据的 id
         """
-        try:
-            self.conn.cursor().execute("DELETE FROM WeRoBot WHERE id='%s'" % (id,))
-            # 提交到数据库执行
-            self.conn.commit()
-        except:
-            # 发生错误时回滚
-            self.conn.rollback()
+        self.conn.cursor().execute("DELETE FROM WeRoBot WHERE id='%s'" % (id,))
+        self.conn.commit()
