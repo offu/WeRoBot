@@ -2,7 +2,7 @@ class SessionStorage(object):
     def get(self, id):
         raise NotImplementedError()
 
-    def set(self, id, session):
+    def set(self, id, value):
         raise NotImplementedError()
 
     def delete(self, id):
