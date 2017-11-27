@@ -1,4 +1,0 @@
--r win-tox-requirements.txt
-flake8==3.5.0
-tox
-django

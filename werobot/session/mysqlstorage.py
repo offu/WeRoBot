@@ -6,9 +6,9 @@ from werobot.utils import json_loads, json_dumps
 __CREATE_TABLE_SQL__ = """
 CREATE TABLE IF NOT EXISTS WeRoBot(
 id VARCHAR(100) NOT NULL ,
-value VARCHAR(1000) NOT NULL,
+value BLOB NOT NULL,
 PRIMARY KEY (id)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 """
 
 
@@ -16,7 +16,7 @@ class MySQLStorage(SessionStorage):
     """
     MySQLStorage 会把你的 Session 数据储存在 MySQL 中 ::
 
-        import MySQLdb
+        import MySQLdb # 使用 mysqlclient
         import werobot
         from werobot.session.mysqlstorage import MySQLStorage
 
@@ -25,9 +25,30 @@ class MySQLStorage(SessionStorage):
         robot = werobot.WeRoBot(token="token", enable_session=True,
                                 session_storage=session_storage)
 
-    你需要安装 ``mysqlclient`` 才能使用 MySQLdb 。
+    或者 ::
 
-    :param conn: MySQLdb 的 Connection 对象
+        import pymysql # 使用 pymysql
+        import werobot
+        from werobot.session.mysqlstorage import MySQLStorage
+
+        session_storage = mysqlstorage.MySQLStorage(
+        conn=pymysql.connect(
+            user='喵',
+            password='喵喵',
+            db='werobot',
+            host='127.0.0.1',
+            charset='utf8'
+        ))
+        robot = werobot.WeRoBot(token="token", enable_session=True,
+                                session_storage=session_storage)
+
+    你需要安装一个 MySQL Client 才能使用 MySQLStorage，比如 ``pymysql``，``mysqlclient`` 。
+
+    理论上符合 `PEP-249 <https://www.python.org/dev/peps/pep-0249/#connection-objects>`_ 的库都可以使用，\
+    测试时使用的是 ``pymysql``。
+
+    :param conn: `PEP-249 <https://www.python.org/dev/peps/pep-0249/#connection-objects>`_\
+    定义的 Connection 对象
     """
 
     def __init__(self, conn):

@@ -5,7 +5,7 @@ import pymongo
 import redis
 import pytest
 import six
-import MySQLdb
+import pymysql
 
 import werobot
 import werobot.testing
@@ -106,12 +106,13 @@ def test_session_storage_delete():
     redisstorage.RedisStorage(redis.Redis()),
     sqlitestorage.SQLiteStorage(),
     mysqlstorage.MySQLStorage(
-        conn=MySQLdb.connect(
+        conn=pymysql.connect(
             user=os.environ.get('DATABASE_MYSQL_USERNAME', ''),
-            passwd=os.environ.get('DATABASE_MYSQL_PASSWORD', ''),
+            password=os.environ.get('DATABASE_MYSQL_PASSWORD', ''),
             db='werobot',
             host='127.0.0.1',
-            charset='utf8'))
+            charset='utf8'
+        ))
 ])
 def test_storage(storage):
     assert storage.get("喵") == {}
