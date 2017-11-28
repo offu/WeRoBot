@@ -36,6 +36,9 @@ Session 对象
 .. module:: werobot.session.saekvstorage
 .. autoclass:: SaeKVDBStorage
 
+.. module:: werobot.session.mysqlstorage
+.. autoclass:: MySQLStorage
+
 log
 ------------
 .. module:: werobot.logger

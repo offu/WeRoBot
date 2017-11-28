@@ -16,7 +16,12 @@ brew install redis
 brew services start redis
 brew install mongodb
 brew services start mongodb
+brew install mysql
+brew services start mysql
 
 brew install openssl
 python --version
 env LDFLAGS="-L$(brew --prefix openssl)/lib" CFLAGS="-I$(brew --prefix openssl)/include" pip install -r dev-requirements.txt
+export DATABASE_MYSQL_USERNAME="root"
+export DATABASE_MYSQL_PASSWORD=""
+mysql -u $DATABASE_MYSQL_USERNAME -e "CREATE DATABASE IF NOT EXISTS werobot;"

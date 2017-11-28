@@ -38,7 +38,7 @@ class RedisStorage(SessionStorage):
         根据 id 获取数据。
 
         :param id: 要获取的数据的 id
-        :return: 返回一个 ``dict`` 对象
+        :return: 返回取到的数据，如果是空则返回一个空的 ``dict`` 对象
         """
         id = self.key_name(id)
         session_json = self.redis.get(id) or '{}'
@@ -49,7 +49,7 @@ class RedisStorage(SessionStorage):
         根据 id 写入数据。
 
         :param id: 要写入的 id
-        :param value: 要写入的数据，一个 ``dict`` 对象
+        :param value: 要写入的数据，可以是一个 ``dict`` 对象
         """
         id = self.key_name(id)
         self.redis.set(id, json_dumps(value))
