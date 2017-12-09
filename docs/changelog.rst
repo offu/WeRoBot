@@ -13,7 +13,7 @@ Version 1.2.0
 + 添加了 ``video`` 和 ``shortvideo`` 的修饰器
 + 增加了 :class:`werobot.session.saekvstorage.SaeKVDBStorage` 的测试
 + 增加了对 Django 2.0 的测试
-+ 抛弃对 Django < 1.8 的支持
++ 抛弃对 Django < 1.8 、 Django 1.9 、 Django 1.10 的支持
 
 Version 1.1.1
 ----------------
