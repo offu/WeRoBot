@@ -1,4 +1,10 @@
-[*.{py, rst}]
+root = true
+
+[*]
 indent_size = 4
 indent_style = space
 end_of_line = lf
+insert_final_newline = true
+
+[{.travis.yml,appveyor.yml,*.ini}]
+indent_size = 2

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import six
-from werobot.messages.entries import StringEntry, IntEntry, FloatEntry, DictEntry
+from werobot.messages.entries import StringEntry, IntEntry, FloatEntry
 from werobot.messages.base import WeRoBotMetaClass
 
 
