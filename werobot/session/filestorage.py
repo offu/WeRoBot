@@ -21,7 +21,7 @@ class FileStorage(SessionStorage):
     def __init__(self, filename='werobot_session'):
         try:
             self.db = dbm.open(filename, "c")
-        except TypeError:
+        except TypeError:  # pragma: no cover
             # dbm in PyPy requires filename to be binary
             self.db = dbm.open(to_binary(filename), "c")
 

@@ -24,8 +24,8 @@ class SaeKVDBStorage(SessionStorage):
             import sae.kvdb
         except ImportError:
             raise RuntimeError("SaeKVDBStorage requires SAE environment")
-        self.kv = sae.kvdb.KVClient()
-        self.prefix = prefix
+        self.kv = sae.kvdb.KVClient()  # pragma: no cover
+        self.prefix = prefix  # pragma: no cover
 
     def key_name(self, s):
         return '{prefix}{s}'.format(prefix=self.prefix, s=s)
