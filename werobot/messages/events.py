@@ -44,13 +44,13 @@ class ScanEvent(TicketEvent):
 class ScanCodePushEvent(SimpleEvent):
     __type__ = 'scancode_push_event'
     scan_type = StringEntry('ScanCodeInfo.ScanType')
-    scan_result = StringEntry('ScanCodeInfo.ScanResult')    
+    scan_result = StringEntry('ScanCodeInfo.ScanResult')
 
 
 class ScanCodeWaitMsgEvent(ScanCodePushEvent):
     __type__ = 'scancode_waitmsg_event'
     scan_type = StringEntry('ScanCodeInfo.ScanType')
-    scan_result = StringEntry('ScanCodeInfo.ScanResult')    
+    scan_result = StringEntry('ScanCodeInfo.ScanResult')
 
 
 class ClickEvent(SimpleEvent):

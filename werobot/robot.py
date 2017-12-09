@@ -53,7 +53,7 @@ class BaseRoBot(object):
     :param encoding_aes_key: 用来加解密消息的 aes key **(deprecated)**
     """
     message_types = ['subscribe_event', 'unsubscribe_event', 'click_event',
-                     'view_event', 'scan_event', 
+                     'view_event', 'scan_event',
                      'scancode_waitmsg_event', 'scancode_push_event',
                      'location_event', 'unknown_event',  # event
                      'text', 'image', 'link', 'location', 'voice', 'unknown',
