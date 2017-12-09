@@ -202,8 +202,8 @@ def test_scan_push_event():
     assert message.time == 123456789
     assert message.type == "scancode_push_event"
     assert message.key == "EVENTKEY"
-    assert message.codeinfo.get('ScanType') == "qrcode"
-    assert message.codeinfo.get('ScanResult') == "www.qq.com"
+    assert message.scan_type == "qrcode"
+    assert message.scan_result == "www.qq.com"
 
 
 def test_scan_waitmsg_event():
@@ -226,8 +226,8 @@ def test_scan_waitmsg_event():
     assert message.time == 123456789
     assert message.type == "scancode_waitmsg_event"
     assert message.key == "EVENTKEY"
-    assert message.codeinfo.get('ScanType') == "qrcode"
-    assert message.codeinfo.get('ScanResult') == "www.qq.com"
+    assert message.scan_type == "qrcode"
+    assert message.scan_result == "www.qq.com"
 
 
 def test_click_event():
