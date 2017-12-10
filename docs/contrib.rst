@@ -13,10 +13,10 @@ WeRoBot 支持 Django 1.8+。
 
     from werobot import WeRoBot
 
-    robot = WeRoBot(token='token')
+    myrobot = WeRoBot(token='token')
 
 
-    @robot.handler
+    @myrobot.handler
     def hello(message):
         return 'Hello World!'
 
@@ -24,10 +24,10 @@ WeRoBot 支持 Django 1.8+。
 
     from django.conf.urls import patterns, include, url
     from werobot.contrib.django import make_view
-    from robot import robot
+    from robot import myrobot
 
     urlpatterns = patterns('',
-        url(r'^robot/', make_view(robot)),
+        url(r'^robot/', make_view(myrobot)),
     )
 
 .. module:: werobot.contrib.django
@@ -41,23 +41,23 @@ Flask
 
     from werobot import WeRoBot
 
-    robot = WeRoBot(token='token')
+    myrobot = WeRoBot(token='token')
 
 
-    @robot.handler
+    @myrobot.handler
     def hello(message):
         return 'Hello World!'
 
 然后, 在 Flask 项目中为 Flask 实例集成 WeRoBot ::
 
     from flask import Flask
-    from robot import robot
+    from robot import myrobot
     from werobot.contrib.flask import make_view
 
     app = Flask(__name__)
     app.add_url_rule(rule='/robot/', # WeRoBot 挂载地址
                      endpoint='werobot', # Flask 的 endpoint
-                     view_func=make_view(robot),
+                     view_func=make_view(myrobot),
                      methods=['GET', 'POST'])
 
 .. module:: werobot.contrib.flask
@@ -70,9 +70,9 @@ Bottle
 
     from werobot import WeRoBot
 
-    robot = WeRoBot(token='token')
+    myrobot = WeRoBot(token='token')
 
-    @robot.handler
+    @myrobot.handler
     def hello(message):
         return 'Hello World!'
 
@@ -82,7 +82,7 @@ Bottle
     app = Bottle()
     app.route('/robot',  # WeRoBot 挂载地址
              ['GET', 'POST'],
-             make_view(robot))
+             make_view(myrobot))
 
 .. module:: werobot.contrib.bottle
 .. autofunction:: make_view
@@ -96,15 +96,15 @@ Tornado
     from werobot import WeRoBot
     from werobot.contrib.tornado import make_handler
 
-    robot = WeRoBot(token='token')
+    myrobot = WeRoBot(token='token')
 
 
-    @robot.handler
+    @myrobot.handler
     def hello(message):
         return 'Hello World!'
 
     application = tornado.web.Application([
-        (r"/robot/", make_handler(robot)),
+        (r"/robot/", make_handler(myrobot)),
     ])
 
     if __name__ == "__main__":
