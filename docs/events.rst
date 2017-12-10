@@ -43,7 +43,7 @@ type      'unsubscribe'
 ScanEvent
 ----------------
 
-UnSubscribeEvent 的属性:
+ScanEvent 的属性:
 
 ======== ===================================
 name      value
