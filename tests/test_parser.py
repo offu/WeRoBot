@@ -182,6 +182,26 @@ def test_unsubscribe_event():
     assert message.type == "unsubscribe_event"
 
 
+def test_scan_event():
+    message = parse_user_msg("""
+    <xml>
+        <ToUserName><![CDATA[toUser]]></ToUserName>
+        <FromUserName><![CDATA[FromUser]]></FromUserName>
+        <CreateTime>123456789</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[SCAN]]></Event>
+        <EventKey><![CDATA[SCENE_VALUE]]></EventKey>
+        <Ticket><![CDATA[TICKET]]></Ticket>
+    </xml>
+    """)
+    assert message.target == "toUser"
+    assert message.source == "FromUser"
+    assert message.time == 123456789
+    assert message.type == "scan_event"
+    assert message.key == "SCENE_VALUE"
+    assert message.ticket == "TICKET"
+
+
 def test_scan_push_event():
     message = parse_user_msg("""
     <xml>

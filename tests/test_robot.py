@@ -123,6 +123,24 @@ def test_register_handlers():  # noqa: C901
 
     assert len(robot._handlers["click_event"]) == 2
 
+    @robot.scan
+    def scan_handler():
+        pass
+
+    assert robot._handlers["scan_event"] == [(scan_handler, 0)]
+
+    @robot.scancode_push
+    def scancode_push_handler():
+        pass
+
+    assert robot._handlers["scancode_push_event"] == [(scancode_push_handler, 0)]
+
+    @robot.scancode_waitmsg
+    def scancode_waitmsg_handler():
+        pass
+
+    assert robot._handlers["scancode_waitmsg_event"] == [(scancode_waitmsg_handler, 0)]
+
 
 def test_filter():
     import re
