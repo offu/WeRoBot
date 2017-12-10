@@ -12,7 +12,7 @@ name         value
 message_id   消息id
 target       开发者账号（ OpenID ）
 source       发送方账号（ OpenID ）
-time         信息发送的时间，一个UNIX时间戳。
+time         信息发送的时间，一个UNIX时间戳
 raw          信息的原始 XML 格式
 =========== ===================================
 
@@ -25,8 +25,8 @@ SubscribeEvent 的属性:
 name      value
 ======== ===================================
 type      'subscribe'
-key       事件 key 值。 当且仅当未关注公众号扫描二维码时存在。
-ticket    二维码的 ticket。 当且仅当未关注公众号扫描二维码时存在。
+key       事件 key 值。 当且仅当未关注公众号扫描二维码时存在
+ticket    二维码的 ticket。 当且仅当未关注公众号扫描二维码时存在
 ======== ===================================
 
 UnSubscribeEvent
@@ -48,7 +48,9 @@ UnSubscribeEvent 的属性:
 ======== ===================================
 name      value
 ======== ===================================
-type      'scan'
+type      'scan_event'
+key       事件KEY值，是一个32位无符号整数，即创建二维码时的二维码 scene_id
+ticket    二维码的 ticket，可用来换取二维码图片
 ======== ===================================
 
 
