@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import six
-from werobot.messages.entries import StringEntry, IntEntry, FloatEntry, DictEntry
+from werobot.messages.entries import StringEntry, IntEntry, FloatEntry
 from werobot.messages.base import WeRoBotMetaClass
 
 
@@ -20,6 +20,10 @@ class WeChatEvent(object):
         self.__dict__.update(message)
 
 
+class SimpleEvent(WeChatEvent):
+    key = StringEntry('EventKey')
+
+
 class TicketEvent(WeChatEvent):
     key = StringEntry('EventKey')
     ticket = StringEntry('Ticket')
@@ -34,19 +38,19 @@ class UnSubscribeEvent(WeChatEvent):
 
 
 class ScanEvent(TicketEvent):
-    codeinfo = DictEntry('ScanCodeInfo')
+    __type__ = 'scan_event'
 
 
-class ScanCodePushEvent(ScanEvent):
+class ScanCodePushEvent(SimpleEvent):
     __type__ = 'scancode_push_event'
+    scan_type = StringEntry('ScanCodeInfo.ScanType')
+    scan_result = StringEntry('ScanCodeInfo.ScanResult')
 
 
-class ScanCodeWaitMsgEvent(ScanEvent):
+class ScanCodeWaitMsgEvent(ScanCodePushEvent):
     __type__ = 'scancode_waitmsg_event'
-
-
-class SimpleEvent(WeChatEvent):
-    key = StringEntry('EventKey')
+    scan_type = StringEntry('ScanCodeInfo.ScanType')
+    scan_result = StringEntry('ScanCodeInfo.ScanResult')
 
 
 class ClickEvent(SimpleEvent):

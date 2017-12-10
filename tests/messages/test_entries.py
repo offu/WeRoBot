@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import six
-from werobot.messages.entries import StringEntry, FloatEntry, IntEntry
+from werobot.messages.entries import get_value, StringEntry, FloatEntry, IntEntry
 from werobot.utils import to_text
 
 
@@ -67,3 +67,16 @@ def test_string_entry():
     assert isinstance(t.test_chinese, six.text_type)
     assert t.test_chinese == to_text("喵")
     assert t.test_string_none is None
+
+
+class FakeIntance:
+    pass
+
+
+def test_get_value():
+    instance = FakeIntance()
+    instance.b = 6
+    instance.a = {'c': 'd'}
+    assert get_value(instance, 'd', 'default') == 'default'
+    assert get_value(instance, 'b', 'default') == 6
+    assert get_value(instance, 'a.c') == 'd'

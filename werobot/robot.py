@@ -53,8 +53,9 @@ class BaseRoBot(object):
     :param encoding_aes_key: 用来加解密消息的 aes key **(deprecated)**
     """
     message_types = ['subscribe_event', 'unsubscribe_event', 'click_event',
-                     'view_event', 'scancode_waitmsg_event',
-                     'scancode_push_event', 'location_event', 'unknown_event',  # event
+                     'view_event', 'scan_event',
+                     'scancode_waitmsg_event', 'scancode_push_event',
+                     'location_event', 'unknown_event',  # event
                      'text', 'image', 'link', 'location', 'voice', 'unknown',
                      'video', 'shortvideo']
 
@@ -230,6 +231,13 @@ class BaseRoBot(object):
         为自定义菜单事件 ``(click)`` 事件添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='click_event')
+        return f
+
+    def scan(self, f):
+        """
+        为扫描推送 ``(scan)`` 事件添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='scan_event')
         return f
 
     def scancode_push(self, f):
