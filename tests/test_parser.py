@@ -202,6 +202,54 @@ def test_scan_event():
     assert message.ticket == "TICKET"
 
 
+def test_scan_push_event():
+    message = parse_user_msg("""
+    <xml>
+        <ToUserName><![CDATA[toUser]]></ToUserName>
+        <FromUserName><![CDATA[FromUser]]></FromUserName>
+        <CreateTime>123456789</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[scancode_push]]></Event>
+        <EventKey><![CDATA[EVENTKEY]]></EventKey>
+        <ScanCodeInfo>
+            <ScanType><![CDATA[qrcode]]></ScanType>
+            <ScanResult><![CDATA[www.qq.com]]></ScanResult>
+        </ScanCodeInfo>
+    </xml>
+    """)
+    assert message.target == "toUser"
+    assert message.source == "FromUser"
+    assert message.time == 123456789
+    assert message.type == "scancode_push_event"
+    assert message.key == "EVENTKEY"
+    assert message.scan_type == "qrcode"
+    assert message.scan_result == "www.qq.com"
+
+
+def test_scan_waitmsg_event():
+    message = parse_user_msg("""
+    <xml>
+        <ToUserName><![CDATA[toUser]]></ToUserName>
+        <FromUserName><![CDATA[FromUser]]></FromUserName>
+        <CreateTime>123456789</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[scancode_waitmsg]]></Event>
+        <EventKey><![CDATA[EVENTKEY]]></EventKey>
+        <ScanCodeInfo>
+            <ScanType><![CDATA[qrcode]]></ScanType>
+            <ScanResult><![CDATA[www.qq.com]]></ScanResult>
+        </ScanCodeInfo>
+    </xml>
+    """)
+    assert message.target == "toUser"
+    assert message.source == "FromUser"
+    assert message.time == 123456789
+    assert message.type == "scancode_waitmsg_event"
+    assert message.key == "EVENTKEY"
+    assert message.scan_type == "qrcode"
+    assert message.scan_result == "www.qq.com"
+
+
 def test_click_event():
     message = parse_user_msg("""
     <xml>

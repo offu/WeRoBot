@@ -57,10 +57,10 @@ def test_unsubscribe_handler():
     assert reply._args['content'] == u'取消关注'
 
 
-def test_scan_handler():
-    @werobot.scan
-    def scan(message):
-        return '扫描'
+def test_scan_push_handler():
+    @werobot.scancode_push
+    def scancode_push(message):
+        return '扫描推送'
 
     message = parse_user_msg("""
         <xml>
@@ -68,16 +68,45 @@ def test_scan_handler():
             <FromUserName><![CDATA[FromUser]]></FromUserName>
             <CreateTime>123456789</CreateTime>
             <MsgType><![CDATA[event]]></MsgType>
-            <Event><![CDATA[SCAN]]></Event>
-            <EventKey><![CDATA[SCENE_VALUE]]></EventKey>
-            <Ticket><![CDATA[TICKET]]></Ticket>
+            <Event><![CDATA[scancode_push]]></Event>
+            <EventKey><![CDATA[EVENTKEY]]></EventKey>
+            <ScanCodeInfo>
+                <ScanType><![CDATA[qrcode]]></ScanType>
+                <ScanResult><![CDATA[http://www.qq.com]]></ScanResult>
+            </ScanCodeInfo>
         </xml>
         """)
 
     reply = werobot.get_reply(message)
 
     assert isinstance(reply, TextReply)
-    assert reply._args['content'] == u'扫描'
+    assert reply._args['content'] == u'扫描推送'
+
+
+def test_scan_waitmsg_handler():
+    @werobot.scancode_waitmsg
+    def scancode_waitmsg(message):
+        return '扫描弹消息'
+
+    message = parse_user_msg("""
+        <xml>
+            <ToUserName><![CDATA[toUser]]></ToUserName>
+            <FromUserName><![CDATA[FromUser]]></FromUserName>
+            <CreateTime>123456789</CreateTime>
+            <MsgType><![CDATA[event]]></MsgType>
+            <Event><![CDATA[scancode_waitmsg]]></Event>
+            <EventKey><![CDATA[EVENTKEY]]></EventKey>
+            <ScanCodeInfo>
+                <ScanType><![CDATA[qrcode]]></ScanType>
+                <ScanResult><![CDATA[http://www.qq.com]]></ScanResult>
+            </ScanCodeInfo>
+        </xml>
+        """)
+
+    reply = werobot.get_reply(message)
+
+    assert isinstance(reply, TextReply)
+    assert reply._args['content'] == u'扫描弹消息'
 
 
 def test_click_handler():
@@ -283,6 +312,51 @@ def test_voice():
 
     assert isinstance(reply, TextReply)
     assert reply._args['content'] == u'声音喵'
+
+
+def test_video():
+    @werobot.video
+    def video():
+        return '请收下这一段榴莲的视频'
+
+    message = parse_user_msg("""
+        <xml>
+            <ToUserName><![CDATA[toUser]]></ToUserName>
+            <FromUserName><![CDATA[fromUser]]></FromUserName>
+            <CreateTime>1357290913</CreateTime>
+            <MsgType><![CDATA[video]]></MsgType>
+            <MediaId><![CDATA[media_id]]></MediaId>
+            <ThumbMediaId><![CDATA[thumb_media_id]]></ThumbMediaId>
+            <MsgId>1234567890123456</MsgId>
+            </xml>""")
+
+    reply = werobot.get_reply(message)
+
+    assert isinstance(reply, TextReply)
+    assert reply._args['content'] == u'请收下这一段榴莲的视频'
+
+
+def test_shortvideo():
+    @werobot.shortvideo
+    def shortvideo():
+        return '请收下这一段榴莲的小视频'
+
+    message = parse_user_msg("""
+        <xml>
+            <ToUserName><![CDATA[toUser]]></ToUserName>
+            <FromUserName><![CDATA[fromUser]]></FromUserName>
+            <CreateTime>1357290913</CreateTime>
+            <MsgType><![CDATA[shortvideo]]></MsgType>
+            <MediaId><![CDATA[media_id]]></MediaId>
+            <ThumbMediaId><![CDATA[thumb_media_id]]></ThumbMediaId>
+            <MsgId>1234567890123456</MsgId>
+        </xml>
+    """)
+
+    reply = werobot.get_reply(message)
+
+    assert isinstance(reply, TextReply)
+    assert reply._args['content'] == u'请收下这一段榴莲的小视频'
 
 
 def test_unknown():

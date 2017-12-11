@@ -16,7 +16,11 @@ logger = logging.getLogger("WeRoBot")
 
 
 def enable_pretty_logging(logger, level='info'):
-    """Turns on formatted logging output as configured.
+    """
+    按照配置开启 log 的格式化优化。
+
+    :param logger: 配置的 logger 对象
+    :param level: 要为 logger 设置的等级
     """
     logger.setLevel(getattr(logging, level.upper()))
 
@@ -28,7 +32,7 @@ def enable_pretty_logging(logger, level='info'):
                 curses.setupterm()
                 if curses.tigetnum("colors") > 0:
                     color = True
-            except:
+            finally:
                 pass
         channel = logging.StreamHandler()
         channel.setFormatter(_LogFormatter(color=color))

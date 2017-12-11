@@ -20,6 +20,10 @@ class WeChatEvent(object):
         self.__dict__.update(message)
 
 
+class SimpleEvent(WeChatEvent):
+    key = StringEntry('EventKey')
+
+
 class TicketEvent(WeChatEvent):
     key = StringEntry('EventKey')
     ticket = StringEntry('Ticket')
@@ -37,8 +41,16 @@ class ScanEvent(TicketEvent):
     __type__ = 'scan_event'
 
 
-class SimpleEvent(WeChatEvent):
-    key = StringEntry('EventKey')
+class ScanCodePushEvent(SimpleEvent):
+    __type__ = 'scancode_push_event'
+    scan_type = StringEntry('ScanCodeInfo.ScanType')
+    scan_result = StringEntry('ScanCodeInfo.ScanResult')
+
+
+class ScanCodeWaitMsgEvent(ScanCodePushEvent):
+    __type__ = 'scancode_waitmsg_event'
+    scan_type = StringEntry('ScanCodeInfo.ScanType')
+    scan_result = StringEntry('ScanCodeInfo.ScanResult')
 
 
 class ClickEvent(SimpleEvent):

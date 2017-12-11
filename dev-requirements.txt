@@ -1,4 +1,4 @@
 -r tox-requirements.txt
-flake8==2.6.2
+flake8==3.5.0
 tox
 django

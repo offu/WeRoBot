@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import six
+import re
 
 from werobot.utils import generate_token, check_token, to_text, to_binary
-from werobot.utils import pay_sign_dict, make_error_page
+from werobot.utils import pay_sign_dict, make_error_page, is_regex
 
 
 def test_token_generator():
     assert not check_token('AA C')
     assert check_token(generate_token())
+    assert 3 <= len(generate_token()) <= 32
 
 
 def test_to_text():
@@ -55,3 +57,9 @@ def test_make_error_page():
     rand_string = generate_token()
     content = make_error_page(rand_string)
     assert rand_string in content
+
+
+def test_is_regex():
+    regex = re.compile(r"test")
+    assert not is_regex("test")
+    assert is_regex(regex)

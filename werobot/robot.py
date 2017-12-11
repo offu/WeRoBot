@@ -9,7 +9,11 @@ from werobot.client import Client
 from werobot.exceptions import ConfigError
 from werobot.parser import parse_xml, process_message
 from werobot.replies import process_function_reply
-from werobot.utils import to_binary, to_text, check_signature, make_error_page, cached_property
+from werobot.utils import (
+    to_binary, to_text,
+    check_signature, make_error_page, cached_property,
+    is_regex
+)
 
 try:
     from inspect import signature
@@ -31,10 +35,29 @@ _DEFAULT_CONFIG = dict(
 
 
 class BaseRoBot(object):
+    """
+    BaseRoBot 是整个应用的核心对象，负责提供 handler 的维护，消息和事件的处理等核心功能。
+
+    :param logger: 用来输出 log 的 logger，如果是 ``None``，将使用 werobot.logger
+    :param config: 用来设置的 :class:`werobot.config.Config` 对象 \\
+
+    .. note:: 对于下面的参数推荐使用 :class:`~werobot.config.Config` 进行设置，\
+    并且以下参数均已 **deprecated**。
+
+    :param token: 微信公众号设置的 token **(deprecated)**
+    :param enable_session: 是否开启 session **(deprecated)**
+    :param session_storage: 用来储存 session 的对象，如果为 ``None``，\
+    将使用 werobot.session.sqlitestorage.SQLiteStorage **(deprecated)**
+    :param app_id: 微信公众号设置的 app id **(deprecated)**
+    :param app_secret: 微信公众号设置的 app secret **(deprecated)**
+    :param encoding_aes_key: 用来加解密消息的 aes key **(deprecated)**
+    """
     message_types = ['subscribe_event', 'unsubscribe_event', 'click_event',
                      'view_event', 'scan_event',
+                     'scancode_waitmsg_event', 'scancode_push_event',
                      'location_event', 'unknown_event',  # event
-                     'text', 'image', 'link', 'location', 'voice', 'unknown']
+                     'text', 'image', 'link', 'location', 'voice', 'unknown',
+                     'video', 'shortvideo']
 
     token = ConfigAttribute("TOKEN")
     session_storage = ConfigAttribute("SESSION_STORAGE")
@@ -43,7 +66,8 @@ class BaseRoBot(object):
                  enable_session=None, session_storage=None,
                  app_id=None, app_secret=None, encoding_aes_key=None,
                  config=None, **kwargs):
-        self._handlers = dict((k, []) for k in self.message_types)
+
+        self._handlers = {k: [] for k in self.message_types}
         self._handlers['all'] = []
         self.make_error_page = make_error_page
 
@@ -127,106 +151,135 @@ class BaseRoBot(object):
 
     def handler(self, f):
         """
-        Decorator to add a handler function for every messages
+        为每一条消息或事件添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='all')
         return f
 
     def text(self, f):
         """
-        Decorator to add a handler function for ``text`` messages
+        为文本 ``(text)`` 消息添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='text')
         return f
 
     def image(self, f):
         """
-        Decorator to add a handler function for ``image`` messages
+        为图像 ``(image)`` 消息添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='image')
         return f
 
     def location(self, f):
         """
-        Decorator to add a handler function for ``location`` messages
+        为位置 ``(location)`` 消息添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='location')
         return f
 
     def link(self, f):
         """
-        Decorator to add a handler function for ``link`` messages
+        为链接 ``(link)`` 消息添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='link')
         return f
 
     def voice(self, f):
         """
-        Decorator to add a handler function for ``voice`` messages
+        为语音 ``(voice)`` 消息添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='voice')
         return f
 
+    def video(self, f):
+        """
+        为视频 ``(video)`` 消息添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='video')
+        return f
+
+    def shortvideo(self, f):
+        """
+        为小视频 ``(shortvideo)`` 消息添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='shortvideo')
+        return f
+
     def unknown(self, f):
         """
-        Decorator to add a handler function for ``unknown`` messages
+        为未知类型 ``(unknown)`` 消息添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='unknown')
         return f
 
     def subscribe(self, f):
         """
-        Decorator to add a handler function for ``subscribe`` event
+        为被关注 ``(subscribe)`` 事件添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='subscribe_event')
         return f
 
     def unsubscribe(self, f):
         """
-        Decorator to add a handler function for ``unsubscribe`` event
+        为被取消关注 ``(unsubscribe)`` 事件添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='unsubscribe_event')
         return f
 
     def click(self, f):
         """
-        Decorator to add a handler function for ``click`` event
+        为自定义菜单事件 ``(click)`` 事件添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='click_event')
         return f
 
     def scan(self, f):
         """
-        Decorator to add a handler function for ``scan`` event
+        为扫描推送 ``(scan)`` 事件添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='scan_event')
         return f
 
+    def scancode_push(self, f):
+        """
+        为扫描推送 ``(scancode_push)`` 事件添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='scancode_push_event')
+        return f
+
+    def scancode_waitmsg(self, f):
+        """
+        为扫描弹消息 ``(scancode_waitmsg)`` 事件添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='scancode_waitmsg_event')
+        return f
+
     def location_event(self, f):
         """
-        Decorator to add a handler function for ``location`` event
+        为上报位置 ``(location_event)`` 事件添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='location_event')
         return f
 
     def view(self, f):
         """
-        Decorator to add a handler function for ``view`` event
+        为链接 ``(view)`` 事件添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='view_event')
         return f
 
     def unknown_event(self, f):
         """
-        Decorator to add a handler function for ``unknown`` event
+        为未知类型 ``(unknown_event)`` 事件添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='unknown_event')
         return f
 
     def key_click(self, key):
         """
-        Shortcut for ``click`` messages
-        @key_click('KEYNAME') for special key on click event
+        为自定义菜单 ``(click)`` 事件添加 handler 的简便方法。
+
+        **@key_click('KEYNAME')** 用来为特定 key 的点击事件添加 handler 方法。
         """
 
         def wraps(f):
@@ -243,52 +296,25 @@ class BaseRoBot(object):
 
     def filter(self, *args):
         """
-        Shortcut for ``text`` messages
-        ``@filter("xxx")``, ``@filter(re.compile("xxx"))``
-        or ``@filter("xxx", "xxx2")`` to handle message with special content
+        为文本 ``(text)`` 消息添加 handler 的简便方法。
+
+        使用 ``@filter("xxx")``, ``@filter(re.compile("xxx"))``
+        或 ``@filter("xxx", "xxx2")`` 的形式为特定内容添加 handler。
         """
 
-        content_is_list = False
-
-        if len(args) > 1:
-            content_is_list = True
-        else:
-            target_content = args[0]
-            if isinstance(target_content, six.string_types):
-                target_content = to_text(target_content)
-
-                def _check_content(message):
-                    return message.content == target_content
-            elif hasattr(target_content, "match") \
-                    and callable(target_content.match):
-                # 正则表达式什么的
-
-                def _check_content(message):
-                    return target_content.match(message.content)
-            else:
-                raise TypeError(
-                    "%s is not a valid target_content" % target_content
-                )
-
         def wraps(f):
-            if content_is_list:
-                for x in args:
-                    self.filter(x)(f)
-                return f
-            argc = len(signature(f).parameters.keys())
-
-            @self.text
-            def _f(message, session=None):
-                if _check_content(message):
-                    return f(*[message, session][:argc])
-
+            self.add_filter(func=f, rules=list(args))
             return f
 
         return wraps
 
     def add_handler(self, func, type='all'):
         """
-        Add a handler function for messages of given type.
+        为 BaseRoBot 实例添加一个 handler。
+
+        :param func: 要作为 handler 的方法。
+        :param type: handler 的种类。
+        :return: None
         """
         if not callable(func):
             raise ValueError("{} is not callable".format(func))
@@ -297,6 +323,42 @@ class BaseRoBot(object):
 
     def get_handlers(self, type):
         return self._handlers.get(type, []) + self._handlers['all']
+
+    def add_filter(self, func, rules):
+        """
+        为 BaseRoBot 添加一个 ``filter handler``。
+
+        :param func: 如果 rules 通过，则处理该消息的 handler。
+        :param rules: 一个 list，包含要匹配的字符串或者正则表达式。
+        :return: None
+        """
+        if not callable(func):
+            raise ValueError("{} is not callable".format(func))
+        if not isinstance(rules, list):
+            raise ValueError("{} is not list".format(rules))
+        if len(rules) > 1:
+            for x in rules:
+                self.add_filter(func, [x])
+        else:
+            target_content = rules[0]
+            if isinstance(target_content, six.string_types):
+                target_content = to_text(target_content)
+
+                def _check_content(message):
+                    return message.content == target_content
+            elif is_regex(target_content):
+                def _check_content(message):
+                    return target_content.match(message.content)
+            else:
+                raise TypeError(
+                    "%s is not a valid rule" % target_content
+                )
+            argc = len(signature(func).parameters.keys())
+
+            @self.text
+            def _f(message, session=None):
+                if _check_content(message):
+                    return func(*[message, session][:argc])
 
     def parse_message(self, body, timestamp=None, nonce=None, msg_signature=None):
         """
@@ -317,7 +379,10 @@ class BaseRoBot(object):
 
     def get_reply(self, message):
         """
-        Return the Reply Object for the given message.
+        根据 message 的内容获取 Reply 对象。
+
+        :param message: 要处理的 message
+        :return: 获取的 Reply 对象
         """
         session_storage = self.session_storage
 
@@ -337,13 +402,14 @@ class BaseRoBot(object):
                 if reply:
                     return process_function_reply(reply, message=message)
         except:
-            self.logger.warning("Catch an exception", exc_info=True)
+            self.logger.exception("Catch an exception")
 
     def get_encrypted_reply(self, message):
         """
         对一个指定的 WeRoBot Message ，获取 handlers 处理后得到的 Reply。
         如果可能，对该 Reply 进行加密。
         返回 Reply Render 后的文本。
+
         :param message: 一个 WeRoBot Message 实例。
         :return: reply （纯文本）
         """
@@ -358,6 +424,14 @@ class BaseRoBot(object):
             return reply.render()
 
     def check_signature(self, timestamp, nonce, signature):
+        """
+        根据时间戳和生成签名的字符串 (nonce) 检查签名。
+
+        :param timestamp: 时间戳
+        :param nonce: 生成签名的随机字符串
+        :param signature: 要检查的签名
+        :return: 如果签名合法将返回 ``True``，不合法将返回 ``False``
+        """
         return check_signature(
             self.config["TOKEN"], timestamp, nonce, signature
         )
@@ -365,16 +439,24 @@ class BaseRoBot(object):
     def error_page(self, f):
         """
         为 robot 指定 Signature 验证不通过时显示的错误页面。
-        Usage ::
+
+        Usage::
+
             @robot.error_page
             def make_error_page(url):
                 return "<h1>喵喵喵 %s 不是给麻瓜访问的快走开</h1>" % url
+
         """
         self.make_error_page = f
         return f
 
 
 class WeRoBot(BaseRoBot):
+    """
+    WeRoBot 是一个继承自 BaseRoBot 的对象，在 BaseRoBot 的基础上使用了 bottle 框架，
+    提供接收微信服务器发来的请求的功能。
+    """
+
     @cached_property
     def wsgi(self):
         if not self._handlers:
@@ -388,6 +470,15 @@ class WeRoBot(BaseRoBot):
 
     def run(self, server=None, host=None,
             port=None, enable_pretty_logging=True):
+        """
+        运行 WeRoBot。
+
+        :param server: 传递给 Bottle 框架 run 方法的参数，详情见\
+        `bottle 文档 <https://bottlepy.org/docs/dev/deployment.html#switching-the-server-backend>`_
+        :param host: 运行时绑定的主机地址
+        :param port: 运行时绑定的主机端口
+        :param enable_pretty_logging: 是否开启 log 的输出格式优化
+        """
         if enable_pretty_logging:
             from werobot.logger import enable_pretty_logging
             enable_pretty_logging(self.logger)

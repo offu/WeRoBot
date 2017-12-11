@@ -10,6 +10,19 @@ from werobot import WeRoBot
 from werobot.utils import generate_token, to_text
 
 
+def _make_xml(content):
+    return """
+        <xml>
+        <ToUserName><![CDATA[toUser]]></ToUserName>
+        <FromUserName><![CDATA[fromUser]]></FromUserName>
+        <CreateTime>1348831860</CreateTime>
+        <MsgType><![CDATA[text]]></MsgType>
+        <Content><![CDATA[%s]]></Content>
+        <MsgId>1234567890123456</MsgId>
+        </xml>
+    """ % content
+
+
 def test_signature_checker():
     token = generate_token()
 
@@ -28,12 +41,11 @@ def test_signature_checker():
     assert robot.check_signature(timestamp, nonce, sign)
 
 
-def test_register_handlers():
+def test_register_handlers():  # noqa: C901
     robot = WeRoBot(enable_session=False)
 
     for type in robot.message_types:
-        assert hasattr(robot, type) or \
-               hasattr(robot, type.replace('_event', ''))
+        assert hasattr(robot, type) or hasattr(robot, type.replace('_event', ''))
 
     @robot.text
     def text_handler():
@@ -54,6 +66,20 @@ def test_register_handlers():
         pass
 
     assert robot.get_handlers("text") == [(text_handler, 0), (handler, 2)]
+
+    @robot.video
+    def video_handler():
+        pass
+
+    assert robot._handlers["video"] == [(video_handler, 0)]
+    assert robot.get_handlers("video") == [(video_handler, 0), (handler, 2)]
+
+    @robot.shortvideo
+    def shortvideo_handler():
+        pass
+
+    assert robot._handlers["shortvideo"] == [(shortvideo_handler, 0)]
+    assert robot.get_handlers("shortvideo") == [(shortvideo_handler, 0), (handler, 2)]
 
     @robot.location
     def location_handler():
@@ -97,6 +123,24 @@ def test_register_handlers():
 
     assert len(robot._handlers["click_event"]) == 2
 
+    @robot.scan
+    def scan_handler():
+        pass
+
+    assert robot._handlers["scan_event"] == [(scan_handler, 0)]
+
+    @robot.scancode_push
+    def scancode_push_handler():
+        pass
+
+    assert robot._handlers["scancode_push_event"] == [(scancode_push_handler, 0)]
+
+    @robot.scancode_waitmsg
+    def scancode_waitmsg_handler():
+        pass
+
+    assert robot._handlers["scancode_waitmsg_event"] == [(scancode_waitmsg_handler, 0)]
+
 
 def test_filter():
     import re
@@ -120,18 +164,6 @@ def test_filter():
         return "汪"
 
     assert len(robot._handlers["text"]) == 3
-
-    def _make_xml(content):
-        return """
-            <xml>
-            <ToUserName><![CDATA[toUser]]></ToUserName>
-            <FromUserName><![CDATA[fromUser]]></FromUserName>
-            <CreateTime>1348831860</CreateTime>
-            <MsgType><![CDATA[text]]></MsgType>
-            <Content><![CDATA[%s]]></Content>
-            <MsgId>1234567890123456</MsgId>
-            </xml>
-        """ % content
 
     tester = werobot.testing.WeTest(robot)
 
@@ -191,3 +223,33 @@ def test_config_ignore():
         token="token2333"
     )
     assert robot.token == "token from config"
+
+
+def test_add_filter():
+    import werobot.testing
+    import re
+
+    robot = WeRoBot()
+
+    def test_register():
+        return "test"
+
+    robot.add_filter(test_register, ["test", re.compile(u".*?啦.*?")])
+
+    tester = werobot.testing.WeTest(robot)
+
+    assert tester.send_xml(_make_xml("test"))._args["content"] == "test"
+    assert tester.send_xml(_make_xml(u"我要测试啦"))._args["content"] == "test"
+    assert tester.send_xml(_make_xml(u"我要测试")) is None
+
+    with pytest.raises(ValueError) as e:
+        robot.add_filter("test", ["test"])
+    assert e.value.args[0] == "test is not callable"
+
+    with pytest.raises(ValueError) as e:
+        robot.add_filter(test_register, "test")
+    assert e.value.args[0] == "test is not list"
+
+    with pytest.raises(TypeError) as e:
+        robot.add_filter(test_register, [["bazinga"]])
+    assert e.value.args[0] == "[\'bazinga\'] is not a valid rule"

@@ -6,7 +6,7 @@ WeRoBot会将合法的请求发送给 handlers 依次执行。
 
 如果某一个 Handler 返回了非空值， WeRoBot 就会根据这个值创建回复，后面的 handlers 将不会被执行。
 
-你可以通过两种方式添加 handler ::
+你可以通过修饰符或 :meth:`~werobot.robot.BaseRoBot.add_handler` 添加 handler ::
 
     import werobot
 
@@ -21,7 +21,6 @@ WeRoBot会将合法的请求发送给 handlers 依次执行。
     def echo(message):
         return 'Hello World!'
     robot.add_handler(echo)
-
 
 类型过滤
 ------------
@@ -54,9 +53,9 @@ WeRoBot会将合法的请求发送给 handlers 依次执行。
 
 在 WeRobot 中我们把请求分成了 Message 和 Event 两种类型,针对两种类型的请求分别有不同的 Handler。
 
-=====================  =================
+======================  =================
 修饰符                   类型
-=====================  =================
+======================  =================
 robot.text              文本 (Message)
 robot.image             图像 (Message)
 robot.location          位置 (Message)
@@ -67,10 +66,11 @@ robot.subscribe         被关注 (Event)
 robot.unsubscribe       被取消关注 (Event)
 robot.click             自定义菜单事件 (Event)
 robot.view              链接 (Event)
-robot.scan              扫码 (Event)
+robot.scancode_push     扫描推送 (Event)
+robot.scancode_waitmsg  扫描弹消息 (Event)
 robot.location_event    上报位置 (Event)
 robot.unknown_event     未知类型 (Event)
-=====================  =================
+======================  =================
 
 额，这个 handler 想处理文本信息和地理位置信息？ ::
 
@@ -86,7 +86,7 @@ robot.unknown_event     未知类型 (Event)
 
     robot.run()
 
-当然，你也可以用 ``add_handler`` 函数添加handler，就像这样::
+当然，你也可以用 :meth:`~werobot.robot.BaseRoBot.add_handler` 函数添加handler，就像这样::
 
     import werobot
 
@@ -105,7 +105,7 @@ robot.unknown_event     未知类型 (Event)
 robot.key_click —— 回应自定义菜单
 ---------------------------------
 
-``@robot.key_click`` 是对 ``@robot.click`` 修饰符的改进。
+:meth:`~werobot.robot.BaseRoBot.key_click` 是对 :meth:`~werobot.robot.BaseRoBot.click` 修饰符的改进。
 
 如果你在自定义菜单中定义了一个 Key 为 ``abort`` 的菜单，响应这个菜单的 handler 可以写成这样 ::
 
@@ -113,7 +113,7 @@ robot.key_click —— 回应自定义菜单
     def abort():
         return "I'm a robot"
 
-当然，如果你不喜欢用 ``@robot.key_click`` ，也可以写成这样 ::
+当然，如果你不喜欢用 :meth:`~werobot.robot.BaseRoBot.key_click` ，也可以写成这样 ::
 
     @robot.click
     def abort(message):
@@ -125,7 +125,7 @@ robot.key_click —— 回应自定义菜单
 robot.filter ——  回应有指定文本的消息
 -------------------------------------
 
-``@robot.filter`` 是对 ``@robot.text`` 修饰符的改进。
+:meth:`~werobot.robot.BaseRoBot.filter` 是对 :meth:`~werobot.robot.BaseRoBot.text` 修饰符的改进。
 
 现在你可以写这样的代码 ::
 
@@ -162,3 +162,12 @@ robot.filter ——  回应有指定文本的消息
     def c():
         if re.compile(".*?c.*?").match(message.content) or message.content == "d":
             return "正文中含有 c 或正文为 d"
+
+如果你想通过修饰符以外的方法添加 filter，可以使用 :func:`~werobot.robot.BaseRoBot.add_filter` 方法 ::
+
+    def say_hello():
+        return "hello!"
+
+    robot.add_filter(func=say_hello, rules=["hello", "hi", re.compile(".*?hello.*?")])
+
+更多内容详见 :class:`werobot.robot.BaseRoBot`

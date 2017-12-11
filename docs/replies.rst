@@ -101,7 +101,7 @@ url           点击图片后跳转链接
 
 在构造完一个 `Article` 后， 你需要通过 `ArticlesReply` 的 `add_article` 参数把它添加进去。就像这样： ::
 
-    from werobot.reply import ArticlesReply, Article
+    from werobot.replies import ArticlesReply, Article
     reply = ArticlesReply(message=message)
     article = Article(
         title="WeRoBot",
@@ -189,7 +189,16 @@ hq_url            高质量音乐链接，WIFI环境优先使用该链接播放�
 TransferCustomerServiceReply
 -----------------------------
 
-将消息转发到多客服
+将消息转发到多客服,构造函数的参数如下:
+
+=============    ======================================================================
+name              value
+=============    ======================================================================
+target            信息的目标用户。通常是机器人用户。
+source            信息的来源用户。通常是发送信息的用户。
+time              信息发送的时间，一个UNIX时间戳。默认情况下会使用当前时间。
+account           指定会话接入的客服账号
+=============    ======================================================================
 
 SuccessReply
 ---------------

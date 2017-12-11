@@ -1,6 +1,22 @@
 Changelog
 =============
 
+Version 1.2.0
+----------------
++ 增加 :class:`werobot.session.mysqlstorage.MySQLStorage`
++ 增加 :class:`werobot.messages.events.ScanCodePushEvent`
++ 增加 :class:`werobot.messages.events.ScanCodeWaitMsgEvent`
++ 增加 :func:`werobot.robot.BaseRoBot.add_filter`
++ :func:`werobot.utils.generate_token` 在 Python 3.6+ 下优先使用 ``secrets.choice`` 来随机生成 token
++ 修复 :func:`werobot.client.Client.get_media_list` 的调用参数错误 (`#208 <https://github.com/whtsky/WeRoBot/issues/208>`_)
++ 修复了某些情况下 Client 中文编码不正确的问题 (`#250 <https://github.com/whtsky/WeRoBot/issues/250>`_)
++ Handler 中的 Exception 现在会以 Error level 记录到 logger 中
++ 在文档中增加了独立的 :doc:`api` 部分
++ 添加了 ``video`` 和 ``shortvideo`` 的修饰器
++ 增加了 :class:`werobot.session.saekvstorage.SaeKVDBStorage` 的测试
++ 增加了对 Django 2.0 的测试
++ 抛弃对 Django < 1.8 、 Django 1.9 、 Django 1.10 的支持
+
 Version 1.1.1
 ----------------
 

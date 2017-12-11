@@ -393,6 +393,7 @@ class TestClientGetFollowersClass(BaseTestClass):
 
 
 class TestClientCustomMenuClass(BaseTestClass):
+    GET_URL = "https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info"
     CREATE_URL = "https://api.weixin.qq.com/cgi-bin/menu/addconditional"
     DELETE_URL = "https://api.weixin.qq.com/cgi-bin/menu/delconditional"
     MATCH_URL = "https://api.weixin.qq.com/cgi-bin/menu/trymatch"
@@ -435,6 +436,10 @@ class TestClientCustomMenuClass(BaseTestClass):
     }
 
     @staticmethod
+    def get_custom_menu_callback(request):
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    @staticmethod
     def create_custom_menu_callback(request):
         body = json.loads(request.body.decode("utf-8"))
         assert "button" in body.keys()
@@ -452,6 +457,17 @@ class TestClientCustomMenuClass(BaseTestClass):
         body = json.loads(request.body.decode("utf-8"))
         assert "user_id" in body.keys()
         return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    @responses.activate
+    @add_token_response
+    def test_get_custom_menu(self):
+        responses.add_callback(
+            responses.GET,
+            self.GET_URL,
+            callback=self.get_custom_menu_callback
+        )
+        r = self.client.get_custom_menu_config()
+        assert r == {"errcode": 0, "errmsg": "ok"}
 
     @responses.activate
     @add_token_response
@@ -695,7 +711,7 @@ class TestMediaClass(BaseTestClass):
     @staticmethod
     def get_media_list_callback(request):
         body = json.loads(request.body.decode("utf-8"))
-        assert "media" in body.keys()
+        assert "type" in body.keys()
         assert "offset" in body.keys()
         assert "count" in body.keys()
         return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
@@ -882,4 +898,182 @@ class TestSendArticleMessagesClass(BaseTestClass):
             })
 
         r = self.client.send_article_message("test_id", articles)
+        assert r == {"errcode": 0, "errmsg": "ok"}
+
+
+class TestSendTextMessageClass(BaseTestClass):
+    URL = "https://api.weixin.qq.com/cgi-bin/message/custom/send"
+
+    @staticmethod
+    def text_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "touser" in body.keys()
+        assert "msgtype" in body.keys()
+        assert body["msgtype"] == "text"
+        assert "text" in body.keys()
+        assert "content" in body["text"].keys()
+
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    @responses.activate
+    @add_token_response
+    def test_send_text_message(self):
+        responses.add_callback(responses.POST, self.URL, callback=self.text_callback)
+
+        r = self.client.send_text_message("test_id", "test_message")
+        assert r == {"errcode": 0, "errmsg": "ok"}
+
+
+class TestSendImageMessageClass(BaseTestClass):
+    URL = "https://api.weixin.qq.com/cgi-bin/message/custom/send"
+
+    @staticmethod
+    def image_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "touser" in body.keys()
+        assert "msgtype" in body.keys()
+        assert body["msgtype"] == "image"
+        assert "image" in body.keys()
+        assert "media_id" in body["image"].keys()
+
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    @responses.activate
+    @add_token_response
+    def test_send_image_message(self):
+        responses.add_callback(responses.POST, self.URL, callback=self.image_callback)
+
+        r = self.client.send_image_message("test_id", "test_media_id")
+        assert r == {"errcode": 0, "errmsg": "ok"}
+
+
+class TestSendVoiceMessageClass(BaseTestClass):
+    URL = "https://api.weixin.qq.com/cgi-bin/message/custom/send"
+
+    @staticmethod
+    def voice_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "touser" in body.keys()
+        assert "msgtype" in body.keys()
+        assert body["msgtype"] == "voice"
+        assert "voice" in body.keys()
+        assert "media_id" in body["voice"].keys()
+
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    @responses.activate
+    @add_token_response
+    def test_send_voice_message(self):
+        responses.add_callback(responses.POST, self.URL, callback=self.voice_callback)
+
+        r = self.client.send_voice_message("test_id", "test_media_id")
+        assert r == {"errcode": 0, "errmsg": "ok"}
+
+
+class TestMusicMessageClass(BaseTestClass):
+    URL = "https://api.weixin.qq.com/cgi-bin/message/custom/send"
+
+    @staticmethod
+    def music_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "touser" in body.keys()
+        assert "msgtype" in body.keys()
+        assert body["msgtype"] == "music"
+        assert "music" in body.keys()
+        assert "musicurl" in body["music"].keys()
+        assert "hqmusicurl" in body["music"].keys()
+        assert "thumb_media_id" in body["music"].keys()
+
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    @responses.activate
+    @add_token_response
+    def test_send_music_message(self):
+        responses.add_callback(responses.POST, self.URL, callback=self.music_callback)
+
+        r = self.client.send_music_message(
+            user_id="test_id",
+            url="test_url",
+            hq_url="test_hq_url",
+            thumb_media_id="test_media_id",
+            title="test_title",
+            description="test_description"
+        )
+        assert r == {"errcode": 0, "errmsg": "ok"}
+
+
+class TestVideoMessageClass(BaseTestClass):
+    URL = "https://api.weixin.qq.com/cgi-bin/message/custom/send"
+
+    @staticmethod
+    def video_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "touser" in body.keys()
+        assert "msgtype" in body.keys()
+        assert body["msgtype"] == "video"
+        assert "video" in body.keys()
+        assert "media_id" in body["video"].keys()
+
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    @responses.activate
+    @add_token_response
+    def test_send_video_message(self):
+        responses.add_callback(responses.POST, self.URL, callback=self.video_callback)
+        r = self.client.send_video_message(
+            user_id="test_id",
+            media_id="test_media_id",
+            title="test_title",
+            description="test_description",
+        )
+        assert r == {"errcode": 0, "errmsg": "ok"}
+
+
+class TestNewsMessageClass(BaseTestClass):
+    URL = "https://api.weixin.qq.com/cgi-bin/message/custom/send"
+
+    @staticmethod
+    def news_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "touser" in body.keys()
+        assert "msgtype" in body.keys()
+        assert body["msgtype"] == "mpnews"
+        assert "mpnews" in body.keys()
+        assert "media_id" in body["mpnews"].keys()
+
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    @responses.activate
+    @add_token_response
+    def test_send_news_message(self):
+        responses.add_callback(responses.POST, self.URL, callback=self.news_callback)
+
+        r = self.client.send_news_message(user_id="test_id", media_id="test_media_id")
+        assert r == {"errcode": 0, "errmsg": "ok"}
+
+
+class TestTemplateMessage(BaseTestClass):
+    URL = "https://api.weixin.qq.com/cgi-bin/message/template/send"
+
+    @staticmethod
+    def template_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "touser" in body.keys()
+        assert "template_id" in body.keys()
+        assert "url" in body.keys()
+        assert "data" in body.keys()
+
+        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    @responses.activate
+    @add_token_response
+    def test_send_template_message(self):
+        responses.add_callback(responses.POST, self.URL, callback=self.template_callback)
+
+        r = self.client.send_template_message(
+            user_id="test_id",
+            template_id="test_template_id",
+            data="test_data",
+            url="test_url"
+        )
         assert r == {"errcode": 0, "errmsg": "ok"}

@@ -262,7 +262,8 @@ def test_transfer_customer_service_reply():
     reply = TransferCustomerServiceReply(
         source='aaa',
         target='bbb',
-        time=t
+        time=t,
+        account="test1@test"
     )
     assert reply.render().strip() == """
     <xml>
@@ -270,6 +271,9 @@ def test_transfer_customer_service_reply():
     <FromUserName><![CDATA[aaa]]></FromUserName>
     <CreateTime>{time}</CreateTime>
     <MsgType><![CDATA[transfer_customer_service]]></MsgType>
+    <TransInfo>
+         <KfAccount><![CDATA[test1@test]]></KfAccount>
+     </TransInfo>
     </xml>
     """.format(time=t).strip()
 
@@ -291,21 +295,22 @@ def test_process_text_function_reply():
 
 def test_process_music_function_reply():
     reply = process_function_reply([
-       "title",
-       "desc",
-       "url"
+        "title",
+        "desc",
+        "url"
     ])
     assert isinstance(reply, MusicReply)
     assert reply.title == "title"
     assert reply.description == "desc"
     assert reply.url == reply.hq_url == "url"
 
-    reply = process_function_reply([
-       "title",
-       "desc",
-       "url",
-       "hq"
-    ])
+    reply = process_function_reply(
+        [
+            "title",
+            "desc",
+            "url",
+            "hq"
+        ])
     assert isinstance(reply, MusicReply)
     assert reply.title == "title"
     assert reply.description == "desc"

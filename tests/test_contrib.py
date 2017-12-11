@@ -91,12 +91,7 @@ def test_django():
     from werobot.parser import parse_xml, process_message
     import django
 
-    try:
-        django.setup()
-    except AttributeError:
-        # Django1.6 doesn't have django.setup()
-        pass
-
+    django.setup()
     client = Client()
 
     token = 'TestDjango'
