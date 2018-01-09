@@ -31,7 +31,7 @@ class MySQLStorage(SessionStorage):
         import werobot
         from werobot.session.mysqlstorage import MySQLStorage
 
-        session_storage = mysqlstorage.MySQLStorage(
+        session_storage = MySQLStorage(
         conn=pymysql.connect(
             user='喵',
             password='喵喵',
