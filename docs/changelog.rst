@@ -1,6 +1,17 @@
 Changelog
 =============
 
+Version 1.2.1
+----------------
++ 增加 :class:`werobot.messages.events.UserScanProductEvent`
++ 增加 :class:`werobot.messages.events.UserScanProductEnterSessionEvent`
++ 增加 :class:`werobot.messages.events.UserScanProductAsyncEvent`
++ 增加 :class:`werobot.messages.events.UserScanProductVerifyActionEvent`
++ 增加 :class:`werobot.messages.events.PicSysphotoEvent`
++ 增加 :class:`werobot.messages.events.PicPhotoOrAlbumEvent`
++ 增加 :class:`werobot.messages.events.PicWeixinEvent`
++ 增加 :class:`werobot.messages.events.LocationSelectEvent`
+
 Version 1.2.0
 ----------------
 + 增加 :class:`werobot.session.mysqlstorage.MySQLStorage`
