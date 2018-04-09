@@ -14,7 +14,7 @@ matrix:
     - PYTHON_VERSION="2.7.12"
   - env:
     - PYTHON_MAJOR=pypy
-    - PYTHON_VERSION="pypy-5.0.0"
+    - PYTHON_VERSION="pypy2.7-5.10.0"
 cache:
   directories:
   - $HOME/.pyenv
