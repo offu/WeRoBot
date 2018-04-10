@@ -55,7 +55,12 @@ class BaseRoBot(object):
     message_types = ['subscribe_event', 'unsubscribe_event', 'click_event',
                      'view_event', 'scan_event',
                      'scancode_waitmsg_event', 'scancode_push_event',
-                     'location_event', 'unknown_event',  # event
+                     'pic_sysphoto_event', 'pic_photo_or_album_event',
+                     'pic_weixin_event', 'location_select_event',
+                     'location_event', 'unknown_event', 'user_scan_product_event',
+                     'user_scan_product_enter_session_event',
+                     'user_scan_product_async_event',
+                     'user_scan_product_verify_action_event',  # event
                      'text', 'image', 'link', 'location', 'voice', 'unknown',
                      'video', 'shortvideo']
 
@@ -254,6 +259,34 @@ class BaseRoBot(object):
         self.add_handler(f, type='scancode_waitmsg_event')
         return f
 
+    def pic_sysphoto(self, f):
+        """
+        为弹出系统拍照发图的事件推送 ``(pic_sysphoto_event)`` 事件添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='pic_sysphoto_event')
+        return f
+
+    def pic_photo_or_album(self, f):
+        """
+        为弹出拍照或者相册发图的事件推送 ``(pic_photo_or_album_event)`` 事件添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='pic_photo_or_album_event')
+        return f
+
+    def pic_weixin(self, f):
+        """
+        为弹出微信相册发图器的事件推送 ``(pic_weixin_event)`` 事件添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='pic_weixin_event')
+        return f
+
+    def location_select(self, f):
+        """
+        为弹出地理位置选择器的事件推送 ``(location_select_event)`` 事件添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='location_select_event')
+        return f
+
     def location_event(self, f):
         """
         为上报位置 ``(location_event)`` 事件添加一个 handler 方法的装饰器。
@@ -266,6 +299,34 @@ class BaseRoBot(object):
         为链接 ``(view)`` 事件添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='view_event')
+        return f
+
+    def user_scan_product(self, f):
+        """
+        为打开商品主页事件推送 ``(user_scan_product_event)`` 事件添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='user_scan_product_event')
+        return f
+
+    def user_scan_product_enter_session(self, f):
+        """
+        为进入公众号事件推送 ``(user_scan_product_enter_session_event)`` 事件添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='user_scan_product_enter_session_event')
+        return f
+
+    def user_scan_product_async(self, f):
+        """
+        为地理位置信息异步推送 ``(user_scan_product_async_event)`` 事件添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='user_scan_product_async_event')
+        return f
+
+    def user_scan_product_verify_action(self, f):
+        """
+        为商品审核结果推送 ``(user_scan_product_verify_action_event)`` 事件添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='user_scan_product_verify_action_event')
         return f
 
     def unknown_event(self, f):
@@ -460,7 +521,7 @@ class WeRoBot(BaseRoBot):
     @cached_property
     def wsgi(self):
         if not self._handlers:
-            raise
+            raise RuntimeError('No Handler.')
         from bottle import Bottle
         from werobot.contrib.bottle import make_view
 

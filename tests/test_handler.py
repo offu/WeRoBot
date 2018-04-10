@@ -109,6 +109,125 @@ def test_scan_waitmsg_handler():
     assert reply._args['content'] == u'扫描弹消息'
 
 
+def test_pic_sysphoto_handler():
+    @werobot.pic_sysphoto
+    def pic_sysphoto():
+        return '瞧一瞧系统拍照'
+
+    message = parse_user_msg("""
+    <xml>
+        <ToUserName><![CDATA[gh_e136c6e50636]]></ToUserName>
+        <FromUserName><![CDATA[oMgHVjngRipVsoxg6TuX3vz6glDg]]></FromUserName>
+        <CreateTime>1408090651</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[pic_sysphoto]]></Event>
+        <EventKey><![CDATA[6]]></EventKey>
+        <SendPicsInfo>
+            <Count>1</Count>
+            <PicList>
+                <item>
+                    <PicMd5Sum><![CDATA[1b5f7c23b5bf75682a53e7b6d163e185]]></PicMd5Sum>
+                </item>
+            </PicList>
+        </SendPicsInfo>
+    </xml>
+    """)
+
+    reply = werobot.get_reply(message)
+
+    assert isinstance(reply, TextReply)
+    assert reply._args['content'] == u'瞧一瞧系统拍照'
+
+
+def test_pic_photo_or_album_handler():
+    @werobot.pic_photo_or_album
+    def pic_photo_or_album():
+        return '瞧一瞧拍照或者相册'
+
+    message = parse_user_msg("""
+    <xml>
+        <ToUserName><![CDATA[gh_e136c6e50636]]></ToUserName>
+        <FromUserName><![CDATA[oMgHVjngRipVsoxg6TuX3vz6glDg]]></FromUserName>
+        <CreateTime>1408090816</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[pic_photo_or_album]]></Event>
+        <EventKey><![CDATA[6]]></EventKey>
+        <SendPicsInfo>
+            <Count>1</Count>
+            <PicList>
+                <item>
+                    <PicMd5Sum><![CDATA[5a75aaca956d97be686719218f275c6b]]></PicMd5Sum>
+                </item>
+            </PicList>
+        </SendPicsInfo>
+    </xml>
+    """)
+
+    reply = werobot.get_reply(message)
+
+    assert isinstance(reply, TextReply)
+    assert reply._args['content'] == u'瞧一瞧拍照或者相册'
+
+
+def test_pic_weixin_handler():
+    @werobot.pic_weixin
+    def pic_weixin():
+        return '瞧一瞧微信相册'
+
+    message = parse_user_msg("""
+    <xml>
+        <ToUserName><![CDATA[gh_e136c6e50636]]></ToUserName>
+        <FromUserName><![CDATA[oMgHVjngRipVsoxg6TuX3vz6glDg]]></FromUserName>
+        <CreateTime>1408090816</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[pic_weixin]]></Event>
+        <EventKey><![CDATA[6]]></EventKey>
+        <SendPicsInfo>
+            <Count>1</Count>
+            <PicList>
+                <item>
+                    <PicMd5Sum><![CDATA[5a75aaca956d97be686719218f275c6b]]></PicMd5Sum>
+                </item>
+            </PicList>
+        </SendPicsInfo>
+    </xml>
+    """)
+
+    reply = werobot.get_reply(message)
+
+    assert isinstance(reply, TextReply)
+    assert reply._args['content'] == u'瞧一瞧微信相册'
+
+
+def test_location_select_handler():
+    @werobot.location_select
+    def location_select():
+        return '瞧一瞧地理位置'
+
+    message = parse_user_msg("""
+    <xml>
+        <ToUserName><![CDATA[gh_e136c6e50636]]></ToUserName>
+        <FromUserName><![CDATA[oMgHVjngRipVsoxg6TuX3vz6glDg]]></FromUserName>
+        <CreateTime>1408091189</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[location_select]]></Event>
+        <EventKey><![CDATA[6]]></EventKey>
+        <SendLocationInfo>
+            <Location_X><![CDATA[23]]></Location_X>
+            <Location_Y><![CDATA[113]]></Location_Y>
+            <Scale><![CDATA[15]]></Scale>
+            <Label><![CDATA[广州市海珠区客村艺苑路 106号]]></Label>
+            <Poiname><![CDATA[]]></Poiname>
+        </SendLocationInfo>
+    </xml>
+    """)
+
+    reply = werobot.get_reply(message)
+
+    assert isinstance(reply, TextReply)
+    assert reply._args['content'] == u'瞧一瞧地理位置'
+
+
 def test_click_handler():
     @werobot.click
     def scan(message):
@@ -357,6 +476,109 @@ def test_shortvideo():
 
     assert isinstance(reply, TextReply)
     assert reply._args['content'] == u'请收下这一段榴莲的小视频'
+
+
+def test_user_scan_product():
+    @werobot.user_scan_product
+    def user_scan_product():
+        return '打扰了'
+
+    message = parse_user_msg("""
+        <xml>
+            <ToUserName><![CDATA[gh_4e47c9c9ecad]]></ToUserName>
+            <FromUserName><![CDATA[okkeXs1nI-xU4ql8-5BXkv1f0gDo]]></FromUserName>
+            <CreateTime>1438250110</CreateTime>
+            <MsgType><![CDATA[event]]></MsgType>
+            <Event><![CDATA[user_scan_product]]></Event>
+            <KeyStandard><![CDATA[ean13]]></KeyStandard>
+            <KeyStr><![CDATA[6901481811083]]></KeyStr>
+            <Country><![CDATA[中国]]></Country>
+            <Province><![CDATA[广东]]></Province>
+            <City><![CDATA[揭阳]]></City>
+            <Sex>1</Sex>
+            <Scene>2</Scene>
+            <ExtInfo><![CDATA[123]]></ExtInfo>
+        </xml>
+    """)
+
+    reply = werobot.get_reply(message)
+
+    assert isinstance(reply, TextReply)
+    assert reply._args['content'] == u'打扰了'
+
+
+def test_user_scan_product_enter_session():
+    @werobot.user_scan_product_enter_session
+    def user_scan_product_enter_session():
+        return '再次打扰了'
+
+    message = parse_user_msg("""
+        <xml>
+            <ToUserName><![CDATA[gh_fbe8a958756e]]></ToUserName>
+            <FromUserName><![CDATA[otAzGjrS4AYCmeJM1GhEOcHXXTAo]]></FromUserName>
+            <CreateTime>1433259128</CreateTime>
+            <MsgType><![CDATA[event]]></MsgType>
+            <Event><![CDATA[user_scan_product_enter_session]]></Event>
+            <KeyStandard><![CDATA[ena13]]></KeyStandard>
+            <KeyStr><![CDATA[6954767461373]]></KeyStr>
+            <ExtInfo><![CDATA[]]></ExtInfo>
+        </xml>
+    """)
+
+    reply = werobot.get_reply(message)
+
+    assert isinstance(reply, TextReply)
+    assert reply._args['content'] == u'再次打扰了'
+
+
+def test_user_scan_product_async():
+    @werobot.user_scan_product_async
+    def user_scan_product_async():
+        return '异步的地理位置喵'
+
+    message = parse_user_msg("""
+        <xml>
+            <ToUserName><![CDATA[gh_fbe8a958756e]]></ToUserName>
+            <FromUserName><![CDATA[otAzGjrS4AYCmeJM1GhEOcHXXTAo]]></FromUserName>
+            <CreateTime>1434541327</CreateTime>
+            <MsgType><![CDATA[event]]></MsgType>
+            <Event><![CDATA[user_scan_product_async]]></Event>
+            <KeyStandard><![CDATA[qrcode]]></KeyStandard>
+            <KeyStr><![CDATA[lincolntest2]]></KeyStr>
+            <ExtInfo><![CDATA[123]]></ExtInfo>
+            <RegionCode><![CDATA[440105]]></RegionCode>
+        </xml>
+    """)
+
+    reply = werobot.get_reply(message)
+
+    assert isinstance(reply, TextReply)
+    assert reply._args['content'] == u'异步的地理位置喵'
+
+
+def test_user_scan_product_verify_action():
+    @werobot.user_scan_product_verify_action
+    def user_scan_product_verify_action():
+        return '审核通过了喵'
+
+    message = parse_user_msg("""
+        <xml>
+            <ToUserName><![CDATA[gh_404e58ec528e]]></ToUserName>
+            <FromUserName><![CDATA[od_ikt8qi21-hVTtYgm8xSfTLH5w]]></FromUserName>
+            <CreateTime>1450429257</CreateTime>
+            <MsgType><![CDATA[event]]></MsgType>
+            <Event><![CDATA[user_scan_product_verify_action]]></Event>
+            <KeyStandard><![CDATA[ean13]]></KeyStandard>
+            <KeyStr><![CDATA[6901481811083]]></KeyStr>
+            <Result><![CDATA[verify_ok]]></Result>
+            <ReasonMsg><![CDATA[]]></ReasonMsg>
+        </xml>
+    """)
+
+    reply = werobot.get_reply(message)
+
+    assert isinstance(reply, TextReply)
+    assert reply._args['content'] == u'审核通过了喵'
 
 
 def test_unknown():

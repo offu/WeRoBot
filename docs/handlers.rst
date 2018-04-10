@@ -53,24 +53,33 @@ WeRoBot会将合法的请求发送给 handlers 依次执行。
 
 在 WeRobot 中我们把请求分成了 Message 和 Event 两种类型,针对两种类型的请求分别有不同的 Handler。
 
-======================  =================
-修饰符                   类型
-======================  =================
-robot.text              文本 (Message)
-robot.image             图像 (Message)
-robot.location          位置 (Message)
-robot.link              链接 (Message)
-robot.voice             语音 (Message)
-robot.unknown           未知类型 (Message)
-robot.subscribe         被关注 (Event)
-robot.unsubscribe       被取消关注 (Event)
-robot.click             自定义菜单事件 (Event)
-robot.view              链接 (Event)
-robot.scancode_push     扫描推送 (Event)
-robot.scancode_waitmsg  扫描弹消息 (Event)
-robot.location_event    上报位置 (Event)
-robot.unknown_event     未知类型 (Event)
-======================  =================
+======================================  =================
+修饰符                                   类型
+======================================  =================
+robot.text                              文本 (Message)
+robot.image                             图像 (Message)
+robot.location                          位置 (Message)
+robot.link                              链接 (Message)
+robot.voice                             语音 (Message)
+robot.unknown                           未知类型 (Message)
+robot.subscribe                         被关注 (Event)
+robot.unsubscribe                       被取消关注 (Event)
+robot.click                             自定义菜单事件 (Event)
+robot.view                              链接 (Event)
+robot.scancode_push                     扫描推送 (Event)
+robot.scancode_waitmsg                  扫描弹消息 (Event)
+robot.pic_sysphoto                      弹出系统拍照发图（Event）
+robot.pic_photo_or_album                弹出拍照或者相册发图（Event）
+robot.pic_weixin                        弹出微信相册发图器（Event）
+robot.location_select                   弹出地理位置选择器（Event）
+robot.scan                              已关注扫描二维码（Event）
+robot.user_scan_product                 打开商品主页事件推送（Event）
+robot.user_scan_product_enter_session   进入公众号事件推送（Event）
+robot.user_scan_product_async           地理位置信息异步推送（Event)
+robot.user_scan_product_verify_action   商品审核结果推送（Event）
+robot.location_event                    上报位置 (Event)
+robot.unknown_event                     未知类型 (Event)
+======================================  =================
 
 额，这个 handler 想处理文本信息和地理位置信息？ ::
 
