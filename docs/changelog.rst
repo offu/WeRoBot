@@ -1,7 +1,7 @@
 Changelog
 =============
 
-Version 1.2.1
+Version 1.3.0
 ----------------
 + 增加 :class:`werobot.messages.events.UserScanProductEvent`
 + 增加 :class:`werobot.messages.events.UserScanProductEnterSessionEvent`
