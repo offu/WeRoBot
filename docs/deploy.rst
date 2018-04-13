@@ -101,10 +101,11 @@ server 支持以下几种：
 配置文件样例： ::
 
     [program:wechat_robot]
-    command = python /home/whtsky/robot.py
-    user = whtsky
+    command = python /home/<username>/robot.py
+    user = <username>
     redirect_stderr = true
-    stdout_logfile = /home/whtsky/logs/robot.log
+    stdout_logfile = /home/<username>/logs/robot.log
+    stdout_errfile = /home/<username>/logs/robot_error.log
 
 使用 Nginx 进行反向代理
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
