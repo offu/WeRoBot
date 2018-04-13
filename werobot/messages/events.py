@@ -141,5 +141,104 @@ class UserScanProductVerifyActionEvent(WeChatEvent):
     reason_msg = StringEntry('ReasonMsg')
 
 
+class BaseCardCheckEvent(WeChatEvent):
+    card_id = StringEntry('CardId')
+    refuse_reason = StringEntry('RefuseReason')
+
+
+class CardPassCheckEvent(BaseCardCheckEvent):
+    __type__ = 'card_pass_check_event'
+
+
+class CardNotPassCheckEvent(BaseCardCheckEvent):
+    __type__ = 'card_not_pass_check_event'
+
+
+class BaseCardEvent(WeChatEvent):
+    card_id = StringEntry('CardId')
+    user_card_code = StringEntry('UserCardCode')
+
+
+class UserGetCardEvent(BaseCardEvent):
+    __type__ = 'user_get_card_event'
+    is_give_by_friend = IntEntry('IsGiveByFriend')
+    friend_user_name = StringEntry('FriendUserName')
+    outer_id = IntEntry('OuterId')
+    old_user_card_code = StringEntry('OldUserCardCode')
+    outer_str = StringEntry('OuterStr')
+    is_restore_member_card = IntEntry('IsRestoreMemberCard')
+    is_recommend_by_friend = IntEntry('IsRecommendByFriend')
+
+
+class UserGiftingCardEvent(BaseCardEvent):
+    __type__ = 'user_gifting_card_event'
+    is_return_back = IntEntry('IsReturnBack')
+    friend_user_name = StringEntry('FriendUserName')
+    is_chat_room = IntEntry('IsChatRoom')
+
+
+class UserDelCardEvent(BaseCardEvent):
+    __type__ = 'user_del_card_event'
+
+
+class UserConsumeCardEvent(BaseCardEvent):
+    __type__ = 'user_consume_card_event'
+    consume_source = StringEntry('ConsumeSource')
+    location_name = StringEntry('LocationName')
+    staff_open_id = StringEntry('StaffOpenId')
+    verify_code = StringEntry('VerifyCode')
+    remark_amount = StringEntry('RemarkAmount')
+    outer_str = StringEntry('OuterStr')
+
+
+class UserPayFromPayCellEvent(BaseCardEvent):
+    __type__ = 'user_pay_from_pay_cell_event'
+    trans_id = StringEntry('TransId')
+    location_id = IntEntry('LocationId')
+    fee = StringEntry('Fee')
+    original_fee = StringEntry('OriginalFee')
+
+
+class UserViewCardEvent(BaseCardEvent):
+    __type__ = 'user_view_card_event'
+    outer_str = StringEntry('OuterStr')
+
+
+class UserEnterSessionFromCardEvent(BaseCardEvent):
+    __type__ = 'user_enter_session_from_card_event'
+
+
+class UpdateMemberCardEvent(BaseCardEvent):
+    __type__ = 'update_member_card_event'
+    modify_bonus = IntEntry('ModifyBonus')
+    modify_balance = IntEntry('ModifyBalance')
+
+
+class CardSkuRemindEvent(WeChatEvent):
+    __type__ = 'card_sku_remind_event'
+    card_id = StringEntry('CardId')
+    detail = StringEntry('Detail')
+
+
+class CardPayOrderEvent(WeChatEvent):
+    __type__ = 'card_pay_order_event'
+    order_id = StringEntry('OrderId')
+    status = StringEntry('Status')
+    create_order_time = IntEntry('CreateOrderTime')
+    pay_finish_time = IntEntry('PayFinishTime')
+    desc = StringEntry('Desc')
+    free_coin_count = StringEntry('FreeCoinCount')
+    pay_coin_count = StringEntry('PayCoinCount')
+    refund_free_coin_count = StringEntry('RefundFreeCoinCount')
+    refund_pay_coin_count = StringEntry('RefundPayCoinCount')
+    order_type = StringEntry('OrderType')
+    memo = StringEntry('Memo')
+    receipt_info = StringEntry('ReceiptInfo')
+
+
+class SubmitMembercardUserInfoEvent(BaseCardEvent):
+    __type__ = 'submit_membercard_user_info_event'
+
+
 class UnknownEvent(WeChatEvent):
     __type__ = 'unknown_event'

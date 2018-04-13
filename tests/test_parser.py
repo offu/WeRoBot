@@ -341,6 +341,332 @@ def test_pic_photo_or_album_event():
     assert message.pic_list == [{'pic_md5_sum': '5a75aaca956d97be686719218f275c6b'}]
 
 
+def test_card_pass_check_event():
+    message = parse_user_msg("""
+    <xml>
+        <ToUserName><![CDATA[toUser]]></ToUserName>
+        <FromUserName><![CDATA[FromUser]]></FromUserName>
+        <CreateTime>123456789</CreateTime>
+        <MsgType><![CDATA[event]]></MsgType>
+        <Event><![CDATA[card_pass_check]]></Event>
+        <CardId><![CDATA[cardid]]></CardId>
+        <RefuseReason><![CDATA[非法代制]]></RefuseReason>
+    </xml>
+    """)
+    assert message.target == "toUser"
+    assert message.source == "FromUser"
+    assert message.time == 123456789
+    assert message.type == "card_pass_check_event"
+    assert message.card_id == "cardid"
+    assert message.refuse_reason == u"非法代制"
+
+
+def test_card_not_pass_check_event():
+    message = parse_user_msg("""
+        <xml>
+            <ToUserName><![CDATA[toUser]]></ToUserName>
+            <FromUserName><![CDATA[FromUser]]></FromUserName>
+            <CreateTime>123456789</CreateTime>
+            <MsgType><![CDATA[event]]></MsgType>
+            <Event><![CDATA[card_not_pass_check]]></Event>
+            <CardId><![CDATA[cardid]]></CardId>
+            <RefuseReason><![CDATA[非法代制]]></RefuseReason>
+        </xml>
+        """)
+    assert message.target == "toUser"
+    assert message.source == "FromUser"
+    assert message.time == 123456789
+    assert message.type == "card_not_pass_check_event"
+    assert message.card_id == "cardid"
+    assert message.refuse_reason == u"非法代制"
+
+
+def test_user_get_card_event():
+    message = parse_user_msg("""
+        <xml>
+            <ToUserName> <![CDATA[gh_fc0a06a20993]]> </ToUserName>
+            <FromUserName> <![CDATA[oZI8Fj040-be6rlDohc6gkoPOQTQ]]> </FromUserName>
+            <CreateTime>1472551036</CreateTime>
+            <MsgType> <![CDATA[event]]> </MsgType>
+            <Event> <![CDATA[user_get_card]]> </Event>
+            <CardId> <![CDATA[pZI8Fjwsy5fVPRBeD78J4RmqVvBc]]> </CardId>
+            <IsGiveByFriend>0</IsGiveByFriend>
+            <UserCardCode> <![CDATA[226009850808]]> </UserCardCode>
+            <FriendUserName> <![CDATA[]]> </FriendUserName>
+            <OuterId>0</OuterId>
+            <OldUserCardCode> <![CDATA[]]> </OldUserCardCode>
+            <OuterStr> <![CDATA[12b]]> </OuterStr>
+            <IsRestoreMemberCard>0</IsRestoreMemberCard>
+            <IsRecommendByFriend>0</IsRecommendByFriend>
+        </xml>
+    """)
+    assert message.target == "gh_fc0a06a20993"
+    assert message.source == "oZI8Fj040-be6rlDohc6gkoPOQTQ"
+    assert message.time == 1472551036
+    assert message.type == "user_get_card_event"
+    assert message.card_id == "pZI8Fjwsy5fVPRBeD78J4RmqVvBc"
+    assert message.is_give_by_friend == 0
+    assert message.user_card_code == "226009850808"
+    assert message.friend_user_name is None
+    assert message.outer_id == 0
+    assert message.old_user_card_code is None
+    assert message.outer_str == '12b'
+    assert message.is_restore_member_card == 0
+    assert message.is_recommend_by_friend == 0
+
+
+def test_user_gifting_card_event():
+    message = parse_user_msg("""
+        <xml>
+            <ToUserName><![CDATA[gh_3fcea188bf78]]></ToUserName>
+            <FromUserName><![CDATA[obLatjjwDolFjRRd3doGIdwNqRXw]]></FromUserName>
+            <CreateTime>1474181868</CreateTime>
+            <MsgType><![CDATA[event]]></MsgType>
+            <Event><![CDATA[user_gifting_card]]></Event>
+            <CardId><![CDATA[pbLatjhU-3pik3d4PsbVzvBxZvJc]]></CardId>
+            <UserCardCode><![CDATA[297466945104]]></UserCardCode>
+            <IsReturnBack>0</IsReturnBack>
+            <FriendUserName><![CDATA[obLatjlNerkb62HtSdQUx66C4NTU]]></FriendUserName>
+            <IsChatRoom>0</IsChatRoom>
+        </xml>
+    """)
+    assert message.target == "gh_3fcea188bf78"
+    assert message.source == "obLatjjwDolFjRRd3doGIdwNqRXw"
+    assert message.time == 1474181868
+    assert message.type == "user_gifting_card_event"
+    assert message.card_id == "pbLatjhU-3pik3d4PsbVzvBxZvJc"
+    assert message.user_card_code == "297466945104"
+    assert message.is_return_back == 0
+    assert message.friend_user_name == "obLatjlNerkb62HtSdQUx66C4NTU"
+    assert message.is_chat_room == 0
+
+
+def test_user_del_card_event():
+    message = parse_user_msg("""
+        <xml>
+            <ToUserName><![CDATA[toUser]]></ToUserName>
+            <FromUserName><![CDATA[FromUser]]></FromUserName>
+            <CreateTime>123456789</CreateTime>
+            <MsgType><![CDATA[event]]></MsgType>
+            <Event><![CDATA[user_del_card]]></Event>
+            <CardId><![CDATA[cardid]]></CardId>
+            <UserCardCode><![CDATA[12312312]]></UserCardCode>
+        </xml>
+    """)
+    assert message.target == "toUser"
+    assert message.source == "FromUser"
+    assert message.time == 123456789
+    assert message.type == "user_del_card_event"
+    assert message.card_id == "cardid"
+    assert message.user_card_code == "12312312"
+
+
+def test_user_consume_card_event():
+    message = parse_user_msg("""
+        <xml>
+            <ToUserName> <![CDATA[gh_fc0a06a20993]]> </ToUserName>
+            <FromUserName> <![CDATA[oZI8Fj040-be6rlDohc6gkoPOQTQ]]> </FromUserName>
+            <CreateTime>1472549042</CreateTime>
+            <MsgType> <![CDATA[event]]> </MsgType>
+            <Event> <![CDATA[user_consume_card]]> </Event>
+            <CardId> <![CDATA[pZI8Fj8y-E8hpvho2d1ZvpGwQBvA]]> </CardId>
+            <UserCardCode> <![CDATA[452998530302]]> </UserCardCode>
+            <ConsumeSource> <![CDATA[FROM_API]]> </ConsumeSource>
+            <LocationName> <![CDATA[]]> </LocationName>
+            <StaffOpenId> <![CDATA[oZ********nJ3bPJu_Rtjkw4c]]> </StaffOpenId>
+            <VerifyCode> <![CDATA[]]> </VerifyCode>
+            <RemarkAmount> <![CDATA[]]> </RemarkAmount>
+            <OuterStr> <![CDATA[xxxxx]]> </OuterStr>
+        </xml>
+    """)
+    assert message.target == "gh_fc0a06a20993"
+    assert message.source == "oZI8Fj040-be6rlDohc6gkoPOQTQ"
+    assert message.time == 1472549042
+    assert message.type == "user_consume_card_event"
+    assert message.card_id == "pZI8Fj8y-E8hpvho2d1ZvpGwQBvA"
+    assert message.user_card_code == "452998530302"
+    assert message.consume_source == "FROM_API"
+    assert message.location_name is None
+    assert message.staff_open_id == "oZ********nJ3bPJu_Rtjkw4c"
+    assert message.verify_code is None
+    assert message.remark_amount is None
+    assert message.outer_str == "xxxxx"
+
+
+def test_user_pay_from_pay_cell_event():
+    message = parse_user_msg("""
+        <xml>
+            <ToUserName><![CDATA[gh_e2243xxxxxxx]]></ToUserName>
+            <FromUserName><![CDATA[oo2VNuOUuZGMxxxxxxxx]]></FromUserName>
+            <CreateTime>1442390947</CreateTime>
+            <MsgType><![CDATA[event]]></MsgType>
+            <Event><![CDATA[user_pay_from_pay_cell]]></Event>
+            <CardId><![CDATA[po2VNuCuRo-8sxxxxxxxxxxx]]></CardId>
+            <UserCardCode><![CDATA[38050000000]]></UserCardCode>
+            <TransId><![CDATA[10022403432015000000000]]></TransId>
+            <LocationId>291710000</LocationId>
+            <Fee><![CDATA[10000]]></Fee>
+            <OriginalFee><![CDATA[10000]]> </OriginalFee>
+        </xml>
+    """)
+    assert message.target == "gh_e2243xxxxxxx"
+    assert message.source == "oo2VNuOUuZGMxxxxxxxx"
+    assert message.time == 1442390947
+    assert message.type == "user_pay_from_pay_cell_event"
+    assert message.card_id == "po2VNuCuRo-8sxxxxxxxxxxx"
+    assert message.user_card_code == "38050000000"
+    assert message.trans_id == "10022403432015000000000"
+    assert message.location_id == 291710000
+    assert message.fee == "10000"
+    assert message.original_fee == "10000"
+
+
+def test_user_view_card_event():
+    message = parse_user_msg("""
+        <xml>
+            <ToUserName> <![CDATA[gh_fcxxxx6a20993]]> </ToUserName>
+            <FromUserName> <![CDATA[oZI8Fj040-xxxxx6gkoPOQTQ]]> </FromUserName>
+            <CreateTime>1467811138</CreateTime>
+            <MsgType> <![CDATA[event]]> </MsgType>
+            <Event> <![CDATA[user_view_card]]> </Event>
+            <CardId> <![CDATA[pZI8Fj2ezBbxxxxxT2UbiiWLb7Bg]]> </CardId>
+            <UserCardCode> <![CDATA[4xxxxxxxx8558]]> </UserCardCode>
+            <OuterStr> <![CDATA[12b]]> </OuterStr>
+        </xml>
+    """)
+    assert message.target == "gh_fcxxxx6a20993"
+    assert message.source == "oZI8Fj040-xxxxx6gkoPOQTQ"
+    assert message.time == 1467811138
+    assert message.type == "user_view_card_event"
+    assert message.card_id == "pZI8Fj2ezBbxxxxxT2UbiiWLb7Bg"
+    assert message.user_card_code == "4xxxxxxxx8558"
+    assert message.outer_str == "12b"
+
+
+def test_user_enter_session_from_card_event():
+    message = parse_user_msg("""
+        <xml>
+            <ToUserName><![CDATA[toUser]]></ToUserName>
+            <FromUserName><![CDATA[FromUser]]></FromUserName>
+            <CreateTime>123456789</CreateTime>
+            <MsgType><![CDATA[event]]></MsgType>
+            <Event><![CDATA[user_enter_session_from_card]]></Event>
+            <CardId><![CDATA[cardid]]></CardId>
+            <UserCardCode><![CDATA[12312312]]></UserCardCode>
+        </xml>
+    """)
+    assert message.target == "toUser"
+    assert message.source == "FromUser"
+    assert message.time == 123456789
+    assert message.type == "user_enter_session_from_card_event"
+    assert message.card_id == "cardid"
+    assert message.user_card_code == "12312312"
+
+
+def test_update_member_card_event():
+    message = parse_user_msg("""
+        <xml>
+            <ToUserName><![CDATA[gh_9e1765b5568e]]></ToUserName>
+            <FromUserName><![CDATA[ojZ8YtyVyr30HheH3CM73y7h4jJE]]></FromUserName>
+            <CreateTime>1445507140</CreateTime>
+            <MsgType><![CDATA[event]]></MsgType>
+            <Event><![CDATA[update_member_card]]></Event>
+            <CardId><![CDATA[pjZ8Ytx-nwvpCRyQneH3Ncmh6N94]]></CardId>
+            <UserCardCode><![CDATA[485027611252]]></UserCardCode>
+            <ModifyBonus>3</ModifyBonus>
+            <ModifyBalance>0</ModifyBalance>
+        </xml>
+    """)
+    assert message.target == "gh_9e1765b5568e"
+    assert message.source == "ojZ8YtyVyr30HheH3CM73y7h4jJE"
+    assert message.time == 1445507140
+    assert message.type == "update_member_card_event"
+    assert message.card_id == "pjZ8Ytx-nwvpCRyQneH3Ncmh6N94"
+    assert message.user_card_code == "485027611252"
+    assert message.modify_bonus == 3
+    assert message.modify_balance == 0
+
+
+def test_card_sku_remind_event():
+    message = parse_user_msg("""
+        <xml>
+            <ToUserName><![CDATA[gh_2d62d*****0]]></ToUserName>
+            <FromUserName><![CDATA[oa3LFuBvWb7*********]]></FromUserName>
+            <CreateTime>1443838506</CreateTime>
+            <MsgType><![CDATA[event]]></MsgType>
+            <Event><![CDATA[card_sku_remind]]></Event>
+            <CardId><![CDATA[pa3LFuAh2P65**********]]></CardId>
+            <Detail><![CDATA[the card's quantity is equal to 0]]></Detail>
+        </xml>
+    """)
+    assert message.target == "gh_2d62d*****0"
+    assert message.source == "oa3LFuBvWb7*********"
+    assert message.time == 1443838506
+    assert message.type == "card_sku_remind_event"
+    assert message.card_id == "pa3LFuAh2P65**********"
+    assert message.detail == "the card's quantity is equal to 0"
+
+
+def test_card_pay_order_event():
+    message = parse_user_msg("""
+        <xml>
+            <ToUserName><![CDATA[gh_7223c83d4be5]]></ToUserName>
+            <FromUserName><![CDATA[ob5E7s-HoN9tslQY3-0I4qmgluHk]]></FromUserName>
+            <CreateTime>1453295737</CreateTime>
+            <MsgType><![CDATA[event]]></MsgType>
+            <Event><![CDATA[card_pay_order]]></Event>
+            <OrderId><![CDATA[404091456]]></OrderId>
+            <Status><![CDATA[ORDER_STATUS_FINANCE_SUCC]]></Status>
+            <CreateOrderTime>1453295737</CreateOrderTime>
+            <PayFinishTime>0</PayFinishTime>
+            <Desc><![CDATA[]]></Desc>
+            <FreeCoinCount><![CDATA[200]]></FreeCoinCount>
+            <PayCoinCount><![CDATA[0]]></PayCoinCount>
+            <RefundFreeCoinCount><![CDATA[0]]></RefundFreeCoinCount>
+            <RefundPayCoinCount><![CDATA[0]]></RefundPayCoinCount>
+            <OrderType><![CDATA[ORDER_TYPE_SYS_ADD]]></OrderType>
+            <Memo><![CDATA[开通账户奖励]]></Memo>
+            <ReceiptInfo><![CDATA[]]></ReceiptInfo>
+        </xml>
+    """)
+    assert message.target == "gh_7223c83d4be5"
+    assert message.source == "ob5E7s-HoN9tslQY3-0I4qmgluHk"
+    assert message.time == 1453295737
+    assert message.type == "card_pay_order_event"
+    assert message.order_id == "404091456"
+    assert message.status == "ORDER_STATUS_FINANCE_SUCC"
+    assert message.create_order_time == 1453295737
+    assert message.pay_finish_time == 0
+    assert message.desc is None
+    assert message.free_coin_count == "200"
+    assert message.pay_coin_count == "0"
+    assert message.refund_free_coin_count == "0"
+    assert message.refund_pay_coin_count == "0"
+    assert message.order_type == "ORDER_TYPE_SYS_ADD"
+    assert message.memo == u"开通账户奖励"
+    assert message.receipt_info is None
+
+
+def test_submit_membercard_user_info_event():
+    message = parse_user_msg("""
+        <xml>
+            <ToUserName> <![CDATA[gh_3fcea188bf78]]></ToUserName>
+            <FromUserName><![CDATA[obLatjlaNQKb8FqOvt1M1x1lIBFE]]></FromUserName>
+            <CreateTime>1432668700</CreateTime>
+            <MsgType><![CDATA[event]]></MsgType>
+            <Event><![CDATA[submit_membercard_user_info]]></Event>
+            <CardId><![CDATA[pbLatjtZ7v1BG_ZnTjbW85GYc_E8]]></CardId>
+            <UserCardCode><![CDATA[018255396048]]></UserCardCode>
+        </xml>
+    """)
+    assert message.target == "gh_3fcea188bf78"
+    assert message.source == "obLatjlaNQKb8FqOvt1M1x1lIBFE"
+    assert message.time == 1432668700
+    assert message.type == "submit_membercard_user_info_event"
+    assert message.card_id == "pbLatjtZ7v1BG_ZnTjbW85GYc_E8"
+    assert message.user_card_code == "018255396048"
+
+
 def test_pic_weixin_event():
     message = parse_user_msg("""
     <xml>
