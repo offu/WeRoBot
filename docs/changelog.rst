@@ -1,6 +1,22 @@
 Changelog
 =============
 
+Version 1.4.0
+----------------
++ 增加 :class:`werobot.messages.events.CardPassCheckEvent`
++ 增加 :class:`werobot.messages.events.CardNotPassCheckEvent`
++ 增加 :class:`werobot.messages.events.UserGetCardEvent`
++ 增加 :class:`werobot.messages.events.UserGiftingCardEvent`
++ 增加 :class:`werobot.messages.events.UserDelCardEvent`
++ 增加 :class:`werobot.messages.events.UserConsumeCardEvent`
++ 增加 :class:`werobot.messages.events.UserPayFromPayCellEvent`
++ 增加 :class:`werobot.messages.events.UserViewCardEvent`
++ 增加 :class:`werobot.messages.events.UserEnterSessionFromCardEvent`
++ 增加 :class:`werobot.messages.events.UpdateMemberCardEvent`
++ 增加 :class:`werobot.messages.events.CardSkuRemindEvent`
++ 增加 :class:`werobot.messages.events.CardPayOrderEvent`
++ 增加 :class:`werobot.messages.events.SubmitMembercardUserInfoEvent`
+
 Version 1.3.0
 ----------------
 + 增加 :class:`werobot.messages.events.UserScanProductEvent`
