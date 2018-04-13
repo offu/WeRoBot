@@ -5,13 +5,13 @@ matrix:
   include:
   - env:
     - PYTHON_MAJOR="py34|py35"
-    - PYTHON_VERSION="3.5.2 3.4.5"
+    - PYTHON_VERSION="3.5.5 3.4.8"
   - env:
     - PYTHON_MAJOR="py36"
-    - PYTHON_VERSION="3.6.2"
+    - PYTHON_VERSION="3.6.5"
   - env:
     - PYTHON_MAJOR=py2
-    - PYTHON_VERSION="2.7.12"
+    - PYTHON_VERSION="2.7.14"
   - env:
     - PYTHON_MAJOR=pypy
     - PYTHON_VERSION="pypy2.7-5.10.0"
