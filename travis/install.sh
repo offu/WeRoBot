@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-brew update
 
 brew install pyenv
 brew outdated pyenv || brew upgrade pyenv
@@ -17,8 +16,10 @@ pip install --upgrade pip wheel
 
 brew install redis
 brew services start redis
-brew install mongodb
-brew services start mongodb
+# New mongodb's dependency on python@2 can cause conflicts.
+# So let's fallback to mongodb@3.4.
+brew install mongodb@3.4
+brew services start mongodb@3.4
 brew install mysql
 brew services start mysql
 

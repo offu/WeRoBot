@@ -60,7 +60,14 @@ class BaseRoBot(object):
                      'location_event', 'unknown_event', 'user_scan_product_event',
                      'user_scan_product_enter_session_event',
                      'user_scan_product_async_event',
-                     'user_scan_product_verify_action_event',  # event
+                     'user_scan_product_verify_action_event',
+                     'card_pass_check_event', 'card_not_pass_check_event',
+                     'user_get_card_event', 'user_gifting_card_event',
+                     'user_del_card_event', 'user_consume_card_event',
+                     'user_pay_from_pay_cell_event', 'user_view_card_event',
+                     'user_enter_session_from_card_event', 'update_member_card_event',
+                     'card_sku_remind_event', 'card_pay_order_event',
+                     'submit_membercard_user_info_event',  # event
                      'text', 'image', 'link', 'location', 'voice', 'unknown',
                      'video', 'shortvideo']
 
@@ -327,6 +334,98 @@ class BaseRoBot(object):
         为商品审核结果推送 ``(user_scan_product_verify_action_event)`` 事件添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='user_scan_product_verify_action_event')
+        return f
+
+    def card_pass_check(self, f):
+        """
+        为生成的卡券通过审核 ``(card_pass_check_event)`` 事件添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='card_pass_check_event')
+        return f
+
+    def card_not_pass_check(self, f):
+        """
+        为生成的卡券未通过审核 ``(card_not_pass_check_event)`` 事件添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='card_not_pass_check_event')
+        return f
+
+    def user_get_card(self, f):
+        """
+        为用户领取卡券 ``(user_get_card_event)`` 事件添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='user_get_card_event')
+        return f
+
+    def user_gifting_card(self, f):
+        """
+        为用户转赠卡券 ``(user_gifting_card_event)`` 事件添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='user_gifting_card_event')
+        return f
+
+    def user_del_card(self, f):
+        """
+        为用户删除卡券 ``(user_del_card_event)``  事件添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='user_del_card_event')
+        return f
+
+    def user_consume_card(self, f):
+        """
+        为卡券被核销 ``(user_consume_card_event)`` 事件添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='user_consume_card_event')
+        return f
+
+    def user_pay_from_pay_cell(self, f):
+        """
+        为微信买单完成 ``(user_pay_from_pay_cell_event)`` 事件添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='user_pay_from_pay_cell_event')
+        return f
+
+    def user_view_card(self, f):
+        """
+        为用户进入会员卡 ``(user_view_card_event)`` 事件添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='user_view_card_event')
+        return f
+
+    def user_enter_session_from_card(self, f):
+        """
+        为用户卡券里点击查看公众号进入会话 ``(user_enter_session_from_card_event)`` 事件添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='user_enter_session_from_card_event')
+        return f
+
+    def update_member_card(self, f):
+        """
+        为用户的会员卡积分余额发生变动 ``(update_member_card_event)`` 事件添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='update_member_card_event')
+        return f
+
+    def card_sku_remind(self, f):
+        """
+        为某个card_id的初始库存数大于200且当前库存小于等于100 ``(card_sku_remind_event)`` 事件添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='card_sku_remind_event')
+        return f
+
+    def card_pay_order(self, f):
+        """
+        为券点发生变动 ``(card_pay_order_event)`` 事件添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='card_pay_order_event')
+        return f
+
+    def submit_membercard_user_info(self, f):
+        """
+        为用户通过一键激活的方式提交信息并点击激活或者用户修改会员卡信息 ``(submit_membercard_user_info_event)``
+        事件添加一个 handler 方法的装饰器。
+        """
+        self.add_handler(f, type='submit_membercard_user_info_event')
         return f
 
     def unknown_event(self, f):
