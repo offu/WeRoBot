@@ -51,12 +51,15 @@ class MongoDBStorage(SessionStorage):
         :param value: 要写入的数据，可以是一个 ``dict`` 对象
                 """
         session = json_dumps(value)
-        self.collection.replace_one({
-            "wechat_id": id
-        }, {
-            "wechat_id": id,
-            "session": session
-        }, upsert=True)
+        self.collection.replace_one(
+            {
+                "wechat_id": id
+            }, {
+                "wechat_id": id,
+                "session": session
+            },
+            upsert=True
+        )
 
     def delete(self, id):
         """
@@ -64,6 +67,4 @@ class MongoDBStorage(SessionStorage):
 
         :param id: 要删除的数据的 id
         """
-        self.collection.delete_one({
-            "wechat_id": id
-        })
+        self.collection.delete_one({"wechat_id": id})

@@ -41,14 +41,17 @@ def make_handler(robot):
             signature = self.get_argument('signature', '')
 
             if not robot.check_signature(
-                    timestamp=timestamp,
-                    nonce=nonce,
-                    signature=signature
+                timestamp=timestamp, nonce=nonce, signature=signature
             ):
                 self.set_status(403)
-                self.write(robot.make_error_page(html.escape(
-                    self.request.protocol + "://" + self.request.host + self.request.uri
-                )))
+                self.write(
+                    robot.make_error_page(
+                        html.escape(
+                            self.request.protocol + "://" + self.request.host +
+                            self.request.uri
+                        )
+                    )
+                )
                 return
 
         def get(self):
@@ -65,8 +68,7 @@ def make_handler(robot):
                 nonce=nonce,
                 msg_signature=msg_signature
             )
-            self.set_header("Content-Type",
-                            "application/xml;charset=utf-8")
+            self.set_header("Content-Type", "application/xml;charset=utf-8")
             self.write(robot.get_encrypted_reply(message))
 
     return WeRoBotHandler

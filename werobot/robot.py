@@ -10,8 +10,7 @@ from werobot.exceptions import ConfigError
 from werobot.parser import parse_xml, process_message
 from werobot.replies import process_function_reply
 from werobot.utils import (
-    to_binary, to_text,
-    check_signature, make_error_page, cached_property,
+    to_binary, to_text, check_signature, make_error_page, cached_property,
     is_regex
 )
 
@@ -52,32 +51,62 @@ class BaseRoBot(object):
     :param app_secret: 微信公众号设置的 app secret **(deprecated)**
     :param encoding_aes_key: 用来加解密消息的 aes key **(deprecated)**
     """
-    message_types = ['subscribe_event', 'unsubscribe_event', 'click_event',
-                     'view_event', 'scan_event',
-                     'scancode_waitmsg_event', 'scancode_push_event',
-                     'pic_sysphoto_event', 'pic_photo_or_album_event',
-                     'pic_weixin_event', 'location_select_event',
-                     'location_event', 'unknown_event', 'user_scan_product_event',
-                     'user_scan_product_enter_session_event',
-                     'user_scan_product_async_event',
-                     'user_scan_product_verify_action_event',
-                     'card_pass_check_event', 'card_not_pass_check_event',
-                     'user_get_card_event', 'user_gifting_card_event',
-                     'user_del_card_event', 'user_consume_card_event',
-                     'user_pay_from_pay_cell_event', 'user_view_card_event',
-                     'user_enter_session_from_card_event', 'update_member_card_event',
-                     'card_sku_remind_event', 'card_pay_order_event',
-                     'submit_membercard_user_info_event',  # event
-                     'text', 'image', 'link', 'location', 'voice', 'unknown',
-                     'video', 'shortvideo']
+    message_types = [
+        'subscribe_event',
+        'unsubscribe_event',
+        'click_event',
+        'view_event',
+        'scan_event',
+        'scancode_waitmsg_event',
+        'scancode_push_event',
+        'pic_sysphoto_event',
+        'pic_photo_or_album_event',
+        'pic_weixin_event',
+        'location_select_event',
+        'location_event',
+        'unknown_event',
+        'user_scan_product_event',
+        'user_scan_product_enter_session_event',
+        'user_scan_product_async_event',
+        'user_scan_product_verify_action_event',
+        'card_pass_check_event',
+        'card_not_pass_check_event',
+        'user_get_card_event',
+        'user_gifting_card_event',
+        'user_del_card_event',
+        'user_consume_card_event',
+        'user_pay_from_pay_cell_event',
+        'user_view_card_event',
+        'user_enter_session_from_card_event',
+        'update_member_card_event',
+        'card_sku_remind_event',
+        'card_pay_order_event',
+        'submit_membercard_user_info_event',  # event
+        'text',
+        'image',
+        'link',
+        'location',
+        'voice',
+        'unknown',
+        'video',
+        'shortvideo'
+    ]
 
     token = ConfigAttribute("TOKEN")
     session_storage = ConfigAttribute("SESSION_STORAGE")
 
-    def __init__(self, token=None, logger=None,
-                 enable_session=None, session_storage=None,
-                 app_id=None, app_secret=None, encoding_aes_key=None,
-                 config=None, **kwargs):
+    def __init__(
+        self,
+        token=None,
+        logger=None,
+        enable_session=None,
+        session_storage=None,
+        app_id=None,
+        app_secret=None,
+        encoding_aes_key=None,
+        config=None,
+        **kwargs
+    ):
 
         self._handlers = {k: [] for k in self.message_types}
         self._handlers['all'] = []
@@ -479,7 +508,9 @@ class BaseRoBot(object):
         if not callable(func):
             raise ValueError("{} is not callable".format(func))
 
-        self._handlers[type].append((func, len(signature(func).parameters.keys())))
+        self._handlers[type].append(
+            (func, len(signature(func).parameters.keys()))
+        )
 
     def get_handlers(self, type):
         return self._handlers.get(type, []) + self._handlers['all']
@@ -507,12 +538,11 @@ class BaseRoBot(object):
                 def _check_content(message):
                     return message.content == target_content
             elif is_regex(target_content):
+
                 def _check_content(message):
                     return target_content.match(message.content)
             else:
-                raise TypeError(
-                    "%s is not a valid rule" % target_content
-                )
+                raise TypeError("%s is not a valid rule" % target_content)
             argc = len(signature(func).parameters.keys())
 
             @self.text
@@ -520,7 +550,9 @@ class BaseRoBot(object):
                 if _check_content(message):
                     return func(*[message, session][:argc])
 
-    def parse_message(self, body, timestamp=None, nonce=None, msg_signature=None):
+    def parse_message(
+        self, body, timestamp=None, nonce=None, msg_signature=None
+    ):
         """
         解析获取到的 Raw XML ，如果需要的话进行解密，返回 WeRoBot Message。
         :param body: 微信服务器发来的请求中的 Body。
@@ -575,8 +607,7 @@ class BaseRoBot(object):
         """
         reply = self.get_reply(message)
         if not reply:
-            self.logger.warning("No handler responded message %s"
-                                % message)
+            self.logger.warning("No handler responded message %s" % message)
             return ''
         if self.use_encryption:
             return self.crypto.encrypt_message(reply)
@@ -628,8 +659,9 @@ class WeRoBot(BaseRoBot):
         app.route('<t:path>', ['GET', 'POST'], make_view(self))
         return app
 
-    def run(self, server=None, host=None,
-            port=None, enable_pretty_logging=True):
+    def run(
+        self, server=None, host=None, port=None, enable_pretty_logging=True
+    ):
         """
         运行 WeRoBot。
 

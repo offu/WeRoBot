@@ -1,3 +1,4 @@
 {
-    "python.linting.flake8Enabled": true
+    "python.linting.flake8Enabled": false,
+    "python.formatting.provider": "yapf"
 }
