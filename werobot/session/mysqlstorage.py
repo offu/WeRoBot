@@ -63,7 +63,7 @@ class MySQLStorage(SessionStorage):
         :return: 返回取到的数据，如果是空则返回一个空的 ``dict`` 对象
         """
         cur = self.conn.cursor()
-        cur.execute("SELECT value FROM WeRoBot WHERE id=%s LIMIT 1;", (id,))
+        cur.execute("SELECT value FROM WeRoBot WHERE id=%s LIMIT 1;", (id, ))
         session_json = cur.fetchone()
         if session_json is None:
             return {}
@@ -77,8 +77,14 @@ class MySQLStorage(SessionStorage):
         :param value: 要写入的数据，可以是一个 ``dict`` 对象
         """
         value = json_dumps(value)
-        self.conn.cursor().execute("INSERT INTO WeRoBot (id, value) VALUES (%s,%s) \
-                ON DUPLICATE KEY UPDATE value=%s", (id, value, value,))
+        self.conn.cursor().execute(
+            "INSERT INTO WeRoBot (id, value) VALUES (%s,%s) \
+                ON DUPLICATE KEY UPDATE value=%s", (
+                id,
+                value,
+                value,
+            )
+        )
         self.conn.commit()
 
     def delete(self, id):
@@ -87,5 +93,5 @@ class MySQLStorage(SessionStorage):
 
         :param id: 要删除的数据的 id
         """
-        self.conn.cursor().execute("DELETE FROM WeRoBot WHERE id=%s", (id,))
+        self.conn.cursor().execute("DELETE FROM WeRoBot WHERE id=%s", (id, ))
         self.conn.commit()

@@ -1,0 +1,10 @@
+[style]
+based_on_style = pep8
+align_closing_bracket_with_visual_indent = true
+allow_multiline_dictionary_keys = false
+allow_split_before_dict_value = false
+dedent_closing_brackets = true
+each_dict_entry_on_separate_line = true
+coalesce_brackets = false
+spaces_before_comment = 2
+split_before_logical_operator = true

@@ -62,7 +62,8 @@ class WeChatReply(object):
 
 
 class TextReply(WeChatReply):
-    TEMPLATE = to_text("""
+    TEMPLATE = to_text(
+        """
     <xml>
     <ToUserName><![CDATA[{target}]]></ToUserName>
     <FromUserName><![CDATA[{source}]]></FromUserName>
@@ -70,11 +71,13 @@ class TextReply(WeChatReply):
     <MsgType><![CDATA[text]]></MsgType>
     <Content><![CDATA[{content}]]></Content>
     </xml>
-    """)
+    """
+    )
 
 
 class ImageReply(WeChatReply):
-    TEMPLATE = to_text("""
+    TEMPLATE = to_text(
+        """
     <xml>
     <ToUserName><![CDATA[{target}]]></ToUserName>
     <FromUserName><![CDATA[{source}]]></FromUserName>
@@ -84,11 +87,13 @@ class ImageReply(WeChatReply):
     <MediaId><![CDATA[{media_id}]]></MediaId>
     </Image>
     </xml>
-    """)
+    """
+    )
 
 
 class VoiceReply(WeChatReply):
-    TEMPLATE = to_text("""
+    TEMPLATE = to_text(
+        """
     <xml>
     <ToUserName><![CDATA[{target}]]></ToUserName>
     <FromUserName><![CDATA[{source}]]></FromUserName>
@@ -98,11 +103,13 @@ class VoiceReply(WeChatReply):
     <MediaId><![CDATA[{media_id}]]></MediaId>
     </Voice>
     </xml>
-    """)
+    """
+    )
 
 
 class VideoReply(WeChatReply):
-    TEMPLATE = to_text("""
+    TEMPLATE = to_text(
+        """
     <xml>
     <ToUserName><![CDATA[{target}]]></ToUserName>
     <FromUserName><![CDATA[{source}]]></FromUserName>
@@ -114,7 +121,8 @@ class VideoReply(WeChatReply):
     <Description><![CDATA[{description}]]></Description>
     </Video>
     </xml>
-    """)
+    """
+    )
 
     def process_args(self, args):
         args.setdefault('title', '')
@@ -124,19 +132,22 @@ class VideoReply(WeChatReply):
 Article = renderable_named_tuple(
     typename="Article",
     field_names=("title", "description", "img", "url"),
-    tempalte=to_text("""
+    tempalte=to_text(
+        """
     <item>
     <Title><![CDATA[{title}]]></Title>
     <Description><![CDATA[{description}]]></Description>
     <PicUrl><![CDATA[{img}]]></PicUrl>
     <Url><![CDATA[{url}]]></Url>
     </item>
-    """)
+    """
+    )
 )
 
 
 class ArticlesReply(WeChatReply):
-    TEMPLATE = to_text("""
+    TEMPLATE = to_text(
+        """
     <xml>
     <ToUserName><![CDATA[{target}]]></ToUserName>
     <FromUserName><![CDATA[{source}]]></FromUserName>
@@ -146,7 +157,8 @@ class ArticlesReply(WeChatReply):
     <ArticleCount>{count}</ArticleCount>
     <Articles>{items}</Articles>
     </xml>
-    """)
+    """
+    )
 
     def __init__(self, message=None, **kwargs):
         super(ArticlesReply, self).__init__(message, **kwargs)
@@ -154,8 +166,10 @@ class ArticlesReply(WeChatReply):
 
     def add_article(self, article):
         if len(self._articles) >= 10:
-            raise AttributeError("Can't add more than 10 articles"
-                                 " in an ArticlesReply")
+            raise AttributeError(
+                "Can't add more than 10 articles"
+                " in an ArticlesReply"
+            )
         else:
             self._articles.append(article)
 
@@ -171,7 +185,8 @@ class ArticlesReply(WeChatReply):
 
 
 class MusicReply(WeChatReply):
-    TEMPLATE = to_text("""
+    TEMPLATE = to_text(
+        """
     <xml>
     <ToUserName><![CDATA[{target}]]></ToUserName>
     <FromUserName><![CDATA[{source}]]></FromUserName>
@@ -184,7 +199,8 @@ class MusicReply(WeChatReply):
     <HQMusicUrl><![CDATA[{hq_url}]]></HQMusicUrl>
     </Music>
     </xml>
-    """)
+    """
+    )
 
     def process_args(self, args):
         if 'hq_url' not in args:
@@ -192,7 +208,8 @@ class MusicReply(WeChatReply):
 
 
 class TransferCustomerServiceReply(WeChatReply):
-    TEMPLATE = to_text("""
+    TEMPLATE = to_text(
+        """
     <xml>
     <ToUserName><![CDATA[{target}]]></ToUserName>
     <FromUserName><![CDATA[{source}]]></FromUserName>
@@ -202,7 +219,8 @@ class TransferCustomerServiceReply(WeChatReply):
          <KfAccount><![CDATA[{account}]]></KfAccount>
      </TransInfo>
     </xml>
-    """)
+    """
+    )
 
 
 class SuccessReply(WeChatReply):
@@ -215,8 +233,10 @@ def process_function_reply(reply, message=None):
         return TextReply(message=message, content=reply)
     elif isinstance(reply, list) and all([len(x) == 4 for x in reply]):
         if len(reply) > 10:
-            raise AttributeError("Can't add more than 10 articles"
-                                 " in an ArticlesReply")
+            raise AttributeError(
+                "Can't add more than 10 articles"
+                " in an ArticlesReply"
+            )
         r = ArticlesReply(message=message)
         for article in reply:
             article = Article(*article)

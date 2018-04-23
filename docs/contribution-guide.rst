@@ -41,22 +41,15 @@
 
 代码风格
 ~~~~~~~~~~~
-请遵循 ``PEP8`` 标准进行代码书写。
+我们使用 `yapf <https://github.com/google/yapf>`_ 进行代码格式化。
+在提交代码之前，请格式化一下你的代码 ::
 
-https://www.python.org/dev/peps/pep-0008/
+    # Install yapf
+    pip install yapf
+    # format code
+    yapf -p --recursive -i werobot/
 
-为了统一代码风格我们推荐使用 ``flake8`` 进行代码风格检查, 并为代码提交添加钩子。 ::
-
-    # Install git hook for flake8.
-    flake8 --install-hook
-    # flake8 will automatically run before commit.
-
-添加钩子之后会在每次代码提交时运行 ``flake8`` 进行检查。
-
-若要单独运行 ``flake8``。 ::
-
-    # Run flake8 immediately.
-    flake8 werobot
+你也可以 `安装 yapf Pre-Commit Hook <https://github.com/google/yapf/tree/master/plugins#git-pre-commit-hook>`_ 来自动进行代码格式化工作。
 
 测试
 ~~~~~~~~~~~

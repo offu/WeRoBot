@@ -25,12 +25,12 @@ def make_view(robot):
         signature = request.GET.get("signature", "")
 
         if not robot.check_signature(
-                timestamp=timestamp,
-                nonce=nonce,
-                signature=signature
+            timestamp=timestamp, nonce=nonce, signature=signature
         ):
             return HttpResponseForbidden(
-                robot.make_error_page(html.escape(request.build_absolute_uri()))
+                robot.make_error_page(
+                    html.escape(request.build_absolute_uri())
+                )
             )
         if request.method == "GET":
             return HttpResponse(request.GET.get("echostr", ""))

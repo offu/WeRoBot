@@ -28,5 +28,7 @@ def process_message(message):
         message["type"] = str(message.pop("Event")).lower() + '_event'
         message_type = EventMetaClass.TYPES.get(message["type"], UnknownEvent)
     else:
-        message_type = MessageMetaClass.TYPES.get(message["type"], UnknownMessage)
+        message_type = MessageMetaClass.TYPES.get(
+            message["type"], UnknownMessage
+        )
     return message_type(message)

@@ -38,7 +38,7 @@ class SQLiteStorage(SessionStorage):
         :return: 返回取到的数据，如果是空则返回一个空的 ``dict`` 对象
         """
         session_json = self.db.execute(
-            "SELECT value FROM WeRoBot WHERE id=? LIMIT 1;", (id,)
+            "SELECT value FROM WeRoBot WHERE id=? LIMIT 1;", (id, )
         ).fetchone()
         if session_json is None:
             return {}
@@ -53,7 +53,8 @@ class SQLiteStorage(SessionStorage):
         """
         self.db.execute(
             "INSERT OR REPLACE INTO WeRoBot (id, value) VALUES (?,?);",
-            (id, json_dumps(value)))
+            (id, json_dumps(value))
+        )
         self.db.commit()
 
     def delete(self, id):
@@ -62,5 +63,5 @@ class SQLiteStorage(SessionStorage):
 
         :param id: 要删除的数据的 id
         """
-        self.db.execute("DELETE FROM WeRoBot WHERE id=?;", (id,))
+        self.db.execute("DELETE FROM WeRoBot WHERE id=?;", (id, ))
         self.db.commit()

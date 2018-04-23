@@ -44,26 +44,23 @@ class _LogFormatter(logging.Formatter):
         logging.Formatter.__init__(self, *args, **kwargs)
         self._color = color
         if color:
-            fg_color = (curses.tigetstr("setaf") or
-                        curses.tigetstr("setf") or "")
+            fg_color = (
+                curses.tigetstr("setaf") or curses.tigetstr("setf") or ""
+            )
             if (3, 0) < sys.version_info < (3, 2, 3):
                 fg_color = six.text_type(fg_color, "ascii")
             self._colors = {
                 logging.DEBUG: six.text_type(
-                    curses.tparm(fg_color, 4),
-                    "ascii"
+                    curses.tparm(fg_color, 4), "ascii"
                 ),  # Blue
                 logging.INFO: six.text_type(
-                    curses.tparm(fg_color, 2),
-                    "ascii"
+                    curses.tparm(fg_color, 2), "ascii"
                 ),  # Green
                 logging.WARNING: six.text_type(
-                    curses.tparm(fg_color, 3),
-                    "ascii"
+                    curses.tparm(fg_color, 3), "ascii"
                 ),  # Yellow
                 logging.ERROR: six.text_type(
-                    curses.tparm(fg_color, 1),
-                    "ascii"
+                    curses.tparm(fg_color, 1), "ascii"
                 ),  # Red
             }
             self._normal = six.text_type(curses.tigetstr("sgr0"), "ascii")
@@ -74,12 +71,15 @@ class _LogFormatter(logging.Formatter):
         except Exception as e:
             record.message = "Bad message (%r): %r" % (e, record.__dict__)
         record.asctime = time.strftime(
-            "%y%m%d %H:%M:%S", self.converter(record.created))
+            "%y%m%d %H:%M:%S", self.converter(record.created)
+        )
         prefix = '[%(levelname)1.1s %(asctime)s %(module)s:%(lineno)d]' % \
                  record.__dict__
         if self._color:
-            prefix = (self._colors.get(record.levelno, self._normal) +
-                      prefix + self._normal)
+            prefix = (
+                self._colors.get(record.levelno, self._normal) + prefix +
+                self._normal
+            )
         formatted = prefix + " " + record.message
         if record.exc_info:
             if not record.exc_text:

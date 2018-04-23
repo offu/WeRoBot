@@ -49,11 +49,7 @@ class Client(object):
             body = body.encode('utf8')
             kwargs["data"] = body
 
-        r = requests.request(
-            method=method,
-            url=url,
-            **kwargs
-        )
+        r = requests.request(method=method, url=url, **kwargs)
         r.raise_for_status()
         r.encoding = "utf-8"
         json = r.json()
@@ -61,18 +57,10 @@ class Client(object):
             return json
 
     def get(self, url, **kwargs):
-        return self.request(
-            method="get",
-            url=url,
-            **kwargs
-        )
+        return self.request(method="get", url=url, **kwargs)
 
     def post(self, url, **kwargs):
-        return self.request(
-            method="post",
-            url=url,
-            **kwargs
-        )
+        return self.request(method="post", url=url, **kwargs)
 
     def grant_token(self):
         """
@@ -116,9 +104,7 @@ class Client(object):
 
         :return: 返回的 JSON 数据包
         """
-        return self.get(
-            url="https://api.weixin.qq.com/cgi-bin/getcallbackip"
-        )
+        return self.get(url="https://api.weixin.qq.com/cgi-bin/getcallbackip")
 
     def create_menu(self, menu_data):
         """
@@ -243,9 +229,7 @@ class Client(object):
         """
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/menu/delconditional",
-            data={
-                "menuid": menu_id
-            }
+            data={"menuid": menu_id}
         )
 
     def match_custom_menu(self, user_id):
@@ -257,9 +241,7 @@ class Client(object):
         """
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/menu/trymatch",
-            data={
-                "user_id": user_id
-            }
+            data={"user_id": user_id}
         )
 
     def get_custom_menu_config(self):
@@ -335,14 +317,13 @@ class Client(object):
         :return: 返回的 JSON 数据包
         """
         return self.post(
-            url="http://api.weixin.qq.com/customservice/kfaccount/uploadheadimg",
+            url=
+            "http://api.weixin.qq.com/customservice/kfaccount/uploadheadimg",
             params={
                 "access_token": self.token,
                 "kf_account": account
             },
-            files={
-                "media": avatar
-            }
+            files={"media": avatar}
         )
 
     def get_custom_service_account_list(self):
@@ -369,9 +350,7 @@ class Client(object):
                 "access_token": self.token,
                 "type": media_type
             },
-            files={
-                "media": media_file
-            }
+            files={"media": media_file}
         )
 
     def download_media(self, media_id):
@@ -411,9 +390,7 @@ class Client(object):
         """
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/material/add_news",
-            data={
-                "articles": articles
-            }
+            data={"articles": articles}
         )
 
     def upload_news_picture(self, file):
@@ -425,12 +402,8 @@ class Client(object):
         """
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/media/uploadimg",
-            params={
-                "access_token": self.token
-            },
-            files={
-                "media": file
-            }
+            params={"access_token": self.token},
+            files={"media": file}
         )
 
     def upload_permanent_media(self, media_type, media_file):
@@ -447,9 +420,7 @@ class Client(object):
                 "access_token": self.token,
                 "type": media_type
             },
-            files={
-                "media": media_file
-            }
+            files={"media": media_file}
         )
 
     def upload_permanent_video(self, title, introduction, video):
@@ -468,14 +439,15 @@ class Client(object):
                 "type": "video"
             },
             data={
-                "description": _json.dumps({
-                    "title": title,
-                    "introduction": introduction
-                }, ensure_ascii=False).encode("utf-8")
+                "description": _json.dumps(
+                    {
+                        "title": title,
+                        "introduction": introduction
+                    },
+                    ensure_ascii=False
+                ).encode("utf-8")
             },
-            files={
-                "media": video
-            }
+            files={"media": video}
         )
 
     def download_permanent_media(self, media_id):
@@ -487,9 +459,7 @@ class Client(object):
         """
         return requests.post(
             url="https://api.weixin.qq.com/cgi-bin/material/get_material",
-            params={
-                "access_token": self.token
-            },
+            params={"access_token": self.token},
             data=_json.dumps({
                 "media_id": media_id
             }, ensure_ascii=False).encode("utf-8")
@@ -504,9 +474,7 @@ class Client(object):
         """
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/material/del_material",
-            data={
-                "media_id": media_id
-            }
+            data={"media_id": media_id}
         )
 
     def update_news(self, update_data):
@@ -575,7 +543,9 @@ class Client(object):
         name = to_text(name)
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/groups/create",
-            data={"group": {"name": name}}
+            data={"group": {
+                "name": name
+            }}
         )
 
     def get_groups(self):
@@ -655,11 +625,9 @@ class Client(object):
         """
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/groups/delete",
-            data={
-                "group": {
-                    "id": group_id
-                }
-            }
+            data={"group": {
+                "id": group_id
+            }}
         )
 
     def remark_user(self, user_id, remark):
@@ -707,8 +675,10 @@ class Client(object):
             url="https://api.weixin.qq.com/cgi-bin/user/info/batchget",
             data={
                 "user_list": [
-                    {"openid": user_id,
-                     "lang": lang} for user_id in user_id_list
+                    {
+                        "openid": user_id,
+                        "lang": lang
+                    } for user_id in user_id_list
                 ]
             }
         )
@@ -721,14 +691,11 @@ class Client(object):
         :param first_user_id: 可选。第一个拉取的OPENID，不填默认从头开始拉取
         :return: 返回的 JSON 数据包
         """
-        params = {
-            "access_token": self.token
-        }
+        params = {"access_token": self.token}
         if first_user_id:
             params["next_openid"] = first_user_id
         return self.get(
-            "https://api.weixin.qq.com/cgi-bin/user/get",
-            params=params
+            "https://api.weixin.qq.com/cgi-bin/user/get", params=params
         )
 
     def send_text_message(self, user_id, content):
@@ -744,7 +711,9 @@ class Client(object):
             data={
                 "touser": user_id,
                 "msgtype": "text",
-                "text": {"content": content}
+                "text": {
+                    "content": content
+                }
             }
         )
 
@@ -786,8 +755,9 @@ class Client(object):
             }
         )
 
-    def send_video_message(self, user_id, media_id,
-                           title=None, description=None):
+    def send_video_message(
+        self, user_id, media_id, title=None, description=None
+    ):
         """
         发送视频消息。
 
@@ -814,8 +784,15 @@ class Client(object):
             }
         )
 
-    def send_music_message(self, user_id, url, hq_url, thumb_media_id,
-                           title=None, description=None):
+    def send_music_message(
+        self,
+        user_id,
+        url,
+        hq_url,
+        thumb_media_id,
+        title=None,
+        description=None
+    ):
         """
         发送音乐消息。
         注意如果你遇到了缩略图不能正常显示的问题， 不要慌张； 目前来看是微信服务器端的问题。
@@ -918,8 +895,7 @@ class Client(object):
         :return: 返回的 JSON 数据包
         """
         return self.post(
-            url="https://api.weixin.qq.com/cgi-bin/qrcode/create",
-            data=data
+            url="https://api.weixin.qq.com/cgi-bin/qrcode/create", data=data
         )
 
     def show_qrcode(self, ticket):
@@ -931,9 +907,7 @@ class Client(object):
         """
         return requests.get(
             url="https://mp.weixin.qq.com/cgi-bin/showqrcode",
-            params={
-                "ticket": ticket
-            }
+            params={"ticket": ticket}
         )
 
     def send_template_message(self, user_id, template_id, data, url=''):

@@ -105,8 +105,12 @@ def json_dumps(d):
 
 
 def pay_sign_dict(
-        appid, pay_sign_key, add_noncestr=True,
-        add_timestamp=True, add_appid=True, **kwargs
+    appid,
+    pay_sign_key,
+    add_noncestr=True,
+    add_timestamp=True,
+    add_appid=True,
+    **kwargs
 ):
     """
     支付参数签名
@@ -124,9 +128,9 @@ def pay_sign_dict(
 
     params = kwargs.items()
 
-    _params = [(k.lower(), v)
-               for k, v in kwargs.items()
-               if k.lower() != "appid"]
+    _params = [
+        (k.lower(), v) for k, v in kwargs.items() if k.lower() != "appid"
+    ]
     _params += [('appid', appid), ('appkey', pay_sign_key)]
     _params.sort()
 
@@ -140,7 +144,9 @@ def pay_sign_dict(
 
 def make_error_page(url):
     with io.open(
-            os.path.join(os.path.dirname(__file__), 'contrib/error.html'), 'r', encoding='utf-8'
+        os.path.join(os.path.dirname(__file__), 'contrib/error.html'),
+        'r',
+        encoding='utf-8'
     ) as error_page:
         return error_page.read().replace('{url}', url)
 
