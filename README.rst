@@ -2,8 +2,8 @@
 WeRoBot
 ====================================
 
-.. image:: https://img.shields.io/travis/whtsky/WeRoBot/develop.svg?maxAge=3600&label=macOS
-    :target: https://travis-ci.org/whtsky/WeRoBot
+.. image:: https://img.shields.io/travis/offu/WeRoBot/develop.svg?maxAge=3600&label=macOS
+    :target: https://travis-ci.org/offu/WeRoBot
 .. image:: https://img.shields.io/appveyor/ci/whtsky/WeRoBot/develop.svg?maxAge=3600&label=Windows
     :target: https://ci.appveyor.com/project/whtsky/WeRoBot
 .. image:: https://semaphoreci.com/api/v1/whtsky/werobot/branches/develop/shields_badge.svg
