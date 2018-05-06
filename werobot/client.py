@@ -2,6 +2,7 @@
 
 import time
 import requests
+from six.moves import urllib
 
 from requests.compat import json as _json
 from werobot.utils import to_text
@@ -350,7 +351,7 @@ class Client(object):
                 "access_token": self.token,
                 "type": media_type
             },
-            files={"media": media_file}
+            files={"media": (urllib.parse.quote(media_file.name), media_file)}
         )
 
     def download_media(self, media_id):
@@ -403,7 +404,7 @@ class Client(object):
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/media/uploadimg",
             params={"access_token": self.token},
-            files={"media": file}
+            files={"media": (urllib.parse.quote(file.name), file)}
         )
 
     def upload_permanent_media(self, media_type, media_file):
@@ -420,7 +421,7 @@ class Client(object):
                 "access_token": self.token,
                 "type": media_type
             },
-            files={"media": media_file}
+            files={"media": (urllib.parse.quote(media_file.name), media_file)}
         )
 
     def upload_permanent_video(self, title, introduction, video):
@@ -447,7 +448,7 @@ class Client(object):
                     ensure_ascii=False
                 ).encode("utf-8")
             },
-            files={"media": video}
+            files={"media": (urllib.parse.quote(video.name), video)}
         )
 
     def download_permanent_media(self, media_id):

@@ -604,7 +604,8 @@ class TestClientResourceClass(BaseTestClass):
     @add_token_response
     def test_upload_media(self):
         responses.add_callback(responses.POST, self.UPLOAD_URL, callback=self.upload_callback)
-        r = self.client.upload_media("test", "test")
+        with open(os.path.join(os.path.dirname(__file__), '照桥心美.png'), 'rb') as f:
+            r = self.client.upload_media('image', f)
         assert r == {"errcode": 0, "errmsg": "ok"}
 
     @responses.activate
@@ -629,7 +630,8 @@ class TestClientResourceClass(BaseTestClass):
             self.UPLOAD_PICTURE_URL,
             callback=self.upload_picture_callback
         )
-        r = self.client.upload_news_picture("test")
+        with open(os.path.join(os.path.dirname(__file__), '照桥心美.png'), 'rb') as f:
+            r = self.client.upload_news_picture(f)
         assert r == {"errcode": 0, "errmsg": "ok"}
 
     @responses.activate
@@ -639,7 +641,8 @@ class TestClientResourceClass(BaseTestClass):
             responses.POST,
             self.UPLOAD_P_URL,
             callback=self.upload_p_media_callback)
-        r = self.client.upload_permanent_media("test", "test")
+        with open(os.path.join(os.path.dirname(__file__), '照桥心美.png'), 'rb') as f:
+            r = self.client.upload_permanent_media('image', f)
         assert r == {"errcode": 0, "errmsg": "ok"}
 
     @responses.activate
@@ -694,7 +697,8 @@ class TestUploadVideoClass(BaseTestClass):
             self.UPLOAD_VIDEO_URL,
             callback=self.upload_video_callback
         )
-        r = self.client.upload_permanent_video("test", "test", "test")
+        with open(os.path.join(os.path.dirname(__file__), '照桥心美.png'), 'rb') as f:
+            r = self.client.upload_permanent_video("test", "test", f)
         assert isinstance(r, requests.Response)
 
 
