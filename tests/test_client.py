@@ -4,6 +4,9 @@ import responses
 import json
 import pytest
 import requests
+import multipart
+from six.moves import urllib
+from six import BytesIO
 
 from werobot import WeRoBot
 from werobot.config import Config
@@ -46,6 +49,7 @@ class BaseTestClass:
 
 
 class TestClientBaseClass(BaseTestClass):
+
     def test_id_and_secret(self):
         assert self.client.appid == "123"
         assert self.client.appsecret == "321"
@@ -105,6 +109,33 @@ class TestClientBaseClass(BaseTestClass):
 
         r = self.client.post(url=DATA_EXISTS_URL, data={"test": "test"})
         assert r == {"test": "test"}
+
+
+class TestClientBaseClassPost(TestClientBaseClass):
+    @pytest.fixture(autouse=True)
+    def mock_request(self, mocker):
+        self.mocked_request = mocker.spy(self.client, 'request')
+
+    @responses.activate
+    @add_token_response
+    def test_post(self):
+        POST_FILE_URL = "http://post_file.werobot.com/"
+
+        def post_file_callback(request):
+            s = request.body.split(b"\r")[0][2:]
+            p = list(multipart.MultipartParser(BytesIO(multipart.tob(request.body)), s))[0]
+            assert "filename" in p.options
+            return 200, json_header, json.dumps({"test": "test"})
+
+        responses.add_callback(responses.POST, POST_FILE_URL, callback=post_file_callback)
+
+        with open(os.path.join(os.path.dirname(__file__), '照桥心美.png'), 'rb') as f:
+            self.client.post(url=POST_FILE_URL, files={"media": f})
+            self.mocked_request.assert_any_call(
+                method='post',
+                url='http://post_file.werobot.com/',
+                files=dict(media=(urllib.parse.quote(os.path.join(os.path.dirname(__file__), '照桥心美.png')), f))
+            )
 
 
 class TestClientMenuClass(BaseTestClass):
@@ -820,7 +851,8 @@ class TestCustomService(BaseTestClass):
     @add_token_response
     def test_upload_custom_service_account_avatar(self):
         responses.add_callback(responses.POST, self.UPLOAD_URL, callback=self.upload_callback)
-        r = self.client.upload_custom_service_account_avatar("test", "test")
+        with open(os.path.join(os.path.dirname(__file__), '照桥心美.png'), 'rb') as f:
+            r = self.client.upload_custom_service_account_avatar("image", f)
         assert r == {"errcode": 0, "errmsg": "ok"}
 
     @responses.activate

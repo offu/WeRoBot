@@ -61,6 +61,12 @@ class Client(object):
         return self.request(method="get", url=url, **kwargs)
 
     def post(self, url, **kwargs):
+        if "files" in kwargs and "media" in kwargs["files"]:
+            # Fix chinese file name error
+            kwargs["files"]["media"] = (
+                urllib.parse.quote(kwargs["files"]["media"].name),
+                kwargs["files"]["media"]
+            )
         return self.request(method="post", url=url, **kwargs)
 
     def grant_token(self):
@@ -351,7 +357,7 @@ class Client(object):
                 "access_token": self.token,
                 "type": media_type
             },
-            files={"media": (urllib.parse.quote(media_file.name), media_file)}
+            files={"media": media_file}
         )
 
     def download_media(self, media_id):
@@ -404,7 +410,7 @@ class Client(object):
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/media/uploadimg",
             params={"access_token": self.token},
-            files={"media": (urllib.parse.quote(file.name), file)}
+            files={"media": file}
         )
 
     def upload_permanent_media(self, media_type, media_file):
@@ -421,7 +427,7 @@ class Client(object):
                 "access_token": self.token,
                 "type": media_type
             },
-            files={"media": (urllib.parse.quote(media_file.name), media_file)}
+            files={"media": media_file}
         )
 
     def upload_permanent_video(self, title, introduction, video):
@@ -448,7 +454,7 @@ class Client(object):
                     ensure_ascii=False
                 ).encode("utf-8")
             },
-            files={"media": (urllib.parse.quote(video.name), video)}
+            files={"media": video}
         )
 
     def download_permanent_media(self, media_id):
