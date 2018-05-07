@@ -19,6 +19,7 @@ except ImportError:
     import urlparse
 
 basedir = os.path.dirname(os.path.abspath(__file__))
+god_pic = os.path.join(os.path.dirname(__file__), '照桥心美.png')
 
 TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token"
 json_header = {'content-type': 'application/json'}
@@ -118,7 +119,25 @@ class TestClientBaseClassPost(TestClientBaseClass):
 
     @responses.activate
     @add_token_response
-    def test_post(self):
+    def test_post_with_unittest(self):
+        POST_FILE_URL = "http://post_file.werobot.com/"
+
+        def empty_post_file_callback(request):
+            return 200, json_header, json.dumps({"test": "test"})
+
+        responses.add_callback(responses.POST, POST_FILE_URL, callback=empty_post_file_callback)
+
+        with open(god_pic, 'rb') as f:
+            self.client.post(url=POST_FILE_URL, files={"media": f})
+            self.mocked_request.assert_any_call(
+                method='post',
+                url='http://post_file.werobot.com/',
+                files=dict(media=(urllib.parse.quote(god_pic), f))
+            )
+
+    @responses.activate
+    @add_token_response
+    def test_post_with_integration_test(self):
         POST_FILE_URL = "http://post_file.werobot.com/"
 
         def post_file_callback(request):
@@ -129,13 +148,8 @@ class TestClientBaseClassPost(TestClientBaseClass):
 
         responses.add_callback(responses.POST, POST_FILE_URL, callback=post_file_callback)
 
-        with open(os.path.join(os.path.dirname(__file__), '照桥心美.png'), 'rb') as f:
+        with open(god_pic, 'rb') as f:
             self.client.post(url=POST_FILE_URL, files={"media": f})
-            self.mocked_request.assert_any_call(
-                method='post',
-                url='http://post_file.werobot.com/',
-                files=dict(media=(urllib.parse.quote(os.path.join(os.path.dirname(__file__), '照桥心美.png')), f))
-            )
 
 
 class TestClientMenuClass(BaseTestClass):
@@ -635,7 +649,7 @@ class TestClientResourceClass(BaseTestClass):
     @add_token_response
     def test_upload_media(self):
         responses.add_callback(responses.POST, self.UPLOAD_URL, callback=self.upload_callback)
-        with open(os.path.join(os.path.dirname(__file__), '照桥心美.png'), 'rb') as f:
+        with open(god_pic, 'rb') as f:
             r = self.client.upload_media('image', f)
         assert r == {"errcode": 0, "errmsg": "ok"}
 
@@ -661,7 +675,7 @@ class TestClientResourceClass(BaseTestClass):
             self.UPLOAD_PICTURE_URL,
             callback=self.upload_picture_callback
         )
-        with open(os.path.join(os.path.dirname(__file__), '照桥心美.png'), 'rb') as f:
+        with open(god_pic, 'rb') as f:
             r = self.client.upload_news_picture(f)
         assert r == {"errcode": 0, "errmsg": "ok"}
 
@@ -672,7 +686,7 @@ class TestClientResourceClass(BaseTestClass):
             responses.POST,
             self.UPLOAD_P_URL,
             callback=self.upload_p_media_callback)
-        with open(os.path.join(os.path.dirname(__file__), '照桥心美.png'), 'rb') as f:
+        with open(god_pic, 'rb') as f:
             r = self.client.upload_permanent_media('image', f)
         assert r == {"errcode": 0, "errmsg": "ok"}
 
@@ -728,7 +742,7 @@ class TestUploadVideoClass(BaseTestClass):
             self.UPLOAD_VIDEO_URL,
             callback=self.upload_video_callback
         )
-        with open(os.path.join(os.path.dirname(__file__), '照桥心美.png'), 'rb') as f:
+        with open(god_pic, 'rb') as f:
             r = self.client.upload_permanent_video("test", "test", f)
         assert isinstance(r, requests.Response)
 
@@ -851,7 +865,7 @@ class TestCustomService(BaseTestClass):
     @add_token_response
     def test_upload_custom_service_account_avatar(self):
         responses.add_callback(responses.POST, self.UPLOAD_URL, callback=self.upload_callback)
-        with open(os.path.join(os.path.dirname(__file__), '照桥心美.png'), 'rb') as f:
+        with open(god_pic, 'rb') as f:
             r = self.client.upload_custom_service_account_avatar("image", f)
         assert r == {"errcode": 0, "errmsg": "ok"}
 

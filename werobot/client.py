@@ -62,7 +62,7 @@ class Client(object):
 
     def post(self, url, **kwargs):
         if "files" in kwargs and "media" in kwargs["files"]:
-            # Fix chinese file name error
+            # Fix chinese file name error #292
             kwargs["files"]["media"] = (
                 urllib.parse.quote(kwargs["files"]["media"].name),
                 kwargs["files"]["media"]
