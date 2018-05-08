@@ -18,15 +18,14 @@ try:
 except ImportError:
     import urlparse
 
-basedir = os.path.dirname(os.path.abspath(__file__))
-god_pic = os.path.join(os.path.dirname(__file__), '照桥心美.png')
-
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+GOD_PIC = os.path.join(os.path.dirname(__file__), '照桥心美.png')
 TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token"
-json_header = {'content-type': 'application/json'}
+JSON_HEADER = {'content-type': 'application/json'}
 
 
 def token_callback(request):
-    return 200, json_header, json.dumps({"access_token": "ACCESS_TOKEN", "expires_in": 7200})
+    return 200, JSON_HEADER, json.dumps({"access_token": "ACCESS_TOKEN", "expires_in": 7200})
 
 
 def add_token_response(method):
@@ -37,16 +36,28 @@ def add_token_response(method):
     return wrapped_func
 
 
+def create_pic_file(func):
+    def wrapped_func(self, *args, **kwargs):
+        with open(GOD_PIC, 'a') as f:
+            f.write("just a test")
+        try:
+            func(self, *args, **kwargs)
+        finally:
+            os.remove(GOD_PIC)
+
+    return wrapped_func
+
+
 class BaseTestClass:
     @cached_property
     def client(self):
         config = Config()
-        config.from_pyfile(os.path.join(basedir, "client_config.py"))
+        config.from_pyfile(os.path.join(BASE_DIR, "client_config.py"))
         return Client(config)
 
     @staticmethod
     def callback_without_check(request):
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
 
 class TestClientBaseClass(BaseTestClass):
@@ -95,11 +106,11 @@ class TestClientBaseClass(BaseTestClass):
         def empty_params_callback(request):
             params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
             assert params["access_token"][0] == self.client.token
-            return 200, json_header, json.dumps({"test": "test"})
+            return 200, JSON_HEADER, json.dumps({"test": "test"})
 
         def data_exists_url(request):
             assert json.loads(request.body.decode('utf-8')) == {"test": "test"}
-            return 200, json_header, json.dumps({"test": "test"})
+            return 200, JSON_HEADER, json.dumps({"test": "test"})
 
         responses.add_callback(responses.POST, DATA_EXISTS_URL, callback=data_exists_url)
         responses.add_callback(responses.GET, EMPTY_PARAMS_URL, callback=empty_params_callback)
@@ -119,20 +130,21 @@ class TestClientBaseClassPost(TestClientBaseClass):
 
     @responses.activate
     @add_token_response
+    @create_pic_file
     def test_post_with_unittest(self):
         POST_FILE_URL = "http://post_file.werobot.com/"
 
         def empty_post_file_callback(request):
-            return 200, json_header, json.dumps({"test": "test"})
+            return 200, JSON_HEADER, json.dumps({"test": "test"})
 
         responses.add_callback(responses.POST, POST_FILE_URL, callback=empty_post_file_callback)
 
-        with open(god_pic, 'rb') as f:
+        with open(GOD_PIC, 'rb') as f:
             self.client.post(url=POST_FILE_URL, files={"media": f})
             self.mocked_request.assert_any_call(
                 method='post',
                 url='http://post_file.werobot.com/',
-                files=dict(media=(urllib.parse.quote(god_pic), f))
+                files=dict(media=(urllib.parse.quote(GOD_PIC), f))
             )
 
     @responses.activate
@@ -141,7 +153,7 @@ class TestClientBaseClassPost(TestClientBaseClass):
         POST_FILE_URL = "http://post_file.werobot.com/"
 
         def empty_post_file_callback(request):
-            return 200, json_header, json.dumps({"test": "test"})
+            return 200, JSON_HEADER, json.dumps({"test": "test"})
 
         responses.add_callback(responses.POST, POST_FILE_URL, callback=empty_post_file_callback)
 
@@ -155,6 +167,7 @@ class TestClientBaseClassPost(TestClientBaseClass):
 
     @responses.activate
     @add_token_response
+    @create_pic_file
     def test_post_with_integration_test(self):
         POST_FILE_URL = "http://post_file.werobot.com/"
 
@@ -162,11 +175,11 @@ class TestClientBaseClassPost(TestClientBaseClass):
             s = request.body.split(b"\r")[0][2:]
             p = list(multipart.MultipartParser(BytesIO(multipart.tob(request.body)), s))[0]
             assert "filename" in p.options
-            return 200, json_header, json.dumps({"test": "test"})
+            return 200, JSON_HEADER, json.dumps({"test": "test"})
 
         responses.add_callback(responses.POST, POST_FILE_URL, callback=post_file_callback)
 
-        with open(god_pic, 'rb') as f:
+        with open(GOD_PIC, 'rb') as f:
             self.client.post(url=POST_FILE_URL, files={"media": f})
 
 
@@ -229,13 +242,13 @@ class TestClientMenuClass(BaseTestClass):
         try:
             body = json.loads(request.body.decode("utf-8"))["button"]
         except KeyError:
-            return 200, json_header, json.dumps({"errcode": 1, "errmsg": "error"})
+            return 200, JSON_HEADER, json.dumps({"errcode": 1, "errmsg": "error"})
         try:
             for item in body:
                 check_menu_data(item)
         except AssertionError:
-            return 200, json_header, json.dumps({"errcode": 1, "errmsg": "error"})
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+            return 200, JSON_HEADER, json.dumps({"errcode": 1, "errmsg": "error"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @responses.activate
     @add_token_response
@@ -276,13 +289,13 @@ class TestClientGroupClass(BaseTestClass):
         body = json.loads(request.body.decode("utf-8"))
         assert "group" in body.keys()
         assert "name" in body["group"].keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def get_groups_with_id_callback(request):
         body = json.loads(request.body.decode("utf-8"))
         assert "openid" in body.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def update_group_callback(request):
@@ -290,28 +303,28 @@ class TestClientGroupClass(BaseTestClass):
         assert "group" in body.keys()
         assert "id" in body["group"].keys()
         assert "name" in body["group"].keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def move_user_callback(request):
         body = json.loads(request.body.decode("utf-8"))
         assert "openid" in body.keys()
         assert "to_groupid" in body.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def move_users_callback(request):
         body = json.loads(request.body.decode("utf-8"))
         assert "openid_list" in body.keys()
         assert "to_groupid" in body.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def delete_group_callback(request):
         body = json.loads(request.body.decode("utf-8"))
         assert "group" in body.keys()
         assert "id" in body["group"].keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @responses.activate
     @add_token_response
@@ -379,7 +392,7 @@ class TestClientRemarkClass(BaseTestClass):
         body = json.loads(request.body.decode("utf-8"))
         assert "openid" in body.keys()
         assert "remark" in body.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @responses.activate
     @add_token_response
@@ -399,7 +412,7 @@ class TestClientUserInfo(BaseTestClass):
         assert "access_token" in params.keys()
         assert "openid" in params.keys()
         assert "lang" in params.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def multi_user_callback(request):
@@ -408,7 +421,7 @@ class TestClientUserInfo(BaseTestClass):
         for user in body["user_list"]:
             assert "openid" in user.keys()
             assert "lang" in user.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @responses.activate
     @add_token_response
@@ -441,7 +454,7 @@ class TestClientGetFollowersClass(BaseTestClass):
         params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
         assert "access_token" in params.keys()
         assert "next_openid" in params.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @responses.activate
     @add_token_response
@@ -500,26 +513,26 @@ class TestClientCustomMenuClass(BaseTestClass):
 
     @staticmethod
     def get_custom_menu_callback(request):
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def create_custom_menu_callback(request):
         body = json.loads(request.body.decode("utf-8"))
         assert "button" in body.keys()
         assert "matchrule" in body.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def delete_custom_menu_callback(request):
         body = json.loads(request.body.decode("utf-8"))
         assert "menuid" in body.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def match_custom_menu(request):
         body = json.loads(request.body.decode("utf-8"))
         assert "user_id" in body.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @responses.activate
     @add_token_response
@@ -598,13 +611,13 @@ class TestClientResourceClass(BaseTestClass):
     def upload_callback(request):
         params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
         assert "type" in params.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def download_callback(request):
         params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
         assert "media_id" in params.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def add_news_callback(request):
@@ -618,20 +631,20 @@ class TestClientResourceClass(BaseTestClass):
             assert "show_cover_pic" in article.keys()
             assert "content" in article.keys()
             assert "content_source_url" in article.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def upload_picture_callback(request):
         params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
         assert "access_token" in params.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def upload_p_media_callback(request):
         params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
         assert "access_token" in params.keys()
         assert "type" in params.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def download_p_media_callback(request):
@@ -639,13 +652,13 @@ class TestClientResourceClass(BaseTestClass):
         assert "access_token" in params.keys()
         body = json.loads(request.body.decode("utf-8"))
         assert "media_id" in body.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def delete_p_media_callback(request):
         body = json.loads(request.body.decode("utf-8"))
         assert "media_id" in body.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def update_news_callback(request):
@@ -661,13 +674,14 @@ class TestClientResourceClass(BaseTestClass):
         assert "show_cover_pic" in articles.keys()
         assert "content" in articles.keys()
         assert "content_source_url" in articles.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @responses.activate
     @add_token_response
+    @create_pic_file
     def test_upload_media(self):
         responses.add_callback(responses.POST, self.UPLOAD_URL, callback=self.upload_callback)
-        with open(god_pic, 'rb') as f:
+        with open(GOD_PIC, 'rb') as f:
             r = self.client.upload_media('image', f)
         assert r == {"errcode": 0, "errmsg": "ok"}
 
@@ -687,24 +701,26 @@ class TestClientResourceClass(BaseTestClass):
 
     @responses.activate
     @add_token_response
+    @create_pic_file
     def test_upload_news_picture(self):
         responses.add_callback(
             responses.POST,
             self.UPLOAD_PICTURE_URL,
             callback=self.upload_picture_callback
         )
-        with open(god_pic, 'rb') as f:
+        with open(GOD_PIC, 'rb') as f:
             r = self.client.upload_news_picture(f)
         assert r == {"errcode": 0, "errmsg": "ok"}
 
     @responses.activate
     @add_token_response
+    @create_pic_file
     def test_upload_permanent_media(self):
         responses.add_callback(
             responses.POST,
             self.UPLOAD_P_URL,
             callback=self.upload_p_media_callback)
-        with open(god_pic, 'rb') as f:
+        with open(GOD_PIC, 'rb') as f:
             r = self.client.upload_permanent_media('image', f)
         assert r == {"errcode": 0, "errmsg": "ok"}
 
@@ -750,17 +766,18 @@ class TestUploadVideoClass(BaseTestClass):
         params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
         assert "type" in params.keys()
         assert params["type"][0] == "video"
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @responses.activate
     @add_token_response
+    @create_pic_file
     def test_upload_video(self):
         responses.add_callback(
             responses.POST,
             self.UPLOAD_VIDEO_URL,
             callback=self.upload_video_callback
         )
-        with open(god_pic, 'rb') as f:
+        with open(GOD_PIC, 'rb') as f:
             r = self.client.upload_permanent_video("test", "test", f)
         assert isinstance(r, requests.Response)
 
@@ -773,7 +790,7 @@ class TestMediaClass(BaseTestClass):
     def get_media_callback(request):
         params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
         assert "access_token" in params.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def get_media_list_callback(request):
@@ -781,7 +798,7 @@ class TestMediaClass(BaseTestClass):
         assert "type" in body.keys()
         assert "offset" in body.keys()
         assert "count" in body.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @responses.activate
     @add_token_response
@@ -809,7 +826,7 @@ class TestGetIpListClass(BaseTestClass):
     def get_ip_list_callback(request):
         params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
         assert "access_token" in params.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @responses.activate
     @add_token_response
@@ -832,19 +849,19 @@ class TestCustomService(BaseTestClass):
         assert "kf_account" in body.keys()
         assert "nickname" in body.keys()
         assert "password" in body.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def upload_callback(request):
         params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
         assert "access_token" in params.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def get_callback(request):
         params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
         assert "access_token" in params.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @responses.activate
     @add_token_response
@@ -881,9 +898,10 @@ class TestCustomService(BaseTestClass):
 
     @responses.activate
     @add_token_response
+    @create_pic_file
     def test_upload_custom_service_account_avatar(self):
         responses.add_callback(responses.POST, self.UPLOAD_URL, callback=self.upload_callback)
-        with open(god_pic, 'rb') as f:
+        with open(GOD_PIC, 'rb') as f:
             r = self.client.upload_custom_service_account_avatar("image", f)
         assert r == {"errcode": 0, "errmsg": "ok"}
 
@@ -903,13 +921,13 @@ class TestQrcodeClass(BaseTestClass):
     def create_callback(request):
         params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
         assert "access_token" in params.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def show_callback(request):
         params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
         assert "ticket" in params.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @responses.activate
     @add_token_response
@@ -941,7 +959,7 @@ class TestSendArticleMessagesClass(BaseTestClass):
             assert "description" in article.keys()
             assert "url" in article.keys()
             assert "picurl" in article.keys()
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @responses.activate
     @add_token_response
@@ -981,7 +999,7 @@ class TestSendTextMessageClass(BaseTestClass):
         assert "text" in body.keys()
         assert "content" in body["text"].keys()
 
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @responses.activate
     @add_token_response
@@ -1004,7 +1022,7 @@ class TestSendImageMessageClass(BaseTestClass):
         assert "image" in body.keys()
         assert "media_id" in body["image"].keys()
 
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @responses.activate
     @add_token_response
@@ -1027,7 +1045,7 @@ class TestSendVoiceMessageClass(BaseTestClass):
         assert "voice" in body.keys()
         assert "media_id" in body["voice"].keys()
 
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @responses.activate
     @add_token_response
@@ -1052,7 +1070,7 @@ class TestMusicMessageClass(BaseTestClass):
         assert "hqmusicurl" in body["music"].keys()
         assert "thumb_media_id" in body["music"].keys()
 
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @responses.activate
     @add_token_response
@@ -1082,7 +1100,7 @@ class TestVideoMessageClass(BaseTestClass):
         assert "video" in body.keys()
         assert "media_id" in body["video"].keys()
 
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @responses.activate
     @add_token_response
@@ -1109,7 +1127,7 @@ class TestNewsMessageClass(BaseTestClass):
         assert "mpnews" in body.keys()
         assert "media_id" in body["mpnews"].keys()
 
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @responses.activate
     @add_token_response
@@ -1131,7 +1149,7 @@ class TestTemplateMessage(BaseTestClass):
         assert "url" in body.keys()
         assert "data" in body.keys()
 
-        return 200, json_header, json.dumps({"errcode": 0, "errmsg": "ok"})
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @responses.activate
     @add_token_response
