@@ -61,14 +61,16 @@ class Client(object):
         return self.request(method="get", url=url, **kwargs)
 
     def post(self, url, **kwargs):
-        if "files" in kwargs and "media" in kwargs["files"] and hasattr(
-            kwargs["files"]["media"], 'name'
-        ):
-            # Fix chinese file name error #292
-            kwargs["files"]["media"] = (
-                urllib.parse.quote(kwargs["files"]["media"].name),
-                kwargs["files"]["media"]
-            )
+        if "files" in kwargs:
+            # Although there is only one key "media" possible in "files" now,
+            # we decide to check every key to support possible keys in the future
+            for key in kwargs["files"].keys():
+                if hasattr(kwargs["files"][key], "name"):
+                    # Fix chinese file name error #292
+                    kwargs["files"][key] = (
+                        urllib.parse.quote(kwargs["files"][key].name),
+                        kwargs["files"][key]
+                    )
         return self.request(method="post", url=url, **kwargs)
 
     def grant_token(self):

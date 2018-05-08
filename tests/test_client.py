@@ -147,6 +147,15 @@ class TestClientBaseClassPost(TestClientBaseClass):
                 files=dict(media=(urllib.parse.quote(GOD_PIC), f))
             )
 
+        # Test another attribute
+        with open(GOD_PIC, 'rb') as f:
+            self.client.post(url=POST_FILE_URL, files={"gugugu": f})
+            self.mocked_request.assert_any_call(
+                method='post',
+                url='http://post_file.werobot.com/',
+                files=dict(gugugu=(urllib.parse.quote(GOD_PIC), f))
+            )
+
     @responses.activate
     @add_token_response
     def test_post_with_file_object_without_name(self):
