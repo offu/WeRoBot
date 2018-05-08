@@ -42,6 +42,12 @@ class Client(object):
     def appsecret(self):
         return self.config.get("APP_SECRET", None)
 
+    @staticmethod
+    def _url_encode_files(file):
+        if hasattr(file, "name"):
+            file = (urllib.parse.quote(file.name), file)
+        return file
+
     def request(self, method, url, **kwargs):
         if "params" not in kwargs:
             kwargs["params"] = {"access_token": self.token}
@@ -64,13 +70,8 @@ class Client(object):
         if "files" in kwargs:
             # Although there is only one key "media" possible in "files" now,
             # we decide to check every key to support possible keys in the future
-            for key in kwargs["files"].keys():
-                if hasattr(kwargs["files"][key], "name"):
-                    # Fix chinese file name error #292
-                    kwargs["files"][key] = (
-                        urllib.parse.quote(kwargs["files"][key].name),
-                        kwargs["files"][key]
-                    )
+            # Fix chinese file name error #292
+            kwargs["files"] = dict(zip(kwargs["files"], map(self._url_encode_files, kwargs["files"].values())))
         return self.request(method="post", url=url, **kwargs)
 
     def grant_token(self):
