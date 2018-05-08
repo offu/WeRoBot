@@ -71,7 +71,12 @@ class Client(object):
             # Although there is only one key "media" possible in "files" now,
             # we decide to check every key to support possible keys in the future
             # Fix chinese file name error #292
-            kwargs["files"] = dict(zip(kwargs["files"], map(self._url_encode_files, kwargs["files"].values())))
+            kwargs["files"] = dict(
+                zip(
+                    kwargs["files"],
+                    map(self._url_encode_files, kwargs["files"].values())
+                )
+            )
         return self.request(method="post", url=url, **kwargs)
 
     def grant_token(self):
