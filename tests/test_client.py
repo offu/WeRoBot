@@ -137,6 +137,24 @@ class TestClientBaseClassPost(TestClientBaseClass):
 
     @responses.activate
     @add_token_response
+    def test_post_with_file_object_without_name(self):
+        POST_FILE_URL = "http://post_file.werobot.com/"
+
+        def empty_post_file_callback(request):
+            return 200, json_header, json.dumps({"test": "test"})
+
+        responses.add_callback(responses.POST, POST_FILE_URL, callback=empty_post_file_callback)
+
+        f = BytesIO(b'gugugu')
+        self.client.post(url=POST_FILE_URL, files={"media": f})
+        self.mocked_request.assert_any_call(
+            method='post',
+            url='http://post_file.werobot.com/',
+            files=dict(media=f)
+        )
+
+    @responses.activate
+    @add_token_response
     def test_post_with_integration_test(self):
         POST_FILE_URL = "http://post_file.werobot.com/"
 

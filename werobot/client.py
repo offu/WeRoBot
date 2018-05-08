@@ -61,7 +61,7 @@ class Client(object):
         return self.request(method="get", url=url, **kwargs)
 
     def post(self, url, **kwargs):
-        if "files" in kwargs and "media" in kwargs["files"]:
+        if "files" in kwargs and "media" in kwargs["files"] and hasattr(kwargs["files"]["media"], 'name'):
             # Fix chinese file name error #292
             kwargs["files"]["media"] = (
                 urllib.parse.quote(kwargs["files"]["media"].name),
