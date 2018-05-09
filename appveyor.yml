@@ -15,6 +15,7 @@ install:
   - redis-server --service-start
   - set DATABASE_MYSQL_USERNAME=root
   - set DATABASE_MYSQL_PASSWORD=Password12!
+  - set PYTHONIOENCODING=utf-8
 before_test:
   - ps: $env:MYSQL_PWD="Password12!"
   - ps: $cmd = '"C:\Program Files\MySQL\MySQL Server 5.7\bin\mysql" -e "create database werobot;" --user=root'
