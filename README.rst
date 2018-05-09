@@ -42,23 +42,3 @@ Hello World
         return 'Hello World!'
 
     robot.run()
-
-Session
-===========
-
-WeRoBot 在 0.4.0 版本中开始支持 Session ， Session 可以用来方便的记录用户数据 ::
-
-    import werobot
-
-    robot = werobot.WeRoBot(token='tokenhere')
-
-    @robot.text
-    def session(message, session):
-        last = session.get("last", None)
-        if last:
-            return last
-        session["last"] = message.content
-        return '这是你第一次和我说话'
-
-    robot.run()
-
