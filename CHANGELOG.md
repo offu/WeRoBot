@@ -1,5 +1,15 @@
 <a name=""></a>
-# [](https://github.com/whtsky/WeRoBot/compare/v1.4.0...v) (2018-04-20)
+# [](https://github.com/whtsky/WeRoBot/compare/v1.4.1...v) (2018-05-09)
+
+
+
+<a name="1.4.1"></a>
+## [1.4.1](https://github.com/whtsky/WeRoBot/compare/v1.4.0...v1.4.1) (2018-05-09)
+
+
+### Bug Fixes
+
+* **client:** urlencode filename before uploading file, fix [#292](https://github.com/whtsky/WeRoBot/issues/292) ([#294](https://github.com/whtsky/WeRoBot/issues/294)) ([c7ab24d](https://github.com/whtsky/WeRoBot/commit/c7ab24d))
 
 
 
