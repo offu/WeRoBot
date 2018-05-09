@@ -1,5 +1,8 @@
 Changelog
 =============
+Version 1.4.1
+----------------
++ 修复 :func:`werobot.client.Client.post` 中文文件名的 bug (`#292 <https://github.com/offu/WeRoBot/issues/292>`_)
 
 Version 1.4.0
 ----------------
