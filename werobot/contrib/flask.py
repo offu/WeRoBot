@@ -42,9 +42,9 @@ def make_view(robot):
         nonce = request.args.get('nonce', '')
         signature = request.args.get('signature', '')
         if not robot.check_signature(
-                timestamp,
-                nonce,
-                signature,
+            timestamp,
+            nonce,
+            signature,
         ):
             return robot.make_error_page(html.escape(request.url)), 403
         if request.method == 'GET':

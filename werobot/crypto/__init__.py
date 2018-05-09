@@ -30,9 +30,11 @@ class PrpCrypto(object):
 
     def __init__(self, key):
         key = to_binary(key)
-        self.cipher = Cipher(algorithms.AES(key),
-                             modes.CBC(key[:16]),
-                             backend=default_backend())
+        self.cipher = Cipher(
+            algorithms.AES(key),
+            modes.CBC(key[:16]),
+            backend=default_backend()
+        )
 
     def get_random_string(self):
         """
@@ -47,12 +49,14 @@ class PrpCrypto(object):
         :param app_id: 微信公众平台的 AppID
         :return: 加密后的字符串
         """
-        text = b"".join([
-            to_binary(self.get_random_string()),
-            struct.pack(b"I", socket.htonl(len(to_binary(text)))),
-            to_binary(text),
-            to_binary(app_id)
-        ])
+        text = b"".join(
+            [
+                to_binary(self.get_random_string()),
+                struct.pack(b"I", socket.htonl(len(to_binary(text)))),
+                to_binary(text),
+                to_binary(app_id)
+            ]
+        )
         text = pkcs7.encode(text)
         encryptor = self.cipher.encryptor()
         ciphertext = to_binary(encryptor.update(text) + encryptor.finalize())
@@ -67,8 +71,8 @@ class PrpCrypto(object):
         """
         text = to_binary(text)
         decryptor = self.cipher.decryptor()
-        plain_text = decryptor.update(
-            base64.b64decode(text)) + decryptor.finalize()
+        plain_text = decryptor.update(base64.b64decode(text)
+                                      ) + decryptor.finalize()
 
         padding = byte2int(plain_text, -1)
         content = plain_text[16:-padding]
@@ -130,9 +134,11 @@ class MessageCrypt(object):
         nonce = nonce or generate_token(5)
         encrypt = to_text(self.prp_crypto.encrypt(reply, self.app_id))
         signature = get_signature(self.token, timestamp, nonce, encrypt)
-        return to_text(self.ENCRYPTED_MESSAGE_XML.format(
-            encrypt=encrypt,
-            signature=signature,
-            timestamp=timestamp,
-            nonce=nonce
-        ))
+        return to_text(
+            self.ENCRYPTED_MESSAGE_XML.format(
+                encrypt=encrypt,
+                signature=signature,
+                timestamp=timestamp,
+                nonce=nonce
+            )
+        )

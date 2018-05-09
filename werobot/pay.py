@@ -46,10 +46,14 @@ class WeixinPayClient(Client):
         params = package.items()
         params.sort()
 
-        sign = md5('&'.join(
-            ["%s=%s" % (str(p[0]), str(p[1]))
-             for p in params + [('key', self.pay_partner_key)]]
-        )).hexdigest().upper()
+        sign = md5(
+            '&'.join(
+                [
+                    "%s=%s" % (str(p[0]), str(p[1]))
+                    for p in params + [('key', self.pay_partner_key)]
+                ]
+            )
+        ).hexdigest().upper()
 
         return urlencode(params + [('sign', sign)])
 
@@ -95,11 +99,13 @@ class WeixinPayClient(Client):
 
         这尼玛 你能相信这些支付接口都是腾讯出的？
         """
-        params.update({
-            'appId': self.appid,
-            'nonceStr': generate_token(8),
-            'timeStamp': int(time.time())
-        })
+        params.update(
+            {
+                'appId': self.appid,
+                'nonceStr': generate_token(8),
+                'timeStamp': int(time.time())
+            }
+        )
 
         _params = [(k.lower(), str(v)) for k, v in params.items()]
         _params += [('accesstoken', accesstoken)]
@@ -156,8 +162,7 @@ class WeixinPayClient(Client):
         params['sign_method'] = 'sha1'
 
         return self.post(
-            url="https://api.weixin.qq.com/pay/delivernotify",
-            data=params
+            url="https://api.weixin.qq.com/pay/delivernotify", data=params
         )
 
     def pay_order_query(self, out_trade_no):
@@ -177,8 +182,12 @@ class WeixinPayClient(Client):
         _package = package.items()
         _package.sort()
 
-        s = '&'.join(["%s=%s" % (p[0], str(p[1]))
-                      for p in (_package + [('key', self.pay_partner_key)])])
+        s = '&'.join(
+            [
+                "%s=%s" % (p[0], str(p[1]))
+                for p in (_package + [('key', self.pay_partner_key)])
+            ]
+        )
         package['sign'] = md5(s).hexdigest().upper()
 
         package = '&'.join(["%s=%s" % (p[0], p[1]) for p in package.items()])
@@ -191,6 +200,5 @@ class WeixinPayClient(Client):
         params['sign_method'] = 'sha1'
 
         return self.post(
-            url="https://api.weixin.qq.com/pay/orderquery",
-            data=params
+            url="https://api.weixin.qq.com/pay/orderquery", data=params
         )
