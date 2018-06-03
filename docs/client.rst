@@ -177,6 +177,10 @@
 
 .. automethod:: Client.get_media_list
 
+模板消息
+------------
+.. automethod:: Client.send_template_message
+
 
 返回码都是什么意思？
 --------------------------
