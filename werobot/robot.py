@@ -547,7 +547,7 @@ class BaseRoBot(object):
 
             @self.text
             def _f(message, session=None):
-                _check_result =_check_content(message)
+                _check_result = _check_content(message)
                 if _check_result:
                     return func(*[message, session, _check_result][:argc])
 
