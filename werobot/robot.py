@@ -547,8 +547,9 @@ class BaseRoBot(object):
 
             @self.text
             def _f(message, session=None):
-                if _check_content(message):
-                    return func(*[message, session][:argc])
+                _check_result =_check_content(message)
+                if _check_result:
+                    return func(*[message, session, _check_result][:argc])
 
     def parse_message(
         self, body, timestamp=None, nonce=None, msg_signature=None
