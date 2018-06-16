@@ -1,0 +1,12 @@
+comment: "> Issue tracker 只用于反馈 bug 和 feature request。在提问前请仔细阅读我们的文档，并推荐阅读《提问的智慧》：https://github.com/ruby-china/How-To-Ask-Questions-The-Smart-Way/blob/master/README-zh_CN.md"
+issueConfigs:
+- content:
+  - 对 Bug 的描述
+  - 环境
+  - 复现代码或 repo 链接
+  - 复现步骤
+  - 其他信息
+- content:
+  - 遇到的问题
+  - 解决方案
+  - 其他内容

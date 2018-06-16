@@ -160,11 +160,17 @@ robot.filter ——  回应有指定文本的消息
 
     @robot.filter(re.compile(".*?bb.*?"))
     def b():
-        return "正文中含有 b "
+        return "正文中含有 bb "
 
     @robot.filter(re.compile(".*?c.*?"), "d")
     def c():
         return "正文中含有 c 或正文为 d"
+
+    @robot.filter(re.compile("(.*)?e(.*)?"), "f")
+    def d(message, session, match):
+        if match:
+            return "正文为 " + match.group(1) + "e" + match.group(2)
+        return "正文为 f"
 
 这段代码等价于 ::
 
@@ -176,14 +182,22 @@ robot.filter ——  回应有指定文本的消息
 
 
     @robot.text
-    def b():
+    def b(message):
         if re.compile(".*?bb.*?").match(message.content):
             return "正文中含有 b "
 
     @robot.text
-    def c():
+    def c(message):
         if re.compile(".*?c.*?").match(message.content) or message.content == "d":
             return "正文中含有 c 或正文为 d"
+
+    @robot.text
+    def d(message):
+        match = re.compile("(.*)?e(.*)?").match(message.content)
+        if match:
+            return "正文为 " + match.group(1) + "e" + match.group(2)
+        if  message.content == "f":
+            return "正文为 f"
 
 如果你想通过修饰符以外的方法添加 filter，可以使用 :func:`~werobot.robot.BaseRoBot.add_filter` 方法 ::
 
