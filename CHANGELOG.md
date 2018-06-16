@@ -1,5 +1,15 @@
 <a name=""></a>
-# [](https://github.com/whtsky/WeRoBot/compare/v1.4.1...v) (2018-05-09)
+# [](https://github.com/whtsky/WeRoBot/compare/v1.5.0...v) (2018-06-16)
+
+
+
+<a name="1.5.0"></a>
+# [1.5.0](https://github.com/whtsky/WeRoBot/compare/v1.4.1...v1.5.0) (2018-06-16)
+
+
+### Features
+
+* **robot:** add match result to regex handler ([58ef855](https://github.com/whtsky/WeRoBot/commit/58ef855))
 
 
 
