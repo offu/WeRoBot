@@ -177,8 +177,10 @@ def test_filter():
         pass
     robot = WeRoBot(enable_session=False)
 
-    @robot.filter("帮助", "跪求帮助", re.compile(".*?help.*?"))
-    def _():
+    @robot.filter("帮助", "跪求帮助", re.compile("(.*)?help.*?"))
+    def _(message, session, match):
+        if match and match.group(1) == "小姐姐":
+            return "本小姐就帮你一下"
         return "就不帮"
 
     assert len(robot._handlers["text"]) == 3
@@ -195,6 +197,7 @@ def test_filter():
     assert tester.send_xml(_make_xml("帮助"))._args['content'] == u"就不帮"
     assert tester.send_xml(_make_xml("跪求帮助"))._args['content'] == u"就不帮"
     assert tester.send_xml(_make_xml("ooohelp"))._args['content'] == u"就不帮"
+    assert tester.send_xml(_make_xml("小姐姐help"))._args['content'] == u"本小姐就帮你一下"
 
 
 def test_register_not_callable_object():
