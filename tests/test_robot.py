@@ -177,10 +177,12 @@ def test_filter():
         pass
     robot = WeRoBot(enable_session=False)
 
-    @robot.filter("帮助", "跪求帮助", re.compile("(.*)?help.*?"))
+    @robot.filter("帮助", "跪求帮助", re.compile("(.*?)help.*?"))
     def _(message, session, match):
-        if match and match.group(1) == "小姐姐":
-            return "本小姐就帮你一下"
+        if match:
+            print(match.groups())
+            if match.group(1) == "小姐姐":
+                return "本小姐就帮你一下"
         return "就不帮"
 
     assert len(robot._handlers["text"]) == 3
