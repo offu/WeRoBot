@@ -12,9 +12,7 @@
 贡献代码
 ----------
 
-如果你希望为 WeRoBot 贡献代码， 请现在 GitHub 上 `Fork <https://github.com/whtsky/WeRoBot>`_ WeRoBot 仓库， 然后在 ``develop`` 分支上开一个新的分支。
-
-.. note:: ``master`` 分支存放着 WeRoBot 最新 release 版本的代码。 所有的开发工作都应该在 ``develop`` 分支上展开
+如果你希望为 WeRoBot 贡献代码， 请现在 GitHub 上 `Fork <https://github.com/whtsky/WeRoBot>`_ WeRoBot 仓库， 然后在 ``master`` 分支上开一个新的分支。
 
 如果你的贡献的代码是修复 Bug ， 请确认这个 Bug 已经有了对应的 Issue （如果没有， 请先创建一个）； 然后在 Pull Request 的描述里面引用这个 Bug 的 Issue ID ， 就像这样(假设 Issue ID 为 153) ::
 
