@@ -549,6 +549,8 @@ class BaseRoBot(object):
             def _f(message, session=None):
                 _check_result = _check_content(message)
                 if _check_result:
+                    if isinstance(_check_result, bool):
+                        _check_result = None
                     return func(*[message, session, _check_result][:argc])
 
     def parse_message(
