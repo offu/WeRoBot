@@ -77,6 +77,7 @@
 .. automethod:: Client.send_music_message
 .. automethod:: Client.send_article_message
 .. automethod:: Client.send_news_message
+.. automethod:: Client.send_miniprogrampage_message
 
 用户管理
 ------------

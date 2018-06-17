@@ -2,9 +2,6 @@ version: '{branch}-{build}'
 build: off
 cache:
   - '%LOCALAPPDATA%\pip\Cache'
-services:
-  - mongodb
-  - mysql
 init:
   - "ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%"
   - ps: "ls C:/Python*"
