@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import os
-import pymongo
-import redis
+import mongomock
+import mockredis
 import pytest
 import six
-import pymysql
+import sqlite3
 
 import werobot
 import werobot.testing
@@ -100,19 +100,42 @@ def test_session_storage_delete():
         del session['s']
 
 
+class MockPyMySQL:
+    def __init__(self):
+        self.db = sqlite3.connect("werobot_session.sqlite3")
+        self.db.text_factory = str
+        from werobot.session.sqlitestorage import __CREATE_TABLE_SQL__
+        self.db.execute(__CREATE_TABLE_SQL__)
+        self.cache_result = None
+
+    def cursor(self):
+        return self
+
+    def execute(self, *args, **kwargs):
+        if "CREATE TABLE" not in args[0]:
+            args = list(args)
+            args[0] = args[0].replace('%s', '?')
+            if "SELECT" in args[0]:
+                self.cache_result = self.db.execute(*args, **kwargs).fetchone()
+            elif "INSERT" in args[0]:
+                args = ["INSERT OR REPLACE INTO WeRoBot (id, value) VALUES (?,?);", (args[1][0], args[1][1])]
+                self.db.execute(*args, **kwargs)
+            else:
+                self.db.execute(*args, **kwargs)
+
+    def fetchone(self):
+        return self.cache_result
+
+    def commit(self):
+        return self.db.commit()
+
+
 @pytest.mark.parametrize("storage", [
     filestorage.FileStorage(),
-    mongodbstorage.MongoDBStorage(pymongo.MongoClient().t.t),
-    redisstorage.RedisStorage(redis.Redis()),
+    mongodbstorage.MongoDBStorage(mongomock.MongoClient().t.t),
+    redisstorage.RedisStorage(mockredis.mock_redis_client()),
     sqlitestorage.SQLiteStorage(),
-    mysqlstorage.MySQLStorage(
-        conn=pymysql.connect(
-            user=os.environ.get('DATABASE_MYSQL_USERNAME', ''),
-            password=os.environ.get('DATABASE_MYSQL_PASSWORD', ''),
-            db='werobot',
-            host='127.0.0.1',
-            charset='utf8'
-        ))
+    mysqlstorage.MySQLStorage(MockPyMySQL())
 ])
 def test_storage(storage):
     assert storage.get("喵") == {}

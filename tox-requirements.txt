@@ -1,6 +1,5 @@
 -r requirements.txt
 coverage==4.1
-pymongo==3.3.0
 redis==2.10.5
 Sphinx==1.4.5
 cryptography==1.7.1
@@ -9,6 +8,7 @@ webtest
 flask
 tornado
 responses
-PyMySQL
 multipart
 pytest-mock
+mongomock
+mockredispy
