@@ -904,6 +904,37 @@ class Client(object):
             }
         )
 
+    def send_miniprogrampage_message(
+        self, user_id, title, appid, pagepath, thumb_media_id, kf_account=None
+    ):
+        """
+        发送小程序卡片（要求小程序与公众号已关联）
+
+        :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
+        :param title: 小程序卡片的标题
+        :param appid: 小程序的 appid，要求小程序的 appid 需要与公众号有关联关系
+        :param pagepath: 小程序的页面路径，跟 app.json 对齐，支持参数，比如 pages/index/index?foo=bar
+        :param thumb_media_id: 小程序卡片图片的媒体 ID，小程序卡片图片建议大小为 520*416
+        :param kf_account: 需要以某个客服帐号来发消息时指定的客服账户
+        :return: 返回的 JSON 数据包
+        """
+        data = {
+            "touser": user_id,
+            "msgtype": "miniprogrampage",
+            "miniprogrampage": {
+                "title": title,
+                "appid": appid,
+                "pagepath": pagepath,
+                "thumb_media_id": thumb_media_id
+            }
+        }
+        if kf_account is not None:
+            data["customservice"] = {"kf_account": kf_account}
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/message/custom/send",
+            data=data
+        )
+
     def create_qrcode(self, data):
         """
         创建二维码。

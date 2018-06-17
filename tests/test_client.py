@@ -1172,3 +1172,36 @@ class TestTemplateMessage(BaseTestClass):
             url="test_url"
         )
         assert r == {"errcode": 0, "errmsg": "ok"}
+
+
+class TestMiniprogrampageMessage(BaseTestClass):
+    URL = "https://api.weixin.qq.com/cgi-bin/message/custom/send"
+
+    @staticmethod
+    def miniprogrampage_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "touser" in body.keys()
+        assert "msgtype" in body.keys()
+        assert body["msgtype"] == "miniprogrampage"
+        assert "miniprogrampage" in body.keys()
+        miniprogrampage = body["miniprogrampage"]
+        assert "title" in miniprogrampage.keys()
+        assert "appid" in miniprogrampage.keys()
+        assert "pagepath" in miniprogrampage.keys()
+        assert "thumb_media_id" in miniprogrampage.keys()
+
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    @responses.activate
+    @add_token_response
+    def test_send_miniprogrampage_message(self):
+        responses.add_callback(responses.POST, self.URL, callback=self.miniprogrampage_callback)
+
+        r = self.client.send_miniprogrampage_message(
+            user_id="test_id",
+            title="test_title",
+            appid="test_appid",
+            pagepath="test_pagepath",
+            thumb_media_id="test_id"
+        )
+        assert r == {"errcode": 0, "errmsg": "ok"}
