@@ -1,14 +1,13 @@
 -r requirements.txt
 coverage==4.5.1
-redis==2.10.5
 Sphinx==1.4.5
 cryptography==1.7.1
-pytest
-webtest
-flask
+pytest==3.6.1
+WebTest==2.0.29
+Flask
 tornado
-responses
-multipart
-pytest-mock
-mongomock
-mockredispy
+responses==0.9.0
+multipart==0.1
+pytest-mock==1.10.0
+mongomock==3.10.0
+mockredispy==2.9.3
