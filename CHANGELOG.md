@@ -1,5 +1,15 @@
 <a name=""></a>
-# [](https://github.com/whtsky/WeRoBot/compare/v1.5.0...v) (2018-06-16)
+# [](https://github.com/whtsky/WeRoBot/compare/v1.6.0...v) (2018-06-18)
+
+
+
+<a name="1.6.0"></a>
+# [1.6.0](https://github.com/whtsky/WeRoBot/compare/v1.5.0...v1.6.0) (2018-06-18)
+
+
+### Features
+
+* **client:** add sending miniprogrampage custom message ([#309](https://github.com/whtsky/WeRoBot/issues/309)) ([4298fa7](https://github.com/whtsky/WeRoBot/commit/4298fa7)), closes [#298](https://github.com/whtsky/WeRoBot/issues/298)
 
 
 
