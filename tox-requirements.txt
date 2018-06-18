@@ -1,5 +1,5 @@
 -r requirements.txt
-coverage==4.1
+coverage==4.5.1
 Sphinx==1.4.5
 cryptography==1.7.1
 pytest==3.6.1
