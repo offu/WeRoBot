@@ -1,5 +1,10 @@
 Changelog
 =============
+
+Version 1.6.0
+----------------
++ 增加对发送小程序卡片的支持： :func:`werobot.client.Client.send_miniprogrampage_message` ( `#309 <https://github.com/offu/WeRoBot/pull/309>`_ by `@helloqiu <https://github.com/helloqiu>`_)
+
 Version 1.5.0
 ----------------
 + 为正则匹配的 handler 加入匹配后的 ``Match Object`` 作为参数(`#305 <https://github.com/offu/WeRoBot/pull/305>`_)(`Author: cxgreat2014 <https://github.com/cxgreat2014>`_)
