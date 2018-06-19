@@ -30,3 +30,4 @@ notifications:
   email: false
   slack:
     secure: A2AVwYqUoh2hza7eQ2yl5CNWEI6ozLZGolyh1U1Iez4t/lKD9+Y1FrcmsEjYoTYy0B2Q55RHxNZoSq5tVGb5Ap1f/bRakAWOmiedja5obYzIUqI+lJPXZBvxdlobOzuYUxRZOFCMndkN6UAzdJx2gaVdtj4iH/DxoVL6wK2wlfA=
+  webhooks: https://www.travisbuddy.com/
