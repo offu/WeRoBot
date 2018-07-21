@@ -24,12 +24,7 @@ jobs:
       - restore_cache:
           key: v1-python2.7-{{ checksum "dependency.txt" }}
       - run:
-        command: |
-        pip install virtualenv
-        virtualenv venv
-        ./venv/bin/activate
-        pip install -r tox-requirements.txt
-        python setup.py test
+        command: sh .circleci/test.sh
       - save_cache:
           key: v1-python2.7-{{ checksum "dependency.txt" }}
           paths:
@@ -48,12 +43,7 @@ jobs:
       - restore_cache:
           key: v1-python3.4-{{ checksum "dependency.txt" }}
       - run:
-        command: |
-        pip install virtualenv
-        virtualenv venv
-        ./venv/bin/activate
-        pip install -r tox-requirements.txt
-        python setup.py test
+        command: sh .circleci/test.sh
       - save_cache:
           key: v1-python3.4-{{ checksum "dependency.txt" }}
           paths:
@@ -72,12 +62,7 @@ jobs:
       - restore_cache:
           key: v1-python3.5-{{ checksum "dependency.txt" }}
       - run:
-        command: |
-        pip install virtualenv
-        virtualenv venv
-        ./venv/bin/activate
-        pip install -r tox-requirements.txt
-        python setup.py test
+        command: sh .circleci/test.sh
       - save_cache:
           key: v1-python3.5-{{ checksum "dependency.txt" }}
           paths:
@@ -96,12 +81,7 @@ jobs:
       - restore_cache:
           key: v1-python3.6-{{ checksum "dependency.txt" }}
       - run:
-        command: |
-        pip install virtualenv
-        virtualenv venv
-        ./venv/bin/activate
-        pip install -r tox-requirements.txt
-        python setup.py test
+        command: sh .circleci/test.sh
       - save_cache:
           key: v1-python3.6-{{ checksum "dependency.txt" }}
           paths:
@@ -120,12 +100,7 @@ jobs:
       - restore_cache:
           key: v1-python3.7-{{ checksum "dependency.txt" }}
       - run:
-        command: |
-        pip install virtualenv
-        virtualenv venv
-        ./venv/bin/activate
-        pip install -r tox-requirements.txt
-        python setup.py test
+        command: sh .circleci/test.sh
       - save_cache:
           key: v1-python3.7-{{ checksum "dependency.txt" }}
           paths:
@@ -144,12 +119,7 @@ jobs:
       - restore_cache:
           key: v1-pypy-{{ checksum "dependency.txt" }}
       - run:
-        command: |
-        pip install virtualenv
-        virtualenv venv
-        ./venv/bin/activate
-        pip install -r tox-requirements.txt
-        python setup.py test
+        command: sh .circleci/test.sh
       - save_cache:
           key: v1-pypy-{{ checksum "dependency.txt" }}
           paths:
