@@ -24,7 +24,7 @@ jobs:
       - restore_cache:
           key: v1-python2.7-{{ checksum "dependency.txt" }}
       - run:
-        command: sh .circleci/test.sh
+          command: sh .circleci/test.sh
       - save_cache:
           key: v1-python2.7-{{ checksum "dependency.txt" }}
           paths:
@@ -43,7 +43,7 @@ jobs:
       - restore_cache:
           key: v1-python3.4-{{ checksum "dependency.txt" }}
       - run:
-        command: sh .circleci/test.sh
+          command: sh .circleci/test.sh
       - save_cache:
           key: v1-python3.4-{{ checksum "dependency.txt" }}
           paths:
@@ -62,7 +62,7 @@ jobs:
       - restore_cache:
           key: v1-python3.5-{{ checksum "dependency.txt" }}
       - run:
-        command: sh .circleci/test.sh
+          command: sh .circleci/test.sh
       - save_cache:
           key: v1-python3.5-{{ checksum "dependency.txt" }}
           paths:
@@ -81,7 +81,7 @@ jobs:
       - restore_cache:
           key: v1-python3.6-{{ checksum "dependency.txt" }}
       - run:
-        command: sh .circleci/test.sh
+          command: sh .circleci/test.sh
       - save_cache:
           key: v1-python3.6-{{ checksum "dependency.txt" }}
           paths:
@@ -100,7 +100,7 @@ jobs:
       - restore_cache:
           key: v1-python3.7-{{ checksum "dependency.txt" }}
       - run:
-        command: sh .circleci/test.sh
+          command: sh .circleci/test.sh
       - save_cache:
           key: v1-python3.7-{{ checksum "dependency.txt" }}
           paths:
@@ -119,7 +119,7 @@ jobs:
       - restore_cache:
           key: v1-pypy-{{ checksum "dependency.txt" }}
       - run:
-        command: sh .circleci/test.sh
+          command: sh .circleci/test.sh
       - save_cache:
           key: v1-pypy-{{ checksum "dependency.txt" }}
           paths:
