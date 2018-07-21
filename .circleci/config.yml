@@ -1,0 +1,149 @@
+version: 2
+jobs:
+  checkout_code:
+    docker:
+     - image: python:latest
+    working_directory: ~/werobot
+    steps:
+      - checkout
+      - save_cache:
+          key: v1-repo{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - ~/werobot
+  python2.7:
+    docker:
+      - image: python:2.7-slim
+      - image: mongo:latest
+      - image: circleci/mysql
+      - image: redis:latest
+    working_directory: ~/werobot
+    steps:
+      - restore_cache:
+          key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - run: cat requirements.txt dev-requirements.txt tox-requirements.txt > dependency.txt
+      - restore_cache:
+          key: v1-python2.7-{{ checksum "dependency.txt" }}
+      - run:
+          command: mv .circleci/test.sh ./ && sh test.sh
+      - save_cache:
+          key: v1-python2.7-{{ checksum "dependency.txt" }}
+          paths:
+            - venv
+  python3.4:
+    docker:
+      - image: python:3.4-slim
+      - image: mongo:latest
+      - image: mysql:latest
+      - image: redis:latest
+    working_directory: ~/werobot
+    steps:
+      - restore_cache:
+          key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - run: cat requirements.txt dev-requirements.txt tox-requirements.txt > dependency.txt
+      - restore_cache:
+          key: v1-python3.4-{{ checksum "dependency.txt" }}
+      - run:
+          command: sh .circleci/test.sh
+      - save_cache:
+          key: v1-python3.4-{{ checksum "dependency.txt" }}
+          paths:
+            - venv
+  python3.5:
+    docker:
+      - image: python:3.5-slim
+      - image: mongo:latest
+      - image: mysql:latest
+      - image: redis:latest
+    working_directory: ~/werobot
+    steps:
+      - restore_cache:
+          key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - run: cat requirements.txt dev-requirements.txt tox-requirements.txt > dependency.txt
+      - restore_cache:
+          key: v1-python3.5-{{ checksum "dependency.txt" }}
+      - run:
+          command: sh .circleci/test.sh
+      - save_cache:
+          key: v1-python3.5-{{ checksum "dependency.txt" }}
+          paths:
+            - venv
+  python3.6:
+    docker:
+      - image: python:3.6-slim
+      - image: mongo:latest
+      - image: mysql:latest
+      - image: redis:latest
+    working_directory: ~/werobot
+    steps:
+      - restore_cache:
+          key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - run: cat requirements.txt dev-requirements.txt tox-requirements.txt > dependency.txt
+      - restore_cache:
+          key: v1-python3.6-{{ checksum "dependency.txt" }}
+      - run:
+          command: sh .circleci/test.sh
+      - save_cache:
+          key: v1-python3.6-{{ checksum "dependency.txt" }}
+          paths:
+            - venv
+  python3.7:
+    docker:
+      - image: python:3.7-slim
+      - image: mongo:latest
+      - image: mysql:latest
+      - image: redis:latest
+    working_directory: ~/werobot
+    steps:
+      - restore_cache:
+          key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - run: cat requirements.txt dev-requirements.txt tox-requirements.txt > dependency.txt
+      - restore_cache:
+          key: v1-python3.7-{{ checksum "dependency.txt" }}
+      - run:
+          command: sh .circleci/test.sh
+      - save_cache:
+          key: v1-python3.7-{{ checksum "dependency.txt" }}
+          paths:
+            - venv
+  pypy:
+    docker:
+      - image: pypy:2-slim
+      - image: mongo:latest
+      - image: mysql:latest
+      - image: redis:latest
+    working_directory: ~/werobot
+    steps:
+      - restore_cache:
+          key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - run: cat requirements.txt dev-requirements.txt tox-requirements.txt > dependency.txt
+      - restore_cache:
+          key: v1-pypy-{{ checksum "dependency.txt" }}
+      - run:
+          command: sh .circleci/test.sh
+      - save_cache:
+          key: v1-pypy-{{ checksum "dependency.txt" }}
+          paths:
+            - venv
+workflows:
+  version: 2
+  checkout-and-test:
+    jobs:
+      - checkout_code
+      - python2.7:
+          requires:
+            - checkout_code
+      - python3.4:
+          requires:
+            - checkout_code
+      - python3.5:
+          requires:
+            - checkout_code
+      - python3.6:
+          requires:
+            - checkout_code
+      - python3.7:
+          requires:
+            - checkout_code
+      - pypy:
+          requires:
+            - checkout_code
