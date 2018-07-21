@@ -130,20 +130,20 @@ workflows:
     jobs:
       - checkout_code
       - python2.7:
-        requires:
-          - checkout_code
+          requires:
+            - checkout_code
       - python3.4:
-        requires:
-          - checkout_code
+          requires:
+            - checkout_code
       - python3.5:
-        requires:
-          - checkout_code
+          requires:
+            - checkout_code
       - python3.6:
-        requires:
-          - checkout_code
+          requires:
+            - checkout_code
       - python3.7:
-        requires:
-          - checkout_code
+          requires:
+            - checkout_code
       - pypy:
-        requires:
-          - checkout_code
+          requires:
+            - checkout_code
