@@ -14,7 +14,7 @@ jobs:
     docker:
       - image: python:2.7-slim
       - image: mongo:latest
-      - image: mysql:latest
+      - image: circleci/mysql
       - image: redis:latest
     working_directory: ~/werobot
     steps:
@@ -24,7 +24,7 @@ jobs:
       - restore_cache:
           key: v1-python2.7-{{ checksum "dependency.txt" }}
       - run:
-          command: sh .circleci/test.sh
+          command: mv .circleci/test.sh ./ && sh test.sh
       - save_cache:
           key: v1-python2.7-{{ checksum "dependency.txt" }}
           paths:
