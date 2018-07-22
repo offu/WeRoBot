@@ -1,0 +1,111 @@
+version: 2
+jobs:
+  python2.7:
+    docker:
+      - image: python:2
+      - image: mongo:latest
+      - image: circleci/mysql
+      - image: redis:latest
+    working_directory: ~/werobot
+    steps:
+      - checkout
+      - run: cat requirements.txt dev-requirements.txt tox-requirements.txt > dependency.txt
+      - restore_cache:
+          key: v1-python2-{{ checksum "dependency.txt" }}
+      - run:
+          command: |
+            pip install tox codecov
+            tox -l | grep py2 | tr '\n' ',' | xargs tox -e && codecov
+      - save_cache:
+          key: v1-python2-{{ checksum "dependency.txt" }}
+          paths:
+            - .tox
+  python3.4:
+    docker:
+      - image: python:3.4
+      - image: mongo:latest
+      - image: circleci/mysql
+      - image: redis:latest
+    working_directory: ~/werobot
+    steps:
+      - checkout
+      - run: cat requirements.txt dev-requirements.txt tox-requirements.txt > dependency.txt
+      - restore_cache:
+          key: v1-python3.4-{{ checksum "dependency.txt" }}
+      - run:
+          command: |
+            pip install tox codecov
+            tox -l | grep py34 | tr '\n' ',' | xargs tox -e && codecov
+      - save_cache:
+          key: v1-python3.4-{{ checksum "dependency.txt" }}
+          paths:
+            - .tox
+  python3.5:
+    docker:
+      - image: python:3.5
+      - image: mongo:latest
+      - image: circleci/mysql
+      - image: redis:latest
+    working_directory: ~/werobot
+    steps:
+      - checkout
+      - run: cat requirements.txt dev-requirements.txt tox-requirements.txt > dependency.txt
+      - restore_cache:
+          key: v1-python3.5-{{ checksum "dependency.txt" }}
+      - run:
+          command: |
+            pip install tox codecov
+            tox -l | grep py35 | tr '\n' ',' | xargs tox -e && codecov
+      - save_cache:
+          key: v1-python3.5-{{ checksum "dependency.txt" }}
+          paths:
+            - .tox
+  python3.6:
+    docker:
+      - image: python:3.6
+      - image: mongo:latest
+      - image: circleci/mysql
+      - image: redis:latest
+    working_directory: ~/werobot
+    steps:
+      - checkout
+      - run: cat requirements.txt dev-requirements.txt tox-requirements.txt > dependency.txt
+      - restore_cache:
+          key: v1-python3.6-{{ checksum "dependency.txt" }}
+      - run:
+          command: |
+            pip install tox codecov
+            tox -l | grep py36 | tr '\n' ',' | xargs tox -e && codecov
+      - save_cache:
+          key: v1-python3.6-{{ checksum "dependency.txt" }}
+          paths:
+            - .tox
+  pypy:
+    docker:
+      - image: pypy:2
+      - image: mongo:latest
+      - image: circleci/mysql
+      - image: redis:latest
+    working_directory: ~/werobot
+    steps:
+      - checkout
+      - run: cat requirements.txt dev-requirements.txt tox-requirements.txt > dependency.txt
+      - restore_cache:
+          key: v1-pypy-{{ checksum "dependency.txt" }}
+      - run:
+          command: |
+            pip install tox codecov
+            tox -l | grep pypy | tr '\n' ',' | xargs tox -e && codecov
+      - save_cache:
+          key: v1-pypy-{{ checksum "dependency.txt" }}
+          paths:
+            - .tox
+workflows:
+  version: 2
+  test:
+    jobs:
+      - python2.7
+      - python3.4
+      - python3.5
+      - python3.6
+      - pypy
