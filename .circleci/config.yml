@@ -3,9 +3,6 @@ jobs:
   python2.7:
     docker:
       - image: python:2
-      - image: mongo:latest
-      - image: circleci/mysql
-      - image: redis:latest
     working_directory: ~/werobot
     steps:
       - checkout
@@ -23,9 +20,6 @@ jobs:
   python3.4:
     docker:
       - image: python:3.4
-      - image: mongo:latest
-      - image: circleci/mysql
-      - image: redis:latest
     working_directory: ~/werobot
     steps:
       - checkout
@@ -43,9 +37,6 @@ jobs:
   python3.5:
     docker:
       - image: python:3.5
-      - image: mongo:latest
-      - image: circleci/mysql
-      - image: redis:latest
     working_directory: ~/werobot
     steps:
       - checkout
@@ -63,9 +54,6 @@ jobs:
   python3.6:
     docker:
       - image: python:3.6
-      - image: mongo:latest
-      - image: circleci/mysql
-      - image: redis:latest
     working_directory: ~/werobot
     steps:
       - checkout
@@ -83,9 +71,6 @@ jobs:
   pypy:
     docker:
       - image: pypy:2
-      - image: mongo:latest
-      - image: circleci/mysql
-      - image: redis:latest
     working_directory: ~/werobot
     steps:
       - checkout
