@@ -76,7 +76,7 @@ jobs:
       - checkout
       - run: cat requirements.txt dev-requirements.txt tox-requirements.txt > dependency.txt
       - restore_cache:
-          key: v1-python3.6-{{ checksum "dependency.txt" }}
+          key: v1-python3.7-{{ checksum "dependency.txt" }}
       - run:
           command: |
             pip install tox codecov
