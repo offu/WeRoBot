@@ -10,7 +10,7 @@ jobs:
           key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ~/werobot
-  python2:
+  python2.7:
     docker:
       - image: python:2
       - image: mongo:latest
