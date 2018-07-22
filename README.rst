@@ -6,7 +6,7 @@ WeRoBot
     :target: https://travis-ci.org/offu/WeRoBot
 .. image:: https://img.shields.io/appveyor/ci/whtsky/WeRoBot/master.svg?maxAge=3600&label=Windows
     :target: https://ci.appveyor.com/project/whtsky/WeRoBot
-.. image:: https://circleci.com/gh/offu/WeRoBot.svg?style=svg
+.. image:: https://img.shields.io/circleci/project/github/offu/WeRoBot.svg
     :target: https://circleci.com/gh/offu/WeRoBot
 .. image:: https://codecov.io/gh/offu/WeRoBot/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/offu/WeRoBot
