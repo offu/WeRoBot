@@ -9,5 +9,5 @@ tornado
 responses==0.9.0
 multipart==0.1
 pytest-mock==1.10.0
-git+git://github.com/mongomock/mongomock.git@develop
+git+git://github.com/mongomock/mongomock.git@09a615cdbefb8e7962faa4f540ef4efae14253e7
 mockredispy==2.9.3
