@@ -1,7 +1,7 @@
 -r requirements.txt
 coverage==4.5.1
 Sphinx==1.7.6
-cryptography==2.2.2
+cryptography==2.3
 pytest==3.6.4
 WebTest==2.0.30
 Flask
