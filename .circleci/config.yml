@@ -11,7 +11,7 @@ jobs:
           key: v1-python2-{{ checksum "dependency.txt" }}
       - run:
           command: |
-            pip install tox codecov
+            cat dev-requirements.txt | grep tox== | xargs pip install codecov
             tox -l | grep py2 | tr '\n' ',' | xargs tox -e && codecov
       - save_cache:
           key: v1-python2-{{ checksum "dependency.txt" }}
@@ -28,7 +28,7 @@ jobs:
           key: v1-python3.4-{{ checksum "dependency.txt" }}
       - run:
           command: |
-            pip install tox codecov
+            cat dev-requirements.txt | grep tox== | xargs pip install codecov
             tox -l | grep py34 | tr '\n' ',' | xargs tox -e && codecov
       - save_cache:
           key: v1-python3.4-{{ checksum "dependency.txt" }}
@@ -45,7 +45,7 @@ jobs:
           key: v1-python3.5-{{ checksum "dependency.txt" }}
       - run:
           command: |
-            pip install tox codecov
+            cat dev-requirements.txt | grep tox== | xargs pip install codecov
             tox -l | grep py35 | tr '\n' ',' | xargs tox -e && codecov
       - save_cache:
           key: v1-python3.5-{{ checksum "dependency.txt" }}
@@ -62,7 +62,7 @@ jobs:
           key: v1-python3.6-{{ checksum "dependency.txt" }}
       - run:
           command: |
-            pip install tox codecov
+            cat dev-requirements.txt | grep tox== | xargs pip install codecov
             tox -l | grep py36 | tr '\n' ',' | xargs tox -e && codecov
       - save_cache:
           key: v1-python3.6-{{ checksum "dependency.txt" }}
@@ -79,7 +79,7 @@ jobs:
           key: v1-python3.7-{{ checksum "dependency.txt" }}
       - run:
           command: |
-            pip install tox codecov
+            cat dev-requirements.txt | grep tox== | xargs pip install codecov
             tox -l | grep py37 | tr '\n' ',' | xargs tox -e && codecov
       - save_cache:
           key: v1-python3.7-{{ checksum "dependency.txt" }}
@@ -96,7 +96,7 @@ jobs:
           key: v1-pypy-{{ checksum "dependency.txt" }}
       - run:
           command: |
-            pip install tox codecov
+            cat dev-requirements.txt | grep tox== | xargs pip install codecov
             tox -l | grep pypy | tr '\n' ',' | xargs tox -e && codecov
       - save_cache:
           key: v1-pypy-{{ checksum "dependency.txt" }}
@@ -113,8 +113,8 @@ jobs:
           key: v1-docs-{{ checksum "dependency.txt" }}
       - run:
           command: |
-            pip install tox codecov
-            tox -e docs && codecov
+            cat dev-requirements.txt | grep tox== | xargs pip install
+            tox -e docs
       - save_cache:
           key: v1-docs-{{ checksum "dependency.txt" }}
           paths:
@@ -127,7 +127,7 @@ jobs:
       - checkout
       - run:
           command: |
-            pip install yapf
+            cat dev-requirements.txt | grep yapf== | xargs pip install
             yapf -p -r -d werobot/
 workflows:
   version: 2
