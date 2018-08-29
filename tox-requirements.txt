@@ -2,7 +2,7 @@
 coverage==4.5.1
 Sphinx==1.7.7
 cryptography==2.3.1
-pytest==3.7.3
+pytest==3.7.4
 WebTest==2.0.30
 Flask
 tornado
