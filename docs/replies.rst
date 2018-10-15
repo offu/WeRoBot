@@ -111,7 +111,7 @@ url           点击图片后跳转链接
     )
     reply.add_article(article)
 
-.. note:: 每个ArticlesReply中 **最多添加10个Article** 。
+.. note:: 根据微信公众平台的 `最新公告 <https://mp.weixin.qq.com/cgi-bin/announce?action=getannouncement&announce_id=115383153198yAvN&lang=zh_CN>`_，每个ArticlesReply中 **最多添加1个Article** 。
 
 你也可以让你的 handler 返回一个列表， 里面每一个元素都是一个长度为四的列表，
  WeRoBot 会将其自动转为 ArticlesReply 。就像这样： ::
