@@ -23,7 +23,7 @@ Hello World
 --------------
 WeRoBot 会解析微信服务器发来的消息， 并将消息转换成成 :ref:`Message` 或者是 :ref:`Event` 。
 :ref:`Message` 表示用户发来的消息，如文本消息、图片消息； :ref:`Event` 则表示用户触发的事件， 如关注事件、扫描二维码事件。
-在消息解析、转换完成后， WeRoBot 会讲消息转交给 :ref:`Handler` 进行处理，并将 :ref:`Handler` 的返回值返回给微信服务器。
+在消息解析、转换完成后， WeRoBot 会将消息转交给 :ref:`Handler` 进行处理，并将 :ref:`Handler` 的返回值返回给微信服务器。
 
 在刚才的 Hello World 中， 我们编写的 ::
 
