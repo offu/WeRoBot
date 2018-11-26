@@ -1,5 +1,5 @@
 -r tox-requirements.txt
-yapf==0.24.0
+yapf==0.25.0
 tox==3.5.3
 Django
 bumpversion==0.5.3
