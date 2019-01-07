@@ -1007,6 +1007,7 @@ class TestSendTextMessageClass(BaseTestClass):
         assert body["msgtype"] == "text"
         assert "text" in body.keys()
         assert "content" in body["text"].keys()
+        assert "customservice" not in body.keys()
 
         return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
@@ -1016,6 +1017,26 @@ class TestSendTextMessageClass(BaseTestClass):
         responses.add_callback(responses.POST, self.URL, callback=self.text_callback)
 
         r = self.client.send_text_message("test_id", "test_message")
+        assert r == {"errcode": 0, "errmsg": "ok"}
+
+    @staticmethod
+    def text_with_kf_account_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "touser" in body.keys()
+        assert "msgtype" in body.keys()
+        assert body["msgtype"] == "text"
+        assert "text" in body.keys()
+        assert "content" in body["text"].keys()
+        assert "customservice" in body.keys()
+        assert "kf_account" in body["customservice"].keys()
+
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    @responses.activate
+    @add_token_response
+    def test_send_text_message_with_kf_account(self):
+        responses.add_callback(responses.POST, self.URL, callback=self.text_with_kf_account_callback)
+        r = self.client.send_text_message("test_id", "test_message", "233@233")
         assert r == {"errcode": 0, "errmsg": "ok"}
 
 
@@ -1030,6 +1051,7 @@ class TestSendImageMessageClass(BaseTestClass):
         assert body["msgtype"] == "image"
         assert "image" in body.keys()
         assert "media_id" in body["image"].keys()
+        assert "customservice" not in body.keys()
 
         return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
@@ -1039,6 +1061,27 @@ class TestSendImageMessageClass(BaseTestClass):
         responses.add_callback(responses.POST, self.URL, callback=self.image_callback)
 
         r = self.client.send_image_message("test_id", "test_media_id")
+        assert r == {"errcode": 0, "errmsg": "ok"}
+
+    @staticmethod
+    def image_with_kf_account_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "touser" in body.keys()
+        assert "msgtype" in body.keys()
+        assert body["msgtype"] == "image"
+        assert "image" in body.keys()
+        assert "media_id" in body["image"].keys()
+        assert "customservice" in body.keys()
+        assert "kf_account" in body["customservice"].keys()
+
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    @responses.activate
+    @add_token_response
+    def test_send_image_message_with_kf_account(self):
+        responses.add_callback(responses.POST, self.URL, callback=self.image_with_kf_account_callback)
+
+        r = self.client.send_image_message("test_id", "test_media_id", "233@233")
         assert r == {"errcode": 0, "errmsg": "ok"}
 
 
@@ -1053,6 +1096,7 @@ class TestSendVoiceMessageClass(BaseTestClass):
         assert body["msgtype"] == "voice"
         assert "voice" in body.keys()
         assert "media_id" in body["voice"].keys()
+        assert "customservice" not in body.keys()
 
         return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
@@ -1062,6 +1106,27 @@ class TestSendVoiceMessageClass(BaseTestClass):
         responses.add_callback(responses.POST, self.URL, callback=self.voice_callback)
 
         r = self.client.send_voice_message("test_id", "test_media_id")
+        assert r == {"errcode": 0, "errmsg": "ok"}
+
+    @staticmethod
+    def voice_with_kf_account_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "touser" in body.keys()
+        assert "msgtype" in body.keys()
+        assert body["msgtype"] == "voice"
+        assert "voice" in body.keys()
+        assert "media_id" in body["voice"].keys()
+        assert "customservice" in body.keys()
+        assert "kf_account" in body["customservice"].keys()
+
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    @responses.activate
+    @add_token_response
+    def test_send_voice_message_with_kf_account(self):
+        responses.add_callback(responses.POST, self.URL, callback=self.voice_with_kf_account_callback)
+
+        r = self.client.send_voice_message("test_id", "test_media_id", "233@233")
         assert r == {"errcode": 0, "errmsg": "ok"}
 
 
@@ -1078,6 +1143,7 @@ class TestMusicMessageClass(BaseTestClass):
         assert "musicurl" in body["music"].keys()
         assert "hqmusicurl" in body["music"].keys()
         assert "thumb_media_id" in body["music"].keys()
+        assert "customservice" not in body.keys()
 
         return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
@@ -1096,6 +1162,37 @@ class TestMusicMessageClass(BaseTestClass):
         )
         assert r == {"errcode": 0, "errmsg": "ok"}
 
+    @staticmethod
+    def music_with_kf_account_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "touser" in body.keys()
+        assert "msgtype" in body.keys()
+        assert body["msgtype"] == "music"
+        assert "music" in body.keys()
+        assert "musicurl" in body["music"].keys()
+        assert "hqmusicurl" in body["music"].keys()
+        assert "thumb_media_id" in body["music"].keys()
+        assert "customservice" in body.keys()
+        assert "kf_account" in body["customservice"].keys()
+
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    @responses.activate
+    @add_token_response
+    def test_send_music_message_with_kf_account(self):
+        responses.add_callback(responses.POST, self.URL, callback=self.music_with_kf_account_callback)
+
+        r = self.client.send_music_message(
+            user_id="test_id",
+            url="test_url",
+            hq_url="test_hq_url",
+            thumb_media_id="test_media_id",
+            title="test_title",
+            description="test_description",
+            kf_account="233@233"
+        )
+        assert r == {"errcode": 0, "errmsg": "ok"}
+
 
 class TestVideoMessageClass(BaseTestClass):
     URL = "https://api.weixin.qq.com/cgi-bin/message/custom/send"
@@ -1108,6 +1205,7 @@ class TestVideoMessageClass(BaseTestClass):
         assert body["msgtype"] == "video"
         assert "video" in body.keys()
         assert "media_id" in body["video"].keys()
+        assert "customservice" not in body.keys()
 
         return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
@@ -1123,6 +1221,32 @@ class TestVideoMessageClass(BaseTestClass):
         )
         assert r == {"errcode": 0, "errmsg": "ok"}
 
+    @staticmethod
+    def video_with_kf_account_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "touser" in body.keys()
+        assert "msgtype" in body.keys()
+        assert body["msgtype"] == "video"
+        assert "video" in body.keys()
+        assert "media_id" in body["video"].keys()
+        assert "customservice" in body.keys()
+        assert "kf_account" in body["customservice"].keys()
+
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    @responses.activate
+    @add_token_response
+    def test_send_video_message_with_kf_account(self):
+        responses.add_callback(responses.POST, self.URL, callback=self.video_with_kf_account_callback)
+        r = self.client.send_video_message(
+            user_id="test_id",
+            media_id="test_media_id",
+            title="test_title",
+            description="test_description",
+            kf_account="233@233"
+        )
+        assert r == {"errcode": 0, "errmsg": "ok"}
+
 
 class TestNewsMessageClass(BaseTestClass):
     URL = "https://api.weixin.qq.com/cgi-bin/message/custom/send"
@@ -1135,6 +1259,7 @@ class TestNewsMessageClass(BaseTestClass):
         assert body["msgtype"] == "mpnews"
         assert "mpnews" in body.keys()
         assert "media_id" in body["mpnews"].keys()
+        assert "customservice" not in body.keys()
 
         return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
@@ -1144,6 +1269,27 @@ class TestNewsMessageClass(BaseTestClass):
         responses.add_callback(responses.POST, self.URL, callback=self.news_callback)
 
         r = self.client.send_news_message(user_id="test_id", media_id="test_media_id")
+        assert r == {"errcode": 0, "errmsg": "ok"}
+
+    @staticmethod
+    def news_with_kf_account_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "touser" in body.keys()
+        assert "msgtype" in body.keys()
+        assert body["msgtype"] == "mpnews"
+        assert "mpnews" in body.keys()
+        assert "media_id" in body["mpnews"].keys()
+        assert "customservice" in body.keys()
+        assert "kf_account" in body["customservice"].keys()
+
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    @responses.activate
+    @add_token_response
+    def test_send_news_message_with_kf_account(self):
+        responses.add_callback(responses.POST, self.URL, callback=self.news_with_kf_account_callback)
+
+        r = self.client.send_news_message(user_id="test_id", media_id="test_media_id", kf_account="233@233")
         assert r == {"errcode": 0, "errmsg": "ok"}
 
 
