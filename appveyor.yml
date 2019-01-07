@@ -1,4 +1,4 @@
-version: '{branch}-{build}'
+version: "{branch}-{build}"
 build: off
 cache:
   - '%LOCALAPPDATA%\pip\Cache'
@@ -18,6 +18,11 @@ on_failure:
   - ps: dir "env:"
   - ps: get-content .tox\*\log\*
 notifications:
-- provider: Slack
-  incoming_webhook:
-    secure: OUWL/ky2abFxup5CTKyGrmQRdqAE/TU5To/6bxxvS6GRaV6/JdyKyfxZHwnB1HOIg805obLeC4ngnSNEUd87to9JLSerBUb5b3VjYieuJVY=
+  - provider: Slack
+    incoming_webhook:
+      secure: OUWL/ky2abFxup5CTKyGrmQRdqAE/TU5To/6bxxvS6GRaV6/JdyKyfxZHwnB1HOIg805obLeC4ngnSNEUd87to9JLSerBUb5b3VjYieuJVY=
+branches:
+  except:
+    # Used by bors
+    - trying.tmp
+    - staging.tmp
