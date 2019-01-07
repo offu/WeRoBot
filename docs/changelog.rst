@@ -1,5 +1,8 @@
 Changelog
 =============
+Version 1.7.0
+----------------
++ 为  :func:`werobot.client.Client.send_text_message`，:func:`werobot.client.Client.send_image_message`，:func:`werobot.client.Client.send_voice_message`，:func:`werobot.client.Client.send_video_message`，:func:`werobot.client.Client.send_music_message`，:func:`werobot.client.Client.send_article_message`，:func:`werobot.client.Client.send_news_message` 加入 ``kf_account`` 参数 ( `#384 <https://github.com/offu/WeRoBot/issues/384>`_ )
 
 Version 1.6.0
 ----------------
