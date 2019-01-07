@@ -715,65 +715,77 @@ class Client(object):
             "https://api.weixin.qq.com/cgi-bin/user/get", params=params
         )
 
-    def send_text_message(self, user_id, content):
+    def send_text_message(self, user_id, content, kf_account=None):
         """
         发送文本消息。
 
         :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
         :param content: 消息正文
+        :param kf_account: 发送消息的客服账户，默认值为 None，None 为不指定
         :return: 返回的 JSON 数据包
         """
+        data = {
+            "touser": user_id,
+            "msgtype": "text",
+            "text": {
+                "content": content
+            }
+        }
+        if kf_account is not None:
+            data['customservice'] = {'kf_account': kf_account}
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/message/custom/send",
-            data={
-                "touser": user_id,
-                "msgtype": "text",
-                "text": {
-                    "content": content
-                }
-            }
+            data=data
         )
 
-    def send_image_message(self, user_id, media_id):
+    def send_image_message(self, user_id, media_id, kf_account=None):
         """
         发送图片消息。
 
         :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
         :param media_id: 图片的媒体ID。 可以通过 :func:`upload_media` 上传。
+        :param kf_account: 发送消息的客服账户，默认值为 None，None 为不指定
         :return: 返回的 JSON 数据包
         """
+        data = {
+            "touser": user_id,
+            "msgtype": "image",
+            "image": {
+                "media_id": media_id
+            }
+        }
+        if kf_account is not None:
+            data['customservice'] = {'kf_account': kf_account}
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/message/custom/send",
-            data={
-                "touser": user_id,
-                "msgtype": "image",
-                "image": {
-                    "media_id": media_id
-                }
-            }
+            data=data
         )
 
-    def send_voice_message(self, user_id, media_id):
+    def send_voice_message(self, user_id, media_id, kf_account=None):
         """
         发送语音消息。
 
         :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
         :param media_id: 发送的语音的媒体ID。 可以通过 :func:`upload_media` 上传。
+        :param kf_account: 发送消息的客服账户，默认值为 None，None 为不指定
         :return: 返回的 JSON 数据包
         """
+        data = {
+            "touser": user_id,
+            "msgtype": "voice",
+            "voice": {
+                "media_id": media_id
+            }
+        }
+        if kf_account is not None:
+            data['customservice'] = {'kf_account': kf_account}
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/message/custom/send",
-            data={
-                "touser": user_id,
-                "msgtype": "voice",
-                "voice": {
-                    "media_id": media_id
-                }
-            }
+            data=data
         )
 
     def send_video_message(
-        self, user_id, media_id, title=None, description=None
+        self, user_id, media_id, title=None, description=None, kf_account=None
     ):
         """
         发送视频消息。
@@ -782,6 +794,7 @@ class Client(object):
         :param media_id: 发送的视频的媒体ID。 可以通过 :func:`upload_media` 上传。
         :param title: 视频消息的标题
         :param description: 视频消息的描述
+        :param kf_account: 发送消息的客服账户，默认值为 None，None 为不指定
         :return: 返回的 JSON 数据包
         """
         video_data = {
@@ -791,14 +804,12 @@ class Client(object):
             video_data["title"] = title
         if description:
             video_data["description"] = description
-
+        data = {"touser": user_id, "msgtype": "video", "video": video_data}
+        if kf_account is not None:
+            data['customservice'] = {'kf_account': kf_account}
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/message/custom/send",
-            data={
-                "touser": user_id,
-                "msgtype": "video",
-                "video": video_data
-            }
+            data=data
         )
 
     def send_music_message(
@@ -808,7 +819,8 @@ class Client(object):
         hq_url,
         thumb_media_id,
         title=None,
-        description=None
+        description=None,
+        kf_account=None
     ):
         """
         发送音乐消息。
@@ -821,6 +833,7 @@ class Client(object):
         :param thumb_media_id: 缩略图的媒体ID。 可以通过 :func:`upload_media` 上传。
         :param title: 音乐标题
         :param description: 音乐描述
+        :param kf_account: 发送消息的客服账户，默认值为 None，None 为不指定
         :return: 返回的 JSON 数据包
         """
         music_data = {
@@ -832,17 +845,16 @@ class Client(object):
             music_data["title"] = title
         if description:
             music_data["description"] = description
+        data = {"touser": user_id, "msgtype": "music", "music": music_data}
+        if kf_account is not None:
+            data['customservice'] = {'kf_account': kf_account}
 
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/message/custom/send",
-            data={
-                "touser": user_id,
-                "msgtype": "music",
-                "music": music_data
-            }
+            data=data
         )
 
-    def send_article_message(self, user_id, articles):
+    def send_article_message(self, user_id, articles, kf_account=None):
         """
         发送图文消息::
 
@@ -864,6 +876,7 @@ class Client(object):
 
         :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
         :param articles: 一个包含至多8个 article 字典或 Article 对象的数组
+        :param kf_account: 发送消息的客服账户，默认值为 None，None 为不指定
         :return: 返回的 JSON 数据包
         """
         if isinstance(articles[0], Article):
@@ -874,34 +887,41 @@ class Client(object):
                 formatted_articles.append(result)
         else:
             formatted_articles = articles
+        data = {
+            "touser": user_id,
+            "msgtype": "news",
+            "news": {
+                "articles": formatted_articles
+            }
+        }
+        if kf_account is not None:
+            data['customservice'] = {'kf_account': kf_account}
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/message/custom/send",
-            data={
-                "touser": user_id,
-                "msgtype": "news",
-                "news": {
-                    "articles": formatted_articles
-                }
-            }
+            data=data
         )
 
-    def send_news_message(self, user_id, media_id):
+    def send_news_message(self, user_id, media_id, kf_account=None):
         """
         发送永久素材中的图文消息。
 
         :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
         :param media_id: 媒体文件 ID
+        :param kf_account: 发送消息的客服账户，默认值为 None，None 为不指定
         :return: 返回的 JSON 数据包
         """
+        data = {
+            "touser": user_id,
+            "msgtype": "mpnews",
+            "mpnews": {
+                "media_id": media_id
+            }
+        }
+        if kf_account is not None:
+            data['customservice'] = {'kf_account': kf_account}
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/message/custom/send",
-            data={
-                "touser": user_id,
-                "msgtype": "mpnews",
-                "mpnews": {
-                    "media_id": media_id
-                }
-            }
+            data=data
         )
 
     def send_miniprogrampage_message(
