@@ -208,19 +208,33 @@ class MusicReply(WeChatReply):
 
 
 class TransferCustomerServiceReply(WeChatReply):
-    TEMPLATE = to_text(
-        """
-    <xml>
-    <ToUserName><![CDATA[{target}]]></ToUserName>
-    <FromUserName><![CDATA[{source}]]></FromUserName>
-    <CreateTime>{time}</CreateTime>
-    <MsgType><![CDATA[transfer_customer_service]]></MsgType>
-    <TransInfo>
-         <KfAccount><![CDATA[{account}]]></KfAccount>
-     </TransInfo>
-    </xml>
-    """
-    )
+    @property
+    def TEMPLATE(self):
+        if 'account' in self._args:
+            return to_text(
+                """
+            <xml>
+            <ToUserName><![CDATA[{target}]]></ToUserName>
+            <FromUserName><![CDATA[{source}]]></FromUserName>
+            <CreateTime>{time}</CreateTime>
+            <MsgType><![CDATA[transfer_customer_service]]></MsgType>
+            <TransInfo>
+                 <KfAccount><![CDATA[{account}]]></KfAccount>
+             </TransInfo>
+            </xml>
+            """
+            )
+        else:
+            return to_text(
+                """
+            <xml>
+            <ToUserName><![CDATA[{target}]]></ToUserName>
+            <FromUserName><![CDATA[{source}]]></FromUserName>
+            <CreateTime>{time}</CreateTime>
+            <MsgType><![CDATA[transfer_customer_service]]></MsgType>
+            </xml>
+            """
+            )
 
 
 class SuccessReply(WeChatReply):

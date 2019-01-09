@@ -13,7 +13,8 @@ from werobot.utils import to_binary, to_text
 
 
 def test_wechat_reply():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
         <ToUserName><![CDATA[toUser]]></ToUserName>
         <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -23,7 +24,8 @@ def test_wechat_reply():
         <MediaId><![CDATA[media_id]]></MediaId>
         <MsgId>1234567890123456</MsgId>
         </xml>
-    """)
+    """
+    )
     s = to_binary("喵fdsjaklfsk")
     reply = WeChatReply(message=message, s=s)
     assert reply._args['source'] == 'toUser'
@@ -34,10 +36,7 @@ def test_wechat_reply():
 
 def test_text_reply():
     t = int(time.time())
-    reply = TextReply(
-        target='fromUser', source='toUser',
-        content="aa", time=t
-    )
+    reply = TextReply(target='fromUser', source='toUser', content="aa", time=t)
     assert reply.render().strip() == """
     <xml>
     <ToUserName><![CDATA[fromUser]]></ToUserName>
@@ -51,9 +50,7 @@ def test_text_reply():
 def test_image_reply():
     t = int(time.time())
     reply = ImageReply(
-        target='fromUser',
-        source='toUser',
-        media_id="fdasfdasfasd", time=t
+        target='fromUser', source='toUser', media_id="fdasfdasfasd", time=t
     )
     assert reply.render().strip() == """
     <xml>
@@ -70,9 +67,7 @@ def test_image_reply():
 def test_voice_reply():
     t = int(time.time())
     reply = VoiceReply(
-        target='tgu',
-        source='su',
-        media_id="fdasfdasfasd", time=t
+        target='tgu', source='su', media_id="fdasfdasfasd", time=t
     )
     assert reply.render().strip() == """
     <xml>
@@ -91,7 +86,8 @@ def test_video_reply():
     reply = VideoReply(
         target='tgu',
         source='su',
-        media_id="fdasfdasfasd", time=t,
+        media_id="fdasfdasfasd",
+        time=t,
     )
     assert reply.render().strip() == """
     <xml>
@@ -109,7 +105,8 @@ def test_video_reply():
     reply_2 = VideoReply(
         target='tgu',
         source='su',
-        media_id="fdasfdasfasd", time=t,
+        media_id="fdasfdasfasd",
+        time=t,
         title='meow'
     )
 
@@ -129,7 +126,8 @@ def test_video_reply():
     reply_3 = VideoReply(
         target='tgu',
         source='su',
-        media_id="fdasfdasfasd", time=t,
+        media_id="fdasfdasfasd",
+        time=t,
         title='meow',
         description='www'
     )
@@ -206,34 +204,26 @@ def test_music_reply_process_args():
 
 def test_article():
     article = Article(
-        title="tt",
-        description=to_binary("附近的萨卡里发生"),
-        img="http",
-        url="uuu"
+        title="tt", description=to_binary("附近的萨卡里发生"), img="http", url="uuu"
     )
-    assert article.render().strip() == to_text("""
+    assert article.render().strip() == to_text(
+        """
     <item>
     <Title><![CDATA[tt]]></Title>
     <Description><![CDATA[附近的萨卡里发生]]></Description>
     <PicUrl><![CDATA[http]]></PicUrl>
     <Url><![CDATA[uuu]]></Url>
     </item>
-    """).strip()
+    """
+    ).strip()
 
 
 def test_articles_reply():
     article = Article(
-        title="tt",
-        description="附近的萨卡里发生",
-        img="http",
-        url="uuu"
+        title="tt", description="附近的萨卡里发生", img="http", url="uuu"
     )
     t = int(time.time())
-    reply = ArticlesReply(
-        target='tg',
-        source='ss',
-        time=t
-    )
+    reply = ArticlesReply(target='tg', source='ss', time=t)
     assert reply.render().strip() == """
     <xml>
     <ToUserName><![CDATA[tg]]></ToUserName>
@@ -260,22 +250,32 @@ def test_articles_reply():
 def test_transfer_customer_service_reply():
     t = int(time.time())
     reply = TransferCustomerServiceReply(
-        source='aaa',
-        target='bbb',
-        time=t,
-        account="test1@test"
+        source='aaa', target='bbb', time=t, account="test1@test"
     )
     assert reply.render().strip() == """
-    <xml>
-    <ToUserName><![CDATA[bbb]]></ToUserName>
-    <FromUserName><![CDATA[aaa]]></FromUserName>
-    <CreateTime>{time}</CreateTime>
-    <MsgType><![CDATA[transfer_customer_service]]></MsgType>
-    <TransInfo>
-         <KfAccount><![CDATA[test1@test]]></KfAccount>
-     </TransInfo>
-    </xml>
+            <xml>
+            <ToUserName><![CDATA[bbb]]></ToUserName>
+            <FromUserName><![CDATA[aaa]]></FromUserName>
+            <CreateTime>{time}</CreateTime>
+            <MsgType><![CDATA[transfer_customer_service]]></MsgType>
+            <TransInfo>
+                 <KfAccount><![CDATA[test1@test]]></KfAccount>
+             </TransInfo>
+            </xml>
     """.format(time=t).strip()
+
+
+def test_transfer_customer_service_reply_without_account():
+    t = int(time.time())
+    reply = TransferCustomerServiceReply(source='aaa', target='bbb', time=t)
+    assert reply.render().strip() == """
+            <xml>
+            <ToUserName><![CDATA[bbb]]></ToUserName>
+            <FromUserName><![CDATA[aaa]]></FromUserName>
+            <CreateTime>{time}</CreateTime>
+            <MsgType><![CDATA[transfer_customer_service]]></MsgType>
+            </xml>
+        """.format(time=t).strip()
 
 
 def test_success_reply():
@@ -294,23 +294,13 @@ def test_process_text_function_reply():
 
 
 def test_process_music_function_reply():
-    reply = process_function_reply([
-        "title",
-        "desc",
-        "url"
-    ])
+    reply = process_function_reply(["title", "desc", "url"])
     assert isinstance(reply, MusicReply)
     assert reply.title == "title"
     assert reply.description == "desc"
     assert reply.url == reply.hq_url == "url"
 
-    reply = process_function_reply(
-        [
-            "title",
-            "desc",
-            "url",
-            "hq"
-        ])
+    reply = process_function_reply(["title", "desc", "url", "hq"])
     assert isinstance(reply, MusicReply)
     assert reply.title == "title"
     assert reply.description == "desc"
@@ -319,10 +309,9 @@ def test_process_music_function_reply():
 
 
 def test_process_articles_function_reply():
-    reply = process_function_reply([
-        ["tt1", 'ds1', 'img', 'url'],
-        ["tt2", 'ds2', 'im2g', 'u2rl']
-    ])
+    reply = process_function_reply(
+        [["tt1", 'ds1', 'img', 'url'], ["tt2", 'ds2', 'im2g', 'u2rl']]
+    )
     assert isinstance(reply, ArticlesReply)
     assert len(reply._articles) == 2
     article_1, article_2 = reply._articles
