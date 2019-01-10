@@ -6,7 +6,7 @@ pytest==4.1.0
 WebTest==2.0.32
 Flask
 tornado
-responses==0.10.4
+responses==0.10.5
 multipart==0.1
 pytest-mock==1.10.0
 git+git://github.com/mongomock/mongomock.git@09a615cdbefb8e7962faa4f540ef4efae14253e7
