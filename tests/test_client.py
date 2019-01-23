@@ -851,6 +851,7 @@ class TestCustomService(BaseTestClass):
     DELETE_URL = "https://api.weixin.qq.com/customservice/kfaccount/del"
     UPLOAD_URL = "http://api.weixin.qq.com/customservice/kfaccount/uploadheadimg"
     GET_URL = "https://api.weixin.qq.com/cgi-bin/customservice/getkflist"
+    GET_ONLINE_URL = "https://api.weixin.qq.com/cgi-bin/customservice/getonlinekflist"
 
     @staticmethod
     def add_update_delete_callback(request):
@@ -920,6 +921,14 @@ class TestCustomService(BaseTestClass):
         responses.add_callback(responses.GET, self.GET_URL, callback=self.get_callback)
         r = self.client.get_custom_service_account_list()
         assert r == {"errcode": 0, "errmsg": "ok"}
+
+    @responses.activate
+    @add_token_response
+    def test_get_online_custom_service_account_list(self):
+        responses.add_callback(responses.GET, self.GET_ONLINE_URL, callback=self.get_callback)
+        r = self.client.get_online_custom_service_account_list()
+        assert r == {"errcode": 0, "errmsg": "ok"}
+
 
 
 class TestQrcodeClass(BaseTestClass):
