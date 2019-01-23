@@ -70,6 +70,7 @@
 .. automethod:: Client.delete_custom_service_account
 .. automethod:: Client.upload_custom_service_account_avatar
 .. automethod:: Client.get_custom_service_account_list
+.. automethod:: Client.get_online_custom_service_account_list
 .. automethod:: Client.send_text_message
 .. automethod:: Client.send_image_message
 .. automethod:: Client.send_voice_message

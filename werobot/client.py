@@ -353,6 +353,16 @@ class Client(object):
             url="https://api.weixin.qq.com/cgi-bin/customservice/getkflist"
         )
 
+    def get_online_custom_service_account_list(self):
+        """
+        获取状态为"在线"的客服账号列表。
+
+        :return: 返回的 JSON 数据包
+        """
+        return self.get(
+            url="https://api.weixin.qq.com/cgi-bin/customservice/getonlinekflist"
+        )
+
     def upload_media(self, media_type, media_file):
         """
         上传临时多媒体文件。
