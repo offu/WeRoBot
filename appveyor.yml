@@ -1,25 +1,13 @@
-version: '{branch}-{build}'
+version: "{branch}-{build}"
 build: off
 cache:
   - '%LOCALAPPDATA%\pip\Cache'
-services:
-  - mongodb
-  - mysql
 init:
   - "ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%"
   - ps: "ls C:/Python*"
 install:
   - C:\Python35\python -m pip install tox
-  - choco install redis-64
-  - redis-server --service-install
-  - redis-server --service-start
-  - set DATABASE_MYSQL_USERNAME=root
-  - set DATABASE_MYSQL_PASSWORD=Password12!
   - set PYTHONIOENCODING=utf-8
-before_test:
-  - ps: $env:MYSQL_PWD="Password12!"
-  - ps: $cmd = '"C:\Program Files\MySQL\MySQL Server 5.7\bin\mysql" -e "create database werobot;" --user=root'
-  - ps: iex "& $cmd"
 test_script:
   - C:\Python35\python -m tox -c tox-win.ini
 on_success:
@@ -30,6 +18,11 @@ on_failure:
   - ps: dir "env:"
   - ps: get-content .tox\*\log\*
 notifications:
-- provider: Slack
-  incoming_webhook:
-    secure: OUWL/ky2abFxup5CTKyGrmQRdqAE/TU5To/6bxxvS6GRaV6/JdyKyfxZHwnB1HOIg805obLeC4ngnSNEUd87to9JLSerBUb5b3VjYieuJVY=
+  - provider: Slack
+    incoming_webhook:
+      secure: OUWL/ky2abFxup5CTKyGrmQRdqAE/TU5To/6bxxvS6GRaV6/JdyKyfxZHwnB1HOIg805obLeC4ngnSNEUd87to9JLSerBUb5b3VjYieuJVY=
+branches:
+  except:
+    # Used by bors
+    - trying.tmp
+    - staging.tmp

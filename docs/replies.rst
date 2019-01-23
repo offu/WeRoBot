@@ -111,7 +111,7 @@ url           点击图片后跳转链接
     )
     reply.add_article(article)
 
-.. note:: 每个ArticlesReply中 **最多添加10个Article** 。
+.. note:: 根据微信公众平台的 `最新公告 <https://mp.weixin.qq.com/cgi-bin/announce?action=getannouncement&announce_id=115383153198yAvN&lang=zh_CN>`_，每个ArticlesReply中 **最多添加1个Article** 。
 
 你也可以让你的 handler 返回一个列表， 里面每一个元素都是一个长度为四的列表，
  WeRoBot 会将其自动转为 ArticlesReply 。就像这样： ::
@@ -197,7 +197,7 @@ name              value
 target            信息的目标用户。通常是机器人用户。
 source            信息的来源用户。通常是发送信息的用户。
 time              信息发送的时间，一个UNIX时间戳。默认情况下会使用当前时间。
-account           指定会话接入的客服账号
+account           指定会话接入的客服账号，可以没有此参数，没有时会自动分配给可用客服。
 =============    ======================================================================
 
 SuccessReply

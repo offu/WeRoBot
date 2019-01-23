@@ -1,5 +1,5 @@
 -r tox-requirements.txt
-yapf
-tox
-django
-bumpversion
+yapf==0.25.0
+tox==3.7.0
+Django
+bumpversion==0.5.3

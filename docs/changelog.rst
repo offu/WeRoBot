@@ -1,5 +1,14 @@
 Changelog
 =============
+Version 1.7.0
+----------------
++ 为  :func:`werobot.client.Client.send_text_message`，:func:`werobot.client.Client.send_image_message`，:func:`werobot.client.Client.send_voice_message`，:func:`werobot.client.Client.send_video_message`，:func:`werobot.client.Client.send_music_message`，:func:`werobot.client.Client.send_article_message`，:func:`werobot.client.Client.send_news_message` 加入 ``kf_account`` 参数 ( `#384 <https://github.com/offu/WeRoBot/issues/384>`_ )
++ 将  :class:`werobot.replies.TransferCustomerServiceReply` 的 ``account`` 改为非必需 ( `#363 <https://github.com/offu/WeRoBot/issues/363>`_ )
+
+Version 1.6.0
+----------------
++ 增加对发送小程序卡片的支持： :func:`werobot.client.Client.send_miniprogrampage_message` ( `#309 <https://github.com/offu/WeRoBot/pull/309>`_ by `@helloqiu <https://github.com/helloqiu>`_)
+
 Version 1.5.0
 ----------------
 + 为正则匹配的 handler 加入匹配后的 ``Match Object`` 作为参数(`#305 <https://github.com/offu/WeRoBot/pull/305>`_)(`Author: cxgreat2014 <https://github.com/cxgreat2014>`_)

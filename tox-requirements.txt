@@ -1,14 +1,13 @@
 -r requirements.txt
-coverage==4.1
-pymongo==3.3.0
-redis==2.10.5
-Sphinx==1.4.5
-cryptography==1.7.1
-pytest
-webtest
-flask
+coverage==4.5.2
+Sphinx==1.8.3
+cryptography==2.4.2
+pytest==4.1.1
+WebTest==2.0.32
+Flask
 tornado
-responses
-PyMySQL
-multipart
-pytest-mock
+responses==0.10.5
+multipart==0.1
+pytest-mock==1.10.0
+mongomock==3.14.0
+mockredispy==2.9.3
