@@ -14,6 +14,7 @@ from werobot.session import SessionStorage
 from werobot.session import filestorage, mongodbstorage, redisstorage, saekvstorage
 from werobot.session import sqlitestorage
 from werobot.session import mysqlstorage
+from werobot.session import postgresqlstorage
 from werobot.utils import to_binary
 
 
@@ -130,12 +131,17 @@ class MockPyMySQL:
         return self.db.commit()
 
 
+class MockPostgreSQL(MockPyMySQL):
+    pass
+
+
 @pytest.mark.parametrize("storage", [
     filestorage.FileStorage(),
     mongodbstorage.MongoDBStorage(mongomock.MongoClient().t.t),
     redisstorage.RedisStorage(mockredis.mock_redis_client()),
     sqlitestorage.SQLiteStorage(),
-    mysqlstorage.MySQLStorage(MockPyMySQL())
+    mysqlstorage.MySQLStorage(MockPyMySQL()),
+    postgresqlstorage.PostgreSQLStorage(MockPostgreSQL())
 ])
 def test_storage(storage):
     assert storage.get("喵") == {}
