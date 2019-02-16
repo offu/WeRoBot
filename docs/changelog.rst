@@ -1,5 +1,10 @@
 Changelog
 =============
+Version 1.8.0
+----------------
++ 增加 :class:`werobot.session.postgresqlstorage.PostgreSQLStorage` (`#383 <https://github.com/offu/WeRoBot/issues/383>`_) (`#412 <https://github.com/offu/WeRoBot/pull/412>`_)
++ 修复 imp 在 Python3.4 后被废弃的问题 (`#411 <https://github.com/offu/WeRoBot/pull/411>`_)
+
 Version 1.7.0
 ----------------
 + 为  :func:`werobot.client.Client.send_text_message`，:func:`werobot.client.Client.send_image_message`，:func:`werobot.client.Client.send_voice_message`，:func:`werobot.client.Client.send_video_message`，:func:`werobot.client.Client.send_music_message`，:func:`werobot.client.Client.send_article_message`，:func:`werobot.client.Client.send_news_message` 加入 ``kf_account`` 参数 ( `#384 <https://github.com/offu/WeRoBot/issues/384>`_ )

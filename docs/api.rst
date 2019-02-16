@@ -39,6 +39,9 @@ Session 对象
 .. module:: werobot.session.mysqlstorage
 .. autoclass:: MySQLStorage
 
+.. module:: werobot.session.postgresqlstorage
+.. autoclass:: PostgreSQLStorage
+
 log
 ------------
 .. module:: werobot.logger
