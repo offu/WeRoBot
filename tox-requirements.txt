@@ -3,7 +3,7 @@ coverage==4.5.2
 Sphinx==1.8.4
 cryptography==2.5
 pytest==4.2.1
-WebTest==2.0.32
+WebTest==2.0.33
 Flask
 tornado
 responses==0.10.5
