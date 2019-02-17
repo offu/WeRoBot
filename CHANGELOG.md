@@ -1,3 +1,12 @@
+# [1.8.0](https://github.com/offu/WeRoBot/compare/v1.7.0...v1.8.0) (2019-02-17)
+
+
+### Features
+
+* **client:** add api of fetching online custom service accounts ([f192451](https://github.com/offu/WeRoBot/commit/f192451))
+
+
+
 # [1.7.0](https://github.com/offu/WeRoBot/compare/v1.6.0...v1.7.0) (2019-01-10)
 
 
