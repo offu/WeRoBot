@@ -25,12 +25,19 @@ JSON_HEADER = {'content-type': 'application/json'}
 
 
 def token_callback(request):
-    return 200, JSON_HEADER, json.dumps({"access_token": "ACCESS_TOKEN", "expires_in": 7200})
+    return 200, JSON_HEADER, json.dumps(
+        {
+            "access_token": "ACCESS_TOKEN",
+            "expires_in": 7200
+        }
+    )
 
 
 def add_token_response(method):
     def wrapped_func(self, *args, **kwargs):
-        responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
+        responses.add_callback(
+            responses.GET, TOKEN_URL, callback=token_callback
+        )
         method(self, *args, **kwargs)
 
     return wrapped_func
@@ -61,7 +68,6 @@ class BaseTestClass:
 
 
 class TestClientBaseClass(BaseTestClass):
-
     def test_id_and_secret(self):
         assert self.client.appid == "123"
         assert self.client.appsecret == "321"
@@ -77,15 +83,10 @@ class TestClientBaseClass(BaseTestClass):
         assert client_1 is client_2
 
     def test_check_error(self):
-        error_json = dict(
-            error_code=0
-        )
+        error_json = dict(error_code=0)
         assert error_json == check_error(error_json)
 
-        error_json = dict(
-            errcode=1,
-            errmsg="test"
-        )
+        error_json = dict(errcode=1, errmsg="test")
         with pytest.raises(ClientException) as err:
             check_error(error_json)
         assert err.value.args[0] == "1: test"
@@ -112,9 +113,15 @@ class TestClientBaseClass(BaseTestClass):
             assert json.loads(request.body.decode('utf-8')) == {"test": "test"}
             return 200, JSON_HEADER, json.dumps({"test": "test"})
 
-        responses.add_callback(responses.POST, DATA_EXISTS_URL, callback=data_exists_url)
-        responses.add_callback(responses.GET, EMPTY_PARAMS_URL, callback=empty_params_callback)
-        responses.add_callback(responses.GET, TOKEN_URL, callback=token_callback)
+        responses.add_callback(
+            responses.POST, DATA_EXISTS_URL, callback=data_exists_url
+        )
+        responses.add_callback(
+            responses.GET, EMPTY_PARAMS_URL, callback=empty_params_callback
+        )
+        responses.add_callback(
+            responses.GET, TOKEN_URL, callback=token_callback
+        )
 
         r = self.client.get(url=EMPTY_PARAMS_URL)
         assert r == {"test": "test"}
@@ -137,7 +144,9 @@ class TestClientBaseClassPost(TestClientBaseClass):
         def empty_post_file_callback(request):
             return 200, JSON_HEADER, json.dumps({"test": "test"})
 
-        responses.add_callback(responses.POST, POST_FILE_URL, callback=empty_post_file_callback)
+        responses.add_callback(
+            responses.POST, POST_FILE_URL, callback=empty_post_file_callback
+        )
 
         with open(GOD_PIC, 'rb') as f:
             self.client.post(url=POST_FILE_URL, files={"media": f})
@@ -164,7 +173,9 @@ class TestClientBaseClassPost(TestClientBaseClass):
         def empty_post_file_callback(request):
             return 200, JSON_HEADER, json.dumps({"test": "test"})
 
-        responses.add_callback(responses.POST, POST_FILE_URL, callback=empty_post_file_callback)
+        responses.add_callback(
+            responses.POST, POST_FILE_URL, callback=empty_post_file_callback
+        )
 
         f = BytesIO(b'gugugu')
         self.client.post(url=POST_FILE_URL, files={"media": f})
@@ -182,11 +193,17 @@ class TestClientBaseClassPost(TestClientBaseClass):
 
         def post_file_callback(request):
             s = request.body.split(b"\r")[0][2:]
-            p = list(multipart.MultipartParser(BytesIO(multipart.tob(request.body)), s))[0]
+            p = list(
+                multipart.MultipartParser(
+                    BytesIO(multipart.tob(request.body)), s
+                )
+            )[0]
             assert "filename" in p.options
             return 200, JSON_HEADER, json.dumps({"test": "test"})
 
-        responses.add_callback(responses.POST, POST_FILE_URL, callback=post_file_callback)
+        responses.add_callback(
+            responses.POST, POST_FILE_URL, callback=post_file_callback
+        )
 
         with open(GOD_PIC, 'rb') as f:
             self.client.post(url=POST_FILE_URL, files={"media": f})
@@ -203,8 +220,7 @@ class TestClientMenuClass(BaseTestClass):
                 "type": "click",
                 "name": u"今日歌曲",
                 "key": "V1001_TODAY_MUSIC"
-            },
-            {
+            }, {
                 "type": "click",
                 "name": u"歌手简介",
                 "key": "V1001_TODAY_SINGER"
@@ -221,15 +237,15 @@ class TestClientMenuClass(BaseTestClass):
                         "type": "view",
                         "name": u"视频",
                         "url": "http://v.qq.com/"
-                    },
-                    {
+                    }, {
                         "type": "click",
                         "name": u"赞一下我们",
                         "key": "V1001_GOOD"
                     }
                 ]
             }
-        ]}
+        ]
+    }
 
     @staticmethod
     def create_menu_callback(request):
@@ -251,18 +267,32 @@ class TestClientMenuClass(BaseTestClass):
         try:
             body = json.loads(request.body.decode("utf-8"))["button"]
         except KeyError:
-            return 200, JSON_HEADER, json.dumps({"errcode": 1, "errmsg": "error"})
+            return 200, JSON_HEADER, json.dumps(
+                {
+                    "errcode": 1,
+                    "errmsg": "error"
+                }
+            )
         try:
             for item in body:
                 check_menu_data(item)
         except AssertionError:
-            return 200, JSON_HEADER, json.dumps({"errcode": 1, "errmsg": "error"})
+            return 200, JSON_HEADER, json.dumps(
+                {
+                    "errcode": 1,
+                    "errmsg": "error"
+                }
+            )
         return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @responses.activate
     @add_token_response
     def test_create_menu(self):
-        responses.add_callback(responses.POST, self.CREATE_URL, callback=self.create_menu_callback)
+        responses.add_callback(
+            responses.POST,
+            self.CREATE_URL,
+            callback=self.create_menu_callback
+        )
         r = self.client.create_menu(self.menu_data)
         assert r == {"errcode": 0, "errmsg": "ok"}
         with pytest.raises(ClientException) as err:
@@ -272,14 +302,20 @@ class TestClientMenuClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_get_menu(self):
-        responses.add_callback(responses.GET, self.GET_URL, callback=self.callback_without_check)
+        responses.add_callback(
+            responses.GET, self.GET_URL, callback=self.callback_without_check
+        )
         r = self.client.get_menu()
         assert r == {"errcode": 0, "errmsg": "ok"}
 
     @responses.activate
     @add_token_response
     def test_delete_menu(self):
-        responses.add_callback(responses.GET, self.DELETE_URL, callback=self.callback_without_check)
+        responses.add_callback(
+            responses.GET,
+            self.DELETE_URL,
+            callback=self.callback_without_check
+        )
         r = self.client.delete_menu()
         assert r == {"errcode": 0, "errmsg": "ok"}
 
@@ -338,14 +374,20 @@ class TestClientGroupClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_create_group(self):
-        responses.add_callback(responses.POST, self.CREATE_URL, callback=self.create_group_callback)
+        responses.add_callback(
+            responses.POST,
+            self.CREATE_URL,
+            callback=self.create_group_callback
+        )
         r = self.client.create_group("test")
         assert r == {"errcode": 0, "errmsg": "ok"}
 
     @responses.activate
     @add_token_response
     def test_get_group(self):
-        responses.add_callback(responses.GET, self.GET_URL, callback=self.callback_without_check)
+        responses.add_callback(
+            responses.GET, self.GET_URL, callback=self.callback_without_check
+        )
         r = self.client.get_groups()
         assert r == {"errcode": 0, "errmsg": "ok"}
 
@@ -363,14 +405,20 @@ class TestClientGroupClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_update_group(self):
-        responses.add_callback(responses.POST, self.UPDATE_URL, callback=self.update_group_callback)
+        responses.add_callback(
+            responses.POST,
+            self.UPDATE_URL,
+            callback=self.update_group_callback
+        )
         r = self.client.update_group("0", "test")
         assert r == {"errcode": 0, "errmsg": "ok"}
 
     @responses.activate
     @add_token_response
     def test_move_user(self):
-        responses.add_callback(responses.POST, self.MOVE_URL, callback=self.move_user_callback)
+        responses.add_callback(
+            responses.POST, self.MOVE_URL, callback=self.move_user_callback
+        )
         r = self.client.move_user("test", "0")
         assert r == {"errcode": 0, "errmsg": "ok"}
 
@@ -388,7 +436,11 @@ class TestClientGroupClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_delete_group(self):
-        responses.add_callback(responses.POST, self.DELETE_URL, callback=self.delete_group_callback)
+        responses.add_callback(
+            responses.POST,
+            self.DELETE_URL,
+            callback=self.delete_group_callback
+        )
         r = self.client.delete_group("test")
         assert r == {"errcode": 0, "errmsg": "ok"}
 
@@ -406,7 +458,9 @@ class TestClientRemarkClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_client_remark(self):
-        responses.add_callback(responses.POST, self.REMARK_URL, callback=self.remark_callback)
+        responses.add_callback(
+            responses.POST, self.REMARK_URL, callback=self.remark_callback
+        )
         r = self.client.remark_user("test", "test")
         assert r == {"errcode": 0, "errmsg": "ok"}
 
@@ -502,13 +556,14 @@ class TestClientCustomMenuClass(BaseTestClass):
                         "type": "view",
                         "name": u"视频",
                         "url": "http://v.qq.com/"
-                    },
-                    {
+                    }, {
                         "type": "click",
                         "name": u"赞一下我们",
                         "key": "V1001_GOOD"
-                    }]
-            }],
+                    }
+                ]
+            }
+        ],
         "matchrule": {
             "group_id": "2",
             "sex": "1",
@@ -579,7 +634,9 @@ class TestClientCustomMenuClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_march_custom_menu(self):
-        responses.add_callback(responses.POST, self.MATCH_URL, callback=self.match_custom_menu)
+        responses.add_callback(
+            responses.POST, self.MATCH_URL, callback=self.match_custom_menu
+        )
         r = self.client.match_custom_menu("test")
         assert r == {"errcode": 0, "errmsg": "ok"}
 
@@ -593,15 +650,17 @@ class TestClientResourceClass(BaseTestClass):
     DOWNLOAD_P_URL = "https://api.weixin.qq.com/cgi-bin/material/get_material"
     DELETE_P_URL = "https://api.weixin.qq.com/cgi-bin/material/del_material"
     UPDATE_NEWS_URL = "https://api.weixin.qq.com/cgi-bin/material/update_news"
-    add_news_data = [{
-        "title": "test_title",
-        "thumb_media_id": "test",
-        "author": "test",
-        "digest": "test",
-        "show_cover_pic": 1,
-        "content": "test",
-        "content_source_url": "test"
-    }]
+    add_news_data = [
+        {
+            "title": "test_title",
+            "thumb_media_id": "test",
+            "author": "test",
+            "digest": "test",
+            "show_cover_pic": 1,
+            "content": "test",
+            "content_source_url": "test"
+        }
+    ]
     update_data = {
         "media_id": "test",
         "index": "test",
@@ -689,7 +748,9 @@ class TestClientResourceClass(BaseTestClass):
     @add_token_response
     @create_pic_file
     def test_upload_media(self):
-        responses.add_callback(responses.POST, self.UPLOAD_URL, callback=self.upload_callback)
+        responses.add_callback(
+            responses.POST, self.UPLOAD_URL, callback=self.upload_callback
+        )
         with open(GOD_PIC, 'rb') as f:
             r = self.client.upload_media('image', f)
         assert r == {"errcode": 0, "errmsg": "ok"}
@@ -697,14 +758,18 @@ class TestClientResourceClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_download_media(self):
-        responses.add_callback(responses.GET, self.DOWNLOAD_URL, callback=self.download_callback)
+        responses.add_callback(
+            responses.GET, self.DOWNLOAD_URL, callback=self.download_callback
+        )
         r = self.client.download_media("test")
         assert isinstance(r, requests.Response)
 
     @responses.activate
     @add_token_response
     def test_add_news(self):
-        responses.add_callback(responses.POST, self.ADD_NEWS_URL, callback=self.add_news_callback)
+        responses.add_callback(
+            responses.POST, self.ADD_NEWS_URL, callback=self.add_news_callback
+        )
         r = self.client.add_news(self.add_news_data)
         assert r == {"errcode": 0, "errmsg": "ok"}
 
@@ -728,7 +793,8 @@ class TestClientResourceClass(BaseTestClass):
         responses.add_callback(
             responses.POST,
             self.UPLOAD_P_URL,
-            callback=self.upload_p_media_callback)
+            callback=self.upload_p_media_callback
+        )
         with open(GOD_PIC, 'rb') as f:
             r = self.client.upload_permanent_media('image', f)
         assert r == {"errcode": 0, "errmsg": "ok"}
@@ -812,7 +878,9 @@ class TestMediaClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_get_media(self):
-        responses.add_callback(responses.GET, self.GET_URL, callback=self.get_media_callback)
+        responses.add_callback(
+            responses.GET, self.GET_URL, callback=self.get_media_callback
+        )
         r = self.client.get_media_count()
         assert r == {"errcode": 0, "errmsg": "ok"}
 
@@ -840,7 +908,9 @@ class TestGetIpListClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_get_ip_list(self):
-        responses.add_callback(responses.GET, self.GET_URL, callback=self.get_ip_list_callback)
+        responses.add_callback(
+            responses.GET, self.GET_URL, callback=self.get_ip_list_callback
+        )
         r = self.client.get_ip_list()
         assert r == {"errcode": 0, "errmsg": "ok"}
 
@@ -910,7 +980,9 @@ class TestCustomService(BaseTestClass):
     @add_token_response
     @create_pic_file
     def test_upload_custom_service_account_avatar(self):
-        responses.add_callback(responses.POST, self.UPLOAD_URL, callback=self.upload_callback)
+        responses.add_callback(
+            responses.POST, self.UPLOAD_URL, callback=self.upload_callback
+        )
         with open(GOD_PIC, 'rb') as f:
             r = self.client.upload_custom_service_account_avatar("image", f)
         assert r == {"errcode": 0, "errmsg": "ok"}
@@ -918,14 +990,18 @@ class TestCustomService(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_get_custom_service_account_list(self):
-        responses.add_callback(responses.GET, self.GET_URL, callback=self.get_callback)
+        responses.add_callback(
+            responses.GET, self.GET_URL, callback=self.get_callback
+        )
         r = self.client.get_custom_service_account_list()
         assert r == {"errcode": 0, "errmsg": "ok"}
 
     @responses.activate
     @add_token_response
     def test_get_online_custom_service_account_list(self):
-        responses.add_callback(responses.GET, self.GET_ONLINE_URL, callback=self.get_callback)
+        responses.add_callback(
+            responses.GET, self.GET_ONLINE_URL, callback=self.get_callback
+        )
         r = self.client.get_online_custom_service_account_list()
         assert r == {"errcode": 0, "errmsg": "ok"}
 
@@ -949,14 +1025,18 @@ class TestQrcodeClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_create_qrcode(self):
-        responses.add_callback(responses.POST, self.CREATE_URL, callback=self.create_callback)
+        responses.add_callback(
+            responses.POST, self.CREATE_URL, callback=self.create_callback
+        )
         r = self.client.create_qrcode("test")
         assert r == {"errcode": 0, "errmsg": "ok"}
 
     @responses.activate
     @add_token_response
     def test_show_qrcode(self):
-        responses.add_callback(responses.GET, self.SHOW_URL, callback=self.show_callback)
+        responses.add_callback(
+            responses.GET, self.SHOW_URL, callback=self.show_callback
+        )
         r = self.client.show_qrcode("test")
         assert isinstance(r, requests.Response)
 
@@ -981,24 +1061,35 @@ class TestSendArticleMessagesClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_send_article_messages(self):
-        responses.add_callback(responses.POST, self.URL, callback=self.article_callback)
+        responses.add_callback(
+            responses.POST, self.URL, callback=self.article_callback
+        )
 
         from werobot.replies import Article
         articles = []
         for _ in range(0, 8):
-            articles.append(Article(*["test_title", "test_description", "test_img", "test_url"]))
+            articles.append(
+                Article(
+                    *[
+                        "test_title", "test_description", "test_img",
+                        "test_url"
+                    ]
+                )
+            )
 
         r = self.client.send_article_message("test_id", articles)
         assert r == {"errcode": 0, "errmsg": "ok"}
 
         articles = []
         for _ in range(0, 8):
-            articles.append({
-                "title": "test_title",
-                "description": "test_description",
-                "url": "test_url",
-                "picurl": "test_pic_url"
-            })
+            articles.append(
+                {
+                    "title": "test_title",
+                    "description": "test_description",
+                    "url": "test_url",
+                    "picurl": "test_pic_url"
+                }
+            )
 
         r = self.client.send_article_message("test_id", articles)
         assert r == {"errcode": 0, "errmsg": "ok"}
@@ -1022,7 +1113,9 @@ class TestSendTextMessageClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_send_text_message(self):
-        responses.add_callback(responses.POST, self.URL, callback=self.text_callback)
+        responses.add_callback(
+            responses.POST, self.URL, callback=self.text_callback
+        )
 
         r = self.client.send_text_message("test_id", "test_message")
         assert r == {"errcode": 0, "errmsg": "ok"}
@@ -1043,7 +1136,11 @@ class TestSendTextMessageClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_send_text_message_with_kf_account(self):
-        responses.add_callback(responses.POST, self.URL, callback=self.text_with_kf_account_callback)
+        responses.add_callback(
+            responses.POST,
+            self.URL,
+            callback=self.text_with_kf_account_callback
+        )
         r = self.client.send_text_message("test_id", "test_message", "233@233")
         assert r == {"errcode": 0, "errmsg": "ok"}
 
@@ -1066,7 +1163,9 @@ class TestSendImageMessageClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_send_image_message(self):
-        responses.add_callback(responses.POST, self.URL, callback=self.image_callback)
+        responses.add_callback(
+            responses.POST, self.URL, callback=self.image_callback
+        )
 
         r = self.client.send_image_message("test_id", "test_media_id")
         assert r == {"errcode": 0, "errmsg": "ok"}
@@ -1087,9 +1186,15 @@ class TestSendImageMessageClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_send_image_message_with_kf_account(self):
-        responses.add_callback(responses.POST, self.URL, callback=self.image_with_kf_account_callback)
+        responses.add_callback(
+            responses.POST,
+            self.URL,
+            callback=self.image_with_kf_account_callback
+        )
 
-        r = self.client.send_image_message("test_id", "test_media_id", "233@233")
+        r = self.client.send_image_message(
+            "test_id", "test_media_id", "233@233"
+        )
         assert r == {"errcode": 0, "errmsg": "ok"}
 
 
@@ -1111,7 +1216,9 @@ class TestSendVoiceMessageClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_send_voice_message(self):
-        responses.add_callback(responses.POST, self.URL, callback=self.voice_callback)
+        responses.add_callback(
+            responses.POST, self.URL, callback=self.voice_callback
+        )
 
         r = self.client.send_voice_message("test_id", "test_media_id")
         assert r == {"errcode": 0, "errmsg": "ok"}
@@ -1132,9 +1239,15 @@ class TestSendVoiceMessageClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_send_voice_message_with_kf_account(self):
-        responses.add_callback(responses.POST, self.URL, callback=self.voice_with_kf_account_callback)
+        responses.add_callback(
+            responses.POST,
+            self.URL,
+            callback=self.voice_with_kf_account_callback
+        )
 
-        r = self.client.send_voice_message("test_id", "test_media_id", "233@233")
+        r = self.client.send_voice_message(
+            "test_id", "test_media_id", "233@233"
+        )
         assert r == {"errcode": 0, "errmsg": "ok"}
 
 
@@ -1158,7 +1271,9 @@ class TestMusicMessageClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_send_music_message(self):
-        responses.add_callback(responses.POST, self.URL, callback=self.music_callback)
+        responses.add_callback(
+            responses.POST, self.URL, callback=self.music_callback
+        )
 
         r = self.client.send_music_message(
             user_id="test_id",
@@ -1188,7 +1303,11 @@ class TestMusicMessageClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_send_music_message_with_kf_account(self):
-        responses.add_callback(responses.POST, self.URL, callback=self.music_with_kf_account_callback)
+        responses.add_callback(
+            responses.POST,
+            self.URL,
+            callback=self.music_with_kf_account_callback
+        )
 
         r = self.client.send_music_message(
             user_id="test_id",
@@ -1220,7 +1339,9 @@ class TestVideoMessageClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_send_video_message(self):
-        responses.add_callback(responses.POST, self.URL, callback=self.video_callback)
+        responses.add_callback(
+            responses.POST, self.URL, callback=self.video_callback
+        )
         r = self.client.send_video_message(
             user_id="test_id",
             media_id="test_media_id",
@@ -1245,7 +1366,11 @@ class TestVideoMessageClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_send_video_message_with_kf_account(self):
-        responses.add_callback(responses.POST, self.URL, callback=self.video_with_kf_account_callback)
+        responses.add_callback(
+            responses.POST,
+            self.URL,
+            callback=self.video_with_kf_account_callback
+        )
         r = self.client.send_video_message(
             user_id="test_id",
             media_id="test_media_id",
@@ -1274,9 +1399,13 @@ class TestNewsMessageClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_send_news_message(self):
-        responses.add_callback(responses.POST, self.URL, callback=self.news_callback)
+        responses.add_callback(
+            responses.POST, self.URL, callback=self.news_callback
+        )
 
-        r = self.client.send_news_message(user_id="test_id", media_id="test_media_id")
+        r = self.client.send_news_message(
+            user_id="test_id", media_id="test_media_id"
+        )
         assert r == {"errcode": 0, "errmsg": "ok"}
 
     @staticmethod
@@ -1295,9 +1424,15 @@ class TestNewsMessageClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_send_news_message_with_kf_account(self):
-        responses.add_callback(responses.POST, self.URL, callback=self.news_with_kf_account_callback)
+        responses.add_callback(
+            responses.POST,
+            self.URL,
+            callback=self.news_with_kf_account_callback
+        )
 
-        r = self.client.send_news_message(user_id="test_id", media_id="test_media_id", kf_account="233@233")
+        r = self.client.send_news_message(
+            user_id="test_id", media_id="test_media_id", kf_account="233@233"
+        )
         assert r == {"errcode": 0, "errmsg": "ok"}
 
 
@@ -1317,7 +1452,9 @@ class TestTemplateMessage(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_send_template_message(self):
-        responses.add_callback(responses.POST, self.URL, callback=self.template_callback)
+        responses.add_callback(
+            responses.POST, self.URL, callback=self.template_callback
+        )
 
         r = self.client.send_template_message(
             user_id="test_id",
@@ -1349,7 +1486,9 @@ class TestMiniprogrampageMessage(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_send_miniprogrampage_message(self):
-        responses.add_callback(responses.POST, self.URL, callback=self.miniprogrampage_callback)
+        responses.add_callback(
+            responses.POST, self.URL, callback=self.miniprogrampage_callback
+        )
 
         r = self.client.send_miniprogrampage_message(
             user_id="test_id",
@@ -1376,8 +1515,15 @@ class TestClientTagManageClass(BaseTestClass):
 
     get_tags_response = {
         'tags': [
-            {'id': 2, 'name': u'星标组', 'count': 0},
-            {'id': 100, 'name': update_tag_name, 'count': 0}
+            {
+                'id': 2,
+                'name': u'星标组',
+                'count': 0
+            }, {
+                'id': 100,
+                'name': update_tag_name,
+                'count': 0
+            }
         ]
     }
 
@@ -1396,12 +1542,15 @@ class TestClientTagManageClass(BaseTestClass):
         params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
         assert "access_token" in params.keys()
         body = json.loads(request.body.decode("utf-8"))
-        assert body == {
-            "tag": {
-                "name": self.create_tag_name
+        assert body == {"tag": {"name": self.create_tag_name}}
+        return 200, JSON_HEADER, json.dumps(
+            {
+                "tag": {
+                    "id": self.create_tag_id,
+                    "name": self.create_tag_name
+                }
             }
-        }
-        return 200, JSON_HEADER, json.dumps({"tag": {"id": self.create_tag_id, "name": self.create_tag_name}})
+        )
 
     def update_tag_callback(self, request):
         params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
@@ -1424,10 +1573,7 @@ class TestClientTagManageClass(BaseTestClass):
         params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
         assert "access_token" in params.keys()
         body = json.loads(request.body.decode("utf-8"))
-        assert body == {
-            "tagid": self.get_users_by_tag_id,
-            "next_openid": ""
-        }
+        assert body == {"tagid": self.get_users_by_tag_id, "next_openid": ""}
         return 200, JSON_HEADER, json.dumps(self.get_users_by_tag_response)
 
     def delete_tag_callback(self, request):
@@ -1444,35 +1590,58 @@ class TestClientTagManageClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_create_tag(self):
-        responses.add_callback(responses.POST, self.CREATE_TAG_URL, callback=self.create_tag_callback)
+        responses.add_callback(
+            responses.POST,
+            self.CREATE_TAG_URL,
+            callback=self.create_tag_callback
+        )
         r = self.client.create_tag(self.create_tag_name)
-        assert r == {"tag": {"id": self.create_tag_id, "name": self.create_tag_name}}
+        assert r == {
+            "tag": {
+                "id": self.create_tag_id,
+                "name": self.create_tag_name
+            }
+        }
 
     @responses.activate
     @add_token_response
     def test_update_tag(self):
-        responses.add_callback(responses.POST, self.UPDATE_TAG_URL, callback=self.update_tag_callback)
+        responses.add_callback(
+            responses.POST,
+            self.UPDATE_TAG_URL,
+            callback=self.update_tag_callback
+        )
         r = self.client.update_tag(self.update_tag_id, self.update_tag_name)
         assert r == {'errcode': 0, 'errmsg': 'ok'}
 
     @responses.activate
     @add_token_response
     def test_get_tags(self):
-        responses.add_callback(responses.GET, self.GET_TAGS_URL, callback=self.get_tags_callback)
+        responses.add_callback(
+            responses.GET, self.GET_TAGS_URL, callback=self.get_tags_callback
+        )
         r = self.client.get_tags()
         assert r == self.get_tags_response
 
     @responses.activate
     @add_token_response
     def test_get_users_by_tag(self):
-        responses.add_callback(responses.POST, self.GET_USERS_BY_TAG_URL, callback=self.get_users_by_tag_callback)
+        responses.add_callback(
+            responses.POST,
+            self.GET_USERS_BY_TAG_URL,
+            callback=self.get_users_by_tag_callback
+        )
         r = self.client.get_users_by_tag(self.get_users_by_tag_id)
         assert r == self.get_users_by_tag_response
 
     @responses.activate
     @add_token_response
     def test_delete_tag(self):
-        responses.add_callback(responses.POST, self.DELETE_TAG_URL, callback=self.delete_tag_callback)
+        responses.add_callback(
+            responses.POST,
+            self.DELETE_TAG_URL,
+            callback=self.delete_tag_callback
+        )
         r = self.client.delete_tag(self.delete_tag_id)
         assert r == {'errcode': 0, 'errmsg': 'ok'}
 
@@ -1494,20 +1663,14 @@ class TestClientMembersTagClass(BaseTestClass):
         params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
         assert "access_token" in params.keys()
         body = json.loads(request.body.decode("utf-8"))
-        assert body == {
-            "openid_list": self.users_list,
-            "tagid": self.tag_id
-        }
+        assert body == {"openid_list": self.users_list, "tagid": self.tag_id}
         return 200, JSON_HEADER, json.dumps({'errcode': 0, 'errmsg': 'ok'})
 
     def untag_user_callback(self, request):
         params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
         assert "access_token" in params.keys()
         body = json.loads(request.body.decode("utf-8"))
-        assert body == {
-            "openid_list": self.users_list,
-            "tagid": self.tag_id
-        }
+        assert body == {"openid_list": self.users_list, "tagid": self.tag_id}
         return 200, JSON_HEADER, json.dumps({'errcode': 0, 'errmsg': 'ok'})
 
     def get_tags_by_user_callback(self, request):
@@ -1522,20 +1685,30 @@ class TestClientMembersTagClass(BaseTestClass):
     @responses.activate
     @add_token_response
     def test_tag_users(self):
-        responses.add_callback(responses.POST, self.TAG_USER_URL, callback=self.tag_user_callback)
+        responses.add_callback(
+            responses.POST, self.TAG_USER_URL, callback=self.tag_user_callback
+        )
         r = self.client.tag_users(self.tag_id, self.users_list)
         assert r == {'errcode': 0, 'errmsg': 'ok'}
 
     @responses.activate
     @add_token_response
     def test_untag_users(self):
-        responses.add_callback(responses.POST, self.UNTAG_USER_URL, callback=self.untag_user_callback)
+        responses.add_callback(
+            responses.POST,
+            self.UNTAG_USER_URL,
+            callback=self.untag_user_callback
+        )
         r = self.client.untag_users(self.tag_id, self.users_list)
         assert r == {'errcode': 0, 'errmsg': 'ok'}
 
     @responses.activate
     @add_token_response
     def test_get_tags_by_user(self):
-        responses.add_callback(responses.POST, self.GET_TAGS_BY_USER_URL, callback=self.get_tags_by_user_callback)
+        responses.add_callback(
+            responses.POST,
+            self.GET_TAGS_BY_USER_URL,
+            callback=self.get_tags_by_user_callback
+        )
         r = self.client.get_tags_by_user(self.user_a_open_id)
         assert r == self.get_tags_by_user_response

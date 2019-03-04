@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 """
 Fake client for sae kvdb service.
 
@@ -113,13 +112,21 @@ class Client(local):
     class MemcachedStringEncodingError(Exception):
         pass
 
-    def __init__(self, servers=[], debug=0, pickleProtocol=0,
-                 pickler=pickle.Pickler, unpickler=pickle.Unpickler,
-                 pload=None, pid=None,
-                 server_max_key_length=SERVER_MAX_KEY_LENGTH,
-                 server_max_value_length=SERVER_MAX_VALUE_LENGTH,
-                 dead_retry=_DEAD_RETRY, socket_timeout=_SOCKET_TIMEOUT,
-                 cache_cas=False):
+    def __init__(
+        self,
+        servers=[],
+        debug=0,
+        pickleProtocol=0,
+        pickler=pickle.Pickler,
+        unpickler=pickle.Unpickler,
+        pload=None,
+        pid=None,
+        server_max_key_length=SERVER_MAX_KEY_LENGTH,
+        server_max_value_length=SERVER_MAX_VALUE_LENGTH,
+        dead_retry=_DEAD_RETRY,
+        socket_timeout=_SOCKET_TIMEOUT,
+        cache_cas=False
+    ):
         """
         Create a new Client object with the given list of servers.
 
@@ -288,10 +295,12 @@ class Client(local):
 
         key_exists = key in _cache
 
-        if ((cmd == 'add' and key_exists) or
-                (cmd == 'replace' and not key_exists) or
-                (cmd == 'prepend' and not key_exists) or
-                (cmd == 'append' and not key_exists)):
+        if (
+            (cmd == 'add' and key_exists)
+            or (cmd == 'replace' and not key_exists)
+            or (cmd == 'prepend' and not key_exists)
+            or (cmd == 'append' and not key_exists)
+        ):
             return False
 
         if cmd == 'prepend':
@@ -358,8 +367,9 @@ class Client(local):
                 retval[e] = val
         return retval
 
-    def get_by_prefix(self, prefix, limit=None, max_count=None,
-                      marker=None, start_key=None):
+    def get_by_prefix(
+        self, prefix, limit=None, max_count=None, marker=None, start_key=None
+    ):
         '''
         >>> success = mc.set('k1', 1)
         >>> success = mc.set('k2', 2)
@@ -390,8 +400,9 @@ class Client(local):
                 max_count -= 1
                 yield k, e.value
 
-    def getkeys_by_prefix(self, prefix, limit=None, max_count=None,
-                          marker=None, start_key=None):
+    def getkeys_by_prefix(
+        self, prefix, limit=None, max_count=None, marker=None, start_key=None
+    ):
         max_count = limit or max_count
         marker = marker or start_key
         kv = self.get_by_prefix(prefix, max_count, marker=marker)
@@ -413,19 +424,22 @@ class Client(local):
             if isinstance(key, six.text_type):
                 raise Client.MemcachedStringEncodingError(
                     "Keys must be str()'s, not unicode.  Convert your unicode "
-                    "strings using mystring.encode(charset)!")
+                    "strings using mystring.encode(charset)!"
+                )
         if not isinstance(key, str):
             raise Client.MemcachedKeyTypeError("Key must be str()'s")
 
         if isinstance(key, str):
             if self.server_max_key_length != 0 and \
                                     len(key) + key_extra_len > self.server_max_key_length:
-                raise Client.MemcachedKeyLengthError("Key length is > %s"
-                                                     % self.server_max_key_length)
+                raise Client.MemcachedKeyLengthError(
+                    "Key length is > %s" % self.server_max_key_length
+                )
             for char in key:
                 if ord(char) < 33 or ord(char) == 127:
                     raise Client.MemcachedKeyCharacterError(
-                        "Control characters not allowed")
+                        "Control characters not allowed"
+                    )
 
 
 KVClient = Client
@@ -453,12 +467,10 @@ if __name__ == "__main__":
     for servers in serverList:
         mc = KVClient(servers, debug=1)
 
-
         def to_s(val):
             if not isinstance(val, str):
                 return "%s (%s)" % (val, type(val))
             return "%s" % val
-
 
         def test_setget(key, val):
             global failures
@@ -473,7 +485,6 @@ if __name__ == "__main__":
                 failures = failures + 1
                 return 0
 
-
         class FooStruct(object):
             def __init__(self):
                 self.bar = "baz"
@@ -485,7 +496,6 @@ if __name__ == "__main__":
                 if isinstance(other, FooStruct):
                     return self.bar == other.bar
                 return 0
-
 
         test_setget("a_string", "some random string")
         test_setget("an_integer", 42)
@@ -547,7 +557,7 @@ if __name__ == "__main__":
         except Client.MemcachedKeyCharacterError as msg:
             print("OK")
         else:
-            print("FAIL");
+            print("FAIL")
             failures = failures + 1
 
         print("Testing sending control characters...")
@@ -556,14 +566,14 @@ if __name__ == "__main__":
         except Client.MemcachedKeyCharacterError as msg:
             print("OK")
         else:
-            print("FAIL");
+            print("FAIL")
             failures = failures + 1
 
         print("Testing using insanely long key...")
         try:
             x = mc.set('a' * SERVER_MAX_KEY_LENGTH, 1)
         except Client.MemcachedKeyLengthError as msg:
-            print("FAIL");
+            print("FAIL")
             failures = failures + 1
         else:
             print("OK")
@@ -576,7 +586,6 @@ db_file = os.environ.get('sae.kvdb.file')
 if db_file:
     import pickle
 
-
     def _save_cache():
         # XXX: reloader should not do this
         if not os.environ.get('sae.run_main'): return
@@ -585,13 +594,11 @@ if db_file:
         except Exception as e:
             print("save kvdb to '%s' failed: %s" % (db_file, str(e)))
 
-
     def _restore_cache():
         try:
             _cache.update(pickle.load(open(db_file, 'rb')))
         except Exception as e:
             print("load kvdb from '%s' failed: %s" % (db_file, str(e)))
-
 
     import atexit
 

@@ -54,7 +54,9 @@ def wsgi_tester():
             # if the status_code is not >= 200 and < 400.
             test_app.post(endpoint, xml, content_type="text/xml")
 
-        response = test_app.post(endpoint + params, xml, content_type="text/xml")
+        response = test_app.post(
+            endpoint + params, xml, content_type="text/xml"
+        )
 
         assert response.status_code == 200
         response = process_message(parse_xml(response.body))
@@ -80,11 +82,12 @@ def hello_robot():
 
 
 def test_django():
-    os.environ.setdefault(
-        "DJANGO_SETTINGS_MODULE",
-        "django_test.settings")
-    sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                 'django_test_env'))
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_test.settings")
+    sys.path.append(
+        os.path.join(
+            os.path.abspath(os.path.dirname(__file__)), 'django_test_env'
+        )
+    )
 
     from django.test.utils import setup_test_environment
     setup_test_environment()
@@ -101,10 +104,14 @@ def test_django():
     signature = get_signature(token, timestamp, nonce)
     echostr = generate_token()
 
-    response = client.get('/robot/', {'signature': signature,
-                                      'timestamp': timestamp,
-                                      'nonce': nonce,
-                                      'echostr': echostr})
+    response = client.get(
+        '/robot/', {
+            'signature': signature,
+            'timestamp': timestamp,
+            'nonce': nonce,
+            'echostr': echostr
+        }
+    )
     assert response.status_code == 200
     assert response.content.decode('utf-8') == echostr
 
@@ -120,17 +127,13 @@ def test_django():
     params = "?timestamp=%s&nonce=%s&signature=%s" % \
              (timestamp, nonce, signature)
     url = '/robot/'
-    response = client.post(url,
-                           data=xml,
-                           content_type="text/xml")
+    response = client.post(url, data=xml, content_type="text/xml")
 
     assert response.status_code == 403
     assert response.content.decode('utf-8') == u'喵'
 
     url += params
-    response = client.post(url,
-                           data=xml,
-                           content_type="text/xml")
+    response = client.post(url, data=xml, content_type="text/xml")
 
     assert response.status_code == 200
     response = process_message(parse_xml(response.content))
@@ -171,11 +174,7 @@ def test_bottle(wsgi_tester, hello_robot):
     hello_robot.token = token
 
     bottle_app = Bottle()
-    bottle_app.route(
-        endpoint,
-        ['GET', 'POST'],
-        make_view(hello_robot)
-    )
+    bottle_app.route(endpoint, ['GET', 'POST'], make_view(hello_robot))
 
     wsgi_tester(bottle_app, token=token, endpoint=endpoint)
 

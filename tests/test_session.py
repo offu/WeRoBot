@@ -34,8 +34,9 @@ def remove_session(session):
 
 
 def test_session():
-    robot = werobot.WeRoBot(token=werobot.utils.generate_token(),
-                            enable_session=True)
+    robot = werobot.WeRoBot(
+        token=werobot.utils.generate_token(), enable_session=True
+    )
 
     @robot.text
     def first(message, session):
@@ -119,7 +120,10 @@ class MockPyMySQL:
             if "SELECT" in args[0]:
                 self.cache_result = self.db.execute(*args, **kwargs).fetchone()
             elif "INSERT" in args[0]:
-                args = ["INSERT OR REPLACE INTO WeRoBot (id, value) VALUES (?,?);", (args[1][0], args[1][1])]
+                args = [
+                    "INSERT OR REPLACE INTO WeRoBot (id, value) VALUES (?,?);",
+                    (args[1][0], args[1][1])
+                ]
                 self.db.execute(*args, **kwargs)
             else:
                 self.db.execute(*args, **kwargs)
@@ -135,14 +139,16 @@ class MockPostgreSQL(MockPyMySQL):
     pass
 
 
-@pytest.mark.parametrize("storage", [
-    filestorage.FileStorage(),
-    mongodbstorage.MongoDBStorage(mongomock.MongoClient().t.t),
-    redisstorage.RedisStorage(mockredis.mock_redis_client()),
-    sqlitestorage.SQLiteStorage(),
-    mysqlstorage.MySQLStorage(MockPyMySQL()),
-    postgresqlstorage.PostgreSQLStorage(MockPostgreSQL())
-])
+@pytest.mark.parametrize(
+    "storage", [
+        filestorage.FileStorage(),
+        mongodbstorage.MongoDBStorage(mongomock.MongoClient().t.t),
+        redisstorage.RedisStorage(mockredis.mock_redis_client()),
+        sqlitestorage.SQLiteStorage(),
+        mysqlstorage.MySQLStorage(MockPyMySQL()),
+        postgresqlstorage.PostgreSQLStorage(MockPostgreSQL())
+    ]
+)
 def test_storage(storage):
     assert storage.get("喵") == {}
     storage.set("喵", "喵喵")

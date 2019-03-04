@@ -8,7 +8,8 @@ def test_none_message():
 
 
 def test_text_message():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[toUser]]></ToUserName>
         <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -17,7 +18,8 @@ def test_text_message():
         <Content><![CDATA[this is a test]]></Content>
         <MsgId>1234567890123456</MsgId>
     </xml>
-    """)
+    """
+    )
     assert message.target == "toUser"
     assert message.source == "fromUser"
     assert message.time == 1348831860
@@ -27,7 +29,8 @@ def test_text_message():
 
 
 def test_image_message():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[toUser]]></ToUserName>
         <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -36,7 +39,8 @@ def test_image_message():
         <PicUrl><![CDATA[this is a url]]></PicUrl>
         <MsgId>1234567890123456</MsgId>
     </xml>
-    """)
+    """
+    )
     assert message.target == "toUser"
     assert message.source == "fromUser"
     assert message.time == 1348831860
@@ -46,7 +50,8 @@ def test_image_message():
 
 
 def test_location_message():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[toUser]]></ToUserName>
         <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -58,7 +63,8 @@ def test_location_message():
         <Label><![CDATA[Location]]></Label>
         <MsgId>1234567890123456</MsgId>
     </xml>
-    """)
+    """
+    )
     assert message.target == "toUser"
     assert message.source == "fromUser"
     assert message.time == 1351776360
@@ -70,7 +76,8 @@ def test_location_message():
 
 
 def test_link_message():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[toUser]]></ToUserName>
         <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -81,7 +88,8 @@ def test_link_message():
         <Url><![CDATA[https://github.com/whtsky/WeRoBot]]></Url>
         <MsgId>1234567890123456</MsgId>
     </xml>
-    """)
+    """
+    )
     assert message.target == "toUser"
     assert message.source == "fromUser"
     assert message.time == 1351776360
@@ -93,7 +101,8 @@ def test_link_message():
 
 
 def test_voice_message():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[toUser]]></ToUserName>
         <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -104,7 +113,8 @@ def test_voice_message():
         <Recognition><![CDATA[Meow~]]></Recognition>
         <MsgId>1234567890123456</MsgId>
     </xml>
-    """)
+    """
+    )
     assert message.target == "toUser"
     assert message.source == "fromUser"
     assert message.time == 1357290913
@@ -136,7 +146,8 @@ def test_unknown_message():
 
 
 def test_subscribe_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[toUser]]></ToUserName>
         <FromUserName><![CDATA[FromUser]]></FromUserName>
@@ -144,13 +155,15 @@ def test_subscribe_event():
         <MsgType><![CDATA[event]]></MsgType>
         <Event><![CDATA[subscribe]]></Event>
     </xml>
-    """)
+    """
+    )
     assert message.target == "toUser"
     assert message.source == "FromUser"
     assert message.time == 123456789
     assert message.type == "subscribe_event"
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml><ToUserName><![CDATA[toUser]]></ToUserName>
         <FromUserName><![CDATA[FromUser]]></FromUserName>
         <CreateTime>123456789</CreateTime>
@@ -159,7 +172,8 @@ def test_subscribe_event():
         <EventKey><![CDATA[qrscene_123123]]></EventKey>
         <Ticket><![CDATA[TICKET]]></Ticket>
     </xml>
-    """)
+    """
+    )
     assert message.target == "toUser"
     assert message.source == "FromUser"
     assert message.time == 123456789
@@ -169,7 +183,8 @@ def test_subscribe_event():
 
 
 def test_unsubscribe_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[toUser]]></ToUserName>
         <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -177,7 +192,8 @@ def test_unsubscribe_event():
         <MsgType><![CDATA[event]]></MsgType>
         <Event><![CDATA[unsubscribe]]></Event>
     </xml>
-    """)
+    """
+    )
     assert message.target == "toUser"
     assert message.source == "fromUser"
     assert message.time == 123456789
@@ -185,7 +201,8 @@ def test_unsubscribe_event():
 
 
 def test_scan_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[toUser]]></ToUserName>
         <FromUserName><![CDATA[FromUser]]></FromUserName>
@@ -195,7 +212,8 @@ def test_scan_event():
         <EventKey><![CDATA[SCENE_VALUE]]></EventKey>
         <Ticket><![CDATA[TICKET]]></Ticket>
     </xml>
-    """)
+    """
+    )
     assert message.target == "toUser"
     assert message.source == "FromUser"
     assert message.time == 123456789
@@ -205,7 +223,8 @@ def test_scan_event():
 
 
 def test_scan_push_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[toUser]]></ToUserName>
         <FromUserName><![CDATA[FromUser]]></FromUserName>
@@ -218,7 +237,8 @@ def test_scan_push_event():
             <ScanResult><![CDATA[www.qq.com]]></ScanResult>
         </ScanCodeInfo>
     </xml>
-    """)
+    """
+    )
     assert message.target == "toUser"
     assert message.source == "FromUser"
     assert message.time == 123456789
@@ -229,7 +249,8 @@ def test_scan_push_event():
 
 
 def test_scan_waitmsg_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[toUser]]></ToUserName>
         <FromUserName><![CDATA[FromUser]]></FromUserName>
@@ -242,7 +263,8 @@ def test_scan_waitmsg_event():
             <ScanResult><![CDATA[www.qq.com]]></ScanResult>
         </ScanCodeInfo>
     </xml>
-    """)
+    """
+    )
     assert message.target == "toUser"
     assert message.source == "FromUser"
     assert message.time == 123456789
@@ -254,7 +276,8 @@ def test_scan_waitmsg_event():
 
 def test_pic_sysphoto_event():
     # count is 1
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[gh_e136c6e50636]]></ToUserName>
         <FromUserName><![CDATA[oMgHVjngRipVsoxg6TuX3vz6glDg]]></FromUserName>
@@ -271,17 +294,23 @@ def test_pic_sysphoto_event():
             </PicList>
         </SendPicsInfo>
     </xml>
-    """)
+    """
+    )
     assert message.target == "gh_e136c6e50636"
     assert message.source == "oMgHVjngRipVsoxg6TuX3vz6glDg"
     assert message.time == 1408090651
     assert message.type == "pic_sysphoto_event"
     assert message.key == "6"
     assert message.count == 1
-    assert message.pic_list == [{'pic_md5_sum': '1b5f7c23b5bf75682a53e7b6d163e185'}]
+    assert message.pic_list == [
+        {
+            'pic_md5_sum': '1b5f7c23b5bf75682a53e7b6d163e185'
+        }
+    ]
 
     # count is more than 1
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[gh_e136c6e50636]]></ToUserName>
             <FromUserName><![CDATA[oMgHVjngRipVsoxg6TuX3vz6glDg]]></FromUserName>
@@ -301,7 +330,8 @@ def test_pic_sysphoto_event():
                 </PicList>
             </SendPicsInfo>
         </xml>
-        """)
+        """
+    )
     assert message.target == "gh_e136c6e50636"
     assert message.source == "oMgHVjngRipVsoxg6TuX3vz6glDg"
     assert message.time == 1408090651
@@ -309,12 +339,17 @@ def test_pic_sysphoto_event():
     assert message.key == "6"
     assert message.count == 2
     assert message.pic_list == [
-        {'pic_md5_sum': '1b5f7c23b5bf75682a53e7b6d163e185'}, {'pic_md5_sum': '233'}
+        {
+            'pic_md5_sum': '1b5f7c23b5bf75682a53e7b6d163e185'
+        }, {
+            'pic_md5_sum': '233'
+        }
     ]
 
 
 def test_pic_photo_or_album_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[gh_e136c6e50636]]></ToUserName>
         <FromUserName><![CDATA[oMgHVjngRipVsoxg6TuX3vz6glDg]]></FromUserName>
@@ -331,18 +366,24 @@ def test_pic_photo_or_album_event():
             </PicList>
         </SendPicsInfo>
     </xml>
-    """)
+    """
+    )
     assert message.target == "gh_e136c6e50636"
     assert message.source == "oMgHVjngRipVsoxg6TuX3vz6glDg"
     assert message.time == 1408090816
     assert message.type == "pic_photo_or_album_event"
     assert message.key == "6"
     assert message.count == 1
-    assert message.pic_list == [{'pic_md5_sum': '5a75aaca956d97be686719218f275c6b'}]
+    assert message.pic_list == [
+        {
+            'pic_md5_sum': '5a75aaca956d97be686719218f275c6b'
+        }
+    ]
 
 
 def test_card_pass_check_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[toUser]]></ToUserName>
         <FromUserName><![CDATA[FromUser]]></FromUserName>
@@ -352,7 +393,8 @@ def test_card_pass_check_event():
         <CardId><![CDATA[cardid]]></CardId>
         <RefuseReason><![CDATA[非法代制]]></RefuseReason>
     </xml>
-    """)
+    """
+    )
     assert message.target == "toUser"
     assert message.source == "FromUser"
     assert message.time == 123456789
@@ -362,7 +404,8 @@ def test_card_pass_check_event():
 
 
 def test_card_not_pass_check_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[toUser]]></ToUserName>
             <FromUserName><![CDATA[FromUser]]></FromUserName>
@@ -372,7 +415,8 @@ def test_card_not_pass_check_event():
             <CardId><![CDATA[cardid]]></CardId>
             <RefuseReason><![CDATA[非法代制]]></RefuseReason>
         </xml>
-        """)
+        """
+    )
     assert message.target == "toUser"
     assert message.source == "FromUser"
     assert message.time == 123456789
@@ -382,7 +426,8 @@ def test_card_not_pass_check_event():
 
 
 def test_user_get_card_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName> <![CDATA[gh_fc0a06a20993]]> </ToUserName>
             <FromUserName> <![CDATA[oZI8Fj040-be6rlDohc6gkoPOQTQ]]> </FromUserName>
@@ -399,7 +444,8 @@ def test_user_get_card_event():
             <IsRestoreMemberCard>0</IsRestoreMemberCard>
             <IsRecommendByFriend>0</IsRecommendByFriend>
         </xml>
-    """)
+    """
+    )
     assert message.target == "gh_fc0a06a20993"
     assert message.source == "oZI8Fj040-be6rlDohc6gkoPOQTQ"
     assert message.time == 1472551036
@@ -416,7 +462,8 @@ def test_user_get_card_event():
 
 
 def test_user_gifting_card_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[gh_3fcea188bf78]]></ToUserName>
             <FromUserName><![CDATA[obLatjjwDolFjRRd3doGIdwNqRXw]]></FromUserName>
@@ -429,7 +476,8 @@ def test_user_gifting_card_event():
             <FriendUserName><![CDATA[obLatjlNerkb62HtSdQUx66C4NTU]]></FriendUserName>
             <IsChatRoom>0</IsChatRoom>
         </xml>
-    """)
+    """
+    )
     assert message.target == "gh_3fcea188bf78"
     assert message.source == "obLatjjwDolFjRRd3doGIdwNqRXw"
     assert message.time == 1474181868
@@ -442,7 +490,8 @@ def test_user_gifting_card_event():
 
 
 def test_user_del_card_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[toUser]]></ToUserName>
             <FromUserName><![CDATA[FromUser]]></FromUserName>
@@ -452,7 +501,8 @@ def test_user_del_card_event():
             <CardId><![CDATA[cardid]]></CardId>
             <UserCardCode><![CDATA[12312312]]></UserCardCode>
         </xml>
-    """)
+    """
+    )
     assert message.target == "toUser"
     assert message.source == "FromUser"
     assert message.time == 123456789
@@ -462,7 +512,8 @@ def test_user_del_card_event():
 
 
 def test_user_consume_card_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName> <![CDATA[gh_fc0a06a20993]]> </ToUserName>
             <FromUserName> <![CDATA[oZI8Fj040-be6rlDohc6gkoPOQTQ]]> </FromUserName>
@@ -478,7 +529,8 @@ def test_user_consume_card_event():
             <RemarkAmount> <![CDATA[]]> </RemarkAmount>
             <OuterStr> <![CDATA[xxxxx]]> </OuterStr>
         </xml>
-    """)
+    """
+    )
     assert message.target == "gh_fc0a06a20993"
     assert message.source == "oZI8Fj040-be6rlDohc6gkoPOQTQ"
     assert message.time == 1472549042
@@ -494,7 +546,8 @@ def test_user_consume_card_event():
 
 
 def test_user_pay_from_pay_cell_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[gh_e2243xxxxxxx]]></ToUserName>
             <FromUserName><![CDATA[oo2VNuOUuZGMxxxxxxxx]]></FromUserName>
@@ -508,7 +561,8 @@ def test_user_pay_from_pay_cell_event():
             <Fee><![CDATA[10000]]></Fee>
             <OriginalFee><![CDATA[10000]]> </OriginalFee>
         </xml>
-    """)
+    """
+    )
     assert message.target == "gh_e2243xxxxxxx"
     assert message.source == "oo2VNuOUuZGMxxxxxxxx"
     assert message.time == 1442390947
@@ -522,7 +576,8 @@ def test_user_pay_from_pay_cell_event():
 
 
 def test_user_view_card_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName> <![CDATA[gh_fcxxxx6a20993]]> </ToUserName>
             <FromUserName> <![CDATA[oZI8Fj040-xxxxx6gkoPOQTQ]]> </FromUserName>
@@ -533,7 +588,8 @@ def test_user_view_card_event():
             <UserCardCode> <![CDATA[4xxxxxxxx8558]]> </UserCardCode>
             <OuterStr> <![CDATA[12b]]> </OuterStr>
         </xml>
-    """)
+    """
+    )
     assert message.target == "gh_fcxxxx6a20993"
     assert message.source == "oZI8Fj040-xxxxx6gkoPOQTQ"
     assert message.time == 1467811138
@@ -544,7 +600,8 @@ def test_user_view_card_event():
 
 
 def test_user_enter_session_from_card_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[toUser]]></ToUserName>
             <FromUserName><![CDATA[FromUser]]></FromUserName>
@@ -554,7 +611,8 @@ def test_user_enter_session_from_card_event():
             <CardId><![CDATA[cardid]]></CardId>
             <UserCardCode><![CDATA[12312312]]></UserCardCode>
         </xml>
-    """)
+    """
+    )
     assert message.target == "toUser"
     assert message.source == "FromUser"
     assert message.time == 123456789
@@ -564,7 +622,8 @@ def test_user_enter_session_from_card_event():
 
 
 def test_update_member_card_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[gh_9e1765b5568e]]></ToUserName>
             <FromUserName><![CDATA[ojZ8YtyVyr30HheH3CM73y7h4jJE]]></FromUserName>
@@ -576,7 +635,8 @@ def test_update_member_card_event():
             <ModifyBonus>3</ModifyBonus>
             <ModifyBalance>0</ModifyBalance>
         </xml>
-    """)
+    """
+    )
     assert message.target == "gh_9e1765b5568e"
     assert message.source == "ojZ8YtyVyr30HheH3CM73y7h4jJE"
     assert message.time == 1445507140
@@ -588,7 +648,8 @@ def test_update_member_card_event():
 
 
 def test_card_sku_remind_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[gh_2d62d*****0]]></ToUserName>
             <FromUserName><![CDATA[oa3LFuBvWb7*********]]></FromUserName>
@@ -598,7 +659,8 @@ def test_card_sku_remind_event():
             <CardId><![CDATA[pa3LFuAh2P65**********]]></CardId>
             <Detail><![CDATA[the card's quantity is equal to 0]]></Detail>
         </xml>
-    """)
+    """
+    )
     assert message.target == "gh_2d62d*****0"
     assert message.source == "oa3LFuBvWb7*********"
     assert message.time == 1443838506
@@ -608,7 +670,8 @@ def test_card_sku_remind_event():
 
 
 def test_card_pay_order_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[gh_7223c83d4be5]]></ToUserName>
             <FromUserName><![CDATA[ob5E7s-HoN9tslQY3-0I4qmgluHk]]></FromUserName>
@@ -628,7 +691,8 @@ def test_card_pay_order_event():
             <Memo><![CDATA[开通账户奖励]]></Memo>
             <ReceiptInfo><![CDATA[]]></ReceiptInfo>
         </xml>
-    """)
+    """
+    )
     assert message.target == "gh_7223c83d4be5"
     assert message.source == "ob5E7s-HoN9tslQY3-0I4qmgluHk"
     assert message.time == 1453295737
@@ -648,7 +712,8 @@ def test_card_pay_order_event():
 
 
 def test_submit_membercard_user_info_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName> <![CDATA[gh_3fcea188bf78]]></ToUserName>
             <FromUserName><![CDATA[obLatjlaNQKb8FqOvt1M1x1lIBFE]]></FromUserName>
@@ -658,7 +723,8 @@ def test_submit_membercard_user_info_event():
             <CardId><![CDATA[pbLatjtZ7v1BG_ZnTjbW85GYc_E8]]></CardId>
             <UserCardCode><![CDATA[018255396048]]></UserCardCode>
         </xml>
-    """)
+    """
+    )
     assert message.target == "gh_3fcea188bf78"
     assert message.source == "obLatjlaNQKb8FqOvt1M1x1lIBFE"
     assert message.time == 1432668700
@@ -668,7 +734,8 @@ def test_submit_membercard_user_info_event():
 
 
 def test_pic_weixin_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[gh_e136c6e50636]]></ToUserName>
         <FromUserName><![CDATA[oMgHVjngRipVsoxg6TuX3vz6glDg]]></FromUserName>
@@ -685,18 +752,24 @@ def test_pic_weixin_event():
             </PicList>
         </SendPicsInfo>
     </xml>
-    """)
+    """
+    )
     assert message.target == "gh_e136c6e50636"
     assert message.source == "oMgHVjngRipVsoxg6TuX3vz6glDg"
     assert message.time == 1408090816
     assert message.type == "pic_weixin_event"
     assert message.key == "6"
     assert message.count == 1
-    assert message.pic_list == [{'pic_md5_sum': '5a75aaca956d97be686719218f275c6b'}]
+    assert message.pic_list == [
+        {
+            'pic_md5_sum': '5a75aaca956d97be686719218f275c6b'
+        }
+    ]
 
 
 def test_location_select_event():
-    message = parse_user_msg(u"""
+    message = parse_user_msg(
+        u"""
     <xml>
         <ToUserName><![CDATA[gh_e136c6e50636]]></ToUserName>
         <FromUserName><![CDATA[oMgHVjngRipVsoxg6TuX3vz6glDg]]></FromUserName>
@@ -712,7 +785,8 @@ def test_location_select_event():
             <Poiname><![CDATA[]]></Poiname>
         </SendLocationInfo>
     </xml>
-    """)
+    """
+    )
     assert message.target == "gh_e136c6e50636"
     assert message.source == "oMgHVjngRipVsoxg6TuX3vz6glDg"
     assert message.time == 1408091189
@@ -726,7 +800,8 @@ def test_location_select_event():
 
 
 def test_click_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[toUser]]></ToUserName>
         <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -735,7 +810,8 @@ def test_click_event():
         <Event><![CDATA[CLICK]]></Event>
         <EventKey><![CDATA[EVENTKEY]]></EventKey>
     </xml>
-    """)
+    """
+    )
     assert message.target == "toUser"
     assert message.source == "fromUser"
     assert message.time == 123456789
@@ -744,7 +820,8 @@ def test_click_event():
 
 
 def test_view_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[toUser]]></ToUserName>
         <FromUserName><![CDATA[FromUser]]></FromUserName>
@@ -752,7 +829,8 @@ def test_view_event():
         <MsgType><![CDATA[event]]></MsgType>
         <Event><![CDATA[VIEW]]></Event>
         <EventKey><![CDATA[www.qq.com]]></EventKey>
-    </xml>""")
+    </xml>"""
+    )
     assert message.target == "toUser"
     assert message.source == "FromUser"
     assert message.time == 123456789
@@ -761,7 +839,8 @@ def test_view_event():
 
 
 def test_location_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[toUser]]></ToUserName>
         <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -772,7 +851,8 @@ def test_location_event():
         <Longitude>113.352425</Longitude>
         <Precision>119.385040</Precision>
     </xml>
-    """)
+    """
+    )
     assert message.target == "toUser"
     assert message.source == "fromUser"
     assert message.time == 123456789
@@ -783,7 +863,8 @@ def test_location_event():
 
 
 def test_template_send_job_finish_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[gh_7f083739789a]]></ToUserName>
         <FromUserName><![CDATA[oia2TjuEGTNoeX76QEjQNrcURxG8]]></FromUserName>
@@ -793,11 +874,13 @@ def test_template_send_job_finish_event():
         <MsgID>200163836</MsgID>
         <Status><![CDATA[success]]></Status>
     </xml>
-    """)
+    """
+    )
     assert message.message_id == 200163836
     assert message.status == 'success'
 
-    assert parse_user_msg("""
+    assert parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[gh_7f083739789a]]></ToUserName>
         <FromUserName><![CDATA[oia2TjuEGTNoeX76QEjQNrcURxG8]]></FromUserName>
@@ -807,11 +890,13 @@ def test_template_send_job_finish_event():
         <MsgID>200163840</MsgID>
         <Status><![CDATA[failed: system failed]]></Status>
     </xml>
-    """).status == 'failed: system failed'
+    """
+    ).status == 'failed: system failed'
 
 
 def test_user_scan_product_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[gh_4e47c9c9ecad]]></ToUserName>
         <FromUserName><![CDATA[okkeXs1nI-xU4ql8-5BXkv1f0gDo]]></FromUserName>
@@ -827,7 +912,8 @@ def test_user_scan_product_event():
         <Scene>2</Scene>
         <ExtInfo><![CDATA[123]]></ExtInfo>
     </xml>
-    """)
+    """
+    )
     assert message.target == "gh_4e47c9c9ecad"
     assert message.source == "okkeXs1nI-xU4ql8-5BXkv1f0gDo"
     assert message.time == 1438250110
@@ -843,7 +929,8 @@ def test_user_scan_product_event():
 
 
 def test_user_scan_product_enter_session_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[gh_fbe8a958756e]]></ToUserName>
         <FromUserName><![CDATA[otAzGjrS4AYCmeJM1GhEOcHXXTAo]]></FromUserName>
@@ -854,7 +941,8 @@ def test_user_scan_product_enter_session_event():
         <KeyStr><![CDATA[6954767461373]]></KeyStr>
         <ExtInfo><![CDATA[]]></ExtInfo>
     </xml>
-    """)
+    """
+    )
     assert message.target == "gh_fbe8a958756e"
     assert message.source == "otAzGjrS4AYCmeJM1GhEOcHXXTAo"
     assert message.time == 1433259128
@@ -865,7 +953,8 @@ def test_user_scan_product_enter_session_event():
 
 
 def test_user_scan_product_async_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[gh_fbe8a958756e]]></ToUserName>
         <FromUserName><![CDATA[otAzGjrS4AYCmeJM1GhEOcHXXTAo]]></FromUserName>
@@ -877,7 +966,8 @@ def test_user_scan_product_async_event():
         <ExtInfo><![CDATA[123]]></ExtInfo>
         <RegionCode><![CDATA[440105]]></RegionCode>
     </xml>
-    """)
+    """
+    )
     assert message.target == "gh_fbe8a958756e"
     assert message.source == "otAzGjrS4AYCmeJM1GhEOcHXXTAo"
     assert message.time == 1434541327
@@ -889,7 +979,8 @@ def test_user_scan_product_async_event():
 
 
 def test_user_scan_product_verify_action_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[gh_404e58ec528e]]></ToUserName>
         <FromUserName><![CDATA[od_ikt8qi21-hVTtYgm8xSfTLH5w]]></FromUserName>
@@ -901,7 +992,8 @@ def test_user_scan_product_verify_action_event():
         <Result><![CDATA[verify_ok]]></Result>
         <ReasonMsg><![CDATA[]]></ReasonMsg>
     </xml>
-    """)
+    """
+    )
     assert message.target == "gh_404e58ec528e"
     assert message.source == "od_ikt8qi21-hVTtYgm8xSfTLH5w"
     assert message.time == 1450429257
@@ -913,7 +1005,8 @@ def test_user_scan_product_verify_action_event():
 
 
 def test_unknown_event():
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[toUser]]></ToUserName>
         <FromUserName><![CDATA[FromUser]]></FromUserName>
@@ -921,7 +1014,8 @@ def test_unknown_event():
         <MsgType><![CDATA[event]]></MsgType>
         <Event><![CDATA[unknown]]></Event>
     </xml>
-    """)
+    """
+    )
     assert message.target == "toUser"
     assert message.source == "FromUser"
     assert message.time == 123456789
