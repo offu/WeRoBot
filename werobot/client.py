@@ -1012,7 +1012,6 @@ class Client(object):
     def create_tag(self, tag_name):
         """
         创建一个新标签
-        详情请参考 https://mp.weixin.qq.com/wiki?action=doc&id=mp1421140837&t=0.8283028185833246
 
         :param tag_name: 标签名
         :return: 返回的 JSON 数据包
@@ -1030,7 +1029,6 @@ class Client(object):
     def get_tags(self):
         """
         获取已经存在的标签
-        详情请参考 https://mp.weixin.qq.com/wiki?action=doc&id=mp1421140837&t=0.8283028185833246
 
         :return: 返回的 JSON 数据包
         """
@@ -1044,7 +1042,6 @@ class Client(object):
     def update_tag(self, tag_id, tag_name):
         """
         修改标签
-        详情请参考 https://mp.weixin.qq.com/wiki?action=doc&id=mp1421140837&t=0.8283028185833246
 
         :param tag_id: 标签 ID
         :param tag_name: 新的标签名
@@ -1064,7 +1061,6 @@ class Client(object):
     def delete_tag(self, tag_id):
         """
         删除标签
-        详情请参考 https://mp.weixin.qq.com/wiki?action=doc&id=mp1421140837&t=0.8283028185833246
 
         :param tag_id: 标签 ID
         :return: 返回的 JSON 数据包
@@ -1082,7 +1078,6 @@ class Client(object):
     def get_users_by_tag(self, tag_id, next_open_id=""):
         """
         获取标签下粉丝列表
-        详情请参考 https://mp.weixin.qq.com/wiki?action=doc&id=mp1421140837&t=0.8283028185833246
 
         :param tag_id: 标签 ID
         :param next_open_id: 第一个拉取用户的 OPENID，默认从头开始拉取
@@ -1102,7 +1097,6 @@ class Client(object):
     def get_tags_by_user(self, open_id):
         """
         获取用户身上的标签列表
-        详情请参考 https://mp.weixin.qq.com/wiki?action=doc&id=mp1421140837&t=0.8283028185833246
 
         :param open_id: 用户的 OPENID
         :return: 返回的 JSON 数据包
@@ -1120,7 +1114,6 @@ class Client(object):
     def tag_users(self, tag_id, *open_id):
         """
         批量为用户打标签
-        详情请参考 https://mp.weixin.qq.com/wiki?action=doc&id=mp1421140837&t=0.8283028185833246
 
         :param tag_id: 标签 ID
         :param open_id: 用户的 OPENID，你可以传入一个或多个 OPENID
@@ -1140,7 +1133,6 @@ class Client(object):
     def untag_users(self, tag_id, *open_id):
         """
         批量为用户取消标签
-        详情请参考 https://mp.weixin.qq.com/wiki?action=doc&id=mp1421140837&t=0.8283028185833246
 
         :param tag_id: 标签 ID
         :param open_id: 用户的 OPENID，你可以传入一个或多个 OPENID

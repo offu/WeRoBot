@@ -179,6 +179,42 @@
 
 .. automethod:: Client.get_media_list
 
+用户标签管理
+------------
+详细请参考 https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140837
+
+创建标签
+``````````````````````````````
+.. automethod:: Client.create_tag
+
+获取公众号已创建的标签
+``````````````````````````````
+.. automethod:: Client.get_tags
+
+编辑标签
+``````````````````````````````
+.. automethod:: Client.update_tag
+
+删除标签
+``````````````````````````````
+.. automethod:: Client.delete_tag
+
+获取标签下粉丝列表
+``````````````````````````````
+.. automethod:: Client.get_users_by_tag
+
+批量为用户打标签
+``````````````````````````````
+.. automethod:: Client.tag_users
+
+批量为用户取消标签
+``````````````````````````````
+.. automethod:: Client.untag_users
+
+获取用户身上的标签列表
+``````````````````````````````
+.. automethod:: Client.get_tags_by_user
+
 模板消息
 ------------
 .. automethod:: Client.send_template_message
