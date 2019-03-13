@@ -1098,3 +1098,61 @@ class Client(object):
                 "next_openid": next_open_id
             }
         )
+
+    def get_tags_by_user(self, open_id):
+        """
+        获取用户身上的标签列表
+        详情请参考 https://mp.weixin.qq.com/wiki?action=doc&id=mp1421140837&t=0.8283028185833246
+
+        :param open_id: 用户的 OPENID
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/tags/getidlist",
+            params={
+                "access_token": self.token,
+            },
+            data={
+                "openid": open_id,
+            }
+        )
+
+    def tag_users(self, tag_id, *open_id):
+        """
+        批量为用户打标签
+        详情请参考 https://mp.weixin.qq.com/wiki?action=doc&id=mp1421140837&t=0.8283028185833246
+
+        :param tag_id: 标签 ID
+        :param open_id: 用户的 OPENID，你可以传入一个或多个 OPENID
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/tags/members/batchtagging",
+            params={
+                "access_token": self.token,
+            },
+            data={
+                "openid_list": open_id,
+                "tagid": tag_id
+            }
+        )
+
+    def untag_users(self, tag_id, *open_id):
+        """
+        批量为用户取消标签
+        详情请参考 https://mp.weixin.qq.com/wiki?action=doc&id=mp1421140837&t=0.8283028185833246
+
+        :param tag_id: 标签 ID
+        :param open_id: 用户的 OPENID，你可以传入一个或多个 OPENID
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/tags/members/batchuntagging",
+            params={
+                "access_token": self.token,
+            },
+            data={
+                "openid_list": open_id,
+                "tagid": tag_id
+            }
+        )

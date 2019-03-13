@@ -1475,3 +1475,67 @@ class TestClientTagManageClass(BaseTestClass):
         responses.add_callback(responses.POST, self.DELETE_TAG_URL, callback=self.delete_tag_callback)
         r = self.client.delete_tag(self.delete_tag_id)
         assert r == {'errcode': 0, 'errmsg': 'ok'}
+
+
+class TestClientMembersTagClass(BaseTestClass):
+    TAG_USER_URL = "https://api.weixin.qq.com/cgi-bin/tags/members/batchtagging"
+    UNTAG_USER_URL = "https://api.weixin.qq.com/cgi-bin/tags/members/batchuntagging"
+    GET_TAGS_BY_USER_URL = "https://api.weixin.qq.com/cgi-bin/tags/getidlist"
+
+    tag_id = 100
+    user_a_open_id = 'a'
+    user_b_open_id = 'b'
+    user_c_open_id = 'c'
+    users_list = [user_a_open_id, user_b_open_id, user_c_open_id]
+
+    get_tags_by_user_response = {'tagid_list': [tag_id]}
+
+    def tag_user_callback(self, request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        body = json.loads(request.body.decode("utf-8"))
+        assert body == {
+            "openid_list": self.users_list,
+            "tagid": self.tag_id
+        }
+        return 200, JSON_HEADER, json.dumps({'errcode': 0, 'errmsg': 'ok'})
+
+    def untag_user_callback(self, request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        body = json.loads(request.body.decode("utf-8"))
+        assert body == {
+            "openid_list": self.users_list,
+            "tagid": self.tag_id
+        }
+        return 200, JSON_HEADER, json.dumps({'errcode': 0, 'errmsg': 'ok'})
+
+    def get_tags_by_user_callback(self, request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        body = json.loads(request.body.decode("utf-8"))
+        assert body == {
+            "openid": self.user_a_open_id,
+        }
+        return 200, JSON_HEADER, json.dumps(self.get_tags_by_user_response)
+
+    @responses.activate
+    @add_token_response
+    def test_tag_user(self):
+        responses.add_callback(responses.POST, self.TAG_USER_URL, callback=self.tag_user_callback)
+        r = self.client.tag_users(self.tag_id, *self.users_list)
+        assert r == {'errcode': 0, 'errmsg': 'ok'}
+
+    @responses.activate
+    @add_token_response
+    def test_untag_user(self):
+        responses.add_callback(responses.POST, self.UNTAG_USER_URL, callback=self.untag_user_callback)
+        r = self.client.untag_users(self.tag_id, *self.users_list)
+        assert r == {'errcode': 0, 'errmsg': 'ok'}
+
+    @responses.activate
+    @add_token_response
+    def test_get_tags_by_user(self):
+        responses.add_callback(responses.POST, self.GET_TAGS_BY_USER_URL, callback=self.get_tags_by_user_callback)
+        r = self.client.get_tags_by_user(self.user_a_open_id)
+        assert r == self.get_tags_by_user_response
