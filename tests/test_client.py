@@ -930,7 +930,6 @@ class TestCustomService(BaseTestClass):
         assert r == {"errcode": 0, "errmsg": "ok"}
 
 
-
 class TestQrcodeClass(BaseTestClass):
     CREATE_URL = "https://api.weixin.qq.com/cgi-bin/qrcode/create"
     SHOW_URL = "https://mp.weixin.qq.com/cgi-bin/showqrcode"
@@ -1360,3 +1359,119 @@ class TestMiniprogrampageMessage(BaseTestClass):
             thumb_media_id="test_id"
         )
         assert r == {"errcode": 0, "errmsg": "ok"}
+
+
+class TestClientTagManageClass(BaseTestClass):
+    CREATE_TAG_URL = "https://api.weixin.qq.com/cgi-bin/tags/create"
+    GET_TAGS_URL = "https://api.weixin.qq.com/cgi-bin/tags/get"
+    UPDATE_TAG_URL = "https://api.weixin.qq.com/cgi-bin/tags/update"
+    DELETE_TAG_URL = "https://api.weixin.qq.com/cgi-bin/tags/delete"
+    GET_USERS_BY_TAG_URL = "https://api.weixin.qq.com/cgi-bin/user/tag/get"
+
+    create_tag_name = u"喵喵喵"
+    create_tag_id = 100
+
+    update_tag_name = "nyanya"
+    update_tag_id = 100
+
+    get_tags_response = {
+        'tags': [
+            {'id': 2, 'name': u'星标组', 'count': 0},
+            {'id': 100, 'name': update_tag_name, 'count': 0}
+        ]
+    }
+
+    get_users_by_tag_id = 100
+    get_users_by_tag_response = {
+        'count': 1,
+        'data': {
+            'openid': ['testopenid']
+        },
+        'next_openid': 'testopenid'
+    }
+
+    delete_tag_id = 100
+
+    def create_tag_callback(self, request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        body = json.loads(request.body.decode("utf-8"))
+        assert body == {
+            "tag": {
+                "name": self.create_tag_name
+            }
+        }
+        return 200, JSON_HEADER, json.dumps({"tag": {"id": self.create_tag_id, "name": self.create_tag_name}})
+
+    def update_tag_callback(self, request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        body = json.loads(request.body.decode("utf-8"))
+        assert body == {
+            "tag": {
+                "id": self.update_tag_id,
+                "name": self.update_tag_name
+            }
+        }
+        return 200, JSON_HEADER, json.dumps({'errcode': 0, 'errmsg': 'ok'})
+
+    def get_tags_callback(self, request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        return 200, JSON_HEADER, json.dumps(self.get_tags_response)
+
+    def get_users_by_tag_callback(self, request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        body = json.loads(request.body.decode("utf-8"))
+        assert body == {
+            "tagid": self.get_users_by_tag_id,
+            "next_openid": ""
+        }
+        return 200, JSON_HEADER, json.dumps(self.get_users_by_tag_response)
+
+    def delete_tag_callback(self, request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        body = json.loads(request.body.decode("utf-8"))
+        assert body == {
+            "tag": {
+                "id": self.delete_tag_id,
+            }
+        }
+        return 200, JSON_HEADER, json.dumps({'errcode': 0, 'errmsg': 'ok'})
+
+    @responses.activate
+    @add_token_response
+    def test_create_tag(self):
+        responses.add_callback(responses.POST, self.CREATE_TAG_URL, callback=self.create_tag_callback)
+        r = self.client.create_tag(self.create_tag_name)
+        assert r == {"tag": {"id": self.create_tag_id, "name": self.create_tag_name}}
+
+    @responses.activate
+    @add_token_response
+    def test_update_tag(self):
+        responses.add_callback(responses.POST, self.UPDATE_TAG_URL, callback=self.update_tag_callback)
+        r = self.client.update_tag(self.update_tag_id, self.update_tag_name)
+        assert r == {'errcode': 0, 'errmsg': 'ok'}
+
+    @responses.activate
+    @add_token_response
+    def test_get_tags(self):
+        responses.add_callback(responses.GET, self.GET_TAGS_URL, callback=self.get_tags_callback)
+        r = self.client.get_tags()
+        assert r == self.get_tags_response
+
+    @responses.activate
+    @add_token_response
+    def test_get_users_by_tag(self):
+        responses.add_callback(responses.POST, self.GET_USERS_BY_TAG_URL, callback=self.get_users_by_tag_callback)
+        r = self.client.get_users_by_tag(self.get_users_by_tag_id)
+        assert r == self.get_users_by_tag_response
+
+    @responses.activate
+    @add_token_response
+    def test_delete_tag(self):
+        responses.add_callback(responses.POST, self.DELETE_TAG_URL, callback=self.delete_tag_callback)
+        r = self.client.delete_tag(self.delete_tag_id)
+        assert r == {'errcode': 0, 'errmsg': 'ok'}

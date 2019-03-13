@@ -1008,3 +1008,93 @@ class Client(object):
                 "data": data
             }
         )
+
+    def create_tag(self, tag_name):
+        """
+        创建一个新标签
+        详情请参考 https://mp.weixin.qq.com/wiki?action=doc&id=mp1421140837&t=0.8283028185833246
+
+        :param tag_name: 标签名
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/tags/create",
+            params={
+                "access_token": self.token,
+            },
+            data={"tag": {
+                "name": tag_name
+            }}
+        )
+
+    def get_tags(self):
+        """
+        获取已经存在的标签
+        详情请参考 https://mp.weixin.qq.com/wiki?action=doc&id=mp1421140837&t=0.8283028185833246
+
+        :return: 返回的 JSON 数据包
+        """
+        return self.get(
+            url="https://api.weixin.qq.com/cgi-bin/tags/get",
+            params={
+                "access_token": self.token,
+            },
+        )
+
+    def update_tag(self, tag_id, tag_name):
+        """
+        修改标签
+        详情请参考 https://mp.weixin.qq.com/wiki?action=doc&id=mp1421140837&t=0.8283028185833246
+
+        :param tag_id: 标签 ID
+        :param tag_name: 新的标签名
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/tags/update",
+            params={
+                "access_token": self.token,
+            },
+            data={"tag": {
+                "id": tag_id,
+                "name": tag_name
+            }}
+        )
+
+    def delete_tag(self, tag_id):
+        """
+        删除标签
+        详情请参考 https://mp.weixin.qq.com/wiki?action=doc&id=mp1421140837&t=0.8283028185833246
+
+        :param tag_id: 标签 ID
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/tags/delete",
+            params={
+                "access_token": self.token,
+            },
+            data={"tag": {
+                "id": tag_id,
+            }}
+        )
+
+    def get_users_by_tag(self, tag_id, next_open_id=""):
+        """
+        获取标签下粉丝列表
+        详情请参考 https://mp.weixin.qq.com/wiki?action=doc&id=mp1421140837&t=0.8283028185833246
+
+        :param tag_id: 标签 ID
+        :param next_open_id: 第一个拉取用户的 OPENID，默认从头开始拉取
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/user/tag/get",
+            params={
+                "access_token": self.token,
+            },
+            data={
+                "tagid": tag_id,
+                "next_openid": next_open_id
+            }
+        )
