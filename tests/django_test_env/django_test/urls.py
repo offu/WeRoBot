@@ -20,7 +20,7 @@ from werobot import WeRoBot
 from werobot.contrib.django import make_view
 from werobot.utils import generate_token
 
-robot = WeRoBot(enable_session=False,
+robot = WeRoBot(SESSION_STORAGE=False,
                 token="TestDjango",
                 app_id="9998877",
                 encoding_aes_key=generate_token(32))

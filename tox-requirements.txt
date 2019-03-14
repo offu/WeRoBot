@@ -5,7 +5,7 @@ cryptography==2.5
 pytest==4.3.0
 WebTest==2.0.33
 Flask
-tornado==5.1.1
+tornado
 responses==0.10.5
 multipart==0.1
 pytest-mock==1.10.1
