@@ -1,11 +1,11 @@
 -r requirements.txt
 coverage==4.5.2
-Sphinx==1.8.4
+Sphinx==1.8.5
 cryptography==2.5
-pytest==4.3.0
+pytest==4.3.1
 WebTest==2.0.33
 Flask
-tornado==5.1.1
+tornado
 responses==0.10.5
 multipart==0.1
 pytest-mock==1.10.1

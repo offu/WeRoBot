@@ -5,6 +5,7 @@ import sys
 import time
 import random
 import pytest
+from tornado.testing import AsyncHTTPSTestCase
 
 from werobot.parser import process_message, parse_xml
 from werobot.utils import generate_token, get_signature
@@ -65,7 +66,7 @@ def wsgi_tester():
 @pytest.fixture(scope="module")
 def hello_robot():
     from werobot import WeRoBot
-    robot = WeRoBot(token='', enable_session=False)
+    robot = WeRoBot(token='', SESSION_STORAGE=False)
 
     @robot.text
     def hello():
@@ -179,24 +180,88 @@ def test_bottle(wsgi_tester, hello_robot):
     wsgi_tester(bottle_app, token=token, endpoint=endpoint)
 
 
-def test_tornado(wsgi_tester, hello_robot):
-    from tornado.wsgi import WSGIAdapter
-    import tornado.web
-    from werobot.contrib.tornado import make_handler
-
-    token = generate_token()
-    endpoint = r'/werobot_tornado'
-    hello_robot.token = token
-
-    tornado_app = tornado.web.Application([
-        (endpoint, make_handler(hello_robot)),
-    ], debug=True)
-    wsgi_tester(WSGIAdapter(tornado_app), token=token, endpoint=endpoint)
-
-
 def test_werobot_wsgi(wsgi_tester, hello_robot):
     token = generate_token()
     endpoint = r'/rand'
     hello_robot.token = token
 
     wsgi_tester(hello_robot.wsgi, token=token, endpoint=endpoint)
+
+
+class TestTornado(AsyncHTTPSTestCase):
+    token = 'TestTornado'
+    endpoint = '/werobot_tornado'
+
+    @property
+    def robot(self):
+        from werobot import WeRoBot
+        robot = WeRoBot(token=self.token, SESSION_STORAGE=False)
+
+        @robot.text
+        def hello():
+            return 'hello'
+
+        @robot.error_page
+        def make_error_page(url):
+            return '喵'
+
+        return robot
+
+    def get_app(self):
+        import tornado.web
+        from werobot.contrib.tornado import make_handler
+
+        tornado_app = tornado.web.Application(
+            [
+                (self.endpoint, make_handler(self.robot)),
+            ], debug=True
+        )
+        return tornado_app
+
+    def test_tornado(self):
+        token = self.token
+        timestamp = str(time.time())
+        nonce = str(random.randint(0, 10000))
+        signature = get_signature(token, timestamp, nonce)
+        echostr = generate_token()
+
+        params = "?timestamp=%s&nonce=%s&signature=%s&echostr=%s" % (
+            timestamp, nonce, signature, echostr
+        )
+
+        response = self.fetch(path=self.endpoint + params)
+        assert response.code == 200
+        assert response.body.decode('utf-8') == echostr
+
+        response = self.fetch(path=self.endpoint, )
+        assert response.code == 403
+        assert response.body.decode('utf-8') == u'喵'
+
+        xml = """
+        <xml>
+            <ToUserName><![CDATA[toUser]]></ToUserName>
+            <FromUserName><![CDATA[fromUser]]></FromUserName>
+            <CreateTime>1348831860</CreateTime>
+            <MsgType><![CDATA[text]]></MsgType>
+            <Content><![CDATA[this is a test]]></Content>
+            <MsgId>1234567890123456</MsgId>
+        </xml>"""
+
+        response = self.fetch(
+            path=self.endpoint + params,
+            method='POST',
+            body=xml,
+            headers={'Content-Type': 'text/xml'}
+        )
+        self.assertEqual(response.code, 200)
+        self.assertEqual(
+            process_message(parse_xml(response.body)).content, 'hello'
+        )
+
+        response = self.fetch(
+            path=self.endpoint,
+            method='POST',
+            body=xml,
+            headers={'Content-Type': 'text/xml'}
+        )
+        self.assertEqual(response.code, 403)
