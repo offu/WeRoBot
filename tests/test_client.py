@@ -1521,16 +1521,16 @@ class TestClientMembersTagClass(BaseTestClass):
 
     @responses.activate
     @add_token_response
-    def test_tag_user(self):
+    def test_tag_users(self):
         responses.add_callback(responses.POST, self.TAG_USER_URL, callback=self.tag_user_callback)
-        r = self.client.tag_users(self.tag_id, *self.users_list)
+        r = self.client.tag_users(self.tag_id, self.users_list)
         assert r == {'errcode': 0, 'errmsg': 'ok'}
 
     @responses.activate
     @add_token_response
-    def test_untag_user(self):
+    def test_untag_users(self):
         responses.add_callback(responses.POST, self.UNTAG_USER_URL, callback=self.untag_user_callback)
-        r = self.client.untag_users(self.tag_id, *self.users_list)
+        r = self.client.untag_users(self.tag_id, self.users_list)
         assert r == {'errcode': 0, 'errmsg': 'ok'}
 
     @responses.activate

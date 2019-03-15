@@ -1018,9 +1018,6 @@ class Client(object):
         """
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/tags/create",
-            params={
-                "access_token": self.token,
-            },
             data={"tag": {
                 "name": tag_name
             }}
@@ -1032,12 +1029,7 @@ class Client(object):
 
         :return: 返回的 JSON 数据包
         """
-        return self.get(
-            url="https://api.weixin.qq.com/cgi-bin/tags/get",
-            params={
-                "access_token": self.token,
-            },
-        )
+        return self.get(url="https://api.weixin.qq.com/cgi-bin/tags/get", )
 
     def update_tag(self, tag_id, tag_name):
         """
@@ -1049,9 +1041,6 @@ class Client(object):
         """
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/tags/update",
-            params={
-                "access_token": self.token,
-            },
             data={"tag": {
                 "id": tag_id,
                 "name": tag_name
@@ -1067,9 +1056,6 @@ class Client(object):
         """
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/tags/delete",
-            params={
-                "access_token": self.token,
-            },
             data={"tag": {
                 "id": tag_id,
             }}
@@ -1085,9 +1071,6 @@ class Client(object):
         """
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/user/tag/get",
-            params={
-                "access_token": self.token,
-            },
             data={
                 "tagid": tag_id,
                 "next_openid": next_open_id
@@ -1103,48 +1086,39 @@ class Client(object):
         """
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/tags/getidlist",
-            params={
-                "access_token": self.token,
-            },
             data={
                 "openid": open_id,
             }
         )
 
-    def tag_users(self, tag_id, *open_id):
+    def tag_users(self, tag_id, open_id_list):
         """
         批量为用户打标签
 
         :param tag_id: 标签 ID
-        :param open_id: 用户的 OPENID，你可以传入一个或多个 OPENID
+        :param open_id_list: 包含一个或多个用户的 OPENID 的列表
         :return: 返回的 JSON 数据包
         """
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/tags/members/batchtagging",
-            params={
-                "access_token": self.token,
-            },
             data={
-                "openid_list": open_id,
+                "openid_list": open_id_list,
                 "tagid": tag_id
             }
         )
 
-    def untag_users(self, tag_id, *open_id):
+    def untag_users(self, tag_id, open_id_list):
         """
         批量为用户取消标签
 
         :param tag_id: 标签 ID
-        :param open_id: 用户的 OPENID，你可以传入一个或多个 OPENID
+        :param open_id_list: 包含一个或多个用户的 OPENID 的列表
         :return: 返回的 JSON 数据包
         """
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/tags/members/batchuntagging",
-            params={
-                "access_token": self.token,
-            },
             data={
-                "openid_list": open_id,
+                "openid_list": open_id_list,
                 "tagid": tag_id
             }
         )
