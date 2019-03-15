@@ -1008,3 +1008,117 @@ class Client(object):
                 "data": data
             }
         )
+
+    def create_tag(self, tag_name):
+        """
+        创建一个新标签
+
+        :param tag_name: 标签名
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/tags/create",
+            data={"tag": {
+                "name": tag_name
+            }}
+        )
+
+    def get_tags(self):
+        """
+        获取已经存在的标签
+
+        :return: 返回的 JSON 数据包
+        """
+        return self.get(url="https://api.weixin.qq.com/cgi-bin/tags/get", )
+
+    def update_tag(self, tag_id, tag_name):
+        """
+        修改标签
+
+        :param tag_id: 标签 ID
+        :param tag_name: 新的标签名
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/tags/update",
+            data={"tag": {
+                "id": tag_id,
+                "name": tag_name
+            }}
+        )
+
+    def delete_tag(self, tag_id):
+        """
+        删除标签
+
+        :param tag_id: 标签 ID
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/tags/delete",
+            data={"tag": {
+                "id": tag_id,
+            }}
+        )
+
+    def get_users_by_tag(self, tag_id, next_open_id=""):
+        """
+        获取标签下粉丝列表
+
+        :param tag_id: 标签 ID
+        :param next_open_id: 第一个拉取用户的 OPENID，默认从头开始拉取
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/user/tag/get",
+            data={
+                "tagid": tag_id,
+                "next_openid": next_open_id
+            }
+        )
+
+    def get_tags_by_user(self, open_id):
+        """
+        获取用户身上的标签列表
+
+        :param open_id: 用户的 OPENID
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/tags/getidlist",
+            data={
+                "openid": open_id,
+            }
+        )
+
+    def tag_users(self, tag_id, open_id_list):
+        """
+        批量为用户打标签
+
+        :param tag_id: 标签 ID
+        :param open_id_list: 包含一个或多个用户的 OPENID 的列表
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/tags/members/batchtagging",
+            data={
+                "openid_list": open_id_list,
+                "tagid": tag_id
+            }
+        )
+
+    def untag_users(self, tag_id, open_id_list):
+        """
+        批量为用户取消标签
+
+        :param tag_id: 标签 ID
+        :param open_id_list: 包含一个或多个用户的 OPENID 的列表
+        :return: 返回的 JSON 数据包
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/tags/members/batchuntagging",
+            data={
+                "openid_list": open_id_list,
+                "tagid": tag_id
+            }
+        )
