@@ -28,7 +28,7 @@ def test_from_object():
 
 
 def test_config_attribute():
-    robot = WeRoBot(enable_session=False)
+    robot = WeRoBot(SESSION_STORAGE=False)
     assert not robot.token
     token = generate_token()
     robot.config["TOKEN"] = token

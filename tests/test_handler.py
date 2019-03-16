@@ -5,7 +5,7 @@ from werobot.parser import parse_user_msg
 from werobot.replies import TextReply
 import os
 
-werobot = WeRoBot(enable_session=False)
+werobot = WeRoBot(SESSION_STORAGE=False)
 
 
 def teardown_module(module):
@@ -20,7 +20,8 @@ def test_subscribe_handler():
     def subscribe(message):
         return '关注'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[toUser]]></ToUserName>
             <FromUserName><![CDATA[FromUser]]></FromUserName>
@@ -28,7 +29,8 @@ def test_subscribe_handler():
             <MsgType><![CDATA[event]]></MsgType>
             <Event><![CDATA[subscribe]]></Event>
         </xml>
-        """)
+        """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -41,7 +43,8 @@ def test_unsubscribe_handler():
     def unsubscribe(message):
         return '取消关注'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[toUser]]></ToUserName>
             <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -49,7 +52,8 @@ def test_unsubscribe_handler():
             <MsgType><![CDATA[event]]></MsgType>
             <Event><![CDATA[unsubscribe]]></Event>
         </xml>
-        """)
+        """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -62,7 +66,8 @@ def test_scan_push_handler():
     def scancode_push(message):
         return '扫描推送'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[toUser]]></ToUserName>
             <FromUserName><![CDATA[FromUser]]></FromUserName>
@@ -75,7 +80,8 @@ def test_scan_push_handler():
                 <ScanResult><![CDATA[http://www.qq.com]]></ScanResult>
             </ScanCodeInfo>
         </xml>
-        """)
+        """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -88,7 +94,8 @@ def test_scan_waitmsg_handler():
     def scancode_waitmsg(message):
         return '扫描弹消息'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[toUser]]></ToUserName>
             <FromUserName><![CDATA[FromUser]]></FromUserName>
@@ -101,7 +108,8 @@ def test_scan_waitmsg_handler():
                 <ScanResult><![CDATA[http://www.qq.com]]></ScanResult>
             </ScanCodeInfo>
         </xml>
-        """)
+        """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -114,7 +122,8 @@ def test_pic_sysphoto_handler():
     def pic_sysphoto():
         return '瞧一瞧系统拍照'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[gh_e136c6e50636]]></ToUserName>
         <FromUserName><![CDATA[oMgHVjngRipVsoxg6TuX3vz6glDg]]></FromUserName>
@@ -131,7 +140,8 @@ def test_pic_sysphoto_handler():
             </PicList>
         </SendPicsInfo>
     </xml>
-    """)
+    """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -144,7 +154,8 @@ def test_pic_photo_or_album_handler():
     def pic_photo_or_album():
         return '瞧一瞧拍照或者相册'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[gh_e136c6e50636]]></ToUserName>
         <FromUserName><![CDATA[oMgHVjngRipVsoxg6TuX3vz6glDg]]></FromUserName>
@@ -161,7 +172,8 @@ def test_pic_photo_or_album_handler():
             </PicList>
         </SendPicsInfo>
     </xml>
-    """)
+    """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -174,7 +186,8 @@ def test_pic_weixin_handler():
     def pic_weixin():
         return '瞧一瞧微信相册'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[gh_e136c6e50636]]></ToUserName>
         <FromUserName><![CDATA[oMgHVjngRipVsoxg6TuX3vz6glDg]]></FromUserName>
@@ -191,7 +204,8 @@ def test_pic_weixin_handler():
             </PicList>
         </SendPicsInfo>
     </xml>
-    """)
+    """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -204,7 +218,8 @@ def test_location_select_handler():
     def location_select():
         return '瞧一瞧地理位置'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
     <xml>
         <ToUserName><![CDATA[gh_e136c6e50636]]></ToUserName>
         <FromUserName><![CDATA[oMgHVjngRipVsoxg6TuX3vz6glDg]]></FromUserName>
@@ -220,7 +235,8 @@ def test_location_select_handler():
             <Poiname><![CDATA[]]></Poiname>
         </SendLocationInfo>
     </xml>
-    """)
+    """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -233,7 +249,8 @@ def test_click_handler():
     def scan(message):
         return '喵喵'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[toUser]]></ToUserName>
             <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -242,7 +259,8 @@ def test_click_handler():
             <Event><![CDATA[CLICK]]></Event>
             <EventKey><![CDATA[EVENTKEY]]></EventKey>
         </xml>
-        """)
+        """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -255,7 +273,8 @@ def test_view_handler():
     def view(message):
         return '汪汪'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[toUser]]></ToUserName>
             <FromUserName><![CDATA[FromUser]]></FromUserName>
@@ -263,7 +282,8 @@ def test_view_handler():
             <MsgType><![CDATA[event]]></MsgType>
             <Event><![CDATA[VIEW]]></Event>
             <EventKey><![CDATA[www.qq.com]]></EventKey>
-        </xml>""")
+        </xml>"""
+    )
 
     reply = werobot.get_reply(message)
 
@@ -276,7 +296,8 @@ def test_location_event_handler():
     def location_event(message):
         return '位置喵喵'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[toUser]]></ToUserName>
             <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -287,7 +308,8 @@ def test_location_event_handler():
             <Longitude>113.352425</Longitude>
             <Precision>119.385040</Precision>
         </xml>
-        """)
+        """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -300,7 +322,8 @@ def test_card_pass_check_handler():
     def card_pass_check():
         return '瞧一瞧通过了'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[toUser]]></ToUserName>
             <FromUserName><![CDATA[FromUser]]></FromUserName>
@@ -310,7 +333,8 @@ def test_card_pass_check_handler():
             <CardId><![CDATA[cardid]]></CardId>
             <RefuseReason><![CDATA[非法代制]]></RefuseReason>
         </xml>
-    """)
+    """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -323,7 +347,8 @@ def test_card_not_pass_check_handler():
     def card_pass_not_check():
         return '瞧一瞧没过'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[toUser]]></ToUserName>
             <FromUserName><![CDATA[FromUser]]></FromUserName>
@@ -333,7 +358,8 @@ def test_card_not_pass_check_handler():
             <CardId><![CDATA[cardid]]></CardId>
             <RefuseReason><![CDATA[非法代制]]></RefuseReason>
         </xml>
-    """)
+    """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -346,7 +372,8 @@ def test_user_get_card_handler():
     def user_get_card():
         return '恭喜入坑'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
             <xml>
                 <ToUserName> <![CDATA[gh_fc0a06a20993]]> </ToUserName>
                 <FromUserName> <![CDATA[oZI8Fj040-be6rlDohc6gkoPOQTQ]]> </FromUserName>
@@ -363,7 +390,8 @@ def test_user_get_card_handler():
                 <IsRestoreMemberCard>0</IsRestoreMemberCard>
                 <IsRecommendByFriend>0</IsRecommendByFriend>
             </xml>
-        """)
+        """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -376,7 +404,8 @@ def test_user_gifting_card_handler():
     def user_gifting_card():
         return '锅从天上来'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
             <xml>
                 <ToUserName><![CDATA[gh_3fcea188bf78]]></ToUserName>
                 <FromUserName><![CDATA[obLatjjwDolFjRRd3doGIdwNqRXw]]></FromUserName>
@@ -389,7 +418,8 @@ def test_user_gifting_card_handler():
                 <FriendUserName><![CDATA[obLatjlNerkb62HtSdQUx66C4NTU]]></FriendUserName>
                 <IsChatRoom>0</IsChatRoom>
             </xml>
-        """)
+        """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -402,7 +432,8 @@ def test_user_del_card_handler():
     def user_del_card():
         return '摆脱负担'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
             <xml>
                 <ToUserName><![CDATA[toUser]]></ToUserName>
                 <FromUserName><![CDATA[FromUser]]></FromUserName>
@@ -412,7 +443,8 @@ def test_user_del_card_handler():
                 <CardId><![CDATA[cardid]]></CardId>
                 <UserCardCode><![CDATA[12312312]]></UserCardCode>
             </xml>
-        """)
+        """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -425,7 +457,8 @@ def test_user_consume_card_handler():
     def user_consume_card():
         return '恭喜脱坑'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
             <xml>
                 <ToUserName> <![CDATA[gh_fc0a06a20993]]> </ToUserName>
                 <FromUserName> <![CDATA[oZI8Fj040-be6rlDohc6gkoPOQTQ]]> </FromUserName>
@@ -441,7 +474,8 @@ def test_user_consume_card_handler():
                 <RemarkAmount> <![CDATA[]]> </RemarkAmount>
                 <OuterStr> <![CDATA[xxxxx]]> </OuterStr>
             </xml>
-        """)
+        """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -454,7 +488,8 @@ def test_user_pay_from_pay_cell_handler():
     def user_pay_from_pay_cell():
         return '冲动消费'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
             <xml>
                 <ToUserName><![CDATA[gh_e2243xxxxxxx]]></ToUserName>
                 <FromUserName><![CDATA[oo2VNuOUuZGMxxxxxxxx]]></FromUserName>
@@ -468,7 +503,8 @@ def test_user_pay_from_pay_cell_handler():
                 <Fee><![CDATA[10000]]></Fee>
                 <OriginalFee><![CDATA[10000]]> </OriginalFee>
             </xml>
-        """)
+        """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -481,7 +517,8 @@ def test_user_view_card_handler():
     def user_view_card():
         return '我就瞧一瞧，不买'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
             <xml>
                 <ToUserName> <![CDATA[gh_fcxxxx6a20993]]> </ToUserName>
                 <FromUserName> <![CDATA[oZI8Fj040-xxxxx6gkoPOQTQ]]> </FromUserName>
@@ -492,7 +529,8 @@ def test_user_view_card_handler():
                 <UserCardCode> <![CDATA[4xxxxxxxx8558]]> </UserCardCode>
                 <OuterStr> <![CDATA[12b]]> </OuterStr>
             </xml>
-        """)
+        """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -505,7 +543,8 @@ def test_user_enter_session_from_card_handler():
     def user_enter_session_from_card():
         return '退货是不可能退货的'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
             <xml>
                 <ToUserName><![CDATA[toUser]]></ToUserName>
                 <FromUserName><![CDATA[FromUser]]></FromUserName>
@@ -515,7 +554,8 @@ def test_user_enter_session_from_card_handler():
                 <CardId><![CDATA[cardid]]></CardId>
                 <UserCardCode><![CDATA[12312312]]></UserCardCode>
             </xml>
-        """)
+        """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -528,7 +568,8 @@ def test_update_member_card_handler():
     def update_member_card():
         return '冲动消费导致余额减少'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
             <xml>
                 <ToUserName><![CDATA[gh_9e1765b5568e]]></ToUserName>
                 <FromUserName><![CDATA[ojZ8YtyVyr30HheH3CM73y7h4jJE]]></FromUserName>
@@ -540,7 +581,8 @@ def test_update_member_card_handler():
                 <ModifyBonus>3</ModifyBonus>
                 <ModifyBalance>0</ModifyBalance>
             </xml>
-        """)
+        """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -553,7 +595,8 @@ def test_card_sku_remind_handler():
     def card_sku_remind():
         return '骗钱大成功'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
             <xml>
                 <ToUserName><![CDATA[gh_2d62d*****0]]></ToUserName>
                 <FromUserName><![CDATA[oa3LFuBvWb7*********]]></FromUserName>
@@ -563,7 +606,8 @@ def test_card_sku_remind_handler():
                 <CardId><![CDATA[pa3LFuAh2P65**********]]></CardId>
                 <Detail><![CDATA[the card's quantity is equal to 0]]></Detail>
             </xml>
-        """)
+        """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -576,7 +620,8 @@ def test_card_pay_order_handler():
     def card_pay_order():
         return '冲动消费的凭证'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
             <xml>
                 <ToUserName><![CDATA[gh_7223c83d4be5]]></ToUserName>
                 <FromUserName><![CDATA[ob5E7s-HoN9tslQY3-0I4qmgluHk]]></FromUserName>
@@ -596,7 +641,8 @@ def test_card_pay_order_handler():
                 <Memo><![CDATA[开通账户奖励]]></Memo>
                 <ReceiptInfo><![CDATA[]]></ReceiptInfo>
             </xml>
-        """)
+        """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -609,7 +655,8 @@ def test_submit_membercard_user_info_handler():
     def submit_membercard_user_info():
         return '现在醒一醒还来得及'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
             <xml>
                 <ToUserName> <![CDATA[gh_3fcea188bf78]]></ToUserName>
                 <FromUserName><![CDATA[obLatjlaNQKb8FqOvt1M1x1lIBFE]]></FromUserName>
@@ -619,7 +666,8 @@ def test_submit_membercard_user_info_handler():
                 <CardId><![CDATA[pbLatjtZ7v1BG_ZnTjbW85GYc_E8]]></CardId>
                 <UserCardCode><![CDATA[018255396048]]></UserCardCode>
             </xml>
-        """)
+        """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -632,7 +680,8 @@ def test_unknown_event():
     def unknown_event(message):
         return '不知道的事件喵'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[toUser]]></ToUserName>
             <FromUserName><![CDATA[FromUser]]></FromUserName>
@@ -640,7 +689,8 @@ def test_unknown_event():
             <MsgType><![CDATA[event]]></MsgType>
             <Event><![CDATA[unknown]]></Event>
         </xml>
-        """)
+        """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -653,7 +703,8 @@ def test_text():
     def text(message):
         return '普通的Text喵'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[toUser]]></ToUserName>
             <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -662,7 +713,8 @@ def test_text():
             <Content><![CDATA[this is a test]]></Content>
             <MsgId>1234567890123456</MsgId>
         </xml>
-        """)
+        """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -675,7 +727,8 @@ def test_image():
     def image(message):
         return '图片喵'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[toUser]]></ToUserName>
             <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -684,7 +737,8 @@ def test_image():
             <PicUrl><![CDATA[this is a url]]></PicUrl>
             <MsgId>1234567890123456</MsgId>
         </xml>
-        """)
+        """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -697,7 +751,8 @@ def test_location():
     def location(message):
         return '地理位置汪'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[toUser]]></ToUserName>
             <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -709,7 +764,8 @@ def test_location():
             <Label><![CDATA[Location]]></Label>
             <MsgId>1234567890123456</MsgId>
         </xml>
-        """)
+        """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -722,7 +778,8 @@ def test_link():
     def link(message):
         return '链接喵'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[toUser]]></ToUserName>
             <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -733,7 +790,8 @@ def test_link():
             <Url><![CDATA[https://github.com/whtsky/WeRoBot]]></Url>
             <MsgId>1234567890123456</MsgId>
         </xml>
-        """)
+        """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -746,7 +804,8 @@ def test_voice():
     def voice(message):
         return '声音喵'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[toUser]]></ToUserName>
             <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -757,7 +816,8 @@ def test_voice():
             <Recognition><![CDATA[Meow~]]></Recognition>
             <MsgId>1234567890123456</MsgId>
         </xml>
-        """)
+        """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -770,7 +830,8 @@ def test_video():
     def video():
         return '请收下这一段榴莲的视频'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[toUser]]></ToUserName>
             <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -779,7 +840,8 @@ def test_video():
             <MediaId><![CDATA[media_id]]></MediaId>
             <ThumbMediaId><![CDATA[thumb_media_id]]></ThumbMediaId>
             <MsgId>1234567890123456</MsgId>
-            </xml>""")
+            </xml>"""
+    )
 
     reply = werobot.get_reply(message)
 
@@ -792,7 +854,8 @@ def test_shortvideo():
     def shortvideo():
         return '请收下这一段榴莲的小视频'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[toUser]]></ToUserName>
             <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -802,7 +865,8 @@ def test_shortvideo():
             <ThumbMediaId><![CDATA[thumb_media_id]]></ThumbMediaId>
             <MsgId>1234567890123456</MsgId>
         </xml>
-    """)
+    """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -815,7 +879,8 @@ def test_user_scan_product():
     def user_scan_product():
         return '打扰了'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[gh_4e47c9c9ecad]]></ToUserName>
             <FromUserName><![CDATA[okkeXs1nI-xU4ql8-5BXkv1f0gDo]]></FromUserName>
@@ -831,7 +896,8 @@ def test_user_scan_product():
             <Scene>2</Scene>
             <ExtInfo><![CDATA[123]]></ExtInfo>
         </xml>
-    """)
+    """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -844,7 +910,8 @@ def test_user_scan_product_enter_session():
     def user_scan_product_enter_session():
         return '再次打扰了'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[gh_fbe8a958756e]]></ToUserName>
             <FromUserName><![CDATA[otAzGjrS4AYCmeJM1GhEOcHXXTAo]]></FromUserName>
@@ -855,7 +922,8 @@ def test_user_scan_product_enter_session():
             <KeyStr><![CDATA[6954767461373]]></KeyStr>
             <ExtInfo><![CDATA[]]></ExtInfo>
         </xml>
-    """)
+    """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -868,7 +936,8 @@ def test_user_scan_product_async():
     def user_scan_product_async():
         return '异步的地理位置喵'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[gh_fbe8a958756e]]></ToUserName>
             <FromUserName><![CDATA[otAzGjrS4AYCmeJM1GhEOcHXXTAo]]></FromUserName>
@@ -880,7 +949,8 @@ def test_user_scan_product_async():
             <ExtInfo><![CDATA[123]]></ExtInfo>
             <RegionCode><![CDATA[440105]]></RegionCode>
         </xml>
-    """)
+    """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -893,7 +963,8 @@ def test_user_scan_product_verify_action():
     def user_scan_product_verify_action():
         return '审核通过了喵'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[gh_404e58ec528e]]></ToUserName>
             <FromUserName><![CDATA[od_ikt8qi21-hVTtYgm8xSfTLH5w]]></FromUserName>
@@ -905,7 +976,8 @@ def test_user_scan_product_verify_action():
             <Result><![CDATA[verify_ok]]></Result>
             <ReasonMsg><![CDATA[]]></ReasonMsg>
         </xml>
-    """)
+    """
+    )
 
     reply = werobot.get_reply(message)
 
@@ -918,7 +990,8 @@ def test_unknown():
     def unknown(message):
         return '不知道喵'
 
-    message = parse_user_msg("""
+    message = parse_user_msg(
+        """
         <xml>
             <ToUserName><![CDATA[toUser]]></ToUserName>
             <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -929,7 +1002,8 @@ def test_unknown():
             <Url><![CDATA[https://github.com/whtsky/WeRoBot]]></Url>
             <MsgId>1234567890123456</MsgId>
         </xml>
-        """)
+        """
+    )
 
     reply = werobot.get_reply(message)
 

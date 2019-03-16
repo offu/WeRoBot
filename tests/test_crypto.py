@@ -24,16 +24,16 @@ def test_message_crypt():
     timestamp = to_text(int(time.time()))
     nonce = generate_token(5)
     app_id = generate_token(18)
-    crypt = MessageCrypt(token=token,
-                         encoding_aes_key=encoding_aes_key,
-                         app_id=app_id)
+    crypt = MessageCrypt(
+        token=token, encoding_aes_key=encoding_aes_key, app_id=app_id
+    )
 
     message = crypt.encrypt_message('hello', timestamp, nonce)
     assert message is not None
     message = parse_xml(message)
     assert message is not None
-    message = crypt.decrypt_message(message['TimeStamp'],
-                                    message['Nonce'],
-                                    message['MsgSignature'],
-                                    message['Encrypt'])
+    message = crypt.decrypt_message(
+        message['TimeStamp'], message['Nonce'], message['MsgSignature'],
+        message['Encrypt']
+    )
     assert message == to_binary('hello')

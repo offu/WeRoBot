@@ -43,10 +43,9 @@ def test_pay_sign_dict():
     assert pay_sign[0]["appid"] == appid
     assert pay_sign[2] == u"SHA1"
 
-    pay_sign = pay_sign_dict(appid, key,
-                             add_noncestr=False,
-                             add_timestamp=False,
-                             gadd_appid=False)
+    pay_sign = pay_sign_dict(
+        appid, key, add_noncestr=False, add_timestamp=False, gadd_appid=False
+    )
 
     assert "timestamp" not in pay_sign[0]
     assert "noncestr" not in pay_sign[0]
