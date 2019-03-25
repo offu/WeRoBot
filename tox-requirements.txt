@@ -8,6 +8,6 @@ Flask
 tornado
 responses==0.10.6
 multipart==0.1
-pytest-mock==1.10.1
+pytest-mock==1.10.2
 mongomock==3.15.0
 mockredispy==2.9.3
