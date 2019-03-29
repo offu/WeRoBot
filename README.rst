@@ -19,9 +19,6 @@ WeRoBot
     :target: https://opencollective.com/werobot
     :alt: Sponsors on Open Collective
 
-.. image:: https://werobot-slackin.herokuapp.com/badge.svg
-    :target: https://werobot-slackin.herokuapp.com
-
 WeRoBot 是一个微信公众号开发框架，采用MIT协议发布。
 
 文档在这里： https://werobot.readthedocs.org/zh_CN/latest/
