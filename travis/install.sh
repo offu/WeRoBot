@@ -16,4 +16,4 @@ pip install --upgrade pip wheel
 
 brew install openssl
 python --version
-env LDFLAGS="-L$(brew --prefix openssl)/lib" CFLAGS="-I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/usr/include" pip install -r dev-requirements.txt
+cat dev-requirements.txt | grep tox== | xargs pip install
