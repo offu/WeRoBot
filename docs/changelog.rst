@@ -1,5 +1,9 @@
 Changelog
 =============
+Version 1.9.0
+----------------
++ 在 Client 中增加对 :ref:`用户标签管理` 的支持 ( `#426 <https://github.com/offu/WeRoBot/pull/426>`_ )
+
 Version 1.8.0
 ----------------
 + 增加 :class:`werobot.session.postgresqlstorage.PostgreSQLStorage` (`#383 <https://github.com/offu/WeRoBot/issues/383>`_) (`#412 <https://github.com/offu/WeRoBot/pull/412>`_)

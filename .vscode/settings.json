@@ -2,5 +2,7 @@
     "python.linting.flake8Enabled": false,
     "python.formatting.provider": "yapf",
     "python.linting.pylintEnabled": false,
-    "python.unitTest.pyTestEnabled": true
+    "python.unitTest.pyTestEnabled": true,
+    "python.pythonPath": "venv/bin/python3",
+    "restructuredtext.confPath": "${workspaceFolder}/docs"
 }
