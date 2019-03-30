@@ -5,6 +5,25 @@ import io
 import werobot
 
 from setuptools import setup, find_packages
+from setuptools.command.test import test as TestCommand
+
+
+class PyTest(TestCommand):
+    user_options = [("pytest-args=", "a", "Arguments to pass to pytest")]
+
+    def initialize_options(self):
+        TestCommand.initialize_options(self)
+        self.pytest_args = ""
+
+    def run_tests(self):
+        import shlex
+
+        # import here, cause outside the eggs aren't loaded
+        import pytest
+
+        errno = pytest.main(shlex.split(self.pytest_args))
+        sys.exit(errno)
+
 
 with io.open("README.rst", encoding="utf8") as f:
     readme = f.read()
@@ -21,9 +40,6 @@ setup(
     keywords="wechat weixin werobot",
     description='WeRoBot: writing WeChat Offical Account Robots with fun',
     long_description=readme,
-    setup_requires=[
-        'pytest-runner',
-    ],
     install_requires=install_requires,
     include_package_data=True,
     license='MIT License',
@@ -47,8 +63,7 @@ setup(
         'Topic :: Utilities',
     ],
     tests_require=['pytest'],
-    extras_require={
-        'crypto': ["cryptography"]
-    },
+    cmdclass={"pytest": PyTest},
+    extras_require={'crypto': ["cryptography"]},
     package_data={'werobot': ['contrib/*.html']}
 )

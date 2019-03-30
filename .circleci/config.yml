@@ -128,7 +128,7 @@ jobs:
       - run:
           command: |
             cat dev-requirements.txt | grep yapf== | xargs pip install
-            yapf -p -r -d werobot/ tests/
+            yapf -p -r -d werobot/ tests/ *.py
 workflows:
   version: 2
   test:

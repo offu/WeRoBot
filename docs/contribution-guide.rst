@@ -45,7 +45,7 @@
     # Install yapf
     pip install yapf
     # format code
-    yapf -p --recursive -i werobot/
+    yapf -i -p -r werobot/ tests/ *.py
 
 你也可以 `安装 yapf Pre-Commit Hook <https://github.com/google/yapf/tree/master/plugins#git-pre-commit-hook>`_ 来自动进行代码格式化工作。
 
