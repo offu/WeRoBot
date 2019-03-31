@@ -1,7 +1,7 @@
 -r requirements.txt
 coverage==4.5.3
 cryptography==2.6.1
-pytest==4.3.1
+pytest==4.4.0
 WebTest==2.0.33
 Flask
 tornado
