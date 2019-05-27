@@ -224,16 +224,14 @@ class TestClientMenuClass(BaseTestClass):
                 "type": "click",
                 "name": u"歌手简介",
                 "key": "V1001_TODAY_SINGER"
-            },
-            {
+            }, {
                 "name": u"菜单",
                 "sub_button": [
                     {
                         "type": "view",
                         "name": u"搜索",
                         "url": "http://www.soso.com/"
-                    },
-                    {
+                    }, {
                         "type": "view",
                         "name": u"视频",
                         "url": "http://v.qq.com/"
@@ -543,16 +541,14 @@ class TestClientCustomMenuClass(BaseTestClass):
                 "type": "click",
                 "name": u"今日歌曲",
                 "key": "V1001_TODAY_MUSIC"
-            },
-            {
+            }, {
                 "name": u"菜单",
                 "sub_button": [
                     {
                         "type": "view",
                         "name": u"搜索",
                         "url": "http://www.soso.com/"
-                    },
-                    {
+                    }, {
                         "type": "view",
                         "name": u"视频",
                         "url": "http://v.qq.com/"
@@ -1544,12 +1540,10 @@ class TestClientTagManageClass(BaseTestClass):
         body = json.loads(request.body.decode("utf-8"))
         assert body == {"tag": {"name": self.create_tag_name}}
         return 200, JSON_HEADER, json.dumps(
-            {
-                "tag": {
-                    "id": self.create_tag_id,
-                    "name": self.create_tag_name
-                }
-            }
+            {"tag": {
+                "id": self.create_tag_id,
+                "name": self.create_tag_name
+            }}
         )
 
     def update_tag_callback(self, request):
