@@ -52,9 +52,7 @@ class MongoDBStorage(SessionStorage):
                 """
         session = json_dumps(value)
         self.collection.replace_one(
-            {
-                "wechat_id": id
-            }, {
+            {"wechat_id": id}, {
                 "wechat_id": id,
                 "session": session
             },
