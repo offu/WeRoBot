@@ -24,7 +24,6 @@ class SQLiteStorage(SessionStorage):
 
     :param filename: SQLite数据库的文件名, 默认是 ``werobot_session.sqlite3``
     """
-
     def __init__(self, filename='werobot_session.sqlite3'):
         self.db = sqlite3.connect(filename, check_same_thread=False)
         self.db.text_factory = str

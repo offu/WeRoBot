@@ -14,7 +14,6 @@ class WeixinPayClient(Client):
     """
     简化微信支付API操作
     """
-
     def __init__(self, appid, pay_sign_key, pay_partner_id, pay_partner_key):
         self.pay_sign_key = pay_sign_key
         self.pay_partner_id = pay_partner_id

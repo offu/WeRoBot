@@ -33,7 +33,6 @@ class PostgreSQLStorage(SessionStorage):
     :param conn: `PEP-249 <https://www.python.org/dev/peps/pep-0249/#connection-objects>`_\
     定义的 Connection 对象
     """
-
     def __init__(self, conn):
         self.conn = conn
         self.conn.cursor().execute(__CREATE_TABLE_SQL__)

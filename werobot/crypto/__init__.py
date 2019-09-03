@@ -27,7 +27,6 @@ class PrpCrypto(object):
     """
     提供接收和推送给公众平台消息的加解密接口
     """
-
     def __init__(self, key):
         key = to_binary(key)
         self.cipher = Cipher(

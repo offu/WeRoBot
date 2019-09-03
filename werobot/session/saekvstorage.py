@@ -18,7 +18,6 @@ class SaeKVDBStorage(SessionStorage):
 
     :param prefix: KVDB 中 Session 数据 key 的 prefix 。默认为 ``ws_``
     """
-
     def __init__(self, prefix='ws_'):
         try:
             import sae.kvdb
