@@ -33,7 +33,6 @@ def make_handler(robot):
     :param robot: 一个 BaseRoBot 实例。
     :return: 一个标准的 Tornado Handler
     """
-
     class WeRoBotHandler(RequestHandler):
         def prepare(self):
             timestamp = self.get_argument('timestamp', '')

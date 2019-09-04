@@ -470,7 +470,6 @@ class BaseRoBot(object):
 
         **@key_click('KEYNAME')** 用来为特定 key 的点击事件添加 handler 方法。
         """
-
         def wraps(f):
             argc = len(signature(f).parameters.keys())
 
@@ -490,7 +489,6 @@ class BaseRoBot(object):
         使用 ``@filter("xxx")``, ``@filter(re.compile("xxx"))``
         或 ``@filter("xxx", "xxx2")`` 的形式为特定内容添加 handler。
         """
-
         def wraps(f):
             self.add_filter(func=f, rules=list(args))
             return f
@@ -650,7 +648,6 @@ class WeRoBot(BaseRoBot):
     WeRoBot 是一个继承自 BaseRoBot 的对象，在 BaseRoBot 的基础上使用了 bottle 框架，
     提供接收微信服务器发来的请求的功能。
     """
-
     @cached_property
     def wsgi(self):
         if not self._handlers:
