@@ -22,6 +22,7 @@ def check_error(json):
         raise ClientException("{}: {}".format(json["errcode"], json["errmsg"]))
     return json
 
+
 def _build_send_data(type, content):
     """
     编译群发参数
@@ -32,33 +33,20 @@ def _build_send_data(type, content):
     send_data = {}
     send_data['msgtype'] = type
     if type is 'mpnews' or type is 'voice' or type is 'music' or type is 'image':
-        send_data[type] = {
-            'media_id': content
-        }
+        send_data[type] = {'media_id': content}
     elif type is 'text':
-        send_data[type] = {
-            'media_id': content
-        }
+        send_data[type] = {'media_id': content}
     elif type is 'video':
-        send_data['mpvideo'] = {
-            'media_id': content
-        }
+        send_data['mpvideo'] = {'media_id': content}
         send_data['msgtype'] = 'mpvideo'
     elif type is 'text':
-        send_data['text'] = {
-            'content': content
-        }
+        send_data['text'] = {'content': content}
     elif type is 'wxcard':
-        send_data['wxcard'] = {
-            'card_id': content
-        }
+        send_data['wxcard'] = {'card_id': content}
     else:
-        send_data['text'] = {
-            'content': content
-        }
+        send_data['text'] = {'content': content}
         send_data['msgtype'] = 'text'
     return send_data
-
 
 
 class Client(object):
@@ -1185,7 +1173,9 @@ class Client(object):
             }
         )
 
-    def send_news_all(self, type, content, to=None, send_ignore_reprint=0, clientmsgid=None):
+    def send_news_all(
+        self, type, content, to=None, send_ignore_reprint=0, clientmsgid=None
+    ):
         """
         向指定对象群发信息
         :param type:群发类型，图文消息为mpnews，文本消息为text，语音为voice，音乐为music，图片为image，视频为video，卡券为wxcard
@@ -1211,15 +1201,9 @@ class Client(object):
                     "is_to_all": True,
                 }
             else:
-                send_data['filter'] = {
-                    "is_to_all": False,
-                    "tag_id": to
-                }
+                send_data['filter'] = {"is_to_all": False, "tag_id": to}
 
-        return self.post(
-            url=url,
-            data=send_data
-        )
+        return self.post(url=url, data=send_data)
 
     def delete_news(self, msg_id, article_idx=0):
         """
@@ -1274,9 +1258,7 @@ class Client(object):
         """
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/message/mass/get",
-            data={
-                'msg_id': msg_id
-            }
+            data={'msg_id': msg_id}
         )
 
     def get_news_speed(self):
@@ -1296,6 +1278,8 @@ class Client(object):
         :return:返回的json
         """
         return self.post(
-            url="https://api.weixin.qq.com/cgi-bin/message/mass/speed/get",
-            data={}
+            url="https://api.weixin.qq.com/cgi-bin/message/mass/speed/set",
+            data={
+                "speed": speed
+            }
         )
