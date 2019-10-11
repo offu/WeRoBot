@@ -1718,18 +1718,18 @@ class TestClientMass(BaseTestClass):
     GET_SPEED_URL = 'https://api.weixin.qq.com/cgi-bin/message/mass/speed/get'
     SET_SPEED_URL = 'https://api.weixin.qq.com/cgi-bin/message/mass/speed/set'
 
-    articles = [{
-        "thumb_media_id": "qI6_Ze_6PtV7svjolgs-rN6stStuHIjs9_DidOHaj0Q-mwvBelOXCFZiq2OsIU-p",
-        "author": "xxx",
-        "title": "Happy Day",
-        "content_source_url": "www.qq.com",
-        "content": "content",
-        "digest": "digest",
-        "show_cover_pic": 1,
-        "need_open_comment": 1,
-        "only_fans_can_comment": 1
-    },
+    articles = [
         {
+            "thumb_media_id": "qI6_Ze_6PtV7svjolgs-rN6stStuHIjs9_DidOHaj0Q-mwvBelOXCFZiq2OsIU-p",
+            "author": "xxx",
+            "title": "Happy Day",
+            "content_source_url": "www.qq.com",
+            "content": "content",
+            "digest": "digest",
+            "show_cover_pic": 1,
+            "need_open_comment": 1,
+            "only_fans_can_comment": 1
+        }, {
             "thumb_media_id": "qI6_Ze_6PtV7svjolgs-rN6stStuHIjs9_DidOHaj0Q-mwvBelOXCFZiq2OsIU-p",
             "author": "xxx",
             "title": "Happy Day",
@@ -1834,20 +1834,19 @@ class TestClientMass(BaseTestClass):
         assert "access_token" in params.keys()
         body = json.loads(request.body.decode("utf-8"))
         assert "msg_id" in body
-        return 200, JSON_HEADER, json.dumps({
-            "msg_id": body['msg_id'],
-            "msg_status": "SEND_SUCCESS"
-        })
+        return 200, JSON_HEADER, json.dumps(
+            {
+                "msg_id": body['msg_id'],
+                "msg_status": "SEND_SUCCESS"
+            }
+        )
 
     def get_news_speed_callback(self, request):
         params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
         assert "access_token" in params.keys()
-        return 200, JSON_HEADER, json.dumps({
-            "speed": 3,
-            "realspeed": 15
-        })
+        return 200, JSON_HEADER, json.dumps({"speed": 3, "realspeed": 15})
 
-    def set_news_speed_callback(self,request):
+    def set_news_speed_callback(self, request):
         params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
         assert "access_token" in params.keys()
         body = json.loads(request.body.decode("utf-8"))
@@ -1858,9 +1857,7 @@ class TestClientMass(BaseTestClass):
     @add_token_response
     def test_upload_news(self):
         responses.add_callback(
-            responses.POST,
-            self.UP_NEWS_URL,
-            callback=self.up_news_callback
+            responses.POST, self.UP_NEWS_URL, callback=self.up_news_callback
         )
         r = self.client.upload_news(self.articles)
         assert r == {'errcode': 0, 'errmsg': 'ok'}
@@ -1906,7 +1903,9 @@ class TestClientMass(BaseTestClass):
             self.PREVIEW_URL,
             callback=self.preview_openid_callback
         )
-        r = self.client.preview_by_openid('mpnews', 'hgbkjnlkmlkn', 'asdasdasd')
+        r = self.client.preview_by_openid(
+            'mpnews', 'hgbkjnlkmlkn', 'asdasdasd'
+        )
         assert r == {'errcode': 0, 'errmsg': 'ok'}
 
     @responses.activate
@@ -1917,7 +1916,9 @@ class TestClientMass(BaseTestClass):
             self.PREVIEW_URL,
             callback=self.preview_wxname_callback
         )
-        r = self.client.preview_by_wxname('mpnews', 'hgbkjnlkmlkn', 'asdasdasd')
+        r = self.client.preview_by_wxname(
+            'mpnews', 'hgbkjnlkmlkn', 'asdasdasd'
+        )
         assert r == {'errcode': 0, 'errmsg': 'ok'}
 
     @responses.activate

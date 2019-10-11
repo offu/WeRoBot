@@ -1279,7 +1279,5 @@ class Client(object):
         """
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/message/mass/speed/set",
-            data={
-                "speed": speed
-            }
+            data={"speed": speed}
         )
