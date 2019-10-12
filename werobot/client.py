@@ -32,16 +32,16 @@ def _build_send_data(type, content):
     """
     send_data = {}
     send_data['msgtype'] = type
-    if type is 'mpnews' or type is 'voice' or type is 'music' or type is 'image':
+    if type in ['mpnews', 'voice', 'music', 'image', 'text']:
         send_data[type] = {'media_id': content}
-    elif type is 'text':
+    elif type == 'text':
         send_data[type] = {'media_id': content}
-    elif type is 'video':
+    elif type == 'video':
         send_data['mpvideo'] = {'media_id': content}
         send_data['msgtype'] = 'mpvideo'
-    elif type is 'text':
+    elif type == 'text':
         send_data['text'] = {'content': content}
-    elif type is 'wxcard':
+    elif type == 'wxcard':
         send_data['wxcard'] = {'card_id': content}
     else:
         send_data['text'] = {'content': content}
@@ -1187,7 +1187,7 @@ class Client(object):
         """
         send_data = _build_send_data(type, content)
         send_data['send_ignore_reprint'] = send_ignore_reprint
-        if not clientmsgid is None:
+        if clientmsgid != None:
             if len(clientmsgid) > 64:
                 clientmsgid = clientmsgid[0:64]
             send_data['clientmsgid'] = clientmsgid
@@ -1196,7 +1196,7 @@ class Client(object):
             send_data['touser'] = to
         else:
             url = 'https://api.weixin.qq.com/cgi-bin/message/mass/sendall'
-            if None is to:
+            if to == None:
                 send_data['filter'] = {
                     "is_to_all": True,
                 }
@@ -1279,7 +1279,5 @@ class Client(object):
         """
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/message/mass/speed/set",
-            data={
-                "speed": speed
-            }
+            data={"speed": speed}
         )
