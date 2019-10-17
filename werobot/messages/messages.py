@@ -28,6 +28,7 @@ class TextMessage(WeChatMessage):
 class ImageMessage(WeChatMessage):
     __type__ = 'image'
     img = StringEntry('PicUrl')
+    media_id = StringEntry('MediaId')
 
 
 class LocationMessage(WeChatMessage):
