@@ -37,6 +37,7 @@ def test_image_message():
         <CreateTime>1348831860</CreateTime>
         <MsgType><![CDATA[image]]></MsgType>
         <PicUrl><![CDATA[this is a url]]></PicUrl>
+        <MediaId><![CDATA[media_id]]></MediaId>
         <MsgId>1234567890123456</MsgId>
     </xml>
     """
@@ -46,6 +47,7 @@ def test_image_message():
     assert message.time == 1348831860
     assert message.type == "image"
     assert message.img == "this is a url"
+    assert message.media_id == "media_id"
     assert message.message_id == 1234567890123456
 
 
