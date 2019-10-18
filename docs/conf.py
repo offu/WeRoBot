@@ -87,7 +87,6 @@ pygments_style = 'flask_theme_support.FlaskyStyle'
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
 
-
 # -- Options for HTML output ---------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -99,10 +98,7 @@ html_theme = 'flask'
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_theme_options = {
-  'touch_icon': 'logo.png',
-  'github_url': 'whtsky/WeRoBot'
-}
+html_theme_options = {'touch_icon': 'logo.png', 'github_url': 'whtsky/WeRoBot'}
 
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
@@ -139,7 +135,10 @@ html_static_path = ['_static']
 # Custom sidebar templates, maps document names to template names.
 html_sidebars = {
     'index': ['sidebarintro.html', 'searchbox.html'],
-    '**': ['sidebarintro.html', 'localtoc.html', 'relations.html', 'searchbox.html']
+    '**': [
+        'sidebarintro.html', 'localtoc.html', 'relations.html',
+        'searchbox.html'
+    ]
 }
 
 # Additional templates that should be rendered to pages, maps page names to
@@ -175,25 +174,23 @@ html_sidebars = {
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'WeRoBotdoc'
 
-
 # -- Options for LaTeX output --------------------------------------------------
 
 latex_elements = {
-# The paper size ('letterpaper' or 'a4paper').
-#'papersize': 'letterpaper',
+    # The paper size ('letterpaper' or 'a4paper').
+    #'papersize': 'letterpaper',
 
-# The font size ('10pt', '11pt' or '12pt').
-#'pointsize': '10pt',
+    # The font size ('10pt', '11pt' or '12pt').
+    #'pointsize': '10pt',
 
-# Additional stuff for the LaTeX preamble.
-#'preamble': '',
+    # Additional stuff for the LaTeX preamble.
+    #'preamble': '',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'WeRoBot.tex', u'WeRoBot Documentation',
-   u'whtsky', 'manual'),
+    ('index', 'WeRoBot.tex', u'WeRoBot Documentation', u'whtsky', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -216,19 +213,14 @@ latex_documents = [
 # If false, no module index is generated.
 #latex_domain_indices = True
 
-
 # -- Options for manual page output --------------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    ('index', 'werobot', u'WeRoBot Documentation',
-     [u'whtsky'], 1)
-]
+man_pages = [('index', 'werobot', u'WeRoBot Documentation', [u'whtsky'], 1)]
 
 # If true, show URL addresses after external links.
 #man_show_urls = False
-
 
 # -- Options for Texinfo output ------------------------------------------------
 
@@ -236,9 +228,10 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'WeRoBot', u'WeRoBot Documentation',
-   u'whtsky', 'WeRoBot', 'One line description of project.',
-   'Miscellaneous'),
+    (
+        'index', 'WeRoBot', u'WeRoBot Documentation', u'whtsky', 'WeRoBot',
+        'One line description of project.', 'Miscellaneous'
+    ),
 ]
 
 # Documents to append as an appendix to all manuals.
