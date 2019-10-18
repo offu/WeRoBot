@@ -1706,3 +1706,257 @@ class TestClientMembersTagClass(BaseTestClass):
         )
         r = self.client.get_tags_by_user(self.user_a_open_id)
         assert r == self.get_tags_by_user_response
+
+
+class TestClientMass(BaseTestClass):
+    UP_NEWS_URL = 'https://api.weixin.qq.com/cgi-bin/media/uploadnews'
+    SEND_ALL_URL = 'https://api.weixin.qq.com/cgi-bin/message/mass/sendall'
+    SEND_URL = 'https://api.weixin.qq.com/cgi-bin/message/mass/send'
+    DELETE_URL = 'https://api.weixin.qq.com/cgi-bin/message/mass/delete'
+    PREVIEW_URL = 'https://api.weixin.qq.com/cgi-bin/message/mass/preview'
+    GET_STATUS_URL = 'https://api.weixin.qq.com/cgi-bin/message/mass/get'
+    GET_SPEED_URL = 'https://api.weixin.qq.com/cgi-bin/message/mass/speed/get'
+    SET_SPEED_URL = 'https://api.weixin.qq.com/cgi-bin/message/mass/speed/set'
+
+    articles = [
+        {
+            "thumb_media_id": "qI6_Ze_6PtV7svjolgs-rN6stStuHIjs9_DidOHaj0Q-mwvBelOXCFZiq2OsIU-p",
+            "author": "xxx",
+            "title": "Happy Day",
+            "content_source_url": "www.qq.com",
+            "content": "content",
+            "digest": "digest",
+            "show_cover_pic": 1,
+            "need_open_comment": 1,
+            "only_fans_can_comment": 1
+        }, {
+            "thumb_media_id": "qI6_Ze_6PtV7svjolgs-rN6stStuHIjs9_DidOHaj0Q-mwvBelOXCFZiq2OsIU-p",
+            "author": "xxx",
+            "title": "Happy Day",
+            "content_source_url": "www.qq.com",
+            "content": "content",
+            "digest": "digest",
+            "show_cover_pic": 0,
+            "need_open_comment": 1,
+            "only_fans_can_comment": 1
+        }
+    ]
+
+    def up_news_callback(self, request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        body = json.loads(request.body.decode("utf-8"))
+        assert body == {"articles": self.articles}
+        return 200, JSON_HEADER, json.dumps({'errcode': 0, 'errmsg': 'ok'})
+
+    def send_all_openid_callback(self, request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        body = json.loads(request.body.decode("utf-8"))
+        assert 'touser' in body
+        count = len(body['touser'])
+        assert count >= 2
+        assert count <= 10000
+        assert 'msgtype' in body
+        types = {
+            'mpnews': 'media_id',
+            'mpvideo': 'media_id',
+            'music': 'media_id',
+            'image': 'media_id',
+            'video': 'media_id',
+            'wxcard': 'card_id',
+            'text': 'content',
+        }
+        assert types[body['msgtype']] in body[body['msgtype']]
+        return 200, JSON_HEADER, json.dumps({'errcode': 0, 'errmsg': 'ok'})
+
+    def send_all_tagid_callback(self, request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        body = json.loads(request.body.decode("utf-8"))
+        assert 'filter' in body
+        assert 'msgtype' in body
+        types = {
+            'mpnews': 'media_id',
+            'mpvideo': 'media_id',
+            'music': 'media_id',
+            'image': 'media_id',
+            'video': 'media_id',
+            'wxcard': 'card_id',
+            'text': 'content',
+        }
+        assert types[body['msgtype']] in body[body['msgtype']]
+        return 200, JSON_HEADER, json.dumps({'errcode': 0, 'errmsg': 'ok'})
+
+    def delete_callback(self, request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        body = json.loads(request.body.decode("utf-8"))
+        assert "msg_id" in body
+        return 200, JSON_HEADER, json.dumps({'errcode': 0, 'errmsg': 'ok'})
+
+    def preview_openid_callback(self, request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        body = json.loads(request.body.decode("utf-8"))
+        assert "touser" in body
+        types = {
+            'mpnews': 'media_id',
+            'mpvideo': 'media_id',
+            'music': 'media_id',
+            'image': 'media_id',
+            'video': 'media_id',
+            'wxcard': 'card_id',
+            'text': 'content',
+        }
+        assert types[body['msgtype']] in body[body['msgtype']]
+        return 200, JSON_HEADER, json.dumps({'errcode': 0, 'errmsg': 'ok'})
+
+    def preview_wxname_callback(self, request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        body = json.loads(request.body.decode("utf-8"))
+        assert "towxname" in body
+        types = {
+            'mpnews': 'media_id',
+            'mpvideo': 'media_id',
+            'music': 'media_id',
+            'image': 'media_id',
+            'video': 'media_id',
+            'wxcard': 'card_id',
+            'text': 'content',
+            'voice': 'media_id'
+        }
+        assert types[body['msgtype']] in body[body['msgtype']]
+        return 200, JSON_HEADER, json.dumps({'errcode': 0, 'errmsg': 'ok'})
+
+    def get_status_callback(self, request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        body = json.loads(request.body.decode("utf-8"))
+        assert "msg_id" in body
+        return 200, JSON_HEADER, json.dumps(
+            {
+                "msg_id": body['msg_id'],
+                "msg_status": "SEND_SUCCESS"
+            }
+        )
+
+    def get_news_speed_callback(self, request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        return 200, JSON_HEADER, json.dumps({"speed": 3, "realspeed": 15})
+
+    def set_news_speed_callback(self, request):
+        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        assert "access_token" in params.keys()
+        body = json.loads(request.body.decode("utf-8"))
+        assert "speed" in body
+        return 200, JSON_HEADER, json.dumps({'errcode': 0, 'errmsg': 'ok'})
+
+    @responses.activate
+    @add_token_response
+    def test_upload_news(self):
+        responses.add_callback(
+            responses.POST, self.UP_NEWS_URL, callback=self.up_news_callback
+        )
+        r = self.client.upload_news(self.articles)
+        assert r == {'errcode': 0, 'errmsg': 'ok'}
+
+    @responses.activate
+    @add_token_response
+    def test_send_by_openid(self):
+        responses.add_callback(
+            responses.POST,
+            self.SEND_URL,
+            callback=self.send_all_openid_callback
+        )
+        r = self.client.send_mass_msg('mpnews', 'hgbkjnlkmlkn', ['1', '2'], 0)
+        assert r == {'errcode': 0, 'errmsg': 'ok'}
+
+    @responses.activate
+    @add_token_response
+    def test_send_by_tagid(self):
+        responses.add_callback(
+            responses.POST,
+            self.SEND_ALL_URL,
+            callback=self.send_all_tagid_callback
+        )
+        r = self.client.send_mass_msg('mpnews', 'hgbkjnlkmlkn', 2, 0)
+        assert r == {'errcode': 0, 'errmsg': 'ok'}
+
+    @responses.activate
+    @add_token_response
+    def test_send_all(self):
+        responses.add_callback(
+            responses.POST,
+            self.SEND_ALL_URL,
+            callback=self.send_all_tagid_callback
+        )
+        r = self.client.send_mass_msg('mpnews', 'hgbkjnlkmlkn', 0, 0)
+        assert r == {'errcode': 0, 'errmsg': 'ok'}
+
+    @responses.activate
+    @add_token_response
+    def test_preview_openid(self):
+        responses.add_callback(
+            responses.POST,
+            self.PREVIEW_URL,
+            callback=self.preview_openid_callback
+        )
+        r = self.client.send_mass_preview_to_user(
+            type, 'hgbkjnlkmlkn', 'asdasdasd', 'openid'
+        )
+        assert r == {'errcode': 0, 'errmsg': 'ok'}
+
+    @responses.activate
+    @add_token_response
+    def test_preview_wxname(self):
+        responses.add_callback(
+            responses.POST,
+            self.PREVIEW_URL,
+            callback=self.preview_wxname_callback
+        )
+        type_list = [
+            'mpnews', 'text', 'voice', 'music', 'image', 'video', 'wxcard'
+        ]
+        for type in type_list:
+            r = self.client.send_mass_preview_to_user(
+                type, 'hgbkjnlkmlkn', 'asdasdasd', 'wxname'
+            )
+            assert r == {'errcode': 0, 'errmsg': 'ok'}
+
+    @responses.activate
+    @add_token_response
+    def test_get_status(self):
+        responses.add_callback(
+            responses.POST,
+            self.GET_STATUS_URL,
+            callback=self.get_status_callback
+        )
+        r = self.client.get_mass_msg_status('mpnews')
+        assert 'msg_id' in r
+        assert 'msg_status' in r
+
+    @responses.activate
+    @add_token_response
+    def test_get_speed(self):
+        responses.add_callback(
+            responses.POST,
+            self.GET_SPEED_URL,
+            callback=self.get_news_speed_callback
+        )
+        r = self.client.get_mass_msg_speed()
+        assert 'speed' in r
+        assert 'realspeed' in r
+
+    @responses.activate
+    @add_token_response
+    def test_set_speed(self):
+        responses.add_callback(
+            responses.POST,
+            self.SET_SPEED_URL,
+            callback=self.set_news_speed_callback
+        )
+        r = self.client.set_mass_msg_speed(1)
+        assert r == {'errcode': 0, 'errmsg': 'ok'}

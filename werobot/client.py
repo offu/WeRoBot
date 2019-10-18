@@ -23,6 +23,30 @@ def check_error(json):
     return json
 
 
+def _build_send_data(msg_type, content):
+    """
+    编译群发参数
+    :param msg_type: 群发类型，图文消息为 mpnews，文本消息为 text，语音为 voice，音乐为 music，图片为 image，视频为 video，卡券为 wxcard。
+    :param content: 群发内容。
+    :return: 群发参数。
+    """
+    send_data = {}
+    send_data['msgtype'] = msg_type
+    if msg_type in ['mpnews', 'voice', 'music', 'image']:
+        send_data[msg_type] = {'media_id': content}
+    elif msg_type == 'video':
+        send_data['mpvideo'] = {'media_id': content}
+        send_data['msgtype'] = 'mpvideo'
+    elif msg_type == 'text':
+        send_data['text'] = {'content': content}
+    elif msg_type == 'wxcard':
+        send_data['wxcard'] = {'card_id': content}
+    else:
+        send_data['text'] = {'content': content}
+        send_data['msgtype'] = 'text'
+    return send_data
+
+
 class Client(object):
     """
     微信 API 操作类
@@ -1120,4 +1144,132 @@ class Client(object):
                 "openid_list": open_id_list,
                 "tagid": tag_id
             }
+        )
+
+    def upload_news(self, articles):
+        """
+        上传图文消息素材。
+        具体请参考:https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Batch_Sends_and_Originality_Checks.html#1
+        articles = [{
+                    "thumb_media_id":"qI6_Ze_6PtV7svjolgs-rN6stStuHIjs9_DidOHaj0Q-mwvBelOXCFZiq2OsIU-p",
+                    "author":"xxx",
+                    "title":"Happy Day",
+                    "content_source_url":"www.qq.com",
+                    "content":"content",
+                    "digest":"digest",
+                    "show_cover_pic":1,
+                    "need_open_comment":1,
+                    "only_fans_can_comment":1
+                }]
+        :param articles: 上传的图文消息数据。
+        :return: 返回的 JSON 数据包。
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/media/uploadnews",
+            data={
+                "articles": articles,
+            }
+        )
+
+    def send_mass_msg(
+        self,
+        msg_type,
+        content,
+        user_list=None,
+        send_ignore_reprint=False,
+        client_msg_id=None
+    ):
+        """
+        向指定对象群发信息。
+        :param msg_type: 群发类型，图文消息为 mpnews，文本消息为 text，语音为 voice，音乐为 music，图片为 image，视频为 video，卡券为 wxcard。
+        :param content: 群发内容。
+        :param user_list: 发送对象，整型代表用户组，列表代表指定用户，如果为 None 则代表全部发送。
+        :param send_ignore_reprint: 图文消息被判定为转载时，是否继续群发。 True 为继续群发（转载），False 为停止群发。 该参数默认为 False。
+        :param client_msg_id: 群发时，微信后台将对 24 小时内的群发记录进行检查，如果该 clientmsgid 已经存在一条群发记录，则会拒绝本次群发请求，返回已存在的群发 msgid, 控制再 64 个字符内。
+        :return: 返回的 JSON 数据包。
+        """
+        send_data = _build_send_data(msg_type, content)
+        send_data['send_ignore_reprint'] = send_ignore_reprint
+        if client_msg_id is not None:
+            send_data['clientmsgid'] = client_msg_id
+        if isinstance(user_list, list):
+            url = 'https://api.weixin.qq.com/cgi-bin/message/mass/send'
+            send_data['touser'] = user_list
+        else:
+            url = 'https://api.weixin.qq.com/cgi-bin/message/mass/sendall'
+            if user_list == None:
+                send_data['filter'] = {
+                    "is_to_all": True,
+                }
+            else:
+                send_data['filter'] = {"is_to_all": False, "tag_id": user_list}
+
+        return self.post(url=url, data=send_data)
+
+    def delete_mass_msg(self, msg_id, article_idx=0):
+        """
+        群发之后，随时可以通过该接口删除群发。
+        :param msg_id: 发送出去的消息 ID。
+        :param article_idx: 要删除的文章在图文消息中的位置，第一篇编号为 1，该字段不填或填 0 会删除全部文章。
+        :return: 微信返回的 json 数据。
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/message/mass/delete",
+            data={
+                "msg_id": msg_id,
+                "article_idx": article_idx
+            }
+        )
+
+    def send_mass_preview_to_user(
+        self, msg_type, content, user, user_type='openid'
+    ):
+        """
+        开发者可通过该接口发送消息给指定用户，在手机端查看消息的样式和排版。为了满足第三方平台开发者的需求，在保留对 openID 预览能力的同时，增加了对指定微信号发送预览的能力，但该能力每日调用次数有限制（100 次），请勿滥用。
+        :param user_type: 预览对象，`openid` 代表以 openid 发送，`wxname` 代表以微信号发送。
+        :param msg_type: 发送类型，图文消息为 mpnews，文本消息为 text，语音为 voice，音乐为 music，图片为 image，视频为 video，卡券为 wxcard。
+        :param content: 预览内容。
+        :param user: 预览用户。
+        :return: 返回的 json。
+        """
+        send_data = _build_send_data(msg_type, content)
+        if user_type == 'openid':
+            send_data['touser'] = user
+        else:
+            send_data['towxname'] = user
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/message/mass/preview",
+            data=send_data
+        )
+
+    def get_mass_msg_status(self, msg_id):
+        """
+        查询群发消息发送状态。
+        :param msg_id: 群发消息后返回的消息 id。
+        :return: 返回的 json。
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/message/mass/get",
+            data={'msg_id': msg_id}
+        )
+
+    def get_mass_msg_speed(self):
+        """
+        获取群发速度。
+        :return: 返回的 json。
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/message/mass/speed/get",
+            data={}
+        )
+
+    def set_mass_msg_speed(self, speed):
+        """
+        设置群发速度。
+        :param speed: 群发速度的级别，是一个 0 到 4 的整数，数字越大表示群发速度越慢。
+        :return: 返回的 json。
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/message/mass/speed/set",
+            data={"speed": speed}
         )
