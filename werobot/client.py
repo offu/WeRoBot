@@ -1148,19 +1148,23 @@ class Client(object):
 
     def upload_news(self, articles):
         """
-        上传图文消息素材。
-        具体请参考:https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Batch_Sends_and_Originality_Checks.html#1
-        articles = [{
-                    "thumb_media_id":"qI6_Ze_6PtV7svjolgs-rN6stStuHIjs9_DidOHaj0Q-mwvBelOXCFZiq2OsIU-p",
-                    "author":"xxx",
-                    "title":"Happy Day",
-                    "content_source_url":"www.qq.com",
-                    "content":"content",
-                    "digest":"digest",
-                    "show_cover_pic":1,
-                    "need_open_comment":1,
-                    "only_fans_can_comment":1
-                }]
+        上传图文消息素材 ::
+
+            articles = [{
+                "thumb_media_id":"qI6_Ze_6PtV7svjolgs-rN6stStuHIjs9_DidOHaj0Q-mwvBelOXCFZiq2OsIU-p",
+                "author":"xxx",
+                "title":"Happy Day",
+                "content_source_url":"www.qq.com",
+                "content":"content",
+                "digest":"digest",
+                "show_cover_pic":1,
+                "need_open_comment":1,
+                "only_fans_can_comment":1
+            }]
+
+        具体请参考: https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Batch_Sends_and_Originality_Checks.html#1
+
+
         :param articles: 上传的图文消息数据。
         :return: 返回的 JSON 数据包。
         """
