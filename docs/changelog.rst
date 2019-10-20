@@ -1,6 +1,10 @@
 Changelog
 =============
 
+Version 1.10.1
+----------------
++ 修复 :ref:`群发接口` 的 docstring 样式。
+
 Version 1.10.0
 ----------------
 + 在 Client 中增加对 :ref:`上传图文消息素材` 的支持  ( `#493 <https://github.com/offu/WeRoBot/pull/493>`_ )

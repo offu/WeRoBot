@@ -1185,6 +1185,7 @@ class Client(object):
     ):
         """
         向指定对象群发信息。
+
         :param msg_type: 群发类型，图文消息为 mpnews，文本消息为 text，语音为 voice，音乐为 music，图片为 image，视频为 video，卡券为 wxcard。
         :param content: 群发内容。
         :param user_list: 发送对象，整型代表用户组，列表代表指定用户，如果为 None 则代表全部发送。
@@ -1213,6 +1214,7 @@ class Client(object):
     def delete_mass_msg(self, msg_id, article_idx=0):
         """
         群发之后，随时可以通过该接口删除群发。
+
         :param msg_id: 发送出去的消息 ID。
         :param article_idx: 要删除的文章在图文消息中的位置，第一篇编号为 1，该字段不填或填 0 会删除全部文章。
         :return: 微信返回的 json 数据。
@@ -1230,6 +1232,7 @@ class Client(object):
     ):
         """
         开发者可通过该接口发送消息给指定用户，在手机端查看消息的样式和排版。为了满足第三方平台开发者的需求，在保留对 openID 预览能力的同时，增加了对指定微信号发送预览的能力，但该能力每日调用次数有限制（100 次），请勿滥用。
+
         :param user_type: 预览对象，`openid` 代表以 openid 发送，`wxname` 代表以微信号发送。
         :param msg_type: 发送类型，图文消息为 mpnews，文本消息为 text，语音为 voice，音乐为 music，图片为 image，视频为 video，卡券为 wxcard。
         :param content: 预览内容。
@@ -1249,6 +1252,7 @@ class Client(object):
     def get_mass_msg_status(self, msg_id):
         """
         查询群发消息发送状态。
+
         :param msg_id: 群发消息后返回的消息 id。
         :return: 返回的 json。
         """
@@ -1260,6 +1264,7 @@ class Client(object):
     def get_mass_msg_speed(self):
         """
         获取群发速度。
+
         :return: 返回的 json。
         """
         return self.post(
@@ -1270,6 +1275,7 @@ class Client(object):
     def set_mass_msg_speed(self, speed):
         """
         设置群发速度。
+
         :param speed: 群发速度的级别，是一个 0 到 4 的整数，数字越大表示群发速度越慢。
         :return: 返回的 json。
         """
