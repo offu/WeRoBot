@@ -80,6 +80,16 @@
 .. automethod:: Client.send_news_message
 .. automethod:: Client.send_miniprogrampage_message
 
+群发接口
+``````````````````````````````
+
+.. automethod:: Client.send_mass_msg
+.. automethod:: Client.delete_mass_msg
+.. automethod:: Client.send_mass_preview_to_user
+.. automethod:: Client.get_mass_msg_status
+.. automethod:: Client.get_mass_msg_speed
+.. automethod:: Client.delete_mass_msg
+
 用户管理
 ------------
 
@@ -160,6 +170,11 @@
 详细请参考 http://mp.weixin.qq.com/wiki/7/2212203f4e17253b9aef77dc788f5337.html
 
 .. automethod:: Client.delete_permanent_media
+
+上传图文消息素材
+``````````````````````````````
+
+.. automethod:: Client.upload_news
 
 修改永久图文素材
 ``````````````````````````````
