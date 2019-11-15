@@ -4,8 +4,8 @@ osx_image: xcode8.3
 matrix:
   include:
     - env:
-        - PYTHON_MAJOR="py35"
-        - PYTHON_VERSION="3.5.5"
+        - PYTHON_MAJOR="py35|py38"
+        - PYTHON_VERSION="3.5.5 3.8.0"
     - env:
         - PYTHON_MAJOR="py36|py37"
         - PYTHON_VERSION="3.6.5 3.7.0"
