@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 
 import os
+import random
 import sys
 import time
-import random
+
 import pytest
 import tornado
-from tornado.testing import AsyncHTTPSTestCase
-
-from werobot.parser import process_message, parse_xml
-from werobot.utils import generate_token, get_signature
 import webtest
+from tornado.testing import AsyncHTTPSTestCase
 from webtest.app import AppError
+
+from werobot.parser import parse_xml, process_message
+from werobot.utils import generate_token, get_signature
 
 
 @pytest.fixture
@@ -187,6 +188,12 @@ def test_werobot_wsgi(wsgi_tester, hello_robot):
 
     wsgi_tester(hello_robot.wsgi, token=token, endpoint=endpoint)
 
+
+# workaround to make Tornado work in Python 3.8
+# https://github.com/tornadoweb/tornado/issues/2608
+if sys.platform == 'win32' and sys.version_info >= (3, 8):
+    import asyncio
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 if tornado.version_info[0] < 6:
 
