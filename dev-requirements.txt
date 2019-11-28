@@ -1,5 +1,5 @@
 -r tox-requirements.txt
 -r docs-requirements.txt
-yapf==0.28.0
+yapf==0.29.0
 tox==3.14.1
 Django
