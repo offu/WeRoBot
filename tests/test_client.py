@@ -1067,8 +1067,10 @@ class TestSendArticleMessagesClass(BaseTestClass):
             articles.append(
                 Article(
                     *[
-                        "test_title", "test_description", "test_img",
-                        "test_url"
+                        "test_title",
+                        "test_description",
+                        "test_img",
+                        "test_url",
                     ]
                 )
             )
