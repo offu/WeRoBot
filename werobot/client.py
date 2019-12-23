@@ -818,7 +818,12 @@ class Client(object):
         )
 
     def send_video_message(
-        self, user_id, media_id, title=None, description=None, kf_account=None
+        self,
+        user_id,
+        media_id,
+        title=None,
+        description=None,
+        kf_account=None
     ):
         """
         发送视频消息。
@@ -958,7 +963,13 @@ class Client(object):
         )
 
     def send_miniprogrampage_message(
-        self, user_id, title, appid, pagepath, thumb_media_id, kf_account=None
+        self,
+        user_id,
+        title,
+        appid,
+        pagepath,
+        thumb_media_id,
+        kf_account=None
     ):
         """
         发送小程序卡片（要求小程序与公众号已关联）
