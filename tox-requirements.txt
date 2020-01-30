@@ -2,7 +2,7 @@
 coverage==5.0.3
 cryptography==2.8
 pytest==4.6.3
-WebTest==2.0.33
+WebTest==2.0.34
 Flask
 tornado
 responses==0.10.9
