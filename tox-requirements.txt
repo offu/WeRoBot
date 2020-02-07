@@ -8,5 +8,5 @@ tornado
 responses==0.10.9
 multipart==0.1
 pytest-mock==2.0.0
-mongomock==3.18.0
+mongomock==3.19.0
 mockredispy==2.9.3
