@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import six
 from werobot.messages.entries import StringEntry, IntEntry, FloatEntry
 from werobot.messages.base import WeRoBotMetaClass
 
@@ -9,8 +8,7 @@ class MessageMetaClass(WeRoBotMetaClass):
     pass
 
 
-@six.add_metaclass(MessageMetaClass)
-class WeChatMessage(object):
+class WeChatMessage(object, metaclass=MessageMetaClass):
     message_id = IntEntry('MsgId', 0)
     target = StringEntry('ToUserName')
     source = StringEntry('FromUserName')

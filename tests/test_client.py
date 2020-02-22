@@ -5,18 +5,13 @@ import json
 import pytest
 import requests
 import multipart
-from six.moves import urllib
-from six import BytesIO
+import urllib.parse
+from io import BytesIO
 
 from werobot import WeRoBot
 from werobot.config import Config
 from werobot.client import Client, check_error, ClientException
 from werobot.utils import cached_property
-
-try:
-    import urllib.parse as urlparse
-except ImportError:
-    import urlparse
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 GOD_PIC = os.path.join(os.path.dirname(__file__), '照桥心美.png')
@@ -105,7 +100,9 @@ class TestClientBaseClass(BaseTestClass):
         DATA_EXISTS_URL = "http://data-exists.werobot.com/"
 
         def empty_params_callback(request):
-            params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+            params = urllib.parse.parse_qs(
+                urllib.parse.urlparse(request.url).query
+            )
             assert params["access_token"][0] == self.client.token
             return 200, JSON_HEADER, json.dumps({"test": "test"})
 
@@ -469,7 +466,9 @@ class TestClientUserInfo(BaseTestClass):
 
     @staticmethod
     def single_user_callback(request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         assert "openid" in params.keys()
         assert "lang" in params.keys()
@@ -512,7 +511,9 @@ class TestClientGetFollowersClass(BaseTestClass):
 
     @staticmethod
     def get_followers_callback(request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         assert "next_openid" in params.keys()
         return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
@@ -673,13 +674,17 @@ class TestClientResourceClass(BaseTestClass):
 
     @staticmethod
     def upload_callback(request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "type" in params.keys()
         return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def download_callback(request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "media_id" in params.keys()
         return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
@@ -699,20 +704,26 @@ class TestClientResourceClass(BaseTestClass):
 
     @staticmethod
     def upload_picture_callback(request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def upload_p_media_callback(request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         assert "type" in params.keys()
         return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def download_p_media_callback(request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         body = json.loads(request.body.decode("utf-8"))
         assert "media_id" in body.keys()
@@ -834,7 +845,9 @@ class TestUploadVideoClass(BaseTestClass):
 
     @staticmethod
     def upload_video_callback(request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "type" in params.keys()
         assert params["type"][0] == "video"
         return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
@@ -859,7 +872,9 @@ class TestMediaClass(BaseTestClass):
 
     @staticmethod
     def get_media_callback(request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
@@ -897,7 +912,9 @@ class TestGetIpListClass(BaseTestClass):
 
     @staticmethod
     def get_ip_list_callback(request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
@@ -929,13 +946,17 @@ class TestCustomService(BaseTestClass):
 
     @staticmethod
     def upload_callback(request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def get_callback(request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
@@ -1008,13 +1029,17 @@ class TestQrcodeClass(BaseTestClass):
 
     @staticmethod
     def create_callback(request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
     @staticmethod
     def show_callback(request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "ticket" in params.keys()
         return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
 
@@ -1537,7 +1562,9 @@ class TestClientTagManageClass(BaseTestClass):
     delete_tag_id = 100
 
     def create_tag_callback(self, request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         body = json.loads(request.body.decode("utf-8"))
         assert body == {"tag": {"name": self.create_tag_name}}
@@ -1549,7 +1576,9 @@ class TestClientTagManageClass(BaseTestClass):
         )
 
     def update_tag_callback(self, request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         body = json.loads(request.body.decode("utf-8"))
         assert body == {
@@ -1561,19 +1590,25 @@ class TestClientTagManageClass(BaseTestClass):
         return 200, JSON_HEADER, json.dumps({'errcode': 0, 'errmsg': 'ok'})
 
     def get_tags_callback(self, request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         return 200, JSON_HEADER, json.dumps(self.get_tags_response)
 
     def get_users_by_tag_callback(self, request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         body = json.loads(request.body.decode("utf-8"))
         assert body == {"tagid": self.get_users_by_tag_id, "next_openid": ""}
         return 200, JSON_HEADER, json.dumps(self.get_users_by_tag_response)
 
     def delete_tag_callback(self, request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         body = json.loads(request.body.decode("utf-8"))
         assert body == {
@@ -1656,21 +1691,27 @@ class TestClientMembersTagClass(BaseTestClass):
     get_tags_by_user_response = {'tagid_list': [tag_id]}
 
     def tag_user_callback(self, request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         body = json.loads(request.body.decode("utf-8"))
         assert body == {"openid_list": self.users_list, "tagid": self.tag_id}
         return 200, JSON_HEADER, json.dumps({'errcode': 0, 'errmsg': 'ok'})
 
     def untag_user_callback(self, request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         body = json.loads(request.body.decode("utf-8"))
         assert body == {"openid_list": self.users_list, "tagid": self.tag_id}
         return 200, JSON_HEADER, json.dumps({'errcode': 0, 'errmsg': 'ok'})
 
     def get_tags_by_user_callback(self, request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         body = json.loads(request.body.decode("utf-8"))
         assert body == {
@@ -1745,14 +1786,18 @@ class TestClientMass(BaseTestClass):
     ]
 
     def up_news_callback(self, request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         body = json.loads(request.body.decode("utf-8"))
         assert body == {"articles": self.articles}
         return 200, JSON_HEADER, json.dumps({'errcode': 0, 'errmsg': 'ok'})
 
     def send_all_openid_callback(self, request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         body = json.loads(request.body.decode("utf-8"))
         assert 'touser' in body
@@ -1773,7 +1818,9 @@ class TestClientMass(BaseTestClass):
         return 200, JSON_HEADER, json.dumps({'errcode': 0, 'errmsg': 'ok'})
 
     def send_all_tagid_callback(self, request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         body = json.loads(request.body.decode("utf-8"))
         assert 'filter' in body
@@ -1791,14 +1838,18 @@ class TestClientMass(BaseTestClass):
         return 200, JSON_HEADER, json.dumps({'errcode': 0, 'errmsg': 'ok'})
 
     def delete_callback(self, request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         body = json.loads(request.body.decode("utf-8"))
         assert "msg_id" in body
         return 200, JSON_HEADER, json.dumps({'errcode': 0, 'errmsg': 'ok'})
 
     def preview_openid_callback(self, request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         body = json.loads(request.body.decode("utf-8"))
         assert "touser" in body
@@ -1815,7 +1866,9 @@ class TestClientMass(BaseTestClass):
         return 200, JSON_HEADER, json.dumps({'errcode': 0, 'errmsg': 'ok'})
 
     def preview_wxname_callback(self, request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         body = json.loads(request.body.decode("utf-8"))
         assert "towxname" in body
@@ -1833,7 +1886,9 @@ class TestClientMass(BaseTestClass):
         return 200, JSON_HEADER, json.dumps({'errcode': 0, 'errmsg': 'ok'})
 
     def get_status_callback(self, request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         body = json.loads(request.body.decode("utf-8"))
         assert "msg_id" in body
@@ -1845,12 +1900,16 @@ class TestClientMass(BaseTestClass):
         )
 
     def get_news_speed_callback(self, request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         return 200, JSON_HEADER, json.dumps({"speed": 3, "realspeed": 15})
 
     def set_news_speed_callback(self, request):
-        params = urlparse.parse_qs(urlparse.urlparse(request.url).query)
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
         assert "access_token" in params.keys()
         body = json.loads(request.body.decode("utf-8"))
         assert "speed" in body

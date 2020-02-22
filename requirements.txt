@@ -1,4 +1,3 @@
 bottle
 requests
-six
 xmltodict

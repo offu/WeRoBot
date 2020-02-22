@@ -2,7 +2,7 @@
 
 import time
 import requests
-from six.moves import urllib
+import urllib.parse
 
 from requests.compat import json as _json
 from werobot.utils import to_text

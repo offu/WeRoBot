@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import six
 from werobot.messages.entries import get_value, StringEntry, FloatEntry, IntEntry
 from werobot.utils import to_text
 
@@ -58,13 +57,13 @@ def test_float_entry():
 
 
 def test_string_entry():
-    assert isinstance(t.test_string, six.text_type)
+    assert isinstance(t.test_string, str)
     assert t.test_string == "hello"
-    assert isinstance(t.test_int_to_string, six.text_type)
+    assert isinstance(t.test_int_to_string, str)
     assert t.test_int_to_string == "123"
-    assert isinstance(t.test_float_to_string, six.text_type)
+    assert isinstance(t.test_float_to_string, str)
     assert t.test_float_to_string == "1e-05"
-    assert isinstance(t.test_chinese, six.text_type)
+    assert isinstance(t.test_chinese, str)
     assert t.test_chinese == to_text("喵")
     assert t.test_string_none is None
 

@@ -4,7 +4,6 @@ import os
 import mongomock
 import mockredis
 import pytest
-import six
 import sqlite3
 
 import werobot
@@ -159,39 +158,5 @@ def test_storage(storage):
     assert storage["榴莲"] == {}
     storage["榴莲"] = "榴莲"
     assert storage["榴莲"] == u"榴莲"
-    del storage["榴莲"]
-    assert storage["榴莲"] == {}
-
-
-def test_saeskvtorage():
-    """
-    Run this test with PY2 only.
-    """
-    if not six.PY2:
-        return
-
-    class FakeSaeKVDBStorage(saekvstorage.SaeKVDBStorage):
-        def __init__(self, prefix='ws_'):
-            try:
-                saekvstorage.SaeKVDBStorage.__init__(self, prefix)
-            except RuntimeError:
-                import os
-                import sys
-                sys.path.append(os.path.dirname(__file__))
-                import fake_sae as kvdb
-                self.kv = kvdb.KVClient()
-                self.prefix = prefix
-
-    storage = FakeSaeKVDBStorage()
-
-    assert storage.get("喵") == {}
-    storage.set("喵", "喵喵")
-    assert storage.get("喵").decode('utf-8') == u"喵喵"
-    storage.delete("喵")
-    assert storage.get("喵") == {}
-
-    assert storage["榴莲"] == {}
-    storage["榴莲"] = "榴莲"
-    assert storage["榴莲"].decode('utf-8') == u"榴莲"
     del storage["榴莲"]
     assert storage["榴莲"] == {}

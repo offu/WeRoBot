@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import six
 from werobot.messages.entries import StringEntry, IntEntry, FloatEntry
 from werobot.messages.base import WeRoBotMetaClass
 
@@ -9,8 +8,7 @@ class EventMetaClass(WeRoBotMetaClass):
     pass
 
 
-@six.add_metaclass(EventMetaClass)
-class WeChatEvent(object):
+class WeChatEvent(object, metaclass=EventMetaClass):
     target = StringEntry('ToUserName')
     source = StringEntry('FromUserName')
     time = IntEntry('CreateTime')

@@ -9,12 +9,6 @@ matrix:
     - env:
         - PYTHON_MAJOR="py36|py37"
         - PYTHON_VERSION="3.6.5 3.7.0"
-    - env:
-        - PYTHON_MAJOR=py2
-        - PYTHON_VERSION="2.7.14"
-    - env:
-        - PYTHON_MAJOR=pypy
-        - PYTHON_VERSION="pypy2.7-7.2.0"
 cache:
   directories:
     - $HOME/.pyenv
