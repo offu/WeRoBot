@@ -9,7 +9,7 @@ install:
   - C:\Python35\python -m pip install --force-reinstall tox
   - set PYTHONIOENCODING=utf-8
 test_script:
-  - C:\Python35\python -m tox -c tox-win.ini
+  - C:\Python35\python -m tox -c tox.ini
 on_success:
   - set PATH=C:\\Python35;C:\\Python35\\Scripts;%PATH%
   - pip install codecov coverage
