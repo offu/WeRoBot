@@ -2,7 +2,6 @@
 
 import hashlib
 import time
-import six
 import os
 import pytest
 
@@ -34,8 +33,7 @@ def test_signature_checker():
     sign = [token, timestamp, nonce]
     sign.sort()
     sign = ''.join(sign)
-    if six.PY3:
-        sign = sign.encode()
+    sign = sign.encode()
     sign = hashlib.sha1(sign).hexdigest()
 
     assert robot.check_signature(timestamp, nonce, sign)
