@@ -1,6 +1,11 @@
 Changelog
 =============
 
+Version 1.11.0
+----------------
++ 停止了对 Python2 与 PyPy 的支持。 ( `#539 <https://github.com/offu/WeRoBot/pull/539>`_ )
++ 停止了对 SAE 相关代码的测试。 ( `#539 <https://github.com/offu/WeRoBot/pull/539>`_ )
+
 Version 1.10.1
 ----------------
 + 修复 :ref:`群发接口` 的 docstring 样式。

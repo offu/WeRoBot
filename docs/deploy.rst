@@ -130,8 +130,9 @@ server 支持以下几种：
 在SAE上部署
 -----------------
 
+.. attention:: 从 :ref:`Version 1.11.0` 开始，WeRoBot 停止测试 SAE 相关部分的代码。
 
-    新浪云上的 Python 应用的入口为 index.wsgi:application ，也就是 index.wsgi 这个文件中名为 application 的 callable object。
+新浪云上的 Python 应用的入口为 index.wsgi:application ，也就是 index.wsgi 这个文件中名为 application 的 callable object。
 
 
 所以，假设你在 `robot.py` 中使用了 WeRoBot ::

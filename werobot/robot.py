@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals
 
-import six
 import warnings
 
 from werobot.config import Config, ConfigAttribute
@@ -530,7 +528,7 @@ class BaseRoBot(object):
                 self.add_filter(func, [x])
         else:
             target_content = rules[0]
-            if isinstance(target_content, six.string_types):
+            if isinstance(target_content, str):
                 target_content = to_text(target_content)
 
                 def _check_content(message):

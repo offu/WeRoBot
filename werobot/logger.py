@@ -1,6 +1,5 @@
 # -*- coding:utf-8 -*-
 
-import six
 import sys
 import time
 import logging
@@ -45,25 +44,16 @@ class _LogFormatter(logging.Formatter):
         self._color = color
         if color:
             fg_color = (
-                curses.tigetstr("setaf") or curses.tigetstr("setf") or ""
+                curses.tigetstr("setaf") or curses.tigetstr("setf") or b""
             )
-            if (3, 0) < sys.version_info < (3, 2, 3):
-                fg_color = six.text_type(fg_color, "ascii")
             self._colors = {
-                logging.DEBUG: six.text_type(
-                    curses.tparm(fg_color, 4), "ascii"
-                ),  # Blue
-                logging.INFO: six.text_type(
-                    curses.tparm(fg_color, 2), "ascii"
-                ),  # Green
-                logging.WARNING: six.text_type(
-                    curses.tparm(fg_color, 3), "ascii"
-                ),  # Yellow
-                logging.ERROR: six.text_type(
-                    curses.tparm(fg_color, 1), "ascii"
-                ),  # Red
+                logging.DEBUG: str(curses.tparm(fg_color, 4), "ascii"),  # Blue
+                logging.INFO: str(curses.tparm(fg_color, 2), "ascii"),  # Green
+                logging.WARNING: str(curses.tparm(fg_color, 3),
+                                     "ascii"),  # Yellow
+                logging.ERROR: str(curses.tparm(fg_color, 1), "ascii"),  # Red
             }
-            self._normal = six.text_type(curses.tigetstr("sgr0"), "ascii")
+            self._normal = str(curses.tigetstr("sgr0"), "ascii")
 
     def format(self, record):
         try:
@@ -73,8 +63,7 @@ class _LogFormatter(logging.Formatter):
         record.asctime = time.strftime(
             "%y%m%d %H:%M:%S", self.converter(record.created)
         )
-        prefix = '[%(levelname)1.1s %(asctime)s %(module)s:%(lineno)d]' % \
-                 record.__dict__
+        prefix = '[%(levelname)1.1s %(asctime)s %(module)s:%(lineno)d]' % record.__dict__
         if self._color:
             prefix = (
                 self._colors.get(record.levelno, self._normal) + prefix +

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals
 
 import io
 import json
@@ -11,14 +10,12 @@ import time
 from functools import wraps
 from hashlib import sha1
 
-import six
-
 try:
     from secrets import choice
 except ImportError:
     from random import choice
 
-string_types = (six.string_types, six.text_type, six.binary_type)
+string_types = (str, bytes)
 
 re_type = type(re.compile("regex_test"))
 
@@ -54,22 +51,24 @@ def cached_property(method):
 
 
 def to_text(value, encoding="utf-8"):
-    if isinstance(value, six.text_type):
+    if isinstance(value, str):
         return value
-    if isinstance(value, six.binary_type):
+    if isinstance(value, bytes):
         return value.decode(encoding)
-    return six.text_type(value)
+    return str(value)
 
 
 def to_binary(value, encoding="utf-8"):
-    if isinstance(value, six.binary_type):
+    if isinstance(value, bytes):
         return value
-    if isinstance(value, six.text_type):
+    if isinstance(value, str):
         return value.encode(encoding)
-    return six.binary_type(value)
+    return bytes(value)
 
 
 def is_string(value):
+    """Check if value's type is `str` or `bytes`
+    """
     return isinstance(value, string_types)
 
 
@@ -81,8 +80,6 @@ def byte2int(s, index=0):
 
     :return: ASCII int value
     """
-    if six.PY2:
-        return ord(s[index])
     return s[index]
 
 
