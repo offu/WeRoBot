@@ -862,7 +862,7 @@ def test_location_event():
     assert message.precision == 119.385040
 
 
-def test_template_send_job_finish_event():
+def test_templatesendjobfinish_event():
     message = parse_user_msg(
         """
     <xml>

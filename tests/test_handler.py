@@ -675,6 +675,31 @@ def test_submit_membercard_user_info_handler():
     assert reply._args['content'] == u'现在醒一醒还来得及'
 
 
+def test_templatesendjobfinish_event_handler():
+    @werobot.templatesendjobfinish_event
+    def templatesendjobfinish_event():
+        return '喵喵~模板消息已经推送'
+
+    message = parse_user_msg(
+        """
+            <xml>
+                <ToUserName><![CDATA[gh_7f083739789a]]></ToUserName>
+                <FromUserName><![CDATA[oia2TjuEGTNoeX76QEjQNrcURxG8]]></FromUserName>
+                <CreateTime>1395658920</CreateTime>
+                <MsgType><![CDATA[event]]></MsgType>
+                <Event><![CDATA[TEMPLATESENDJOBFINISH]]></Event>
+                <MsgID>200163836</MsgID>
+                <Status><![CDATA[success]]></Status>
+            </xml>
+        """
+    )
+
+    reply = werobot.get_reply(message)
+
+    assert isinstance(reply, TextReply)
+    assert reply._args['content'] == u'喵喵~模板消息已经推送'
+
+
 def test_unknown_event():
     @werobot.unknown_event
     def unknown_event(message):
