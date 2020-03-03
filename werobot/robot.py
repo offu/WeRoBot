@@ -79,6 +79,7 @@ class BaseRoBot(object):
         'update_member_card_event',
         'card_sku_remind_event',
         'card_pay_order_event',
+        'templatesendjobfinish_event',
         'submit_membercard_user_info_event',  # event
         'text',
         'image',
@@ -453,6 +454,12 @@ class BaseRoBot(object):
         事件添加一个 handler 方法的装饰器。
         """
         self.add_handler(f, type='submit_membercard_user_info_event')
+        return f
+
+    def templatesendjobfinish_event(self, f):
+        """在模版消息发送任务完成后，微信服务器会将是否送达成功作为通知，发送到开发者中心中填写的服务器配置地址中
+        """
+        self.add_handler(f, type='templatesendjobfinish_event')
         return f
 
     def unknown_event(self, f):
