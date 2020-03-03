@@ -50,7 +50,7 @@ def cached_property(method):
     return property(wrapped_func)
 
 
-def to_text(value, encoding="utf-8"):
+def to_text(value, encoding="utf-8") -> str:
     if isinstance(value, str):
         return value
     if isinstance(value, bytes):
@@ -58,7 +58,7 @@ def to_text(value, encoding="utf-8"):
     return str(value)
 
 
-def to_binary(value, encoding="utf-8"):
+def to_binary(value, encoding="utf-8") -> bytes:
     if isinstance(value, bytes):
         return value
     if isinstance(value, str):
@@ -66,7 +66,7 @@ def to_binary(value, encoding="utf-8"):
     return bytes(value)
 
 
-def is_string(value):
+def is_string(value) -> bool:
     """Check if value's type is `str` or `bytes`
     """
     return isinstance(value, string_types)
