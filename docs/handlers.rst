@@ -90,6 +90,7 @@ WeRoBot会将合法的请求发送给 handlers 依次执行。
 :func:`robot.card_sku_remind <werobot.robot.BaseRoBot.card_sku_remind>`                                     库存警告 (Event)
 :func:`robot.card_pay_order <werobot.robot.BaseRoBot.card_pay_order>`                                       券点发生变动 (Event)
 :func:`robot.submit_membercard_user_info <werobot.robot.BaseRoBot.submit_membercard_user_info>`             激活卡券 (Event)
+:func:`robot.template_send_job_finish <werobot.robot.BaseRoBot.template_send_job_finish>`                   模板信息推送事件 (Event)
 :func:`robot.location_event <werobot.robot.BaseRoBot.location_event>`                                       上报位置 (Event)
 :func:`robot.unknown_event <werobot.robot.BaseRoBot.unknown_event>`                                         未知类型 (Event)
 ========================================================================================================  =========================================
