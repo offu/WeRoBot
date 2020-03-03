@@ -1,6 +1,10 @@
 Changelog
 =============
 
+Version 1.12.0
+----------------
++ 增加了对微信模板回调消息的处理 :func:`robot.templatesendjobfinish_event <werobot.robot.BaseRoBot.templatesendjobfinish_event>`  ( `#544 <https://github.com/offu/WeRoBot/pull/544>`_ )
+
 Version 1.11.0
 ----------------
 + 停止了对 Python2 与 PyPy 的支持。 ( `#539 <https://github.com/offu/WeRoBot/pull/539>`_ )
