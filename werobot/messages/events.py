@@ -106,7 +106,8 @@ class LocationEvent(WeChatEvent):
 
 
 class TemplateSendJobFinishEvent(WeChatEvent):
-    __type__ = 'templatesendjobfinish_event'
+    __type__ = 'template_send_job_finish_event'
+    msg_id = StringEntry('MsgID')
     status = StringEntry('Status')
 
 
