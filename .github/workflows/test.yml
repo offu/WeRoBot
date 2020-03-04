@@ -15,6 +15,18 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ matrix.os }}-pip-${{ matrix.python-version }}
+          restore-keys: |
+            ${{ matrix.os }}-pip-
+      - uses: actions/cache@v1
+        with:
+          path: .tox
+          key: ${{ matrix.os }}-tox-${{ matrix.python-version }}-${{ hashFiles('**/tox.ini') }}
+          restore-keys: |
+            ${{ matrix.os }}-tox-${{ matrix.python-version }}
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip wheel
@@ -30,6 +42,12 @@ jobs:
       - uses: actions/checkout@v2
       - name: Set up Python
         uses: actions/setup-python@v1
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-lint-${{ hashFiles('**/*requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip wheel
@@ -43,6 +61,12 @@ jobs:
       - uses: actions/checkout@v2
       - name: Set up Python
         uses: actions/setup-python@v1
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-docs-${{ hashFiles('**/*requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip wheel
