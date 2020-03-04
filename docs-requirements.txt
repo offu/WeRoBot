@@ -1,1 +1,3 @@
+-r tox-requirements.txt
 Sphinx==2.4.3
+Django
