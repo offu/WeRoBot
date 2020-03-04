@@ -1,4 +1,4 @@
-name: Run Tests
+name: tests
 
 on: [push]
 
@@ -22,6 +22,8 @@ jobs:
       - name: Test with tox
         run: |
           tox -s
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   lint:
     runs-on: ubuntu-latest
     steps:
