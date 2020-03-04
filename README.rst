@@ -41,3 +41,7 @@ Contributors
 -----------------
 Thank you to all the people who have already contributed. 
 |occontributorimage|
+
+.. |occontributorimage| image:: https://opencollective.com/werobot/contributors.svg?width=890&button=false
+    :target: https://opencollective.com/werobot
+    :alt: Repo Contributors
