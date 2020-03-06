@@ -5,7 +5,7 @@ pytest==4.6.3
 WebTest==2.0.34
 Flask
 tornado
-responses==0.10.11
+responses==0.10.12
 multipart==0.1
 pytest-mock==2.0.0
 mongomock==3.19.0
