@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import
-
 from bottle import request, HTTPResponse
 
-try:
-    import html
-except ImportError:
-    import cgi as html
+import html
 
 
 def make_view(robot):

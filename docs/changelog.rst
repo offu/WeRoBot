@@ -1,6 +1,11 @@
 Changelog
 =============
 
+VNext
+----------------
++ 增加了对 Django 2.1、 Django 2.2、 Django 3.0 的测试
++ 停止了对 Python 3.4 的测试
+
 Version 1.12.0
 ----------------
 + 增加了对微信模板回调消息的处理 :func:`robot.templatesendjobfinish_event <werobot.robot.BaseRoBot.templatesendjobfinish_event>`  ( `#544 <https://github.com/offu/WeRoBot/pull/544>`_ )

@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import
+
 from tornado.web import RequestHandler
 
-try:
-    import html
-except ImportError:
-    import cgi as html
+import html
 
 
 def make_handler(robot):

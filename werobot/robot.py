@@ -12,10 +12,7 @@ from werobot.utils import (
     is_regex
 )
 
-try:
-    from inspect import signature
-except ImportError:
-    from funcsigs import signature
+from inspect import signature
 
 __all__ = ['BaseRoBot', 'WeRoBot']
 
