@@ -88,7 +88,6 @@
 .. automethod:: Client.send_mass_preview_to_user
 .. automethod:: Client.get_mass_msg_status
 .. automethod:: Client.get_mass_msg_speed
-.. automethod:: Client.delete_mass_msg
 
 用户管理
 ------------
