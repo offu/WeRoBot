@@ -3,8 +3,8 @@ Changelog
 
 VNext
 ----------------
-+ 停止了对 Django 1.11、Django 2.0、Django 2.1 的测试
-+ 增加了对 Django 2.1、 Django 2.2、 Django 3.0 的测试
++ 停止了对 Django 1.11、Django 2.0 的测试
++ 增加了对 Django 2.2、 Django 3.0 的测试
 + 停止了对 Python 3.4 的测试
 
 Version 1.12.0
