@@ -1,5 +1,5 @@
 -r requirements.txt
-coverage==5.1
+coverage==5.2
 cryptography==2.9.2
 pytest==4.6.3
 WebTest==2.0.35
