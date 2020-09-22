@@ -1,6 +1,6 @@
 -r requirements.txt
 coverage==5.3
-cryptography==3.1
+cryptography==3.1.1
 pytest==4.6.3
 WebTest==2.0.35
 Flask
