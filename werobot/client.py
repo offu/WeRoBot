@@ -1022,25 +1022,31 @@ class Client(object):
             params={"ticket": ticket}
         )
 
-    def send_template_message(self, user_id, template_id, data, url=''):
+    def send_template_message(
+        self, user_id, template_id, data, url='', miniprogram=None
+    ):
         """
         发送模板消息
-        详情请参考 http://mp.weixin.qq.com/wiki/17/304c1885ea66dbedf7dc170d84999a9d.html
+        详情请参考 https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Template_Message_Interface.html
 
         :param user_id: 用户 ID 。 就是你收到的 `Message` 的 source
         :param template_id: 模板 ID。
         :param data: 用于渲染模板的数据。
         :param url: 模板消息的可选链接。
+        :param miniprogram: 跳小程序所需数据的可选数据。
         :return: 返回的 JSON 数据包
         """
+        payload = {
+            "touser": user_id,
+            "template_id": template_id,
+            "url": url,
+            "data": data
+        }
+        if miniprogram:
+            payload["miniprogram"] = miniprogram
         return self.post(
             url="https://api.weixin.qq.com/cgi-bin/message/template/send",
-            data={
-                "touser": user_id,
-                "template_id": template_id,
-                "url": url,
-                "data": data
-            }
+            data=payload
         )
 
     def create_tag(self, tag_name):
