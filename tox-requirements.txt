@@ -1,12 +1,12 @@
 -r requirements.txt
 coverage==5.3
 cryptography==3.2
-pytest==4.6.3
+pytest==6.2.2
 WebTest==2.0.35
 Flask
 tornado
 responses==0.12.0
 multipart==0.1
-pytest-mock==3.3.1
+pytest-mock==3.5.1
 mongomock==3.20.0
 mockredispy==2.9.3
