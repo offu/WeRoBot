@@ -8,6 +8,9 @@ import html
 def make_view(robot):
     """
     为一个 BaseRoBot 生成 fastapi view。
+    用法：
+        app = FastAPI()
+        app.add_route('/werobot', make_view(robot), ['post'])
     :param robot:
     :return:
     """
