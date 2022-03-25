@@ -1300,3 +1300,30 @@ class Client(object):
             url="https://api.weixin.qq.com/cgi-bin/message/mass/speed/set",
             data={"speed": speed}
         )
+
+    """增加草稿操作"""
+
+    def get_draft_count(self):
+        return self.get(url="https://api.weixin.qq.com/cgi-bin/draft/count")
+
+    def get_draft_list(self, offset=0, count=10, no_content=0):
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/draft/batchget",
+            data={
+                "offset": offset,
+                "count": count,
+                "no_content": no_content
+            }
+        )
+
+    def post_draft(self, media_id):
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/freepublish/submit",
+            data={"media_id": media_id}
+        )
+
+    def get_draft_post_status(self, publish_id):
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/freepublish/get",
+            data={"publish_id": publish_id}
+        )
