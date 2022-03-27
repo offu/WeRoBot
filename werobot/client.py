@@ -1300,3 +1300,53 @@ class Client(object):
             url="https://api.weixin.qq.com/cgi-bin/message/mass/speed/set",
             data={"speed": speed}
         )
+
+    def get_draft_count(self):
+        """
+        获取草稿的总数
+
+        :return: 返回的 json
+        """
+        return self.get(url="https://api.weixin.qq.com/cgi-bin/draft/count")
+
+    def get_draft_list(self, offset=0, count=10, no_content=0):
+        """
+        获取草稿的列表
+
+        :param offset: 从全部素材的该偏移位置开始返回，0表示从第一个素材返回
+        :param count: 返回素材的数量，取值在1到20之间
+        :param no_content: 1 表示不返回 content 字段，0 表示正常返回，默认为 0
+        :return: 返回的 json
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/draft/batchget",
+            data={
+                "offset": offset,
+                "count": count,
+                "no_content": no_content
+            }
+        )
+
+    def post_draft(self, media_id):
+        """
+        发布草稿
+
+        :param media_id: 要发布的草稿id（开发者需要先将图文素材以草稿的形式保存）
+        :return: 返回的json
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/freepublish/submit",
+            data={"media_id": media_id}
+        )
+
+    def get_draft_post_status(self, publish_id):
+        """
+        获得发布状态
+
+        :param publish_id: 发布任务id，位于发布后的返回结果中
+        :return: 返回的json
+        """
+        return self.post(
+            url="https://api.weixin.qq.com/cgi-bin/freepublish/get",
+            data={"publish_id": publish_id}
+        )
