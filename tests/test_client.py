@@ -1751,6 +1751,77 @@ class TestClientMembersTagClass(BaseTestClass):
         assert r == self.get_tags_by_user_response
 
 
+class TestClientDraftManageClass(BaseTestClass):
+    GET_DRAFT_COUNT_URL = "https://api.weixin.qq.com/cgi-bin/draft/count"
+    GET_DRAFT_LIST_URL = "https://api.weixin.qq.com/cgi-bin/draft/batchget"
+    POST_DRAFT_URL = "https://api.weixin.qq.com/cgi-bin/freepublish/submit"
+    GET_DRAFT_STATUS_URL = "https://api.weixin.qq.com/cgi-bin/freepublish/get"
+
+    @staticmethod
+    def get_draft_count_callback(request):
+        params = urllib.parse.parse_qs(
+            urllib.parse.urlparse(request.url).query
+        )
+        assert "access_token" in params.keys()
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    @staticmethod
+    def get_draft_list_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "offset" in body.keys()
+        assert "count" in body.keys()
+        assert "no_content" in body.keys()
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    @staticmethod
+    def post_draft_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "media_id" in body.keys()
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    @staticmethod
+    def get_draft_status_callback(request):
+        body = json.loads(request.body.decode("utf-8"))
+        assert "published_id" in body.keys()
+        return 200, JSON_HEADER, json.dumps({"errcode": 0, "errmsg": "ok"})
+
+    @responses.activate
+    @add_token_response
+    def test_get_draft_count(self):
+        responses.add_callback(
+            responses.GET, self.GET_DRAFT_COUNT_URL, callback=self.get_draft_count_callback
+        )
+        r = self.client.get_draft_count()
+        assert r == {"errcode": 0, "errmsg": "ok"}
+
+    @responses.activate
+    @add_token_response
+    def test_get_draft_list(self):
+        responses.add_callback(
+            responses.POST, self.GET_DRAFT_LIST_URL, callback=self.get_draft_list_callback
+        )
+        r = self.client.get_draft_list(0, 10, 0)
+        assert r == {"errcode": 0, "errmsg": "ok"}
+
+    @responses.activate
+    @add_token_response
+    def test_post_draft(self):
+        responses.add_callback(
+            responses.POST, self.POST_DRAFT_URL, callback=self.post_draft_callback
+        )
+        r = self.client.post_draft("123456")
+        assert r == {"errcode": 0, "errmsg": "ok"}
+
+    @responses.activate
+    @add_token_response
+    def test_get_draft_status(self):
+        responses.add_callback(
+            responses.POST, self.GET_DRAFT_STATUS_URL, callback=self.get_draft_status_callback
+        )
+        r = self.client.get_draft_post_status("12345678")
+        assert r == {"errcode": 0, "errmsg": "ok"}
+
+
 class TestClientMass(BaseTestClass):
     UP_NEWS_URL = 'https://api.weixin.qq.com/cgi-bin/media/uploadnews'
     SEND_ALL_URL = 'https://api.weixin.qq.com/cgi-bin/message/mass/sendall'
