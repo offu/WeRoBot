@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import re
 import xmltodict
 from werobot.messages.messages import MessageMetaClass, UnknownMessage
 from werobot.messages.events import EventMetaClass, UnknownEvent
@@ -11,7 +12,8 @@ def parse_user_msg(xml):
 
 
 def parse_xml(text):
-    xml_dict = xmltodict.parse(text)["xml"]
+    text_clean = re.sub(b'[\x00-\x09\x0B-\x0C\x0E-\x1F]', b'', text)
+    xml_dict = xmltodict.parse(text_clean)["xml"]
     xml_dict["raw"] = text
     return xml_dict
 
