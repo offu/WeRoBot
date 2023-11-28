@@ -52,6 +52,7 @@ class Client(object):
     微信 API 操作类
     通过这个类可以方便的通过微信 API 进行一系列操作，比如主动发送消息、创建自定义菜单等
     """
+
     def __init__(self, config):
         self.config = config
         self._token = None
@@ -357,8 +358,7 @@ class Client(object):
         :return: 返回的 JSON 数据包
         """
         return self.post(
-            url=
-            "http://api.weixin.qq.com/customservice/kfaccount/uploadheadimg",
+            url="http://api.weixin.qq.com/customservice/kfaccount/uploadheadimg",
             params={
                 "access_token": self.token,
                 "kf_account": account
